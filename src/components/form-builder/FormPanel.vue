@@ -235,27 +235,37 @@ function handleDragLeave(event: DragEvent) {
 
 function handleDrop(event: DragEvent) {
   event.preventDefault();
+  event.stopPropagation(); // Evitar que se propague al diseñador principal
   isDragOver.value = false;
   
   try {
     const dragData = JSON.parse(event.dataTransfer?.getData('application/json') || '{}');
     
-    if (dragData.componentType && dragData.source === 'palette') {
-      const newChild: FormComponent = {
-        id: `component_${Date.now()}`,
-        type: dragData.componentType,
-        name: `${dragData.componentType}_${Date.now()}`,
-        label: `Nuevo ${dragData.componentType}`,
-        parentId: props.component.id,
-        ...getDefaultComponentProps(dragData.componentType)
-      } as FormComponent;
+    if (dragData.source === 'palette' && dragData.componentType) {
+      // Solo crear componente si se está soltando específicamente en el contenido del panel
+      const dropTarget = event.target as HTMLElement;
+      const isDroppingInPanelContent = dropTarget.closest('.panel-content');
       
-      const currentChildren = props.component.children || [];
-      const updatedComponent = {
-        ...props.component,
-        children: [...currentChildren, newChild]
-      };
-      emit('update', updatedComponent);
+      if (isDroppingInPanelContent) {
+        const newChild: FormComponent = {
+          id: `component_${Date.now()}`,
+          type: dragData.componentType,
+          name: `${dragData.componentType}_${Date.now()}`,
+          label: `Nuevo ${dragData.componentType}`,
+          parentId: props.component.id,
+          ...getDefaultComponentProps(dragData.componentType)
+        } as FormComponent;
+        
+        const currentChildren = props.component.children || [];
+        const updatedComponent = {
+          ...props.component,
+          children: [...currentChildren, newChild]
+        };
+        emit('update', updatedComponent);
+      }
+    } else if (dragData.source === 'designer' && dragData.componentId) {
+      // Mover componente existente al panel
+      emit('move-to-panel', dragData.componentId, props.component.id);
     }
   } catch (error) {
     console.error('Error al procesar drop:', error);

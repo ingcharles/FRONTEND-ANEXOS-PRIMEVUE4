@@ -354,22 +354,31 @@ function toggleAccordion(index: number) {
 
 function handleDrop(event: DragEvent, targetId?: string) {
   event.preventDefault();
+  event.stopPropagation(); // Evitar que se propague al diseñador principal
   isDragOver.value = false;
   
   try {
     const dragData = JSON.parse(event.dataTransfer?.getData('application/json') || '{}');
     
-    if (dragData.componentType && dragData.source === 'palette') {
-      const newChild: FormComponent = {
-        id: `component_${Date.now()}`,
-        type: dragData.componentType,
-        name: `${dragData.componentType}_${Date.now()}`,
-        label: `Nuevo ${dragData.componentType}`,
-        parentId: targetId || props.component.id,
-        ...getDefaultComponentProps(dragData.componentType)
-      } as FormComponent;
+    if (dragData.source === 'palette' && dragData.componentType) {
+      // Solo crear componente si se está soltando específicamente en el contenido de la página
+      const dropTarget = event.target as HTMLElement;
+      const isDroppingInPageContent = dropTarget.closest('.page-content') || 
+                                     dropTarget.closest('.single-content') ||
+                                     dropTarget.closest('.tab-panel') ||
+                                     dropTarget.closest('.accordion-panel');
       
-      if (targetId) {
+      if (isDroppingInPageContent) {
+        const newChild: FormComponent = {
+          id: `component_${Date.now()}`,
+          type: dragData.componentType,
+          name: `${dragData.componentType}_${Date.now()}`,
+          label: `Nuevo ${dragData.componentType}`,
+          parentId: targetId || props.component.id,
+          ...getDefaultComponentProps(dragData.componentType)
+        } as FormComponent;
+        
+        if (targetId) {
         // Add to specific panel
         const currentChildren = props.component.children || [];
         const updatedChildren = currentChildren.map(child => {
@@ -395,6 +404,7 @@ function handleDrop(event: DragEvent, targetId?: string) {
           children: [...currentChildren, newChild]
         };
         emit('update', updatedComponent);
+        }
       }
     }
   } catch (error) {

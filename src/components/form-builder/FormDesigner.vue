@@ -47,19 +47,37 @@
           </div>
           
           <div v-else class="form-components">
-            <FormComponentRenderer
-              v-for="component in formComponents"
-              :key="component.id"
-              :component="component"
-              :is-selected="selectedComponent?.id === component.id"
-              @select="selectComponent"
-              @update="updateComponent"
-              @delete="deleteComponent"
-              @drag-start="handleComponentDragStart"
-              @drag-end="handleComponentDragEnd"
-              @resize="handleComponentResize"
-              @add-child="addChildComponent"
-            />
+            <template v-for="(component, index) in formComponents" :key="component.id">
+              <!-- Drop indicator -->
+              <div
+                v-if="dragOverIndex === index"
+                class="drop-indicator"
+              ></div>
+              
+              <div
+                :data-component-id="component.id"
+                class="component-wrapper"
+                :class="{ 'drag-over': isDragOver && dragOverIndex === index }"
+              >
+                <FormComponentRenderer
+                  :component="component"
+                  :is-selected="selectedComponent?.id === component.id"
+                  @select="selectComponent"
+                  @update="updateComponent"
+                  @delete="deleteComponent"
+                  @drag-start="handleComponentDragStart"
+                  @drag-end="handleComponentDragEnd"
+                  @resize="handleComponentResize"
+                  @add-child="addChildComponent"
+                />
+              </div>
+            </template>
+            
+            <!-- Drop indicator at the end -->
+            <div
+              v-if="dragOverIndex === formComponents.length"
+              class="drop-indicator"
+            ></div>
           </div>
         </div>
       </div>
@@ -152,6 +170,7 @@ interface Props {
 interface Emits {
   (e: 'select-component', component: FormComponent | null): void;
   (e: 'update-component', component: FormComponent): void;
+  (e: 'update-components', components: FormComponent[]): void;
   (e: 'add-component', component: FormComponent): void;
   (e: 'remove-component', componentId: string): void;
   (e: 'clear-form'): void;
@@ -164,6 +183,7 @@ const emit = defineEmits<Emits>();
 
 const activeTab = ref<'designer' | 'preview' | 'json'>('designer');
 const isDragOver = ref(false);
+const dragOverIndex = ref<number | null>(null);
 const previewMode = ref(false);
 
 const tabs = [
@@ -213,21 +233,66 @@ function deleteComponent(component: FormComponent) {
 
 function handleDrop(event: DragEvent) {
   event.preventDefault();
+  event.stopPropagation(); // Evitar que se propague a otros elementos
   isDragOver.value = false;
+  dragOverIndex.value = null;
   
   try {
     const dragData = JSON.parse(event.dataTransfer?.getData('application/json') || '{}');
     
-    if (dragData.componentType && dragData.source === 'palette') {
-      const newComponent: FormComponent = {
-        id: `component_${Date.now()}`,
-        type: dragData.componentType,
-        name: `${dragData.componentType}_${Date.now()}`,
-        label: `Nuevo ${dragData.componentType}`,
-        ...getDefaultComponentProps(dragData.componentType)
-      } as FormComponent;
+    if (dragData.source === 'palette' && dragData.componentType) {
+      // Solo crear componente si se está soltando en el área principal del diseñador
+      // Verificar que el drop sea específicamente en el diseñador principal
+      const dropTarget = event.target as HTMLElement;
+      const designerCanvas = dropTarget.closest('.designer-canvas');
+      const isDroppingInPanel = dropTarget.closest('.panel-content') || 
+                               dropTarget.closest('.page-content') ||
+                               dropTarget.closest('.form-panel-component') ||
+                               dropTarget.closest('.form-page-component');
       
-      emit('add-component', newComponent);
+      // Solo crear si está en el canvas del diseñador y NO en un panel/página
+      if (designerCanvas && !isDroppingInPanel) {
+        const newComponent: FormComponent = {
+          id: `component_${Date.now()}`,
+          type: dragData.componentType,
+          name: `${dragData.componentType}_${Date.now()}`,
+          label: `Nuevo ${dragData.componentType}`,
+          ...getDefaultComponentProps(dragData.componentType)
+        } as FormComponent;
+        
+        emit('add-component', newComponent);
+      }
+    } else if (dragData.source === 'designer' && dragData.componentId) {
+      // Mover componente existente - encontrar la posición de drop
+      const dropTarget = event.target as HTMLElement;
+      const componentToMove = props.formComponents.find(c => c.id === dragData.componentId);
+      
+      if (componentToMove) {
+        // Calcular la nueva posición basada en la posición del mouse
+        const rect = dropTarget.getBoundingClientRect();
+        const y = event.clientY - rect.top;
+        
+        // Determinar si insertar antes o después del elemento más cercano
+        let insertIndex = props.formComponents.length;
+        
+        for (let i = 0; i < props.formComponents.length; i++) {
+          const element = document.querySelector(`[data-component-id="${props.formComponents[i].id}"]`) as HTMLElement;
+          if (element) {
+            const elementRect = element.getBoundingClientRect();
+            const elementY = elementRect.top - rect.top;
+            
+            if (y < elementY + elementRect.height / 2) {
+              insertIndex = i;
+              break;
+            }
+          }
+        }
+        
+        // Reordenar componentes
+        const updatedComponents = props.formComponents.filter(c => c.id !== dragData.componentId);
+        updatedComponents.splice(insertIndex, 0, componentToMove);
+        emit('update-components', updatedComponents);
+      }
     }
   } catch (error) {
     console.error('Error al procesar drop:', error);
@@ -237,6 +302,27 @@ function handleDrop(event: DragEvent) {
 function handleDragOver(event: DragEvent) {
   event.preventDefault();
   isDragOver.value = true;
+  
+  // Calcular el índice de inserción basado en la posición del mouse
+  const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+  const y = event.clientY - rect.top;
+  
+  let insertIndex = props.formComponents.length;
+  
+  for (let i = 0; i < props.formComponents.length; i++) {
+    const element = document.querySelector(`[data-component-id="${props.formComponents[i].id}"]`) as HTMLElement;
+    if (element) {
+      const elementRect = element.getBoundingClientRect();
+      const elementY = elementRect.top - rect.top;
+      
+      if (y < elementY + elementRect.height / 2) {
+        insertIndex = i;
+        break;
+      }
+    }
+  }
+  
+  dragOverIndex.value = insertIndex;
 }
 
 function handleDragEnter(event: DragEvent) {
@@ -251,6 +337,7 @@ function handleDragLeave(event: DragEvent) {
   
   if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
     isDragOver.value = false;
+    dragOverIndex.value = null;
   }
 }
 
@@ -259,7 +346,8 @@ function handleComponentDragStart(event: DragEvent) {
 }
 
 function handleComponentDragEnd(event: DragEvent) {
-  // Handle component reordering if needed
+  isDragOver.value = false;
+  dragOverIndex.value = null;
 }
 
 function handleComponentResize(component: FormComponent, size: { width: number; height: number }) {
@@ -541,6 +629,36 @@ watch(activeTab, () => {
 
 .form-components {
   padding: 16px;
+}
+
+.component-wrapper {
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+}
+
+.component-wrapper:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.component-wrapper.drag-over {
+  border: 2px dashed #007bff;
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.drop-indicator {
+  height: 2px;
+  background-color: #007bff;
+  margin: 4px 0;
+  border-radius: 1px;
+  opacity: 0.8;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 0.4; }
+  100% { opacity: 0.8; }
 }
 
 .preview-container {

@@ -16,6 +16,7 @@
           :selected-component="selectedComponent"
           @select-component="selectComponent"
           @update-component="updateComponent"
+          @update-components="updateComponents"
           @add-component="addComponent"
           @remove-component="removeComponent"
           @clear-form="clearForm"
@@ -62,6 +63,10 @@ function updateComponent(component: FormComponent) {
   if (index !== -1) {
     formComponents.value[index] = component;
   }
+}
+
+function updateComponents(components: FormComponent[]) {
+  formComponents.value = components;
 }
 
 function addComponent(component: FormComponent) {
