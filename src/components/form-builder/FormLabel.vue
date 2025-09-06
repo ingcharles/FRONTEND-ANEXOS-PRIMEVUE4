@@ -24,7 +24,7 @@
     <button 
       v-if="isSelected"
       class="delete-button"
-      @click="deleteComponent"
+      @click.stop="deleteComponent"
       title="Eliminar componente"
     >
       <Trash2 class="delete-icon" />
@@ -110,7 +110,8 @@ const labelStyles = computed(() => ({
   userSelect: 'none'
 }));
 
-function selectComponent() {
+function selectComponent(event: Event) {
+  event.stopPropagation();
   emit('select', props.component);
 }
 

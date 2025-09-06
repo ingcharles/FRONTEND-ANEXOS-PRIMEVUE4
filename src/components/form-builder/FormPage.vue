@@ -67,6 +67,21 @@
               @resize="handleChildResize"
               @add-child="addChildComponent"
             />
+            
+            <!-- Renderizar el panel directamente si es un panel sin hijos -->
+            <FormComponentRenderer
+              v-if="child.type === 'panel' && !hasChildComponents(child)"
+              :key="child.id"
+              :component="child"
+              :is-selected="selectedChildId === child.id"
+              @select="selectChild"
+              @update="updateChild"
+              @delete="deleteChild"
+              @drag-start="handleChildDragStart"
+              @drag-end="handleChildDragEnd"
+              @resize="handleChildResize"
+              @add-child="addChildComponent"
+            />
           </div>
         </div>
       </div>
@@ -135,6 +150,21 @@
                 @resize="handleChildResize"
                 @add-child="addChildComponent"
               />
+              
+              <!-- Renderizar el panel directamente si es un panel sin hijos -->
+              <FormComponentRenderer
+                v-if="child.type === 'panel' && !hasChildComponents(child)"
+                :key="child.id"
+                :component="child"
+                :is-selected="selectedChildId === child.id"
+                @select="selectChild"
+                @update="updateChild"
+                @delete="deleteChild"
+                @drag-start="handleChildDragStart"
+                @drag-end="handleChildDragEnd"
+                @resize="handleChildResize"
+                @add-child="addChildComponent"
+              />
             </div>
           </div>
         </div>
@@ -154,7 +184,7 @@
     <button 
       v-if="isSelected"
       class="delete-button"
-      @click="deleteComponent"
+      @click.stop="deleteComponent"
       title="Eliminar componente"
     >
       <Trash2 class="delete-icon" />
@@ -266,14 +296,22 @@ const canGoNext = computed(() => {
   return false;
 });
 
-function selectComponent() {
+function selectComponent(event: Event) {
+  // Solo bloquear propagación si se hace clic en la página misma, no en sus hijos
+  const target = event.target as HTMLElement;
+  const isClickOnChild = target.closest('.form-text-component, .form-label-component, .form-combobox-component, .form-table-component, .form-button-component, .form-panel-component');
+  
+  if (!isClickOnChild) {
+    event.stopPropagation();
+  }
+  
   emit('select', props.component);
   selectedChildId.value = null;
 }
 
 function selectChild(child: FormComponent) {
   selectedChildId.value = child.id;
-  emit('select', props.component);
+  emit('select', child);
 }
 
 function updateChild(child: FormComponent) {

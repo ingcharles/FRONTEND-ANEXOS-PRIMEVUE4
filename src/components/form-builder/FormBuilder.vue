@@ -59,10 +59,25 @@ function selectComponent(component: FormComponent | null) {
 }
 
 function updateComponent(component: FormComponent) {
-  const index = formComponents.value.findIndex(c => c.id === component.id);
-  if (index !== -1) {
-    formComponents.value[index] = component;
+  // Función recursiva para encontrar y actualizar un componente en cualquier nivel
+  function updateComponentRecursive(components: FormComponent[], targetId: string, updatedComponent: FormComponent): boolean {
+    for (let i = 0; i < components.length; i++) {
+      if (components[i].id === targetId) {
+        components[i] = updatedComponent;
+        return true;
+      }
+      
+      // Si el componente tiene hijos, buscar recursivamente
+      if ('children' in components[i] && components[i].children) {
+        if (updateComponentRecursive(components[i].children, targetId, updatedComponent)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
+  
+  updateComponentRecursive(formComponents.value, component.id, component);
 }
 
 function updateComponents(components: FormComponent[]) {
@@ -75,7 +90,25 @@ function addComponent(component: FormComponent) {
 }
 
 function removeComponent(componentId: string) {
-  formComponents.value = formComponents.value.filter(c => c.id !== componentId);
+  // Función recursiva para encontrar y eliminar un componente en cualquier nivel
+  function removeComponentRecursive(components: FormComponent[], targetId: string): boolean {
+    for (let i = 0; i < components.length; i++) {
+      if (components[i].id === targetId) {
+        components.splice(i, 1);
+        return true;
+      }
+      
+      // Si el componente tiene hijos, buscar recursivamente
+      if ('children' in components[i] && components[i].children) {
+        if (removeComponentRecursive(components[i].children, targetId)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  
+  removeComponentRecursive(formComponents.value, componentId);
   
   // Limpiar lógica y validaciones del componente eliminado
   formLogic.value = formLogic.value.filter(l => l.componentId !== componentId);

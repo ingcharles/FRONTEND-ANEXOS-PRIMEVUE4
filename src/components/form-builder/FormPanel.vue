@@ -51,6 +51,7 @@
           :is-selected="selectedChildId === child.id"
           @select="selectChild"
           @update="updateChild"
+          @delete="deleteChild"
           @drag-start="handleChildDragStart"
           @drag-end="handleChildDragEnd"
           @resize="handleChildResize"
@@ -61,7 +62,7 @@
     <button 
       v-if="isSelected"
       class="delete-button"
-      @click="deleteComponent"
+      @click.stop="deleteComponent"
       title="Eliminar componente"
     >
       <Trash2 class="delete-icon" />
@@ -168,14 +169,22 @@ const buttonStyles = computed(() => ({
   color: props.component.color || '#495057'
 }));
 
-function selectComponent() {
+function selectComponent(event: Event) {
+  // Solo bloquear propagación si se hace clic en el panel mismo, no en sus hijos
+  const target = event.target as HTMLElement;
+  const isClickOnChild = target.closest('.form-text-component, .form-label-component, .form-combobox-component, .form-table-component, .form-button-component');
+  
+  if (!isClickOnChild) {
+    event.stopPropagation();
+  }
+  
   emit('select', props.component);
   selectedChildId.value = null;
 }
 
 function selectChild(child: FormComponent) {
   selectedChildId.value = child.id;
-  emit('select', props.component);
+  emit('select', child);
 }
 
 function toggleCollapse() {
@@ -191,6 +200,17 @@ function updateChild(child: FormComponent) {
   const updatedChildren = currentChildren.map(c => 
     c.id === child.id ? child : c
   );
+  
+  const updatedComponent = {
+    ...props.component,
+    children: updatedChildren
+  };
+  emit('update', updatedComponent);
+}
+
+function deleteChild(child: FormComponent) {
+  const currentChildren = props.component.children || [];
+  const updatedChildren = currentChildren.filter(c => c.id !== child.id);
   
   const updatedComponent = {
     ...props.component,
