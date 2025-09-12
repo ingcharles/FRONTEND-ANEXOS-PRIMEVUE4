@@ -71,7 +71,17 @@ export const useDesignerStore = defineStore('designer', () => {
     function actualizarEnLista(lista: FieldSchema[]): boolean {
       const idx = lista.findIndex((f) => f.id === id)
       if (idx >= 0) {
-        lista[idx] = { ...lista[idx], ...clonarProfundo(cambios) }
+        const actual = lista[idx]
+        const next = { ...actual, ...clonarProfundo(cambios) } as FieldSchema
+        // Solo 'panel' puede tener children; si no es panel, ignorar children en cambios
+        if (next.type !== 'panel' && 'children' in (cambios as Record<string, unknown>)) {
+          delete (next as Partial<FieldSchema>).children
+        }
+        // Asegurar children como arreglo en panel
+        if (next.type === 'panel' && !Array.isArray(next.children)) {
+          next.children = Array.isArray(actual.children) ? actual.children : []
+        }
+        lista[idx] = next
         return true
       }
       for (const f of lista) {
@@ -88,7 +98,12 @@ export const useDesignerStore = defineStore('designer', () => {
     function duplicarEnLista(lista: FieldSchema[]): boolean {
       const idx = lista.findIndex((f) => f.id === id)
       if (idx !== -1) {
-        const copia = duplicarConNuevosIds(lista[idx], () => generarId('field'))
+        const original = lista[idx]
+        const copia = duplicarConNuevosIds(original, () => generarId('field'))
+        // Solo panel puede conservar children; para otros tipos, eliminar children si existiera
+        if (copia.type !== 'panel' && 'children' in copia) {
+          delete (copia as Partial<FieldSchema>).children
+        }
         lista.splice(idx + 1, 0, copia)
         seleccionarCampo(copia.id)
         return true

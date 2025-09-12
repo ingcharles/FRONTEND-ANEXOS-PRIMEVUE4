@@ -35,7 +35,9 @@ function clonarDesdePaleta(item: PaletteItem): FieldSchema {
     grid: { sm: 12, md: 6, lg: 6 },
     visible: true,
     required: false,
-    ...item.defaultProps,
+    ...(item.defaultProps || {}),
+    // Solo el tipo panel lleva children; para otros, forzamos children undefined
+    ...(item.type === 'panel' ? {} : { children: undefined }),
   }
 }
 </script>

@@ -19,11 +19,13 @@ watch(
 )
 
 function sincronizar(): void {
+  // Panel es el único que puede tener hijos
   store.actualizarCampo(props.field.id, { children: [...lista.value] })
 }
 
 async function manejarAdd(evt: { newIndex: number }) {
   // Seleccionar el hijo recién añadido (desde paleta u otro contenedor)
+  if (props.field.type !== 'panel') return
   const idx = evt.newIndex
   await nextTick()
   const arr = lista.value
