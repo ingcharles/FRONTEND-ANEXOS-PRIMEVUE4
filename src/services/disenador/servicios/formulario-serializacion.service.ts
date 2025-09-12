@@ -9,6 +9,11 @@ export class FormularioSerializacionService {
    * Serializa un esquema de formulario a JSON
    */
   static serializar(formulario: FormSchema): string {
+    // Validar que el formulario no sea null o undefined
+    if (!formulario) {
+      throw new Error('El formulario no puede estar vacío')
+    }
+
     try {
       // Crear una copia profunda del formulario
       const formularioLimpio = this.limpiarEsquema(formulario)
@@ -32,8 +37,9 @@ export class FormularioSerializacionService {
 
       // Normalizar el esquema
       return this.normalizarEsquema(formulario)
-    } catch (error) {
-      console.error('Error al deserializar formulario:', error)
+    } catch {
+      // Para cualquier error (parsing JSON o validación de estructura)
+      // lanzar un mensaje genérico
       throw new Error('El JSON del formulario no es válido')
     }
   }
@@ -199,11 +205,23 @@ export class FormularioSerializacionService {
    * Limpia el esquema antes de la serialización
    */
   private static limpiarEsquema(formulario: FormSchema): FormSchema {
+    // Validar que el formulario no sea null o undefined
+    if (!formulario) {
+      throw new Error('El formulario no puede estar vacío')
+    }
+
+    // Validar que tenga la estructura mínima
+    if (!formulario.pages || !Array.isArray(formulario.pages)) {
+      throw new Error('El formulario debe tener un array de páginas')
+    }
+
     const formularioLimpio = JSON.parse(JSON.stringify(formulario)) as FormSchema
 
     // Limpiar campos en cada página
     formularioLimpio.pages.forEach(page => {
-      page.fields = this.limpiarCampos(page.fields)
+      if (page.fields && Array.isArray(page.fields)) {
+        page.fields = this.limpiarCampos(page.fields)
+      }
     })
 
     return formularioLimpio

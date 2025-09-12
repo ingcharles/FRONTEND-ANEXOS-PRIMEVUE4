@@ -114,7 +114,7 @@ describe('FormularioSerializacionService', () => {
 
       expect(() => {
         FormularioSerializacionService.serializar(formularioInvalido)
-      }).toThrow('No se pudo serializar el formulario')
+      }).toThrow('El formulario no puede estar vacío')
     })
   })
 
