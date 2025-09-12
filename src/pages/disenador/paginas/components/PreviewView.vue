@@ -10,22 +10,53 @@ const paginaIndex = ref(0)
 const paginaActual = computed(() => store.formSchema.pages[paginaIndex.value])
 const campos = computed<FieldSchema[]>(() => paginaActual.value.fields)
 
+function clasesColumna(f: FieldSchema): string[] {
+  const sm = f.grid?.sm ?? 12
+  const md = f.grid?.md ?? 6
+  const lg = f.grid?.lg ?? 6
+  return [
+    `col-${Math.min(12, Math.max(1, sm))}`,
+    `md:col-${Math.min(12, Math.max(1, md))}`,
+    `lg:col-${Math.min(12, Math.max(1, lg))}`,
+    'p-2',
+  ]
+}
+
+function construirMapaIdNombre(list: FieldSchema[]): Record<string, string> {
+  const map: Record<string, string> = {}
+  const stack: FieldSchema[] = [...list]
+  while (stack.length) {
+    const f = stack.shift()!
+    if (f.id && f.name) map[f.id] = f.name
+    if (f.children && f.children.length) stack.push(...f.children)
+  }
+  return map
+}
+
+const idAName = computed(() => construirMapaIdNombre(campos.value))
+
 // construir zod schema dinámico
+function recolectarCamposConNombre(list: FieldSchema[], out: FieldSchema[] = []): FieldSchema[] {
+  for (const f of list) {
+    if (f.name) out.push(f)
+    if (f.children && f.children.length) recolectarCamposConNombre(f.children, out)
+  }
+  return out
+}
+
 function crearSchema(): z.ZodObject<Record<string, z.ZodTypeAny>> {
   const shape: Record<string, z.ZodTypeAny> = {}
-  for (const f of campos.value) {
-    if (!f.name) continue
+  const todos = recolectarCamposConNombre(campos.value, [])
+  for (const f of todos) {
     let base: z.ZodTypeAny = z.any()
     if (f.type === 'text' || f.type === 'email' || f.type === 'password' || f.type === 'textarea') base = z.string()
     if (f.type === 'time') base = z.any()
     if (f.type === 'radio' || f.type === 'select') base = z.any()
 
-    // Aplicar lógica para required dinámico
-    const idAName: Record<string, string> = {}
-    for (const c of campos.value) if (c.id && c.name) idAName[c.id] = c.name
-    const estado = EvaluarReglasCampo(f, valores, idAName)
-  const esRequerido = estado.required
-  if (esRequerido) base = base.refine((v: unknown) => (typeof v === 'string' ? v.trim().length > 0 : v != null), f.validations?.find(v=>v.type==='required')?.message || 'Requerido')
+    // Aplicar lógica para required dinámico (usa mapa global id->name)
+    const estado = EvaluarReglasCampo(f, valores, idAName.value)
+    const esRequerido = estado.required
+    if (esRequerido) base = base.refine((v: unknown) => (typeof v === 'string' ? v.trim().length > 0 : v != null), f.validations?.find(v=>v.type==='required')?.message || 'Requerido')
     for (const v of f.validations || []) {
       if (v.type === 'minLength') base = (base as z.ZodString).min(Number(v.value || 0), v.message)
       if (v.type === 'maxLength') base = (base as z.ZodString).max(Number(v.value || 9999), v.message)
@@ -39,7 +70,7 @@ function crearSchema(): z.ZodObject<Record<string, z.ZodTypeAny>> {
         } catch { /* noop */ }
       }
     }
-    shape[f.name] = base
+    shape[f.name!] = base
   }
   return z.object(shape)
 }
@@ -75,7 +106,7 @@ function enviar(): void {
     </div>
     <form class="grid" @submit.prevent="enviar">
       <template v-for="f in campos" :key="f.id">
-        <div class="col-12 md:col-6 lg:col-6 p-2" v-if="EvaluarReglasCampo(f, valores, Object.fromEntries(campos.map(c=>[c.id, c.name||''] as const))).visible">
+        <div :class="clasesColumna(f)" v-if="EvaluarReglasCampo(f, valores, idAName).visible">
           <label v-if="f.label" class="block mb-1">{{ f.label }}</label>
           <PrimeInputText v-if="f.type==='text' || f.type==='email' || f.type==='password'" v-model="(valores as any)[f.name||'']" :placeholder="f.placeholder" class="w-full" />
           <PrimeTextarea v-else-if="f.type==='textarea'" v-model="(valores as any)[f.name||'']" :placeholder="f.placeholder" class="w-full" />
@@ -89,6 +120,27 @@ function enviar(): void {
             </label>
           </div>
           <PrimeButton v-else-if="f.type==='button' && paginaIndex>=store.formSchema.pages.length-1" :label="f.label || 'Enviar'" type="submit" />
+          <!-- Panel: renderizar hijos respetando grid -->
+          <PrimePanel v-else-if="f.type==='panel'" :header="f.label || 'Panel'">
+            <div class="grid">
+              <template v-for="ch in (f.children||[])" :key="ch.id">
+                <div :class="clasesColumna(ch)" v-if="EvaluarReglasCampo(ch, valores, idAName).visible">
+                  <label v-if="ch.label" class="block mb-1">{{ ch.label }}</label>
+                  <PrimeInputText v-if="ch.type==='text' || ch.type==='email' || ch.type==='password'" v-model="(valores as any)[ch.name||'']" :placeholder="ch.placeholder" class="w-full" />
+                  <PrimeTextarea v-else-if="ch.type==='textarea'" v-model="(valores as any)[ch.name||'']" :placeholder="ch.placeholder" class="w-full" />
+                  <PrimeCalendar v-else-if="ch.type==='time'" v-model="(valores as any)[ch.name||'']" time-only hour-format="24" class="w-full" />
+                  <PrimeDropdown v-else-if="ch.type==='select'" v-model="(valores as any)[ch.name||'']" :options="(ch.meta?.options as any[])||[]" option-label="label" option-value="value" class="w-full" />
+                  <PrimeDivider v-else-if="ch.type==='divider'" />
+                  <div v-else-if="ch.type==='radio'" class="flex gap-3">
+                    <label v-for="op in ((ch.meta?.options as any[])||[])" :key="op.value" class="inline-flex align-items-center gap-2">
+                      <PrimeRadioButton :inputId="String(op.value)" v-model="(valores as any)[ch.name||'']" :value="op.value" :name="ch.name" />
+                      <span>{{ op.label }}</span>
+                    </label>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </PrimePanel>
           <div v-if="f.name && errores[f.name]" class="text-red-500 mt-1">{{ errores[f.name] }}</div>
         </div>
       </template>

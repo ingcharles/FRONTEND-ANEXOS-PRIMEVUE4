@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, nextTick } from 'vue'
 import draggable from 'vuedraggable'
 import type { FieldSchema, PageSchema } from '@/types/form-schema'
 import { useDesignerStore } from '@/stores/useDesignerStore'
@@ -10,10 +10,13 @@ const store = useDesignerStore()
 
 const campos = computed<FieldSchema[]>(() => props.page.fields)
 
-function manejarAdd(evt: { newIndex: number }) {
+async function manejarAdd(evt: { newIndex: number }) {
   // cuando viene de la paleta, ya es un clon listo
   const idx = evt.newIndex
-  store.seleccionarCampo(campos.value[idx].id)
+  await nextTick()
+  const lista = props.page.fields
+  const elem = (idx != null && idx >= 0 && idx < lista.length) ? lista[idx] : lista[lista.length - 1]
+  if (elem && elem.id) store.seleccionarCampo(elem.id)
 }
 
 function clasesColumna(f: FieldSchema): string[] {

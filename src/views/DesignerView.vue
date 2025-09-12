@@ -11,6 +11,11 @@ const store = useDesignerStore()
 
 const paginaActual = store.paginaActiva
 const pestana = ref<string>('disenador')
+const tabTitles = [
+  { value: 'disenador', label: 'Diseñador', icon: 'pi pi-sitemap' },
+  { value: 'preview', label: 'Vista previa', icon: 'pi pi-eye' },
+  { value: 'json', label: 'JSON', icon: 'pi pi-code' },
+]
 </script>
 
 <template>
@@ -35,17 +40,30 @@ const pestana = ref<string>('disenador')
           <PrimeToggleButton :model-value="store.gridSnap" on-label="Grid" off-label="Grid" @update:model-value="(v:boolean)=> (store.gridSnap = v)" />
         </div>
       </div>
-      <PrimeTabs v-model:value="pestana">
-        <PrimeTabPanel value="disenador" header="Diseñador">
-          <PageCanvas :page="paginaActual" />
-        </PrimeTabPanel>
-        <PrimeTabPanel value="preview" header="Vista previa">
-          <PreviewView />
-        </PrimeTabPanel>
-        <PrimeTabPanel value="json" header="JSON">
-          <JsonView />
-        </PrimeTabPanel>
-      </PrimeTabs>
+      <Tabs v-model:value="pestana" class="center-tabs">
+        <div class="center-tabs-header">
+          <TabList>
+            <template v-for="tab in tabTitles" :key="tab.value">
+              <Tab :value="tab.value" as="div" class="flex items-center gap-2">
+                <i :class="tab.icon"></i>
+                <span class="font-bold whitespace-nowrap">{{ tab.label }}</span>
+              </Tab>
+            </template>
+          </TabList>
+        </div>
+
+        <TabPanels>
+          <TabPanel value="disenador">
+            <PageCanvas :page="paginaActual" />
+          </TabPanel>
+          <TabPanel value="preview">
+            <PreviewView />
+          </TabPanel>
+          <TabPanel value="json">
+            <JsonView />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </div>
     <div class="col-12 md:col-3">
       <PropertiesTabs />

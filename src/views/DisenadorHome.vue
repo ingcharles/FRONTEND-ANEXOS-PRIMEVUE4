@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import DesignerView from '@views/DesignerView.vue'
+import DesignerView from './DesignerView.vue'
 import PreviewView from '@pages/disenador/paginas/components/PreviewView.vue'
 import JsonView from '@pages/disenador/paginas/components/JsonView.vue'
 

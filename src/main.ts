@@ -24,6 +24,11 @@ import PrimeDialog from 'primevue/dialog'
 import PrimeToast from 'primevue/toast'
 import PrimeTabs from 'primevue/tabs'
 import PrimeTabPanel from 'primevue/tabpanel'
+import Tabs from 'primevue/tabs'
+import TabList from 'primevue/tablist'
+import Tab from 'primevue/tab'
+import TabPanels from 'primevue/tabpanels'
+import TabPanel from 'primevue/tabpanel'
 import PrimeMenu from 'primevue/menu'
 import PrimeMenubar from 'primevue/menubar'
 import PrimeDivider from 'primevue/divider'
@@ -86,6 +91,13 @@ app.component('PrimeDialog', PrimeDialog)
 app.component('PrimeToast', PrimeToast)
 app.component('PrimeTabs', PrimeTabs)
 app.component('PrimeTabPanel', PrimeTabPanel)
+// eslint-disable-next-line vue/multi-word-component-names
+app.component('Tabs', Tabs)
+app.component('TabList', TabList)
+// eslint-disable-next-line vue/multi-word-component-names
+app.component('Tab', Tab)
+app.component('TabPanels', TabPanels)
+app.component('TabPanel', TabPanel)
 app.component('PrimeMenu', PrimeMenu)
 app.component('PrimeMenubar', PrimeMenubar)
 app.component('PrimeDivider', PrimeDivider)
