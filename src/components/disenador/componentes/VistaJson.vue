@@ -38,7 +38,7 @@
           />
         </div>
       </div>
-      
+
       <!-- Estadísticas del formulario -->
       <div class="estadisticas-formulario mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="estadistica bg-blue-50 p-3 rounded-lg">
@@ -201,7 +201,7 @@
             class="w-full"
           />
         </div>
-        
+
         <div class="mb-4">
           <FileUpload
             mode="basic"
@@ -264,15 +264,15 @@ const errorImportacion = ref('')
 const jsonFormateado = ref(true)
 
 // Computed - Estadísticas
-const totalCampos = computed(() => 
+const totalCampos = computed(() =>
   store.currentForm.pages.reduce((total, pagina) => total + pagina.fields.length, 0)
 )
 
 const totalPaginas = computed(() => store.currentForm.pages.length)
 
-const totalValidaciones = computed(() => 
-  store.currentForm.pages.reduce((total, pagina) => 
-    total + pagina.fields.reduce((subtotal, campo) => 
+const totalValidaciones = computed(() =>
+  store.currentForm.pages.reduce((total, pagina) =>
+    total + pagina.fields.reduce((subtotal, campo) =>
       subtotal + (campo.validations?.length || 0), 0), 0)
 )
 
@@ -287,7 +287,7 @@ const tamanosJSON = computed(() => {
 })
 
 // Computed - JSON outputs
-const jsonEsquemaCompleto = computed(() => 
+const jsonEsquemaCompleto = computed(() =>
   formatJSON(store.currentForm)
 )
 
@@ -312,25 +312,25 @@ const jsonConfiguracion = computed(() => {
 
 const jsonEstructuraDatos = computed(() => {
   const estructura: Record<string, string> = {}
-  
+
   store.currentForm.pages.forEach(pagina => {
     pagina.fields.forEach(campo => {
       estructura[campo.id] = obtenerTipoDato(campo.type)
     })
   })
-  
+
   return formatJSON(estructura)
 })
 
 const jsonDatosEjemplo = computed(() => {
   const datos: Record<string, unknown> = {}
-  
+
   store.currentForm.pages.forEach(pagina => {
     pagina.fields.forEach(campo => {
       datos[campo.id] = generarValorEjemplo(campo)
     })
   })
-  
+
   return formatJSON(datos)
 })
 
@@ -365,7 +365,7 @@ function generarValorEjemplo(campo: FieldSchema): unknown {
   if (campo.defaultValue !== undefined) {
     return campo.defaultValue
   }
-  
+
   switch (campo.type) {
     case 'text':
     case 'email':
@@ -409,7 +409,7 @@ function actualizarJSON(): void {
 async function copiarJSON(): Promise<void> {
   try {
     let contenido = ''
-    
+
     switch (pestanaActiva.value) {
       case 0:
         contenido = jsonEsquemaCompleto.value
@@ -424,7 +424,7 @@ async function copiarJSON(): Promise<void> {
         contenido = jsonDatosEjemplo.value
         break
     }
-    
+
     await navigator.clipboard.writeText(contenido)
     mostrarToast('success', 'Copiado', 'JSON copiado al portapapeles')
   } catch {
@@ -435,7 +435,7 @@ async function copiarJSON(): Promise<void> {
 function descargarJSON(): void {
   let contenido = ''
   let nombreArchivo = ''
-  
+
   switch (pestanaActiva.value) {
     case 0:
       contenido = jsonEsquemaCompleto.value
@@ -454,7 +454,7 @@ function descargarJSON(): void {
       nombreArchivo = `${store.currentForm.title || 'formulario'}-datos.json`
       break
   }
-  
+
   const blob = new Blob([contenido], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
@@ -464,7 +464,7 @@ function descargarJSON(): void {
   link.click()
   document.body.removeChild(link)
   URL.revokeObjectURL(url)
-  
+
   mostrarToast('success', 'Descargado', `Archivo ${nombreArchivo} descargado`)
 }
 
@@ -488,22 +488,22 @@ function manejarArchivoJSON(event: { files: File[] }): void {
 function importarJSON(): void {
   try {
     const esquema = JSON.parse(jsonImportacion.value) as FormSchema
-    
+
     // Validar estructura básica
     if (!esquema.id || !esquema.title || !esquema.pages) {
       throw new Error('El JSON no tiene la estructura correcta de un formulario')
     }
-    
+
     // Importar usando el método del store
     const exito = store.importarJson(jsonImportacion.value)
-    
+
     if (exito) {
       cerrarDialogoImportar()
       mostrarToast('success', 'Importado', 'Esquema JSON importado correctamente')
     } else {
       throw new Error('Error al importar el esquema')
     }
-    
+
   } catch (error) {
     errorImportacion.value = error instanceof Error ? error.message : 'Error al parsear JSON'
   }
@@ -611,17 +611,17 @@ function mostrarToast(severity: string, summary: string, detail: string): void {
   .estadisticas-formulario {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .barra-herramientas-json .flex {
     flex-direction: column;
     gap: 1rem;
     align-items: stretch;
   }
-  
+
   .contenido-datos {
     grid-template-columns: 1fr;
   }
-  
+
   .json-content {
     font-size: 10px;
   }

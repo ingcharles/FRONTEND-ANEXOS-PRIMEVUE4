@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { 
-  FormSchema, 
-  FieldSchema, 
+import type {
+  FormSchema,
+  FieldSchema,
   FormPage,
-  DragContext, 
-  ResizeContext, 
+  DragContext,
+  ResizeContext,
   SelectionContext,
   Position,
   Size,
@@ -355,7 +355,7 @@ export const useDisenadorStore = defineStore('disenador', () => {
       fields.splice(index, 1)
       return true
     }
-    
+
     for (const field of fields) {
       if (field.children && eliminarElementoPorId(id, field.children)) {
         return true
@@ -367,15 +367,15 @@ export const useDisenadorStore = defineStore('disenador', () => {
   function clonarElemento(elemento: FieldSchema): FieldSchema {
     const clonado = JSON.parse(JSON.stringify(elemento)) as FieldSchema
     clonado.id = generarId()
-    clonado.position = { 
-      x: elemento.position.x + 20, 
-      y: elemento.position.y + 20 
+    clonado.position = {
+      x: elemento.position.x + 20,
+      y: elemento.position.y + 20
     }
-    
+
     if (clonado.children) {
       clonado.children = clonado.children.map(child => clonarElemento(child))
     }
-    
+
     return clonado
   }
 
@@ -514,17 +514,17 @@ export const useDisenadorStore = defineStore('disenador', () => {
   function eliminarPagina(indice: number): void {
     if (currentForm.value.pages.length > 1 && indice >= 0 && indice < currentForm.value.pages.length) {
       currentForm.value.pages.splice(indice, 1)
-      
+
       // Reordenar páginas
       currentForm.value.pages.forEach((page, idx) => {
         page.order = idx + 1
       })
-      
+
       // Ajustar página actual si es necesario
       if (currentPageIndex.value >= currentForm.value.pages.length) {
         currentPageIndex.value = currentForm.value.pages.length - 1
       }
-      
+
       actualizarTimestamp()
     }
   }
@@ -542,17 +542,17 @@ export const useDisenadorStore = defineStore('disenador', () => {
   function importarJson(jsonString: string): boolean {
     try {
       const formulario = JSON.parse(jsonString) as FormSchema
-      
+
       // Validar estructura básica
       if (!formulario.id || !formulario.pages || !Array.isArray(formulario.pages)) {
         return false
       }
-      
+
       currentForm.value = formulario
       currentPageIndex.value = 0
       deseleccionarElementos()
       actualizarTimestamp()
-      
+
       return true
     } catch {
       return false
@@ -595,7 +595,7 @@ export const useDisenadorStore = defineStore('disenador', () => {
   // Funciones de drag & drop
   function iniciarArrastre(elemento: FieldSchema | PaletteItem, desdePaleta = false): void {
     let draggedElement: FieldSchema
-    
+
     if ('icon' in elemento) {
       // Es un PaletteItem
       draggedElement = crearElementoDesdeItem(elemento, { x: 0, y: 0 })
@@ -603,7 +603,7 @@ export const useDisenadorStore = defineStore('disenador', () => {
       // Es un FieldSchema
       draggedElement = elemento
     }
-    
+
     dragContext.value = {
       isDragging: true,
       draggedElement,
@@ -627,7 +627,7 @@ export const useDisenadorStore = defineStore('disenador', () => {
         moverElemento(dragContext.value.draggedElement.id, posicion)
       }
     }
-    
+
     dragContext.value = {
       isDragging: false,
       draggedFromPalette: false
@@ -651,12 +651,12 @@ export const useDisenadorStore = defineStore('disenador', () => {
     resizeContext,
     selectionContext,
     paletteItems,
-    
+
     // Computed
     currentPage,
     selectedElement,
     totalPages,
-    
+
     // Acciones
     crearElementoDesdeItem,
     agregarElemento,
@@ -677,13 +677,13 @@ export const useDisenadorStore = defineStore('disenador', () => {
     exportarJson,
     importarJson,
     limpiarFormulario,
-    
+
     // Drag & Drop
     iniciarArrastre,
     actualizarPosicionArrastre,
     finalizarArrastre,
     cancelarArrastre,
-    
+
     // Utilidades
     buscarElementoPorId,
     generarId

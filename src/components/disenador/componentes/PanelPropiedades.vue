@@ -34,7 +34,7 @@
             <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
               Etiqueta
             </label>
-            <PrimeInputText 
+            <PrimeInputText
               v-model="campoSeleccionado.label"
               class="w-full"
               placeholder="Etiqueta del campo"
@@ -47,7 +47,7 @@
             <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
               Placeholder
             </label>
-            <PrimeInputText 
+            <PrimeInputText
               v-model="campoSeleccionado.placeholder"
               class="w-full"
               placeholder="Texto de ayuda"
@@ -58,7 +58,7 @@
           <!-- Requerido -->
           <div class="field">
             <div class="flex items-center">
-              <PrimeCheckbox 
+              <PrimeCheckbox
                 v-model="campoSeleccionado.required"
                 binary
                 input-id="required"
@@ -73,7 +73,7 @@
           <!-- Visible -->
           <div class="field">
             <div class="flex items-center">
-              <PrimeCheckbox 
+              <PrimeCheckbox
                 v-model="campoSeleccionado.visible"
                 binary
                 input-id="visible"
@@ -88,7 +88,7 @@
           <!-- Disabled -->
           <div class="field">
             <div class="flex items-center">
-              <PrimeCheckbox 
+              <PrimeCheckbox
                 v-model="campoSeleccionado.disabled"
                 binary
                 input-id="disabled"
@@ -103,38 +103,38 @@
       </PrimePanel>
 
       <!-- Opciones para select/radio -->
-      <PrimePanel 
-        header="Opciones" 
-        class="mb-4" 
+      <PrimePanel
+        header="Opciones"
+        class="mb-4"
         toggleable
         v-if="tieneOpciones"
       >
         <div class="space-y-2">
-          <div 
-            v-for="(opcion, index) in campoSeleccionado.options" 
+          <div
+            v-for="(opcion, index) in campoSeleccionado.options"
             :key="index"
             class="flex items-center space-x-2"
           >
-            <PrimeInputText 
+            <PrimeInputText
               v-model="opcion.label"
               placeholder="Etiqueta"
               class="flex-1"
               @input="actualizarCampo"
             />
-            <PrimeInputText 
+            <PrimeInputText
               v-model="opcion.value"
               placeholder="Valor"
               class="flex-1"
               @input="actualizarCampo"
             />
-            <PrimeButton 
+            <PrimeButton
               icon="pi pi-trash"
               severity="danger"
               size="small"
               @click="eliminarOpcion(index)"
             />
           </div>
-          <PrimeButton 
+          <PrimeButton
             icon="pi pi-plus"
             label="Agregar opción"
             size="small"
@@ -147,7 +147,7 @@
       <!-- Acciones del campo -->
       <div class="mt-6 pt-4 border-t border-gray-200">
         <div class="flex space-x-2">
-          <PrimeButton 
+          <PrimeButton
             label="Duplicar"
             icon="pi pi-copy"
             size="small"
@@ -155,7 +155,7 @@
             @click="duplicarCampo"
             class="flex-1"
           />
-          <PrimeButton 
+          <PrimeButton
             label="Eliminar"
             icon="pi pi-trash"
             size="small"
@@ -197,7 +197,7 @@ const tieneOpciones = computed(() => {
 // Methods
 function tienePropiedad(propiedad: string): boolean {
   if (!campoSeleccionado.value) return false
-  
+
   const propiedadesPorTipo: Record<string, string[]> = {
     input: ['placeholder'],
     textarea: ['placeholder'],
@@ -211,7 +211,7 @@ function tienePropiedad(propiedad: string): boolean {
     date: [],
     file: []
   }
-  
+
   return propiedadesPorTipo[campoSeleccionado.value.type]?.includes(propiedad) || false
 }
 

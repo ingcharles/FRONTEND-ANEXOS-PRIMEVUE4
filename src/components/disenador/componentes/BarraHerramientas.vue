@@ -2,27 +2,27 @@
   <div class="barra-herramientas flex items-center justify-between p-3 bg-surface-0 dark:bg-surface-900 border-b border-surface-200 dark:border-surface-700">
     <!-- Grupo izquierdo: Acciones principales -->
     <div class="flex items-center space-x-2">
-      <PrimeButton 
-        icon="pi pi-file" 
-        label="Nuevo" 
+      <PrimeButton
+        icon="pi pi-file"
+        label="Nuevo"
         size="small"
         severity="secondary"
         @click="nuevoFormulario"
       />
-      
-      <PrimeButton 
-        icon="pi pi-download" 
-        label="Exportar" 
+
+      <PrimeButton
+        icon="pi pi-download"
+        label="Exportar"
         size="small"
         severity="success"
         @click="exportarFormulario"
         :disabled="!totalCampos"
       />
-      
+
       <PrimeDivider layout="vertical" />
-      
-      <PrimeButton 
-        icon="pi pi-grid" 
+
+      <PrimeButton
+        icon="pi pi-grid"
         size="small"
         severity="secondary"
         @click="alternarGrilla"
@@ -36,12 +36,12 @@
         <span class="font-medium">Campos:</span>
         <span class="ml-1">{{ totalCampos }}</span>
       </div>
-      
+
       <div class="text-sm text-surface-600 dark:text-surface-400">
         <span class="font-medium">Páginas:</span>
         <span class="ml-1">{{ totalPaginas }}</span>
       </div>
-      
+
       <div class="text-sm text-surface-600 dark:text-surface-400" v-if="campoSeleccionado">
         <span class="font-medium">Seleccionado:</span>
         <span class="ml-1 font-mono">{{ campoSeleccionado.label || campoSeleccionado.id }}</span>
@@ -50,17 +50,17 @@
 
     <!-- Grupo derecho: Acciones de vista -->
     <div class="flex items-center space-x-2">
-      <PrimeButton 
-        icon="pi pi-eye" 
-        label="Preview" 
+      <PrimeButton
+        icon="pi pi-eye"
+        label="Preview"
         size="small"
         severity="info"
         @click="alternarVistaPrevia"
       />
-      
-      <PrimeButton 
-        icon="pi pi-code" 
-        label="JSON" 
+
+      <PrimeButton
+        icon="pi pi-code"
+        label="JSON"
         size="small"
         severity="info"
         @click="alternarVistaJson"
@@ -116,7 +116,7 @@ function exportarFormulario() {
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
-    
+
     toast.add({
       severity: 'success',
       summary: 'Formulario exportado',

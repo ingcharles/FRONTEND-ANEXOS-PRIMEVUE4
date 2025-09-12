@@ -280,7 +280,7 @@ provide('handleError', manejarError)
     padding-left: 1rem;
     padding-right: 1rem;
   }
-  
+
   .footer .max-w-7xl {
     padding-left: 1rem;
     padding-right: 1rem;

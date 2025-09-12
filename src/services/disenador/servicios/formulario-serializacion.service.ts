@@ -4,7 +4,7 @@ import type { FormSchema, FieldSchema } from '@/types/disenador'
  * Servicio para serializar y deserializar esquemas de formulario
  */
 export class FormularioSerializacionService {
-  
+
   /**
    * Serializa un esquema de formulario a JSON
    */
@@ -12,7 +12,7 @@ export class FormularioSerializacionService {
     try {
       // Crear una copia profunda del formulario
       const formularioLimpio = this.limpiarEsquema(formulario)
-      
+
       return JSON.stringify(formularioLimpio, null, 2)
     } catch (error) {
       console.error('Error al serializar formulario:', error)
@@ -26,10 +26,10 @@ export class FormularioSerializacionService {
   static deserializar(jsonString: string): FormSchema {
     try {
       const formulario = JSON.parse(jsonString) as FormSchema
-      
+
       // Validar estructura básica
       this.validarEstructura(formulario)
-      
+
       // Normalizar el esquema
       return this.normalizarEsquema(formulario)
     } catch (error) {
@@ -46,15 +46,15 @@ export class FormularioSerializacionService {
       const json = this.serializar(formulario)
       const blob = new Blob([json], { type: 'application/json' })
       const url = URL.createObjectURL(blob)
-      
+
       const link = document.createElement('a')
       link.href = url
       link.download = nombreArchivo || `formulario-${formulario.id}-${new Date().toISOString().split('T')[0]}.json`
-      
+
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
-      
+
       URL.revokeObjectURL(url)
     } catch (error) {
       console.error('Error al exportar archivo:', error)
@@ -81,21 +81,21 @@ export class FormularioSerializacionService {
   static clonarElemento(elemento: FieldSchema): FieldSchema {
     try {
       const clon = JSON.parse(JSON.stringify(elemento)) as FieldSchema
-      
+
       // Generar nuevo ID
       clon.id = this.generarId()
-      
+
       // Ajustar posición para evitar superposición
       clon.position = {
         x: elemento.position.x + 20,
         y: elemento.position.y + 20
       }
-      
+
       // Clonar elementos hijos recursivamente
       if (clon.children) {
         clon.children = clon.children.map(hijo => this.clonarElemento(hijo))
       }
-      
+
       return clon
     } catch (error) {
       console.error('Error al clonar elemento:', error)
@@ -128,7 +128,7 @@ export class FormularioSerializacionService {
       if (!page.id || typeof page.id !== 'string') {
         throw new Error(`La página ${index + 1} debe tener un ID válido`)
       }
-      
+
       if (!page.fields || !Array.isArray(page.fields)) {
         throw new Error(`La página ${index + 1} debe tener un array de campos`)
       }
@@ -143,7 +143,7 @@ export class FormularioSerializacionService {
     if (typeof formulario.metadata.createdAt === 'string') {
       formulario.metadata.createdAt = new Date(formulario.metadata.createdAt)
     }
-    
+
     if (typeof formulario.metadata.updatedAt === 'string') {
       formulario.metadata.updatedAt = new Date(formulario.metadata.updatedAt)
     }
@@ -215,7 +215,7 @@ export class FormularioSerializacionService {
   private static limpiarCampos(campos: FieldSchema[]): FieldSchema[] {
     return campos.map(campo => {
       const campoLimpio = { ...campo }
-      
+
       // Eliminar propiedades de estado temporal
       delete campoLimpio.selected
       delete campoLimpio.dragging
@@ -236,7 +236,7 @@ export class FormularioSerializacionService {
   private static leerArchivo(archivo: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
-      
+
       reader.onload = (event) => {
         if (event.target?.result) {
           resolve(event.target.result as string)
@@ -244,11 +244,11 @@ export class FormularioSerializacionService {
           reject(new Error('No se pudo leer el archivo'))
         }
       }
-      
+
       reader.onerror = () => {
         reject(new Error('Error al leer el archivo'))
       }
-      
+
       reader.readAsText(archivo)
     })
   }
@@ -267,13 +267,13 @@ export class FormularioSerializacionService {
     switch (formato) {
       case 'json':
         return this.serializar(formulario)
-      
+
       case 'html':
         return this.convertirAHtml(formulario)
-      
+
       case 'vue':
         return this.convertirAVue(formulario)
-      
+
       default:
         throw new Error(`Formato no soportado: ${formato}`)
     }
@@ -308,9 +308,9 @@ export class FormularioSerializacionService {
         html += `<div class="page" data-page="${pageIndex}">
           <h2>${page.title}</h2>`
       }
-      
+
       html += this.convertirCamposAHtml(page.fields)
-      
+
       if (formulario.pages.length > 1) {
         html += '</div>'
       }
@@ -338,13 +338,13 @@ export class FormularioSerializacionService {
             <label class="field-label">${campo.label}${campo.required ? ' *' : ''}</label>
             <input type="text" class="field-input" placeholder="${campo.placeholder || ''}" ${campo.required ? 'required' : ''}>
           </div>`
-        
+
         case 'TextArea':
           return `<div class="field-group">
             <label class="field-label">${campo.label}${campo.required ? ' *' : ''}</label>
             <textarea class="field-input" rows="${campo.rows || 3}" placeholder="${campo.placeholder || ''}" ${campo.required ? 'required' : ''}></textarea>
           </div>`
-        
+
         case 'ComboBox':
           const options = campo.options?.map(opt => `<option value="${opt.value}">${opt.label}</option>`).join('') || ''
           return `<div class="field-group">
@@ -354,24 +354,24 @@ export class FormularioSerializacionService {
               ${options}
             </select>
           </div>`
-        
+
         case 'Label':
           return `<div class="field-group">
             <span class="field-label">${campo.label}</span>
           </div>`
-        
+
         case 'Button':
           return `<div class="field-group">
             <button type="button" class="form-button">${campo.label}</button>
           </div>`
-        
+
         case 'Panel':
           const children = campo.children ? this.convertirCamposAHtml(campo.children) : ''
           return `<div class="panel">
             <h3>${campo.label}</h3>
             ${children}
           </div>`
-        
+
         default:
           return `<!-- Tipo de campo no soportado: ${campo.type} -->`
       }
@@ -384,7 +384,7 @@ export class FormularioSerializacionService {
   private static convertirAVue(formulario: FormSchema): string {
     const template = this.generarTemplateVue(formulario)
     const script = this.generarScriptVue()
-    
+
     return `<template>
 ${template}
 </template>

@@ -18,11 +18,11 @@
           <TabPanel value="0" header="Diseñador">
             <LienzoDiseñador class="h-full" />
           </TabPanel>
-          
+
           <TabPanel value="1" header="Vista Previa">
             <VistaPrevia class="h-full" />
           </TabPanel>
-          
+
           <TabPanel value="2" header="JSON">
             <VistaJson class="h-full" />
           </TabPanel>
@@ -172,7 +172,7 @@ defineExpose({
   .disenador-formularios {
     flex-direction: column;
   }
-  
+
   .paleta-componentes,
   .panel-propiedades {
     width: 100%;
@@ -180,7 +180,7 @@ defineExpose({
     max-width: none;
     min-width: auto;
   }
-  
+
   .area-central {
     height: calc(100vh - 400px);
   }
@@ -191,7 +191,7 @@ defineExpose({
   .panel-propiedades {
     height: 150px;
   }
-  
+
   .area-central {
     height: calc(100vh - 300px);
   }

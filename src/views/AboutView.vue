@@ -131,7 +131,7 @@ function abrirUrl(url: string) {
           Constructor de Formularios Dinámicos
         </h1>
         <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-          Una aplicación moderna construida con Vue 3 y TypeScript que permite crear 
+          Una aplicación moderna construida con Vue 3 y TypeScript que permite crear
           formularios interactivos mediante una interfaz de arrastrar y soltar.
         </p>
         <div class="version-badge">
@@ -145,8 +145,8 @@ function abrirUrl(url: string) {
     <section class="stats-section py-16">
       <div class="max-w-6xl mx-auto px-4">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div 
-            v-for="stat in estadisticas" 
+          <div
+            v-for="stat in estadisticas"
             :key="stat.label"
             class="stat-card"
           >
@@ -173,8 +173,8 @@ function abrirUrl(url: string) {
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div 
-            v-for="tech in tecnologias" 
+          <div
+            v-for="tech in tecnologias"
             :key="tech.name"
             class="tech-card group cursor-pointer"
             @click="abrirUrl(tech.url)"
@@ -210,8 +210,8 @@ function abrirUrl(url: string) {
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div 
-            v-for="feature in caracteristicas" 
+          <div
+            v-for="feature in caracteristicas"
             :key="feature.title"
             class="feature-card"
           >
@@ -233,7 +233,7 @@ function abrirUrl(url: string) {
         <h2 class="text-3xl font-bold text-white mb-8">
           Arquitectura del Proyecto
         </h2>
-        
+
         <div class="architecture-diagram bg-gray-800 rounded-lg p-8">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Capa de Presentación -->
@@ -285,7 +285,7 @@ function abrirUrl(url: string) {
             <strong>Patrón de Diseño:</strong> Model-View-ViewModel (MVVM) con Composition API
           </p>
           <p>
-            <strong>Principios:</strong> Separación de responsabilidades, reutilización de código, 
+            <strong>Principios:</strong> Separación de responsabilidades, reutilización de código,
             tipado estricto y testing
           </p>
         </div>
@@ -569,24 +569,24 @@ function abrirUrl(url: string) {
   .hero-section {
     padding: 2rem 0;
   }
-  
+
   .hero-section h1 {
     font-size: 2rem;
   }
-  
+
   .stat-card {
     padding: 1rem;
   }
-  
+
   .tech-card {
     padding: 1rem;
   }
-  
+
   .feature-card {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .feature-icon {
     margin: 0 auto 1rem auto;
   }

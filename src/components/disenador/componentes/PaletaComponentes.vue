@@ -12,7 +12,7 @@
     <div class="p-3 border-b border-surface-200 dark:border-surface-700">
       <div class="p-input-icon-left w-full">
         <i class="pi pi-search text-surface-400"></i>
-        <InputText 
+        <InputText
           v-model="filtroTexto"
           placeholder="Buscar componentes..."
           class="w-full pl-8 bg-surface-0 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300"
@@ -23,20 +23,20 @@
 
     <!-- Categorías y componentes -->
     <div class="flex-1 overflow-y-auto">
-      <Accordion 
+      <Accordion
         v-model:activeIndex="categoriasActivas"
         multiple
         class="w-full"
       >
-        <AccordionTab 
-          v-for="categoria in categoriasFiltradas" 
+        <AccordionTab
+          v-for="categoria in categoriasFiltradas"
           :key="categoria.nombre"
           :header="categoria.titulo"
         >
           <template #headericon>
             <i :class="categoria.icono" class="mr-2 text-primary-500"></i>
           </template>
-          
+
           <div class="grid grid-cols-1 gap-2">
             <div
               v-for="item in categoria.items"
@@ -123,7 +123,7 @@ const categoriasFiltradas = computed(() => {
   const filtro = filtroTexto.value.toLowerCase()
   return categorias.value.map(categoria => ({
     ...categoria,
-    items: categoria.items.filter((item: PaletteItem) => 
+    items: categoria.items.filter((item: PaletteItem) =>
       item.label.toLowerCase().includes(filtro) ||
       item.type.toLowerCase().includes(filtro)
     )
@@ -147,21 +147,21 @@ function obtenerDescripcionComponente(tipo: FieldType): string {
     Button: 'Botón para ejecutar acciones',
     Divider: 'Separador visual entre secciones'
   }
-  
+
   return descripciones[tipo] || 'Componente del formulario'
 }
 
 function iniciarArrastre(event: DragEvent, item: PaletteItem): void {
   if (!event.dataTransfer) return
-  
+
   // Configurar datos del drag
   event.dataTransfer.setData('application/json', JSON.stringify(item))
   event.dataTransfer.effectAllowed = 'copy'
-  
+
   // Agregar clase visual
   const elemento = event.target as HTMLElement
   elemento.classList.add('arrastrando')
-  
+
   // Notificar al store
   store.iniciarArrastre(item, true)
 }
@@ -170,7 +170,7 @@ function finalizarArrastre(event: DragEvent): void {
   // Quitar clase visual
   const elemento = event.target as HTMLElement
   elemento.classList.remove('arrastrando')
-  
+
   // Si el arrastre no se completó en el lienzo, cancelar
   if (!store.dragContext.isDragging) {
     store.cancelarArrastre()
@@ -181,7 +181,7 @@ function agregarComponente(item: PaletteItem): void {
   // Agregar componente en el centro del lienzo
   const elemento = store.crearElementoDesdeItem(item, { x: 100, y: 100 })
   store.agregarElemento(elemento)
-  
+
   // Seleccionar el nuevo elemento
   store.seleccionarElemento(elemento.id)
 }
@@ -256,12 +256,12 @@ function agregarComponente(item: PaletteItem): void {
   .componente-item {
     padding: 0.75rem;
   }
-  
+
   .componente-item .flex {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .componente-item i {
     margin-bottom: 0.25rem;
   }

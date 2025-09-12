@@ -60,7 +60,7 @@ import DisenadorFormularios from '@/components/disenador/componentes/DisenadorFo
               </div>
             </div>
           </div>
-          
+
           <!-- El componente del diseñador -->
           <div class="designer-container h-screen">
             <DisenadorFormularios />
@@ -223,19 +223,19 @@ import DisenadorFormularios from '@/components/disenador/componentes/DisenadorFo
   .designer-container {
     height: 80vh;
   }
-  
+
   .hero-section {
     padding: 3rem 0;
   }
-  
+
   .hero-section h1 {
     font-size: 2.5rem;
   }
-  
+
   .hero-section p {
     font-size: 1.125rem;
   }
-  
+
   .feature-badge {
     font-size: 0.75rem;
     padding: 0.5rem 0.75rem;

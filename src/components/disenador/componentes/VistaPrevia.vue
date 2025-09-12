@@ -49,7 +49,7 @@
 
     <!-- Contenedor del formulario con viewport responsivo -->
     <div class="contenedor-viewport p-6">
-      <div 
+      <div
         class="viewport-formulario mx-auto bg-white rounded-lg shadow-sm border transition-all duration-300"
         :class="clasesViewport"
         :style="estilosViewport"
@@ -154,7 +154,7 @@
               Resultados de Validación
             </h4>
           </div>
-          
+
           <div v-if="erroresGlobales.length === 0" class="mensaje-exito">
             <div class="flex items-center p-4 bg-green-50 border border-green-200 rounded-lg">
               <i class="pi pi-check-circle text-green-500 mr-3"></i>
@@ -167,7 +167,7 @@
               <i class="pi pi-exclamation-triangle text-red-500 mr-3"></i>
               <span class="text-red-800">Se encontraron {{ erroresGlobales.length }} errores de validación.</span>
             </div>
-            
+
             <ul class="space-y-2">
               <li
                 v-for="error in erroresGlobales"
@@ -188,19 +188,19 @@
 
     <!-- Panel de datos (colapsible) -->
     <div class="panel-datos-preview fixed bottom-4 right-4 w-80 bg-white rounded-lg shadow-lg border">
-      <div 
+      <div
         class="encabezado-panel p-3 border-b cursor-pointer select-none"
         @click="panelDatosExpandido = !panelDatosExpandido"
       >
         <div class="flex items-center justify-between">
           <span class="font-medium text-gray-800">Datos del Formulario</span>
-          <i 
+          <i
             class="pi transition-transform duration-200"
             :class="panelDatosExpandido ? 'pi-chevron-down' : 'pi-chevron-up'"
           ></i>
         </div>
       </div>
-      
+
       <div v-if="panelDatosExpandido" class="contenido-panel max-h-80 overflow-auto">
         <div class="p-3">
           <pre class="text-xs bg-gray-50 p-3 rounded border overflow-auto">{{ JSON.stringify(valoresFormulario, null, 2) }}</pre>
@@ -299,7 +299,7 @@ function reiniciarFormulario(): void {
   erroresValidacion.value = {}
   mostrarResultadosValidacion.value = false
   paginaActual.value = 0
-  
+
   // Establecer valores por defecto
   const todosCampos = store.currentForm.pages.flatMap(pagina => pagina.fields)
   todosCampos.forEach(campo => {
@@ -311,12 +311,12 @@ function reiniciarFormulario(): void {
 
 function manejarCambioCampo(campoId: string, valor: unknown): void {
   valoresFormulario.value[campoId] = valor
-  
+
   // Limpiar error del campo si existe
   if (erroresValidacion.value[campoId]) {
     delete erroresValidacion.value[campoId]
   }
-  
+
   // Aplicar reglas de lógica condicional
   aplicarReglasLogica(campoId, valor)
 }
@@ -324,13 +324,13 @@ function manejarCambioCampo(campoId: string, valor: unknown): void {
 function aplicarReglasLogica(campoId: string, valor: unknown): void {
   // Buscar campos que tengan reglas de lógica que dependan de este campo
   const todosCampos = store.currentForm.pages.flatMap(pagina => pagina.fields)
-  
+
   todosCampos.forEach(campo => {
     if (campo.logic) {
       campo.logic.forEach(regla => {
         if (regla.condition.fieldId === campoId) {
           evaluarCondicion(regla.condition, valor)
-          
+
           // TODO: Implementar aplicación de reglas de lógica
           // switch (regla.type) {
           //   case 'visibleSi':
@@ -348,7 +348,7 @@ function aplicarReglasLogica(campoId: string, valor: unknown): void {
 
 function evaluarCondicion(condition: { fieldId: string; operator: string; value: string | number | boolean }, valor: unknown): boolean {
   const { operator, value: valorEsperado } = condition
-  
+
   switch (operator) {
     case '==':
       return valor === valorEsperado
@@ -375,7 +375,7 @@ function evaluarCondicion(condition: { fieldId: string; operator: string; value:
 
 function validarPaginaActual(): Record<string, string> {
   const errores: Record<string, string> = {}
-  
+
   camposPaginaActual.value.forEach(campo => {
     const valor = valoresFormulario.value[campo.id]
     const erroresCampo = validarCampo(campo, valor)
@@ -383,18 +383,18 @@ function validarPaginaActual(): Record<string, string> {
       errores[campo.id] = erroresCampo[0] // Tomar el primer error
     }
   })
-  
+
   return errores
 }
 
 function validarCampo(campo: FieldSchema, valor: unknown): string[] {
   const errores: string[] = []
-  
+
   // Validación de campo requerido
   if (campo.required && (valor === undefined || valor === null || valor === '')) {
     errores.push(`${campo.label} es requerido`)
   }
-  
+
   // Validaciones específicas por tipo
   if (valor && typeof valor === 'string') {
     // Validaciones de longitud
@@ -407,7 +407,7 @@ function validarCampo(campo: FieldSchema, valor: unknown): string[] {
         errores.push(validacionLongitud.message)
       }
     }
-    
+
     // Validación de patrón
     const validacionPatron = campo.validations?.find(r => r.type === 'pattern')
     if (validacionPatron && validacionPatron.value) {
@@ -417,17 +417,17 @@ function validarCampo(campo: FieldSchema, valor: unknown): string[] {
       }
     }
   }
-  
+
   return errores
 }
 
 function validarFormulario(): void {
   // Validar todas las páginas
   const errores: Record<string, string> = {}
-  
+
   // Obtener todos los campos de todas las páginas
   const todosCampos = store.currentForm.pages.flatMap(pagina => pagina.fields)
-  
+
   todosCampos.forEach(campo => {
     const valor = valoresFormulario.value[campo.id]
     const erroresCampo = validarCampo(campo, valor)
@@ -435,14 +435,14 @@ function validarFormulario(): void {
       errores[campo.id] = erroresCampo[0]
     }
   })
-  
+
   erroresValidacion.value = errores
   mostrarResultadosValidacion.value = true
 }
 
 function manejarEnvio(): void {
   validarFormulario()
-  
+
   if (Object.keys(erroresValidacion.value).length === 0) {
     console.log('Formulario válido, enviando...', valoresFormulario.value)
     // Aquí se podría emitir un evento o llamar a una API
@@ -452,12 +452,12 @@ function manejarEnvio(): void {
 function clasesColumna(campo: FieldSchema): string {
   const responsive = campo.responsive
   if (!responsive) return 'col-span-12'
-  
+
   // Convertir el sistema de columnas a clases de Tailwind
   const sm = responsive.sm || 12
   const md = responsive.md || responsive.sm || 12
   const lg = responsive.lg || responsive.md || responsive.sm || 12
-  
+
   return `col-span-${sm} md:col-span-${md} lg:col-span-${lg}`
 }
 
@@ -530,17 +530,17 @@ inicializarFormulario()
   .contenedor-viewport {
     padding: 1rem;
   }
-  
+
   .panel-datos-preview {
     width: calc(100vw - 2rem);
     left: 1rem;
     right: 1rem;
   }
-  
+
   .barra-herramientas-preview {
     padding: 1rem;
   }
-  
+
   .barra-herramientas-preview .flex {
     flex-direction: column;
     gap: 1rem;

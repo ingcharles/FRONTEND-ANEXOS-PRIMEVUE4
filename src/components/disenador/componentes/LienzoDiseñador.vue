@@ -1,14 +1,14 @@
 <template>
   <div class="lienzo-disenador h-full relative overflow-auto bg-surface-100 dark:bg-surface-950">
     <!-- Grilla de fondo -->
-    <div 
+    <div
       v-if="store.currentForm.settings.showGrid"
       class="grilla-fondo absolute inset-0 pointer-events-none"
       :style="estilosGrilla"
     ></div>
 
     <!-- Contenedor principal del formulario -->
-    <div 
+    <div
       class="contenedor-formulario relative min-h-full p-4"
       @drop="manejarDrop"
       @dragover="manejarDragOver"
@@ -53,13 +53,13 @@
       </div>
 
       <!-- Área de diseño principal -->
-      <div 
+      <div
         class="area-diseno relative bg-white rounded-lg border min-h-96 p-4"
         :class="{ 'drop-zone-active': estaArrastrando }"
         @click.stop="manejarClickArea"
       >
         <!-- Marcador de zona de drop -->
-        <div 
+        <div
           v-if="estaArrastrando && !hayElementos"
           class="marcador-drop-zone flex items-center justify-center h-full border-2 border-dashed border-blue-400 rounded-lg"
         >
@@ -172,7 +172,7 @@ const estilosGrilla = computed(() => {
 
 const estilosIndicadorPosicion = computed(() => {
   if (!posicionPreview.value || !store.dragContext.draggedElement) return {}
-  
+
   const element = store.dragContext.draggedElement
   return {
     left: `${posicionPreview.value.x}px`,
@@ -186,14 +186,14 @@ const estilosIndicadorPosicion = computed(() => {
 function manejarDragOver(event: DragEvent): void {
   event.preventDefault()
   event.dataTransfer!.dropEffect = 'copy'
-  
+
   // Actualizar posición de preview
   const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
   const position = {
     x: event.clientX - rect.left,
     y: event.clientY - rect.top
   }
-  
+
   if (store.currentForm.settings.snapToGrid) {
     posicionPreview.value = snapPositionToGrid(position)
   } else {
@@ -211,7 +211,7 @@ function manejarDragLeave(event: DragEvent): void {
   const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
   const x = event.clientX
   const y = event.clientY
-  
+
   if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
     estaArrastrando.value = false
     posicionPreview.value = null
@@ -222,32 +222,32 @@ function manejarDrop(event: DragEvent): void {
   event.preventDefault()
   estaArrastrando.value = false
   posicionPreview.value = null
-  
+
   try {
     const data = event.dataTransfer?.getData('application/json')
     if (!data) return
-    
+
     const item = JSON.parse(data) as PaletteItem
-    
+
     // Calcular posición relativa al contenedor
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
     let position = {
       x: event.clientX - rect.left,
       y: event.clientY - rect.top
     }
-    
+
     // Aplicar snap to grid si está habilitado
     if (store.currentForm.settings.snapToGrid) {
       position = snapPositionToGrid(position)
     }
-    
+
     // Crear y agregar elemento
     const elemento = store.crearElementoDesdeItem(item, position)
     store.agregarElemento(elemento)
-    
+
     // Seleccionar el nuevo elemento
     store.seleccionarElemento(elemento.id)
-    
+
   } catch (error) {
     console.error('Error al procesar drop:', error)
   }
@@ -288,7 +288,7 @@ function manejarTeclado(event: KeyboardEvent): void {
   if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
     return
   }
-  
+
   switch (event.key) {
     case 'Delete':
     case 'Backspace':
@@ -297,26 +297,26 @@ function manejarTeclado(event: KeyboardEvent): void {
         store.eliminarElemento(store.selectedElement.id)
       }
       break
-      
+
     case 'Escape':
       event.preventDefault()
       store.deseleccionarElementos()
       break
-      
+
     case '+':
       if (event.ctrlKey || event.metaKey) {
         event.preventDefault()
         ajustarZoom(0.1)
       }
       break
-      
+
     case '-':
       if (event.ctrlKey || event.metaKey) {
         event.preventDefault()
         ajustarZoom(-0.1)
       }
       break
-      
+
     case '0':
       if (event.ctrlKey || event.metaKey) {
         event.preventDefault()
@@ -393,17 +393,17 @@ onUnmounted(() => {
   .contenedor-formulario {
     padding: 1rem;
   }
-  
+
   .herramientas-flotantes {
     bottom: 1rem;
     right: 1rem;
   }
-  
+
   .controles-zoom,
   .controles-grilla {
     padding: 0.5rem;
   }
-  
+
   .informacion-formulario {
     margin-bottom: 1rem;
     padding: 1rem;

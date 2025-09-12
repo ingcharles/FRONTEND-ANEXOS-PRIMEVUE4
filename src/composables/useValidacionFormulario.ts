@@ -133,7 +133,7 @@ export function useValidacionFormulario() {
     try {
       const esquema = crearEsquemaZod([campo])
       esquema.parse({ [campo.id]: valor })
-      
+
       // Validaciones de lógica condicional
       const erroresLogica = validarLogicaCampo(campo, valor, {})
       erroresCampo.push(...erroresLogica)
@@ -237,7 +237,7 @@ export function useValidacionFormulario() {
           if (campo.visible && campo.type !== 'label' && campo.type !== 'divider' && campo.type !== 'panel') {
             const valor = valores[campo.id]
             const resultado = validarCampo(campo, valor)
-            
+
             // Agregar validaciones de lógica
             const erroresLogica = validarLogicaCampo(campo, valor, valores)
             resultado.errors.push(...erroresLogica)

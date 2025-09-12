@@ -1,5 +1,5 @@
 // Tipos base para el diseñador de formularios
-export type FieldType = 
+export type FieldType =
   | 'text'
   | 'email'
   | 'password'
@@ -26,7 +26,7 @@ export type ResponsiveSize = 'sm' | 'md' | 'lg'
 
 export interface ResponsiveConfig {
   sm: number // 1-12 columnas
-  md: number // 1-12 columnas  
+  md: number // 1-12 columnas
   lg: number // 1-12 columnas
 }
 
@@ -91,74 +91,74 @@ export interface FieldSchema {
   visible: boolean
   disabled: boolean
   readonly: boolean
-  
+
   // Posicionamiento y tamaño
   position: Position
   size: Size
   responsive: ResponsiveConfig
   minWidth?: number
   maxWidth?: number
-  
+
   // Valor por defecto
   defaultValue?: string | number | boolean | string[] | number[]
   value?: string | number | boolean | string[] | number[]
-  
+
   // Configuración específica por tipo
   rows?: number // Para TextArea
   options?: ComboOption[] // Para ComboBox, RadioGroup
   apiConfig?: ComboApiConfig // Para ComboBox con API
-  
+
   // Para Table
   columns?: TableColumn[]
   defaultRows?: Record<string, string | number | boolean>[]
   allowAddRows?: boolean
   allowDeleteRows?: boolean
-  
+
   // Para Panel (contenedor)
   children?: FieldSchema[]
   nestingLevel?: number // 1, 2, 3...
-  
+
   // Validaciones y lógica
   validations: ValidationRule[]
   logic: LogicRule[]
-  
+
   // Texto de ayuda
   helpText?: string
-  
+
   // Propiedades específicas por tipo de campo
   properties?: {
     // Para textarea
     rows?: number
-    
+
     // Para radio e inline
     inline?: boolean
-    
+
     // Para archivos
     multiple?: boolean
     accept?: string
     maxFileSize?: number
-    
+
     // Para separadores
     orientation?: 'horizontal' | 'vertical'
-    
+
     // Para contenido HTML
     content?: string
-    
+
     // Para espaciadores
     height?: number
-    
+
     // Para botones
     severity?: 'primary' | 'secondary' | 'success' | 'info' | 'warning' | 'danger'
-    
+
     // Clase CSS personalizada
     customClass?: string
   }
-  
+
   // Metadatos del diseñador
   selected?: boolean
   dragging?: boolean
   resizing?: boolean
-  
+
   // Configuración de estilo
   cssClasses?: string[]
   customStyles?: Record<string, string>

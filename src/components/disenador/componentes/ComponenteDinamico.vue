@@ -235,7 +235,7 @@ const emit = defineEmits<{
 const valorInterno = ref<unknown>(props.modelValue ?? props.elemento.defaultValue ?? '')
 
 // Computed
-const mostrarLabel = computed(() => 
+const mostrarLabel = computed(() =>
   props.elemento.label && !['button', 'submit', 'reset', 'checkbox'].includes(props.elemento.type)
 )
 
@@ -243,7 +243,7 @@ const opciones = computed((): ComboOption[] => {
   if (props.elemento.options) {
     return props.elemento.options
   }
-  
+
   // Opciones por defecto para algunos tipos
   if (props.elemento.type === 'radio' || props.elemento.type === 'select') {
     return [
@@ -252,7 +252,7 @@ const opciones = computed((): ComboOption[] => {
       { value: 'opcion3', label: 'Opción 3' }
     ]
   }
-  
+
   return []
 })
 
@@ -274,15 +274,15 @@ const clasesContenedor = computed(() => ({
 
 const clasesCampo = computed(() => {
   const clases = ['w-full']
-  
+
   if (props.elemento.properties?.customClass) {
     clases.push(props.elemento.properties.customClass)
   }
-  
+
   if (props.errorMensaje) {
     clases.push('p-invalid')
   }
-  
+
   return clases
 })
 
@@ -302,7 +302,7 @@ function manejarInput(event: Event | unknown): void {
 
   if (event instanceof Event) {
     const target = event.target as HTMLInputElement
-    
+
     switch (props.elemento.type) {
       case 'checkbox':
         valor = target.checked
@@ -320,7 +320,7 @@ function manejarInput(event: Event | unknown): void {
     // Para componentes PrimeVue que emiten el valor directamente
     valor = event
   }
-  
+
   valorInterno.value = valor
 }
 
@@ -471,11 +471,11 @@ if (props.modelValue !== undefined) {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .etiqueta-campo {
     font-size: 0.8rem;
   }
-  
+
   .componente-dinamico {
     gap: 0.125rem;
   }

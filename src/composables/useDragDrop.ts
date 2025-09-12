@@ -68,7 +68,7 @@ export function useDragDrop() {
 
   function snapPositionToGrid(position: Position): Position {
     if (!snapToGrid.value) return position
-    
+
     return {
       x: Math.round(position.x / gridSize.value) * gridSize.value,
       y: Math.round(position.y / gridSize.value) * gridSize.value
@@ -79,7 +79,7 @@ export function useDragDrop() {
     const rect = element.getBoundingClientRect()
     const container = element.offsetParent as HTMLElement
     const containerRect = container?.getBoundingClientRect() || { left: 0, top: 0 }
-    
+
     return {
       x: rect.left - containerRect.left,
       y: rect.top - containerRect.top
@@ -99,10 +99,10 @@ export function useDragDrop() {
   // Drag functionality
   function iniciarArrastre(event: MouseEvent | TouchEvent, element: HTMLElement, onDragStart?: (position: Position) => void): void {
     event.preventDefault()
-    
+
     const position = getEventPosition(event)
     const elementRect = element.getBoundingClientRect()
-    
+
     dragState.isDragging = true
     dragState.startPosition = position
     dragState.currentPosition = position
@@ -142,7 +142,7 @@ export function useDragDrop() {
     if (!dragState.isDragging || !dragState.element) return
 
     event.preventDefault()
-    
+
     // For touch events, ensure we're tracking the correct touch
     if ('touches' in event && touchSupport.touchIdentifier !== undefined) {
       const touch = Array.from(event.touches).find(t => t.identifier === touchSupport.touchIdentifier)
@@ -170,7 +170,7 @@ export function useDragDrop() {
     // Remove dragging class and reset z-index
     element.classList.remove('dragging')
     element.style.zIndex = ''
-    
+
     // Clean up event listeners
     if (touchSupport.isTouchDevice) {
       document.removeEventListener('touchmove', manejarMovimientoArrastre)
@@ -198,14 +198,14 @@ export function useDragDrop() {
     if (!dragState.isDragging || !dragState.element) return
 
     const element = dragState.element
-    
+
     // Restore original position
     setElementPosition(element, dragState.startPosition)
-    
+
     // Clean up
     element.classList.remove('dragging')
     element.style.zIndex = ''
-    
+
     // Remove event listeners
     if (touchSupport.isTouchDevice) {
       document.removeEventListener('touchmove', manejarMovimientoArrastre)
@@ -226,8 +226,8 @@ export function useDragDrop() {
 
   // Resize functionality
   function iniciarRedimensionamiento(
-    event: MouseEvent | TouchEvent, 
-    element: HTMLElement, 
+    event: MouseEvent | TouchEvent,
+    element: HTMLElement,
     handle: string,
     onResizeStart?: (size: Size) => void
   ): void {
@@ -284,7 +284,7 @@ export function useDragDrop() {
     const deltaY = currentPosition.y - resizeState.startPosition.y
 
     const newSize = calculateNewSize(resizeState.startSize, deltaX, deltaY, resizeState.handle)
-    
+
     // Apply minimum size constraints
     newSize.width = Math.max(50, newSize.width)
     newSize.height = Math.max(30, newSize.height)
@@ -333,10 +333,10 @@ export function useDragDrop() {
     if (!resizeState.isResizing || !resizeState.element) return
 
     const element = resizeState.element
-    
+
     // Restore original size
     setElementSize(element, resizeState.startSize)
-    
+
     // Clean up
     element.classList.remove('resizing')
     document.body.style.cursor = ''
@@ -415,7 +415,7 @@ export function useDragDrop() {
   // Drop zone functionality
   function esZonaValida(event: MouseEvent | TouchEvent, validZones: HTMLElement[]): HTMLElement | null {
     const position = getEventPosition(event)
-    
+
     for (const zone of validZones) {
       const rect = zone.getBoundingClientRect()
       if (
@@ -427,7 +427,7 @@ export function useDragDrop() {
         return zone
       }
     }
-    
+
     return null
   }
 

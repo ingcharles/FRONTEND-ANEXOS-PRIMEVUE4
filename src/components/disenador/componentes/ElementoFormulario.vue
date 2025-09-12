@@ -13,7 +13,7 @@
     @mousedown="iniciarArrastre"
   >
     <!-- Contenido del elemento -->
-    <div 
+    <div
       class="contenido-elemento h-full"
       :style="estilosContenido"
     >
@@ -213,38 +213,38 @@ function manejarInput(value: unknown): void {
 // Funciones de arrastre
 function iniciarArrastre(event: MouseEvent): void {
   if (estaRedimensionando.value) return
-  
+
   event.preventDefault()
   estaArrastrando.value = true
-  
+
   posicionInicialArrastre.value = {
     x: props.elemento.position.x,
     y: props.elemento.position.y
   }
-  
+
   posicionInicialMouse.value = {
     x: event.clientX,
     y: event.clientY
   }
-  
+
   document.addEventListener('mousemove', manejarMovimientoArrastre)
   document.addEventListener('mouseup', finalizarArrastre)
-  
+
   // Seleccionar el elemento
   seleccionar()
 }
 
 function manejarMovimientoArrastre(event: MouseEvent): void {
   if (!estaArrastrando.value) return
-  
+
   const deltaX = event.clientX - posicionInicialMouse.value.x
   const deltaY = event.clientY - posicionInicialMouse.value.y
-  
+
   const nuevaPosicion = {
     x: Math.max(0, posicionInicialArrastre.value.x + deltaX),
     y: Math.max(0, posicionInicialArrastre.value.y + deltaY)
   }
-  
+
   emit('moved', props.elemento.id, nuevaPosicion)
 }
 
@@ -258,35 +258,35 @@ function finalizarArrastre(): void {
 function iniciarRedimension(event: MouseEvent, tipo: string): void {
   event.preventDefault()
   event.stopPropagation()
-  
+
   estaRedimensionando.value = true
   tipoRedimension.value = tipo
-  
+
   posicionInicialMouse.value = {
     x: event.clientX,
     y: event.clientY
   }
-  
+
   tamanosIniciales.value = {
     width: props.elemento.size?.width || 200,
     height: props.elemento.size?.height || 40
   }
-  
+
   document.addEventListener('mousemove', manejarMovimientoRedimension)
   document.addEventListener('mouseup', finalizarRedimension)
 }
 
 function manejarMovimientoRedimension(event: MouseEvent): void {
   if (!estaRedimensionando.value) return
-  
+
   const deltaX = event.clientX - posicionInicialMouse.value.x
   const deltaY = event.clientY - posicionInicialMouse.value.y
-  
+
   let nuevoAncho = tamanosIniciales.value.width
   let nuevoAlto = tamanosIniciales.value.height
   let nuevaX = props.elemento.position.x
   let nuevaY = props.elemento.position.y
-  
+
   // Aplicar cambios según el tipo de redimensionamiento
   switch (tipoRedimension.value) {
     case 'nw':
@@ -324,10 +324,10 @@ function manejarMovimientoRedimension(event: MouseEvent): void {
       nuevaX = props.elemento.position.x + (tamanosIniciales.value.width - nuevoAncho)
       break
   }
-  
+
   // Emitir cambios de tamaño
   emit('resized', props.elemento.id, { width: nuevoAncho, height: nuevoAlto })
-  
+
   // Emitir cambios de posición si es necesario
   if (nuevaX !== props.elemento.position.x || nuevaY !== props.elemento.position.y) {
     emit('moved', props.elemento.id, { x: nuevaX, y: nuevaY })
@@ -415,7 +415,7 @@ onUnmounted(() => {
     width: 12px !important;
     height: 12px !important;
   }
-  
+
   .barra-herramientas-elemento {
     font-size: 10px;
     padding: 2px 4px;

@@ -16,7 +16,7 @@
     --surface-800: #1e293b;
     --surface-900: #0f172a;
     --surface-950: #020617;
-    
+
     --primary-50: #eff6ff;
     --primary-100: #dbeafe;
     --primary-200: #bfdbfe;
@@ -28,7 +28,7 @@
     --primary-800: #1e40af;
     --primary-900: #1e3a8a;
   }
-  
+
   .dark {
     --surface-0: #0f172a;
     --surface-50: #1e293b;
@@ -43,18 +43,18 @@
     --surface-900: #ffffff;
     --surface-950: #ffffff;
   }
-  
+
   html {
     font-family: 'Inter', system-ui, sans-serif;
   }
-  
+
   body {
     margin: 0;
     padding: 0;
     background-color: var(--surface-50);
     color: var(--surface-900);
   }
-  
+
   .dark body {
     background-color: var(--surface-950);
     color: var(--surface-0);
@@ -76,7 +76,7 @@
   .bg-surface-800 { background-color: var(--surface-800); }
   .bg-surface-900 { background-color: var(--surface-900); }
   .bg-surface-950 { background-color: var(--surface-950); }
-  
+
   /* Text colors */
   .text-surface-0 { color: var(--surface-0); }
   .text-surface-100 { color: var(--surface-100); }
@@ -89,7 +89,7 @@
   .text-surface-800 { color: var(--surface-800); }
   .text-surface-900 { color: var(--surface-900); }
   .text-surface-950 { color: var(--surface-950); }
-  
+
   /* Border colors */
   .border-surface-200 { border-color: var(--surface-200); }
   .border-surface-300 { border-color: var(--surface-300); }
@@ -97,7 +97,7 @@
   .border-surface-500 { border-color: var(--surface-500); }
   .border-surface-600 { border-color: var(--surface-600); }
   .border-surface-700 { border-color: var(--surface-700); }
-  
+
   /* Primary colors */
   .bg-primary-50 { background-color: var(--primary-50); }
   .bg-primary-100 { background-color: var(--primary-100); }
@@ -109,7 +109,7 @@
   .bg-primary-700 { background-color: var(--primary-700); }
   .bg-primary-800 { background-color: var(--primary-800); }
   .bg-primary-900 { background-color: var(--primary-900); }
-  
+
   .text-primary-50 { color: var(--primary-50); }
   .text-primary-100 { color: var(--primary-100); }
   .text-primary-200 { color: var(--primary-200); }
@@ -120,14 +120,14 @@
   .text-primary-700 { color: var(--primary-700); }
   .text-primary-800 { color: var(--primary-800); }
   .text-primary-900 { color: var(--primary-900); }
-  
+
   .border-primary-200 { border-color: var(--primary-200); }
   .border-primary-300 { border-color: var(--primary-300); }
   .border-primary-400 { border-color: var(--primary-400); }
   .border-primary-500 { border-color: var(--primary-500); }
   .border-primary-600 { border-color: var(--primary-600); }
   .border-primary-700 { border-color: var(--primary-700); }
-  
+
   .ring-primary-200 { --tw-ring-color: var(--primary-200); }
   .ring-primary-800 { --tw-ring-color: var(--primary-800); }
 }
@@ -138,45 +138,45 @@
     @apply min-h-screen;
     background-color: var(--surface-50);
   }
-  
+
   .designer-toolbar {
     @apply shadow-sm border-b;
     background-color: var(--surface-0);
     border-color: var(--surface-200);
   }
-  
+
   .designer-canvas {
     @apply rounded-lg shadow-sm border;
     background-color: var(--surface-0);
     border-color: var(--surface-200);
   }
-  
+
   .form-field-item {
     @apply p-3 rounded-md hover:shadow-md transition-all duration-200 border;
     background-color: var(--surface-0);
     border-color: var(--surface-200);
   }
-  
+
   .dragging {
     @apply opacity-50 scale-95 rotate-2;
   }
-  
+
   .drop-zone-active {
     border-color: var(--primary-500);
     background-color: var(--primary-50);
   }
-  
+
   /* Estilos para las transiciones de página */
   .page-enter-active,
   .page-leave-active {
     transition: all 0.3s ease-in-out;
   }
-  
+
   .page-enter-from {
     opacity: 0;
     transform: translateX(30px);
   }
-  
+
   .page-leave-to {
     opacity: 0;
     transform: translateX(-30px);
