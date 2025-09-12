@@ -1,21 +1,24 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useDesignerStore } from '@/stores/useDesignerStore'
-import PalettePanel from './PalettePanel.vue'
-import PageCanvas from './PageCanvas.vue'
-import PropertiesTabs from './PropertiesTabs.vue'
+import PalettePanel from '@pages/disenador/paginas/components/PalettePanel.vue'
+import PageCanvas from '@pages/disenador/paginas/components/PageCanvas.vue'
+import PropertiesTabs from '@pages/disenador/paginas/components/PropertiesTabs.vue'
+import PreviewView from '@pages/disenador/paginas/components/PreviewView.vue'
+import JsonView from '@pages/disenador/paginas/components/JsonView.vue'
+import { ref } from 'vue'
 
 const store = useDesignerStore()
 
-const paginaActual = computed(() => store.paginaActiva)
+const paginaActual = store.paginaActiva
+const pestana = ref<string>('disenador')
 </script>
 
 <template>
   <div class="p-3 grid w-full" style="min-height: 70vh">
-    <div class="col-3">
+    <div class="col-12 md:col-3">
       <PalettePanel />
     </div>
-  <div class="col-12 md:col-6 w-full">
+    <div class="col-12 md:col-6">
       <div class="flex align-items-center justify-content-between mb-2">
         <div class="flex gap-2">
           <PrimeButton label="Añadir página" icon="pi pi-plus" @click="store.agregarPagina" />
@@ -32,13 +35,19 @@ const paginaActual = computed(() => store.paginaActiva)
           <PrimeToggleButton :model-value="store.gridSnap" on-label="Grid" off-label="Grid" @update:model-value="(v:boolean)=> (store.gridSnap = v)" />
         </div>
       </div>
-  <PageCanvas :page="paginaActual" />
-      <div class="flex justify-content-between mt-3">
-        <PrimeButton label="Anterior" icon="pi pi-angle-left" :disabled="store.activePageIndex===0" @click="store.activePageIndex--" />
-        <PrimeButton label="Siguiente" icon-pos="right" icon="pi pi-angle-right" :disabled="store.activePageIndex>=store.formSchema.pages.length-1" @click="store.activePageIndex++" />
-      </div>
+      <PrimeTabs v-model:value="pestana">
+        <PrimeTabPanel value="disenador" header="Diseñador">
+          <PageCanvas :page="paginaActual" />
+        </PrimeTabPanel>
+        <PrimeTabPanel value="preview" header="Vista previa">
+          <PreviewView />
+        </PrimeTabPanel>
+        <PrimeTabPanel value="json" header="JSON">
+          <JsonView />
+        </PrimeTabPanel>
+      </PrimeTabs>
     </div>
-    <div class="col-3">
+    <div class="col-12 md:col-3">
       <PropertiesTabs />
     </div>
   </div>

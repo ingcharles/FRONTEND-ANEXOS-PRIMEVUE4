@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import DesignerView from '@/pages/disenador/paginas/components/DesignerView.vue'
-import PreviewView from '@/pages/disenador/paginas/components/PreviewView.vue'
-import JsonView from '@/pages/disenador/paginas/components/JsonView.vue'
+import DesignerView from '@views/DesignerView.vue'
+import PreviewView from '@pages/disenador/paginas/components/PreviewView.vue'
+import JsonView from '@pages/disenador/paginas/components/JsonView.vue'
 
 const pestaña = ref<'designer' | 'preview' | 'json'>('designer')
 </script>

@@ -8,4 +8,4 @@ const mensaje = ref('Hola, mundo!')
     <h1>{{ mensaje }}</h1>
   </div>
 </template>
-<style scoped>  </style>
+<style scoped></style>
