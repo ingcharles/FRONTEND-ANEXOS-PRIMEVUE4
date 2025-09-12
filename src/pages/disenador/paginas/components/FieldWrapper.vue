@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FieldSchema } from '@/types/form-schema'
 import { useDesignerStore } from '@/stores/useDesignerStore'
-import { computed, ref } from 'vue'
+import { computed, defineAsyncComponent, ref } from 'vue'
 import { usarPuntoDeCorte } from '@/composables/usarPuntoDeCorte'
 
 const props = defineProps<{ field: FieldSchema; selected?: boolean }>()
@@ -97,6 +97,9 @@ function finalizarResizeTouch() {
 function seleccionar(): void {
   emit('select')
 }
+
+// Carga perezosa segura del contenedor de panel
+const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.vue'))
 </script>
 
 <template>
@@ -161,7 +164,7 @@ function seleccionar(): void {
         </div>
       </template>
       <template v-else-if="field.type==='panel'">
-        <component :is="() => import('./PanelContainer.vue')" :field="field" />
+        <AsyncPanelContainer :field="field" />
       </template>
       <template v-else>
         <em>Tipo {{ field.type }} no implementado en mock</em>

@@ -55,19 +55,24 @@ function crearSchema(): z.ZodObject<Record<string, z.ZodTypeAny>> {
 
     // Aplicar lógica para required dinámico (usa mapa global id->name)
     const estado = EvaluarReglasCampo(f, valores, idAName.value)
+    const esVisible = estado.visible
     const esRequerido = estado.required
-    if (esRequerido) base = base.refine((v: unknown) => (typeof v === 'string' ? v.trim().length > 0 : v != null), f.validations?.find(v=>v.type==='required')?.message || 'Requerido')
-    for (const v of f.validations || []) {
-      if (v.type === 'minLength') base = (base as z.ZodString).min(Number(v.value || 0), v.message)
-      if (v.type === 'maxLength') base = (base as z.ZodString).max(Number(v.value || 9999), v.message)
-      if (v.type === 'pattern' && typeof v.value === 'string') base = (base as z.ZodString).regex(new RegExp(v.value), v.message)
-      if (v.type === 'custom' && typeof v.value === 'string') {
-        try {
-          const fn = new Function('valor', `return (${v.value})`) as (valor: unknown) => boolean
-          base = base.refine((valor) => {
-            try { return !!fn(valor) } catch { return true }
-          }, v.message)
-        } catch { /* noop */ }
+    if (!esVisible) {
+      base = base.optional()
+    } else {
+      if (esRequerido) base = base.refine((v: unknown) => (typeof v === 'string' ? v.trim().length > 0 : v != null), f.validations?.find(v=>v.type==='required')?.message || 'Requerido')
+      for (const v of f.validations || []) {
+        if (v.type === 'minLength') base = (base as z.ZodString).min(Number(v.value || 0), v.message)
+        if (v.type === 'maxLength') base = (base as z.ZodString).max(Number(v.value || 9999), v.message)
+        if (v.type === 'pattern' && typeof v.value === 'string') base = (base as z.ZodString).regex(new RegExp(v.value), v.message)
+        if (v.type === 'custom' && typeof v.value === 'string') {
+          try {
+            const fn = new Function('valor', `return (${v.value})`) as (valor: unknown) => boolean
+            base = base.refine((valor) => {
+              try { return !!fn(valor) } catch { return true }
+            }, v.message)
+          } catch { /* noop */ }
+        }
       }
     }
     shape[f.name!] = base
@@ -83,6 +88,8 @@ const errores = ref<Record<string, string>>({})
 
 function enviar(): void {
   errores.value = {}
+  // Recalcular esquema por si cambió la lógica de requerido según valores actuales
+  schema.value = crearSchema()
   const res = schema.value.safeParse(valores)
   if (!res.success) {
     const map: Record<string, string> = {}
@@ -115,7 +122,7 @@ function enviar(): void {
           <PrimeDivider v-else-if="f.type==='divider'" />
           <div v-else-if="f.type==='radio'" class="flex gap-3">
             <label v-for="op in ((f.meta?.options as any[])||[])" :key="op.value" class="inline-flex align-items-center gap-2">
-              <PrimeRadioButton :inputId="String(op.value)" v-model="(valores as any)[f.name||'']" :value="op.value" :name="f.name" />
+              <PrimeRadioButton :input-id="String(op.value)" v-model="(valores as any)[f.name||'']" :value="op.value" :name="f.name" />
               <span>{{ op.label }}</span>
             </label>
           </div>
@@ -133,7 +140,7 @@ function enviar(): void {
                   <PrimeDivider v-else-if="ch.type==='divider'" />
                   <div v-else-if="ch.type==='radio'" class="flex gap-3">
                     <label v-for="op in ((ch.meta?.options as any[])||[])" :key="op.value" class="inline-flex align-items-center gap-2">
-                      <PrimeRadioButton :inputId="String(op.value)" v-model="(valores as any)[ch.name||'']" :value="op.value" :name="ch.name" />
+                      <PrimeRadioButton :input-id="String(op.value)" v-model="(valores as any)[ch.name||'']" :value="op.value" :name="ch.name" />
                       <span>{{ op.label }}</span>
                     </label>
                   </div>

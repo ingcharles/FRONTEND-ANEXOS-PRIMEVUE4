@@ -68,28 +68,55 @@ export const useDesignerStore = defineStore('designer', () => {
   }
 
   function actualizarCampo(id: string, cambios: Partial<FieldSchema>): void {
-    const page = paginaActiva.value
-    const idx = page.fields.findIndex((f) => f.id === id)
-    if (idx >= 0) page.fields[idx] = { ...page.fields[idx], ...clonarProfundo(cambios) }
+    function actualizarEnLista(lista: FieldSchema[]): boolean {
+      const idx = lista.findIndex((f) => f.id === id)
+      if (idx >= 0) {
+        lista[idx] = { ...lista[idx], ...clonarProfundo(cambios) }
+        return true
+      }
+      for (const f of lista) {
+        if (f.children && actualizarEnLista(f.children)) return true
+      }
+      return false
+    }
+    for (const page of formSchema.value.pages) {
+      if (actualizarEnLista(page.fields)) return
+    }
   }
 
   function duplicarCampo(id: string): void {
-    for (const page of formSchema.value.pages) {
-      const idx = page.fields.findIndex((f) => f.id === id)
+    function duplicarEnLista(lista: FieldSchema[]): boolean {
+      const idx = lista.findIndex((f) => f.id === id)
       if (idx !== -1) {
-        const copia = duplicarConNuevosIds(page.fields[idx], () => generarId('field'))
-        page.fields.splice(idx + 1, 0, copia)
+        const copia = duplicarConNuevosIds(lista[idx], () => generarId('field'))
+        lista.splice(idx + 1, 0, copia)
         seleccionarCampo(copia.id)
-        return
+        return true
       }
+      for (const f of lista) {
+        if (f.children && duplicarEnLista(f.children)) return true
+      }
+      return false
+    }
+    for (const page of formSchema.value.pages) {
+      if (duplicarEnLista(page.fields)) return
     }
   }
 
   function eliminarCampo(id: string): void {
-    for (const page of formSchema.value.pages) {
-      const idx = page.fields.findIndex((f) => f.id === id)
+    function eliminarEnLista(lista: FieldSchema[]): boolean {
+      const idx = lista.findIndex((f) => f.id === id)
       if (idx !== -1) {
-        page.fields.splice(idx, 1)
+        lista.splice(idx, 1)
+        return true
+      }
+      for (const f of lista) {
+        if (f.children && eliminarEnLista(f.children)) return true
+      }
+      return false
+    }
+    for (const page of formSchema.value.pages) {
+      if (eliminarEnLista(page.fields)) {
         if (selectedFieldId.value === id) selectedFieldId.value = null
         return
       }

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import draggable from 'vuedraggable'
-import { ref, watch } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import type { FieldSchema } from '@/types/form-schema'
 import FieldWrapper from './FieldWrapper.vue'
 import { useDesignerStore } from '@/stores/useDesignerStore'
@@ -21,6 +21,15 @@ watch(
 function sincronizar(): void {
   store.actualizarCampo(props.field.id, { children: [...lista.value] })
 }
+
+async function manejarAdd(evt: { newIndex: number }) {
+  // Seleccionar el hijo recién añadido (desde paleta u otro contenedor)
+  const idx = evt.newIndex
+  await nextTick()
+  const arr = lista.value
+  const elem = (idx != null && idx >= 0 && idx < arr.length) ? arr[idx] : arr[arr.length - 1]
+  if (elem?.id) store.seleccionarCampo(elem.id)
+}
 </script>
 
 <template>
@@ -32,6 +41,10 @@ function sincronizar(): void {
         :group="{ name: 'paleta', pull: true, put: true }"
         handle=".handler-mover"
         @change="sincronizar"
+        @add="manejarAdd"
+        ghost-class="drag-ghost"
+        chosen-class="drag-chosen"
+        drag-class="drag-active"
       >
         <template #item="{ element }">
           <div
@@ -46,9 +59,17 @@ function sincronizar(): void {
           </div>
         </template>
         <template #footer>
-          <div v-if="lista.length===0" class="col-12 text-600 text-center p-2">Suelta elementos aquí</div>
+          <div v-if="lista.length===0" class="col-12 text-600 text-center p-2">
+            Arrastre aquí elementos mientras esté vacío
+          </div>
         </template>
       </draggable>
     </div>
   </PrimePanel>
 </template>
+
+<style scoped>
+.drag-ghost { opacity: .5; outline: 2px dashed var(--p-primary-400); }
+.drag-chosen { outline: 2px solid var(--p-primary-500); }
+.drag-active { cursor: grabbing; }
+</style>
