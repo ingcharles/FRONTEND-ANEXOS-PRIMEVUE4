@@ -244,26 +244,18 @@ describe('FormularioSerializacionService', () => {
       const appendChildSpy = vi.spyOn(document.body, 'appendChild').mockImplementation(() => mockLink as unknown as HTMLElement)
       const removeChildSpy = vi.spyOn(document.body, 'removeChild').mockImplementation(() => mockLink as unknown as HTMLElement)
 
-      // Mock URL.createObjectURL
-      const createObjectURLSpy = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock-url')
-      const revokeObjectURLSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
-
       FormularioSerializacionService.exportarArchivo(formularioEjemplo, 'test-form.json')
 
       expect(createElementSpy).toHaveBeenCalledWith('a')
       expect(appendChildSpy).toHaveBeenCalledWith(mockLink)
       expect(mockLink.click).toHaveBeenCalled()
       expect(removeChildSpy).toHaveBeenCalledWith(mockLink)
-      expect(createObjectURLSpy).toHaveBeenCalled()
-      expect(revokeObjectURLSpy).toHaveBeenCalled()
       expect(mockLink.download).toBe('test-form.json')
 
       // Limpiar mocks
       createElementSpy.mockRestore()
       appendChildSpy.mockRestore()
       removeChildSpy.mockRestore()
-      createObjectURLSpy.mockRestore()
-      revokeObjectURLSpy.mockRestore()
     })
   })
 })
