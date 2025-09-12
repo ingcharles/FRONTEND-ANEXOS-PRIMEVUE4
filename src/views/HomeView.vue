@@ -5,25 +5,25 @@ import DisenadorFormularios from '@/components/disenador/componentes/DisenadorFo
 <template>
   <main class="home-view">
     <!-- Hero Section -->
-    <section class="hero-section bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
+    <section class="hero-section bg-gradient-to-r from-primary-600 to-purple-600 text-surface-0 py-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
           <h1 class="text-4xl md:text-6xl font-bold mb-6">
             Constructor de Formularios
           </h1>
-          <p class="text-xl md:text-2xl mb-8 text-blue-100">
+          <p class="text-xl md:text-2xl mb-8 text-primary-100">
             Crea formularios dinámicos con arrastra y suelta
           </p>
           <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
-            <div class="feature-badge bg-white bg-opacity-20 px-4 py-2 rounded-full">
+            <div class="feature-badge bg-surface-0 bg-opacity-20 px-4 py-2 rounded-full">
               <i class="pi pi-desktop mr-2"></i>
               Vue 3 + TypeScript
             </div>
-            <div class="feature-badge bg-white bg-opacity-20 px-4 py-2 rounded-full">
+            <div class="feature-badge bg-surface-0 bg-opacity-20 px-4 py-2 rounded-full">
               <i class="pi pi-palette mr-2"></i>
               PrimeVue 4
             </div>
-            <div class="feature-badge bg-white bg-opacity-20 px-4 py-2 rounded-full">
+            <div class="feature-badge bg-surface-0 bg-opacity-20 px-4 py-2 rounded-full">
               <i class="pi pi-check-circle mr-2"></i>
               Validación con Zod
             </div>
@@ -33,29 +33,29 @@ import DisenadorFormularios from '@/components/disenador/componentes/DisenadorFo
     </section>
 
     <!-- Diseñador Section -->
-    <section class="designer-section py-8">
+    <section class="designer-section py-8 bg-surface-50 dark:bg-surface-950">
       <div class="max-w-full mx-auto">
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div class="p-6 border-b border-gray-200">
+        <div class="bg-surface-0 dark:bg-surface-900 rounded-lg shadow-lg overflow-hidden border border-surface-200 dark:border-surface-700">
+          <div class="p-6 border-b border-surface-200 dark:border-surface-700">
             <div class="flex items-center justify-between">
               <div>
-                <h2 class="text-2xl font-bold text-gray-900">Diseñador de Formularios</h2>
-                <p class="text-gray-600 mt-1">
+                <h2 class="text-2xl font-bold text-surface-900 dark:text-surface-100">Diseñador de Formularios</h2>
+                <p class="text-surface-600 dark:text-surface-400 mt-1">
                   Arrastra componentes desde la paleta para crear tu formulario
                 </p>
               </div>
               <div class="flex items-center space-x-4">
                 <div class="stats-item text-center">
-                  <div class="text-2xl font-bold text-blue-600">15+</div>
-                  <div class="text-sm text-gray-500">Componentes</div>
+                  <div class="text-2xl font-bold text-primary-600">15+</div>
+                  <div class="text-sm text-surface-500 dark:text-surface-400">Componentes</div>
                 </div>
                 <div class="stats-item text-center">
                   <div class="text-2xl font-bold text-green-600">100%</div>
-                  <div class="text-sm text-gray-500">Responsive</div>
+                  <div class="text-sm text-surface-500 dark:text-surface-400">Responsive</div>
                 </div>
                 <div class="stats-item text-center">
                   <div class="text-2xl font-bold text-purple-600">∞</div>
-                  <div class="text-sm text-gray-500">Validaciones</div>
+                  <div class="text-sm text-surface-500 dark:text-surface-400">Validaciones</div>
                 </div>
               </div>
             </div>
@@ -70,32 +70,32 @@ import DisenadorFormularios from '@/components/disenador/componentes/DisenadorFo
     </section>
 
     <!-- Features Section -->
-    <section class="features-section py-16 bg-gray-50">
+    <section class="features-section py-16 bg-surface-50 dark:bg-surface-950">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
-          <h2 class="text-3xl font-bold text-gray-900 mb-4">
+          <h2 class="text-3xl font-bold text-surface-900 dark:text-surface-100 mb-4">
             Características Principales
           </h2>
-          <p class="text-lg text-gray-600">
+          <p class="text-lg text-surface-600 dark:text-surface-400">
             Todo lo que necesitas para crear formularios profesionales
           </p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <!-- Feature 1 -->
-          <div class="feature-card bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-            <div class="feature-icon w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-              <i class="pi pi-palette text-blue-600 text-xl"></i>
+          <div class="feature-card bg-surface-0 dark:bg-surface-900 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-surface-200 dark:border-surface-700">
+            <div class="feature-icon w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center mb-4">
+              <i class="pi pi-palette text-primary-600 text-xl"></i>
             </div>
-            <h3 class="text-xl font-semibold mb-2">Drag & Drop Visual</h3>
-            <p class="text-gray-600">
+            <h3 class="text-xl font-semibold mb-2 text-surface-900 dark:text-surface-100">Drag & Drop Visual</h3>
+            <p class="text-surface-600 dark:text-surface-400">
               Diseña formularios intuitivamente arrastrando componentes desde la paleta
             </p>
           </div>
 
           <!-- Feature 2 -->
-          <div class="feature-card bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-            <div class="feature-icon w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+          <div class="feature-card bg-surface-0 dark:bg-surface-900 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-surface-200 dark:border-surface-700">
+            <div class="feature-icon w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4">
               <i class="pi pi-mobile text-green-600 text-xl"></i>
             </div>
             <h3 class="text-xl font-semibold mb-2">Responsive Design</h3>

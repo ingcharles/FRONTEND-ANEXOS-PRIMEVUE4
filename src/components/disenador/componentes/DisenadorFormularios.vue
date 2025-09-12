@@ -1,14 +1,14 @@
 <template>
-  <div class="disenador-formularios h-screen flex">
+  <div class="disenador-formularios h-screen flex bg-surface-50 dark:bg-surface-950">
     <!-- Sección izquierda: Paleta de componentes -->
-    <div class="paleta-componentes w-64 bg-gray-50 border-r border-gray-200 overflow-y-auto">
+    <div class="paleta-componentes w-64 bg-surface-0 dark:bg-surface-900 border-r border-surface-200 dark:border-surface-700 overflow-y-auto">
       <PaletaComponentes />
     </div>
 
     <!-- Sección central: Diseñador/Preview/JSON -->
     <div class="area-central flex-1 flex flex-col">
       <!-- Barra de herramientas -->
-      <div class="barra-herramientas bg-white border-b border-gray-200 p-3">
+      <div class="barra-herramientas bg-surface-0 dark:bg-surface-900 border-b border-surface-200 dark:border-surface-700 p-3">
         <BarraHerramientas />
       </div>
 
@@ -31,7 +31,7 @@
     </div>
 
     <!-- Sección derecha: Panel de propiedades -->
-    <div class="panel-propiedades w-80 bg-gray-50 border-l border-gray-200 overflow-y-auto">
+    <div class="panel-propiedades w-80 bg-surface-0 dark:bg-surface-900 border-l border-surface-200 dark:border-surface-700 overflow-y-auto">
       <PanelPropiedades />
     </div>
   </div>

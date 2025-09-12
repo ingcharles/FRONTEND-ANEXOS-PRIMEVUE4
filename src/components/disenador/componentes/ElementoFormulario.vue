@@ -3,8 +3,8 @@
     ref="elementoRef"
     class="elemento-formulario absolute border transition-all duration-200"
     :class="{
-      'border-blue-500 ring-2 ring-blue-200': esSeleccionado,
-      'border-gray-300 hover:border-gray-400': !esSeleccionado,
+      'border-primary-500 ring-2 ring-primary-200 dark:ring-primary-800': esSeleccionado,
+      'border-surface-300 dark:border-surface-600 hover:border-surface-400 dark:hover:border-surface-500': !esSeleccionado,
       'cursor-move': !estaRedimensionando,
       'select-none': estaArrastrando || estaRedimensionando
     }"
@@ -30,25 +30,25 @@
       <div
         v-for="handle in handlersRedimension"
         :key="handle.name"
-        class="handle-redimension absolute bg-blue-500 border border-white"
+        class="handle-redimension absolute bg-primary-500 border border-surface-0 dark:border-surface-900"
         :class="handle.class"
         :style="handle.style"
         @mousedown.stop="iniciarRedimension($event, handle.name)"
       ></div>
 
       <!-- Barra de herramientas del elemento -->
-      <div class="barra-herramientas-elemento absolute -top-10 left-0 bg-blue-500 text-white px-2 py-1 rounded text-xs flex items-center space-x-1">
+      <div class="barra-herramientas-elemento absolute -top-10 left-0 bg-primary-500 text-surface-0 px-2 py-1 rounded text-xs flex items-center space-x-1">
         <span class="font-medium">{{ tipoElemento }}</span>
         <div class="flex items-center space-x-1 ml-2">
           <button
-            class="hover:bg-blue-600 p-1 rounded"
+            class="hover:bg-primary-600 p-1 rounded"
             title="Duplicar"
             @click.stop="duplicar"
           >
             <i class="pi pi-copy text-xs"></i>
           </button>
           <button
-            class="hover:bg-blue-600 p-1 rounded"
+            class="hover:bg-primary-600 p-1 rounded"
             title="Eliminar"
             @click.stop="eliminar"
           >
@@ -61,7 +61,7 @@
     <!-- Overlay de arrastre -->
     <div
       v-if="estaArrastrando"
-      class="overlay-arrastre absolute inset-0 bg-blue-100 bg-opacity-50 border-2 border-blue-400 border-dashed rounded"
+      class="overlay-arrastre absolute inset-0 bg-primary-100 dark:bg-primary-900/30 bg-opacity-50 border-2 border-primary-400 border-dashed rounded"
     ></div>
   </div>
 </template>

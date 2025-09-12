@@ -1,5 +1,5 @@
 <template>
-  <div class="lienzo-disenador h-full relative overflow-auto bg-gray-100">
+  <div class="lienzo-disenador h-full relative overflow-auto bg-surface-100 dark:bg-surface-950">
     <!-- Grilla de fondo -->
     <div 
       v-if="store.currentForm.settings.showGrid"
@@ -17,16 +17,16 @@
       @click="deseleccionarElementos"
     >
       <!-- Información del formulario -->
-      <div class="informacion-formulario mb-6 p-4 bg-white rounded-lg shadow-sm border">
+      <div class="informacion-formulario mb-6 p-4 bg-surface-0 dark:bg-surface-900 rounded-lg shadow-sm border border-surface-200 dark:border-surface-700">
         <div class="flex items-center justify-between mb-2">
-          <h2 class="text-xl font-semibold text-gray-800">
+          <h2 class="text-xl font-semibold text-surface-800 dark:text-surface-200">
             {{ store.currentForm.title }}
           </h2>
-          <div class="flex items-center space-x-2 text-sm text-gray-500">
+          <div class="flex items-center space-x-2 text-sm text-surface-500 dark:text-surface-400">
             <span>Página {{ store.currentPageIndex + 1 }} de {{ store.totalPages }}</span>
           </div>
         </div>
-        <p v-if="store.currentForm.description" class="text-gray-600 text-sm">
+        <p v-if="store.currentForm.description" class="text-surface-600 dark:text-surface-400 text-sm">
           {{ store.currentForm.description }}
         </p>
       </div>
@@ -87,7 +87,7 @@
         <!-- Indicador de posición durante drag -->
         <div
           v-if="store.dragContext.isDragging && posicionPreview"
-          class="indicador-posicion absolute pointer-events-none bg-blue-200 border-2 border-blue-400 rounded opacity-75"
+          class="indicador-posicion absolute pointer-events-none bg-primary-200 dark:bg-primary-800 border-2 border-primary-400 rounded opacity-75"
           :style="estilosIndicadorPosicion"
         ></div>
       </div>
@@ -95,7 +95,7 @@
       <!-- Herramientas flotantes -->
       <div class="herramientas-flotantes fixed bottom-4 right-4 flex flex-col space-y-2">
         <!-- Controles de zoom -->
-        <div class="controles-zoom bg-white rounded-lg shadow-lg border p-2">
+        <div class="controles-zoom bg-surface-0 dark:bg-surface-900 rounded-lg shadow-lg border border-surface-200 dark:border-surface-700 p-2">
           <div class="flex items-center space-x-2">
             <Button
               icon="pi pi-minus"
@@ -103,7 +103,7 @@
               outlined
               @click="ajustarZoom(-0.1)"
             />
-            <span class="text-sm min-w-12 text-center">{{ Math.round(zoom * 100) }}%</span>
+            <span class="text-sm min-w-12 text-center text-surface-700 dark:text-surface-300">{{ Math.round(zoom * 100) }}%</span>
             <Button
               icon="pi pi-plus"
               size="small"
@@ -114,7 +114,7 @@
         </div>
 
         <!-- Controles de grilla -->
-        <div class="controles-grilla bg-white rounded-lg shadow-lg border p-2">
+        <div class="controles-grilla bg-surface-0 dark:bg-surface-900 rounded-lg shadow-lg border border-surface-200 dark:border-surface-700 p-2">
           <div class="flex items-center space-x-2">
             <Button
               :icon="store.currentForm.settings.showGrid ? 'pi pi-eye' : 'pi pi-eye-slash'"

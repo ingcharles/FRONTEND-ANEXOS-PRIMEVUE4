@@ -1,5 +1,5 @@
 <template>
-  <div class="barra-herramientas flex items-center justify-between p-3 bg-white border-b border-gray-200">
+  <div class="barra-herramientas flex items-center justify-between p-3 bg-surface-0 dark:bg-surface-900 border-b border-surface-200 dark:border-surface-700">
     <!-- Grupo izquierdo: Acciones principales -->
     <div class="flex items-center space-x-2">
       <PrimeButton 
@@ -32,17 +32,17 @@
 
     <!-- Grupo central: Información del formulario -->
     <div class="flex items-center space-x-4">
-      <div class="text-sm text-gray-600">
+      <div class="text-sm text-surface-600 dark:text-surface-400">
         <span class="font-medium">Campos:</span>
         <span class="ml-1">{{ totalCampos }}</span>
       </div>
       
-      <div class="text-sm text-gray-600">
+      <div class="text-sm text-surface-600 dark:text-surface-400">
         <span class="font-medium">Páginas:</span>
         <span class="ml-1">{{ totalPaginas }}</span>
       </div>
       
-      <div class="text-sm text-gray-600" v-if="campoSeleccionado">
+      <div class="text-sm text-surface-600 dark:text-surface-400" v-if="campoSeleccionado">
         <span class="font-medium">Seleccionado:</span>
         <span class="ml-1 font-mono">{{ campoSeleccionado.label || campoSeleccionado.id }}</span>
       </div>

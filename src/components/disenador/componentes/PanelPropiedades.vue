@@ -1,12 +1,12 @@
 <template>
-  <div class="panel-propiedades w-80 bg-white border-l border-gray-200 overflow-y-auto">
+  <div class="panel-propiedades w-80 bg-surface-0 dark:bg-surface-900 border-l border-surface-200 dark:border-surface-700 overflow-y-auto">
     <!-- Header -->
-    <div class="p-4 border-b border-gray-200 bg-gray-50">
-      <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-        <i class="pi pi-cog mr-2"></i>
+    <div class="p-4 border-b border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800">
+      <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-100 flex items-center">
+        <i class="pi pi-cog mr-2 text-primary-500"></i>
         Propiedades
       </h3>
-      <p class="text-sm text-gray-600 mt-1">
+      <p class="text-sm text-surface-600 dark:text-surface-400 mt-1">
         {{ campoSeleccionado ? 'Configura el elemento seleccionado' : 'Selecciona un elemento para editarlo' }}
       </p>
     </div>
@@ -16,12 +16,12 @@
       <!-- Información básica del campo -->
       <div class="mb-6">
         <div class="flex items-center justify-between mb-3">
-          <span class="text-sm font-medium text-gray-500">ELEMENTO SELECCIONADO</span>
-          <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+          <span class="text-sm font-medium text-surface-500 dark:text-surface-400">ELEMENTO SELECCIONADO</span>
+          <span class="text-xs bg-primary-100 dark:bg-primary-900/50 text-primary-800 dark:text-primary-300 px-2 py-1 rounded-full">
             {{ campoSeleccionado.type }}
           </span>
         </div>
-        <p class="text-sm text-gray-900 font-mono bg-gray-50 p-2 rounded">
+        <p class="text-sm text-surface-900 dark:text-surface-100 font-mono bg-surface-50 dark:bg-surface-800 p-2 rounded border border-surface-200 dark:border-surface-700">
           {{ campoSeleccionado.id }}
         </p>
       </div>
@@ -31,7 +31,7 @@
         <div class="space-y-4">
           <!-- Label -->
           <div class="field">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
+            <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
               Etiqueta
             </label>
             <PrimeInputText 
@@ -44,7 +44,7 @@
 
           <!-- Placeholder -->
           <div class="field" v-if="tienePropiedad('placeholder')">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
+            <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
               Placeholder
             </label>
             <PrimeInputText 

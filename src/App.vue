@@ -1,7 +1,7 @@
 <template>
-  <div id="app" class="app-container min-h-screen bg-gray-50">
+  <div id="app" class="app-container min-h-screen bg-surface-50 dark:bg-surface-950">
     <!-- Barra de navegación principal -->
-    <nav class="navbar bg-white shadow-sm border-b border-gray-200">
+    <nav class="navbar bg-surface-0 dark:bg-surface-900 shadow-sm border-b border-surface-200 dark:border-surface-700">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
           <!-- Logo y título -->
@@ -10,8 +10,8 @@
               <img class="h-8 w-8" src="/favicon.ico" alt="Logo" />
             </div>
             <div>
-              <h1 class="text-xl font-bold text-gray-900">Constructor de Formularios</h1>
-              <p class="text-sm text-gray-500">Diseñador dinámico con Vue 3 + PrimeVue</p>
+              <h1 class="text-xl font-bold text-surface-900 dark:text-surface-0">Constructor de Formularios</h1>
+              <p class="text-sm text-surface-600 dark:text-surface-400">Diseñador dinámico con Vue 3 + PrimeVue</p>
             </div>
           </div>
 
@@ -24,8 +24,8 @@
                 :to="item.to"
                 class="nav-link px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
                 :class="{
-                  'bg-blue-100 text-blue-700': $route.name === item.name,
-                  'text-gray-700 hover:text-blue-600 hover:bg-gray-100': $route.name !== item.name
+                  'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300': $route.name === item.name,
+                  'text-surface-700 dark:text-surface-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-surface-100 dark:hover:bg-surface-800': $route.name !== item.name
                 }"
               >
                 <i :class="item.icon" class="mr-2"></i>
@@ -38,7 +38,7 @@
           <div class="md:hidden">
             <button
               @click="mobileMenuOpen = !mobileMenuOpen"
-              class="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+              class="p-2 rounded-md text-surface-400 dark:text-surface-500 hover:text-surface-600 dark:hover:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
             >
               <i :class="mobileMenuOpen ? 'pi pi-times' : 'pi pi-bars'" class="text-lg"></i>
             </button>
@@ -48,7 +48,7 @@
 
       <!-- Menú móvil -->
       <div v-if="mobileMenuOpen" class="md:hidden">
-        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-200">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-surface-0 dark:bg-surface-900 border-t border-surface-200 dark:border-surface-700">
           <router-link
             v-for="item in menuItems"
             :key="item.name"
@@ -56,8 +56,8 @@
             @click="mobileMenuOpen = false"
             class="block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200"
             :class="{
-              'bg-blue-100 text-blue-700': $route.name === item.name,
-              'text-gray-700 hover:text-blue-600 hover:bg-gray-100': $route.name !== item.name
+              'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300': $route.name === item.name,
+              'text-surface-700 dark:text-surface-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-surface-100 dark:hover:bg-surface-800': $route.name !== item.name
             }"
           >
             <i :class="item.icon" class="mr-2"></i>
@@ -77,20 +77,20 @@
     </main>
 
     <!-- Footer -->
-    <footer class="footer bg-white border-t border-gray-200 mt-auto">
+    <footer class="footer bg-surface-0 dark:bg-surface-900 border-t border-surface-200 dark:border-surface-700 mt-auto">
       <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col md:flex-row justify-between items-center">
           <div class="flex items-center space-x-4 mb-4 md:mb-0">
-            <p class="text-sm text-gray-600">
+            <p class="text-sm text-surface-600 dark:text-surface-400">
               © 2025 Constructor de Formularios. Desarrollado con Vue 3 + PrimeVue.
             </p>
           </div>
           <div class="flex items-center space-x-4">
-            <div class="flex items-center space-x-2 text-sm text-gray-500">
+            <div class="flex items-center space-x-2 text-sm text-surface-500 dark:text-surface-400">
               <i class="pi pi-code"></i>
               <span>Versión 1.0.0</span>
             </div>
-            <div class="flex items-center space-x-2 text-sm text-gray-500">
+            <div class="flex items-center space-x-2 text-sm text-surface-500 dark:text-surface-400">
               <i class="pi pi-users"></i>
               <span>{{ estadisticas.totalFormularios }} formularios</span>
             </div>

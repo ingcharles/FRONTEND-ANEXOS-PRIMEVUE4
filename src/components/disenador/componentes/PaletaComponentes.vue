@@ -1,21 +1,21 @@
 <template>
   <div class="paleta-componentes h-full flex flex-col">
     <!-- Encabezado -->
-    <div class="p-4 border-b border-gray-200">
-      <h3 class="text-lg font-semibold text-gray-800">
-        <i class="pi pi-palette mr-2"></i>
+    <div class="p-4 border-b border-surface-200 dark:border-surface-700">
+      <h3 class="text-lg font-semibold text-surface-800 dark:text-surface-200">
+        <i class="pi pi-palette mr-2 text-primary-500"></i>
         Componentes
       </h3>
     </div>
 
     <!-- Búsqueda -->
-    <div class="p-3 border-b border-gray-200">
+    <div class="p-3 border-b border-surface-200 dark:border-surface-700">
       <div class="p-input-icon-left w-full">
-        <i class="pi pi-search"></i>
+        <i class="pi pi-search text-surface-400"></i>
         <InputText 
           v-model="filtroTexto"
           placeholder="Buscar componentes..."
-          class="w-full pl-8"
+          class="w-full pl-8 bg-surface-0 dark:bg-surface-800 border-surface-300 dark:border-surface-600 text-surface-700 dark:text-surface-300"
           @input="filtrarComponentes"
         />
       </div>
@@ -34,26 +34,26 @@
           :header="categoria.titulo"
         >
           <template #headericon>
-            <i :class="categoria.icono" class="mr-2"></i>
+            <i :class="categoria.icono" class="mr-2 text-primary-500"></i>
           </template>
           
           <div class="grid grid-cols-1 gap-2">
             <div
               v-for="item in categoria.items"
               :key="item.type"
-              class="componente-item p-3 border border-gray-200 rounded-lg cursor-grab hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
+              class="componente-item p-3 border border-surface-200 dark:border-surface-700 rounded-lg cursor-grab hover:border-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 bg-surface-0 dark:bg-surface-800"
               :draggable="true"
               @dragstart="iniciarArrastre($event, item)"
               @dragend="finalizarArrastre"
               @click="agregarComponente(item)"
             >
               <div class="flex items-center space-x-2">
-                <i :class="item.icon" class="text-lg text-gray-600"></i>
-                <span class="text-sm font-medium text-gray-800">
+                <i :class="item.icon" class="text-lg text-surface-600 dark:text-surface-400"></i>
+                <span class="text-sm font-medium text-surface-800 dark:text-surface-200">
                   {{ item.label }}
                 </span>
               </div>
-              <p class="text-xs text-gray-500 mt-1">
+              <p class="text-xs text-surface-500 dark:text-surface-400 mt-1">
                 {{ obtenerDescripcionComponente(item.type) }}
               </p>
             </div>
@@ -63,8 +63,8 @@
     </div>
 
     <!-- Información adicional -->
-    <div class="p-3 border-t border-gray-200 bg-gray-50">
-      <div class="text-xs text-gray-600">
+    <div class="p-3 border-t border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800">
+      <div class="text-xs text-surface-600 dark:text-surface-400">
         <p><strong>Tip:</strong> Arrastra los componentes al lienzo o haz clic para agregarlos.</p>
       </div>
     </div>
