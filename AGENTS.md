@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Guía para agentes (humanos y de IA como Cursor) que contribuyen a este proyecto con Vue 3, Pinia, TypeScript, PrimeVue, PrimeFlex y pruebas con Vitest. Todo el código generado en español y funciones (methods, computed, watch, emit) deben ser descriptivos y escritos
+Guía para agentes (humanos y de IA ) que contribuyen a este proyecto con Vue 3, Pinia, TypeScript, PrimeVue, PrimeFlex y pruebas con Vitest. Todo el código generado en español y funciones (methods, computed, watch, emit) deben ser descriptivos y escritos
 en infinitivo indicando así la acción que van a realizar, apunta a calidad, consistencia y velocidad.
 
 ## Objetivos
