@@ -1,37 +1,40 @@
-/* @import "tailwindcss"; */
+@import "tailwindcss";
 
-/* @import './base.css';
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
-}
-
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
-}
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+/* Configuración básica sin clases específicas hasta verificar la nomenclatura correcta */
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
   }
-}
-
-@media (min-width: 1024px) {
+  
   body {
-    display: flex;
-    place-items: center;
+    margin: 0;
+    padding: 0;
   }
+}
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+/* Componentes personalizados básicos */
+@layer components {
+  .form-designer-container {
+    @apply min-h-screen bg-gray-50 dark:bg-gray-900;
   }
-} */
+  
+  .designer-toolbar {
+    @apply bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm;
+  }
+  
+  .designer-canvas {
+    @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm;
+  }
+  
+  .form-field-item {
+    @apply p-3 border border-gray-200 dark:border-gray-700 rounded-md bg-white dark:bg-gray-800 hover:shadow-md transition-all duration-200;
+  }
+  
+  .dragging {
+    @apply opacity-50 scale-95 rotate-2;
+  }
+  
+  .drop-zone-active {
+    @apply border-blue-500 bg-blue-50 dark:bg-blue-900/20;
+  }
+}

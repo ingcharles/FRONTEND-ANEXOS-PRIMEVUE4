@@ -37,6 +37,7 @@ import PrimeSelectButton from 'primevue/selectbutton'
 import PrimeScrollPanel from 'primevue/scrollpanel'
 
 // Styles
+import './assets/main.css' // TailwindCSS + estilos personalizados
 import 'primeicons/primeicons.css'
 import 'primeflex/primeflex.css'
 
@@ -49,14 +50,8 @@ app.use(createPinia())
 app.use(router)
 
 app.use(PrimeVue, {
-  // theme: {
-  //   preset: Aura,
-  //   options: {
-  //     prefix: 'p',
-  //     darkModeSelector: '.p-dark',
-  //     cssLayer: false
-  //   }
-  // }
+  // No necesita configuración de tema al usar tailwindcss-primeui
+  // El estilo viene de las clases de Tailwind CSS
 })
 
 app.use(ToastService)
