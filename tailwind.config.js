@@ -1,5 +1,4 @@
 import typography from '@tailwindcss/typography'
-import primeui from 'tailwindcss-primeui'
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -8,9 +7,7 @@ export default {
     "./src/**/*.{vue,js,ts,jsx,tsx}"
   ],
   plugins: [
-    typography,
-    primeui
+    typography
   ],
-  // Configuración específica para PrimeUI
-  darkMode: 'class',
+  // Tailwind v4: la variante dark se define en CSS con @custom-variant en main.css
 }

@@ -18,11 +18,14 @@
     "test:coverage": "vitest --coverage"
   },
   "dependencies": {
+    "@primeuix/themes": "^1.0.0",
     "@tailwindcss/postcss": "^4.1.13",
     "pinia": "^3.0.3",
     "primeflex": "^3.3.1",
     "primeicons": "^7.0.0",
     "primevue": "^4.1.1",
+    "sortablejs": "^1.15.6",
+    "vuedraggable": "^4.1.0",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1",
     "zod": "^4.1.5"
@@ -37,6 +40,7 @@
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.7.0",
     "autoprefixer": "^10.4.21",
+    "tailwindcss": "^4.1.13",
     "eslint": "^9.31.0",
     "eslint-plugin-vue": "~10.3.0",
     "jiti": "^2.4.2",

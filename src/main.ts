@@ -1,10 +1,10 @@
 ﻿import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
+import { MiPreset } from '@/styles/mi-preset'
 import ToastService from 'primevue/toastservice'
 import Ripple from 'primevue/ripple'
 import Tooltip from 'primevue/tooltip'
-// import Aura from '@primevue/themes/aura'
 
 // Components
 import PrimeButton from 'primevue/button'
@@ -50,8 +50,18 @@ app.use(createPinia())
 app.use(router)
 
 app.use(PrimeVue, {
-  // No necesita configuración de tema al usar tailwindcss-primeui
-  // El estilo viene de las clases de Tailwind CSS
+  // Configurar tema styled para exponer tokens de color (requerido por tailwindcss-primeui)
+  theme: {
+    preset: MiPreset,
+    options: {
+      cssLayer: {
+        name: 'primevue',
+        order: 'theme, base, primevue',
+      },
+      // Alinear el selector de dark mode con Tailwind (ver @custom-variant en main.css)
+      darkModeSelector: '.dark',
+    },
+  },
 })
 
 app.use(ToastService)
