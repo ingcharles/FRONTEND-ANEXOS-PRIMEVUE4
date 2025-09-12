@@ -45,10 +45,12 @@ assets/
 - Lógica de datos en composables/servicios; componentes solo presentan.
 - Estado global en Pinia (acciones para mutaciones, no manipular fuera de acciones).
 - Importar solo los componentes de PrimeVue usados; evita import masivo.
+- Archivos con máximo 300 lineas de codigo
 - Accesibilidad: etiquetas ARIA, foco manejado, contraste, navegación por teclado.
-- Estilos con PrimeFlex, primevue/themes y variables CSS; evita estilos inline.
+- Estilos con timewindcss/primeui y variables CSS; evita estilos inline.
 - Rutas y componentes pesados con carga diferida (code splitting).
-  
+Variables y funciones en español
+
 ## Uso estilos u componentes
 
 - Utilizar componentes de la libreria primeVue.
