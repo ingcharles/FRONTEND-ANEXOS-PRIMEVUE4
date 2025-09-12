@@ -18,14 +18,13 @@ en infinitivo indicando así la acción que van a realizar, apunta a calidad, co
 - PrimeVue 4.1.1, PrimeIcons 7.0.0, PrimeFlex 3.3.1
 - Vitest 2.1.8, Vue Test Utils 2.4.6
 - ESLint + Prettier (reglas de TypeScript y Vue)
-- Tailwindcss-primeui 0.6.1
 
 ## Estructura de carpetas sugerida
 
 ```src/
   app/ # App.vue, main.ts, boot files
   components/disenador/componentes/  # Presentacionales y reutilizables
-  pages/disenador/paginas /          # Vistas de router
+  pages/disenador/paginas/          # Vistas de router
   stores/ # Pinia stores
   composables/ # Lógica reutilizable (Composition API)
   services/disenador/servicios/      # API clients y adaptadores
