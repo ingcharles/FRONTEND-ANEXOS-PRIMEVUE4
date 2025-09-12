@@ -22,7 +22,7 @@ import PrimeCard from 'primevue/card'
 import PrimePanel from 'primevue/panel'
 import PrimeDialog from 'primevue/dialog'
 import PrimeToast from 'primevue/toast'
-import PrimeTabView from 'primevue/tabview'
+import PrimeTabs from 'primevue/tabs'
 import PrimeTabPanel from 'primevue/tabpanel'
 import PrimeMenu from 'primevue/menu'
 import PrimeMenubar from 'primevue/menubar'
@@ -74,7 +74,7 @@ app.component('PrimeCard', PrimeCard)
 app.component('PrimePanel', PrimePanel)
 app.component('PrimeDialog', PrimeDialog)
 app.component('PrimeToast', PrimeToast)
-app.component('PrimeTabView', PrimeTabView)
+app.component('PrimeTabs', PrimeTabs)
 app.component('PrimeTabPanel', PrimeTabPanel)
 app.component('PrimeMenu', PrimeMenu)
 app.component('PrimeMenubar', PrimeMenubar)
