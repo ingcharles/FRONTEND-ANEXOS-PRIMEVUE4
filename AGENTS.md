@@ -18,6 +18,7 @@ en infinitivo indicando así la acción que van a realizar, apunta a calidad, co
 - PrimeVue 4.1.1, PrimeIcons 7.0.0, PrimeFlex 3.3.1
 - Vitest 2.1.8, Vue Test Utils 2.4.6
 - ESLint + Prettier (reglas de TypeScript y Vue)
+- Tailwindcss-primeui 0.6.1
 
 ## Estructura de carpetas sugerida
 
@@ -45,7 +46,7 @@ assets/
 - Lógica de datos en composables/servicios; componentes solo presentan.
 - Estado global en Pinia (acciones para mutaciones, no manipular fuera de acciones).
 - Importar solo los componentes de PrimeVue usados; evita import masivo.
-- Archivos con máximo 300 lineas de codigo
+- Archivos con máximo 500 lineas de codigo
 - Accesibilidad: etiquetas ARIA, foco manejado, contraste, navegación por teclado.
 - Estilos con timewindcss/primeui y variables CSS; evita estilos inline.
 - Rutas y componentes pesados con carga diferida (code splitting).

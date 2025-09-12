@@ -14,6 +14,15 @@ import DisenadorFormularios from '@/components/disenador/componentes/DisenadorFo
           <p class="text-xl md:text-2xl mb-8 text-primary-100">
             Crea formularios dinámicos con arrastra y suelta
           </p>
+          <div class="mb-8">
+            <router-link
+              to="/disenador"
+              class="inline-flex items-center px-8 py-4 bg-white text-primary-600 font-semibold rounded-lg shadow-lg hover:bg-primary-50 transition-all duration-300 transform hover:scale-105"
+            >
+              <i class="pi pi-play mr-2"></i>
+              Empezar a Diseñar
+            </router-link>
+          </div>
           <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
             <div class="feature-badge bg-surface-0 bg-opacity-20 px-4 py-2 rounded-full">
               <i class="pi pi-desktop mr-2"></i>
@@ -62,9 +71,9 @@ import DisenadorFormularios from '@/components/disenador/componentes/DisenadorFo
           </div>
 
           <!-- El componente del diseñador -->
-          <div class="designer-container h-screen">
+          <!-- <div class="designer-container h-screen">
             <DisenadorFormularios />
-          </div>
+          </div> -->
         </div>
       </div>
     </section>
