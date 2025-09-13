@@ -8,6 +8,8 @@ import Calendar from 'primevue/calendar'
 import Checkbox from 'primevue/checkbox'
 import RadioButton from 'primevue/radiobutton'
 import Textarea from 'primevue/textarea'
+import Panel from 'primevue/panel'
+import Divider from 'primevue/divider'
 import { beforeEach, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 
@@ -23,7 +25,20 @@ config.global.components = {
   Calendar,
   Checkbox,
   RadioButton,
-  Textarea
+  Textarea,
+  Panel,
+  Divider,
+  // Alias con prefijo usado en componentes
+  PrimeButton: Button,
+  PrimeInputText: InputText,
+  PrimeInputNumber: InputNumber,
+  PrimeDropdown: Dropdown,
+  PrimeCalendar: Calendar,
+  PrimeCheckbox: Checkbox,
+  PrimeRadioButton: RadioButton,
+  PrimeTextarea: Textarea,
+  PrimePanel: Panel,
+  PrimeDivider: Divider,
 }
 
 // Stubs para transiciones y router

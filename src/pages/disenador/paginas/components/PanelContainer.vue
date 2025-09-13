@@ -51,8 +51,13 @@ async function manejarAdd(evt: { newIndex: number }) {
             `lg:col-${Math.min(12, Math.max(1, element.grid?.lg ?? 6))}`,
             'p-2',
           ]"
+          @click.stop="store.seleccionarCampo(element.id)"
         >
-          <FieldWrapper :field="element" />
+          <FieldWrapper
+            :field="element"
+            :selected="store.selectedFieldId===element.id"
+            @select="store.seleccionarCampo(element.id)"
+          />
         </div>
       </template>
       <template #footer>
