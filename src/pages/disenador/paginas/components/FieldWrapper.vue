@@ -2,6 +2,7 @@
 import type { FieldSchema } from '@/types/form-schema'
 import { useDesignerStore } from '@/stores/useDesignerStore'
 import { computed, defineAsyncComponent, ref } from 'vue'
+import PrimeTag from 'primevue/tag'
 import { usarPuntoDeCorte } from '@/composables/usarPuntoDeCorte'
 
 const props = defineProps<{ field: FieldSchema; selected?: boolean }>()
@@ -26,6 +27,11 @@ const colActual = computed<number>({
     store.actualizarCampo(props.field.id, { grid: g })
   },
 })
+
+const conteoHijos = computed<number>(() =>
+  props.field.type === 'panel' ? (props.field.children?.length ?? 0) : 0
+)
+
 
 const arrastrando = ref(false)
 let inicioX = 0
@@ -105,22 +111,36 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
 <template>
   <div
     ref="rootEl"
-    class="border-round p-2 surface-card border-1 relative"
+    class="border-round p-2 surface-card border-1 relative handler-mover"
     :class="{ 'border-primary border-2': selected }"
     role="button"
     tabindex="0"
     @click="seleccionar"
   >
-    <div class="flex align-items-center justify-content-between mb-2">
+    <!-- Badge informativo (superior derecha) con dos columnas: texto izquierda, acciones derecha -->
+    <div class="info-badge">
+      <PrimeTag class="text-xs px-1 py-1 pointer-events-auto min-w-60" severity="primary">
+        <div class="grid w-full align-items-start">
+          <!-- Columna izquierda (8/12): textos -->
+          <div class="col-8 flex flex-column gap-1 text-[10px]">
+            <span class="font-medium">{{ `${field.type || field.label  }: ${field.id}` }}</span>
+            <span class="font-medium ">{{ `${punto.toUpperCase()}: ${colActual} Cols` }}</span>
+            <span class="font-medium text-red-500!" v-if="field.type==='panel'">Elementos: {{ conteoHijos }}</span>
+          </div>
+          <!-- Columna derecha (4/12): acciones -->
+          <div class="col-4 flex justify-content-end">
+            <PrimeButton icon="pi pi-copy" text rounded size="small" class="p-0" title="Duplicar" @click.stop="store.duplicarCampo(field.id)" />
+            <PrimeButton icon="pi pi-trash" text rounded size="small" class="p-0" severity="danger" title="Eliminar" @click.stop="store.eliminarCampo(field.id)" />
+          </div>
+        </div>
+      </PrimeTag>
+    </div>
+    <!-- <div class="flex align-items-center justify-content-between mb-2">
       <div class="flex align-items-center gap-2">
-        <span class="handler-mover pi pi-arrows-alt" title="Mover" />
         <strong>{{ field.label || field.type }}</strong>
       </div>
-      <div class="flex">
-            <PrimeButton icon="pi pi-copy" text rounded title="'Duplicar'" @click.stop="store.duplicarCampo(field.id)" />
-        <PrimeButton icon="pi pi-trash" text rounded severity="danger" title="'Eliminar'" @click.stop="store.eliminarCampo(field.id)" />
-      </div>
-    </div>
+      <div class="flex" />
+    </div> -->
     <!-- Render simple de ejemplo -->
     <div>
       <template v-if="field.type==='text' || field.type==='email' || field.type==='password'">
@@ -182,6 +202,19 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
 </template>
 
 <style scoped>
+.info-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0.25rem;
+  display: inline-flex;
+  gap: 0.25rem;
+  align-items: center;
+  padding: 0.125rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .resize-handle-right {
   position: absolute;
   top: 0;
