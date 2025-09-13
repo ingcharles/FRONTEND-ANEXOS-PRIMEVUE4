@@ -116,9 +116,9 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
         <span class="handler-mover pi pi-arrows-alt" title="Mover" />
         <strong>{{ field.label || field.type }}</strong>
       </div>
-      <div class="flex gap-2">
-        <PrimeButton icon="pi pi-copy" text rounded v-tooltip.top="'Duplicar'" @click.stop="store.duplicarCampo(field.id)" />
-        <PrimeButton icon="pi pi-trash" text rounded severity="danger" v-tooltip.top="'Eliminar'" @click.stop="store.eliminarCampo(field.id)" />
+      <div class="flex">
+            <PrimeButton icon="pi pi-copy" text rounded title="'Duplicar'" @click.stop="store.duplicarCampo(field.id)" />
+        <PrimeButton icon="pi pi-trash" text rounded severity="danger" title="'Eliminar'" @click.stop="store.eliminarCampo(field.id)" />
       </div>
     </div>
     <!-- Render simple de ejemplo -->

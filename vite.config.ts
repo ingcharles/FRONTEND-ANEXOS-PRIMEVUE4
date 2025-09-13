@@ -3,15 +3,30 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
-// import tailwindcss from '@tailwindcss/vite'
+import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
     vueDevTools(),
-    //tailwindcss(),
+    // Tailwind v4: plugin recomendado para mejorar HMR de CSS/variantes
+    tailwindcss(),
   ],
+  server: {
+    // Mejora la detección de cambios en Windows / discos en red / antivirus
+    watch: {
+      usePolling: true,
+      interval: 150,
+      awaitWriteFinish: {
+        stabilityThreshold: 300,
+        pollInterval: 150,
+      },
+    },
+    hmr: {
+      overlay: true,
+    },
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
