@@ -119,7 +119,7 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
   >
     <!-- Badge informativo (superior derecha) con dos columnas: texto izquierda, acciones derecha -->
     <div class="info-badge">
-      <PrimeTag class="text-xs px-1 py-1 pointer-events-auto min-w-60" severity="primary">
+      <PrimeTag class="text-xs px-1 py-1 pointer-events-auto min-w-64" severity="primary">
         <div class="grid w-full align-items-start">
           <!-- Columna izquierda (8/12): textos -->
           <div class="col-8 flex flex-column gap-1 text-[10px]">
