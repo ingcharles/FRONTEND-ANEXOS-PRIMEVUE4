@@ -114,7 +114,7 @@ function enviar(): void {
     <form class="grid" @submit.prevent="enviar">
       <template v-for="f in campos" :key="f.id">
         <div :class="clasesColumna(f)" v-if="EvaluarReglasCampo(f, valores, idAName).visible">
-          <label v-if="f.label" class="block mb-1">{{ f.label }}</label>
+          <label v-if="f.label" class="block mb-1">{{ f.label }}<span v-if="EvaluarReglasCampo(f, valores, idAName).required" class="text-red-500"> *</span></label>
           <PrimeInputText v-if="f.type==='text' || f.type==='email' || f.type==='password'" v-model="(valores as any)[f.name||'']" :placeholder="f.placeholder" class="w-full" />
           <PrimeTextarea v-else-if="f.type==='textarea'" v-model="(valores as any)[f.name||'']" :placeholder="f.placeholder" class="w-full" />
           <PrimeCalendar v-else-if="f.type==='time'" v-model="(valores as any)[f.name||'']" time-only hour-format="24" class="w-full" />
@@ -132,7 +132,7 @@ function enviar(): void {
             <div class="grid">
               <template v-for="ch in (f.children||[])" :key="ch.id">
                 <div :class="clasesColumna(ch)" v-if="EvaluarReglasCampo(ch, valores, idAName).visible">
-                  <label v-if="ch.label" class="block mb-1">{{ ch.label }}</label>
+                  <label v-if="ch.label" class="block mb-1">{{ ch.label }}<span v-if="EvaluarReglasCampo(ch, valores, idAName).required" class="text-red-500"> *</span></label>
                   <PrimeInputText v-if="ch.type==='text' || ch.type==='email' || ch.type==='password'" v-model="(valores as any)[ch.name||'']" :placeholder="ch.placeholder" class="w-full" />
                   <PrimeTextarea v-else-if="ch.type==='textarea'" v-model="(valores as any)[ch.name||'']" :placeholder="ch.placeholder" class="w-full" />
                   <PrimeCalendar v-else-if="ch.type==='time'" v-model="(valores as any)[ch.name||'']" time-only hour-format="24" class="w-full" />

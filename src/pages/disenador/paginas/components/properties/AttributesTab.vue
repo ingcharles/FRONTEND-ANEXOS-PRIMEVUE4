@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useDesignerStore } from '@/stores/useDesignerStore'
+import type { ValidationRule } from '@/types/form-schema'
 
 defineProps<{ fieldId: string }>()
 const store = useDesignerStore()
@@ -20,6 +21,9 @@ function actualizarGrid(parcial: { sm?: number; md?: number; lg?: number }): voi
 function actualizarBooleano(clave: 'visible' | 'required', valor: boolean): void {
   if (!campo.value) return
   store.actualizarCampo(campo.value.id, { [clave]: valor } as { [k in typeof clave]: boolean })
+  if (clave === 'required') {
+    if (valor) asegurarReglaRequerido()
+  }
 }
 
 // Opciones para select / radio
@@ -76,6 +80,39 @@ function actualizarAddRows(v: boolean): void {
   meta.addRows = v
   store.actualizarCampo(campo.value.id, { meta })
 }
+
+// Reglas de validación - requerido
+function obtenerValidaciones(): ValidationRule[] {
+  const arr = (campo.value?.validations ?? []) as ValidationRule[]
+  return Array.isArray(arr) ? arr : []
+}
+
+function asegurarReglaRequerido(): void {
+  if (!campo.value) return
+  const vals = obtenerValidaciones()
+  const idx = vals.findIndex(v => v.type === 'required')
+  if (idx === -1) {
+    vals.push({ type: 'required', message: 'Este campo es requerido' })
+  }
+  store.actualizarCampo(campo.value.id, { validations: vals })
+}
+
+function obtenerMensajeRequerido(): string {
+  const vals = obtenerValidaciones()
+  return vals.find(v => v.type === 'required')?.message || 'Este campo es requerido'
+}
+
+function actualizarMensajeRequerido(msg: string): void {
+  if (!campo.value) return
+  const vals = obtenerValidaciones()
+  const idx = vals.findIndex(v => v.type === 'required')
+  if (idx === -1) {
+    vals.push({ type: 'required', message: msg })
+  } else {
+    vals[idx] = { ...vals[idx], message: msg }
+  }
+  store.actualizarCampo(campo.value.id, { validations: vals })
+}
 </script>
 
 <template>
@@ -95,15 +132,30 @@ function actualizarAddRows(v: boolean): void {
     <div class="field grid">
       <div class="col-4">
         <label class="block mb-1">Cols sm</label>
-  <PrimeInputNumber :model-value="campo?.grid?.sm || 12" :min="1" :max="12" @update:model-value="(v: number | null)=> actualizarGrid({ sm: Number(v ?? 12) })" />
+        <PrimeDropdown
+          :model-value="campo?.grid?.sm ?? 12"
+          :options="[1,2,3,4,5,6,7,8,9,10,11,12]"
+          class="w-full"
+          @update:model-value="(v: number | null)=> actualizarGrid({ sm: Number(v ?? 12) })"
+        />
       </div>
       <div class="col-4">
         <label class="block mb-1">Cols md</label>
-  <PrimeInputNumber :model-value="campo?.grid?.md || 6" :min="1" :max="12" @update:model-value="(v: number | null)=> actualizarGrid({ md: Number(v ?? 6) })" />
+        <PrimeDropdown
+          :model-value="campo?.grid?.md ?? 6"
+          :options="[1,2,3,4,5,6,7,8,9,10,11,12]"
+          class="w-full"
+          @update:model-value="(v: number | null)=> actualizarGrid({ md: Number(v ?? 6) })"
+        />
       </div>
       <div class="col-4">
         <label class="block mb-1">Cols lg</label>
-  <PrimeInputNumber :model-value="campo?.grid?.lg || 6" :min="1" :max="12" @update:model-value="(v: number | null)=> actualizarGrid({ lg: Number(v ?? 6) })" />
+        <PrimeDropdown
+          :model-value="campo?.grid?.lg ?? 6"
+          :options="[1,2,3,4,5,6,7,8,9,10,11,12]"
+          class="w-full"
+          @update:model-value="(v: number | null)=> actualizarGrid({ lg: Number(v ?? 6) })"
+        />
       </div>
     </div>
     <div class="field">
@@ -117,6 +169,11 @@ function actualizarAddRows(v: boolean): void {
         <PrimeCheckbox binary :model-value="!!campo?.required" @update:model-value="(v: boolean)=> actualizarBooleano('required', v)" />
         Requerido
       </label>
+    </div>
+    <div v-if="campo?.required" class="field">
+      <label class="block mb-1">Mensaje de requerido</label>
+      <PrimeInputText :model-value="obtenerMensajeRequerido()" @update:model-value="(v:string)=> actualizarMensajeRequerido(v)" />
+      <small class="text-muted-color">Se mostrará en la vista previa cuando el campo sea obligatorio.</small>
     </div>
   </div>
 

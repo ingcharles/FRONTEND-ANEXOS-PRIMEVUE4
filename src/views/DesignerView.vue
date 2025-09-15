@@ -20,10 +20,10 @@ const tabTitles = [
 
 <template>
   <div class="p-3 grid w-full" style="min-height: 70vh">
-    <div class="col-12 md:col-3">
+    <div class="col-12 md:col-2">
       <PalettePanel />
     </div>
-    <div class="col-12 md:col-6">
+    <div class="col-12 md:col-8">
       <div class="flex align-items-center justify-content-between mb-2">
         <div class="flex gap-2">
           <PrimeButton label="Añadir página" icon="pi pi-plus" @click="store.agregarPagina" />
@@ -37,7 +37,7 @@ const tabTitles = [
             <span>Importar</span>
             <input type="file" accept="application/json" class="hidden" @change="(e: Event)=> { const input = e.target as HTMLInputElement; const f = input.files?.[0]; if (f) store.importarJson(f) }" />
           </label>
-          <PrimeToggleButton :model-value="store.gridSnap" on-label="Grid" off-label="Grid" @update:model-value="(v:boolean)=> (store.gridSnap = v)" />
+          <!-- <PrimeToggleButton :model-value="store.gridSnap" on-label="Grid" off-label="Grid" @update:model-value="(v:boolean)=> (store.gridSnap = v)" /> -->
         </div>
       </div>
       <Tabs v-model:value="pestana" class="center-tabs">
@@ -65,7 +65,7 @@ const tabTitles = [
         </TabPanels>
       </Tabs>
     </div>
-    <div class="col-12 md:col-3">
+    <div class="col-12 md:col-2">
       <PropertiesTabs />
     </div>
   </div>

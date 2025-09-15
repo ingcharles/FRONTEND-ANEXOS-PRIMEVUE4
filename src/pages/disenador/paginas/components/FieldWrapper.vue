@@ -144,23 +144,23 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
     <!-- Render simple de ejemplo -->
     <div>
       <template v-if="field.type==='text' || field.type==='email' || field.type==='password'">
-        <label class="block mb-1">{{ field.label }}</label>
+        <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
         <PrimeInputText :placeholder="field.placeholder" class="w-full" />
       </template>
       <template v-else-if="field.type==='time'">
-        <label class="block mb-1">{{ field.label }}</label>
+        <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
         <PrimeCalendar time-only hour-format="24" class="w-full" />
       </template>
       <template v-else-if="field.type==='textarea'">
-        <label class="block mb-1">{{ field.label }}</label>
+        <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
         <PrimeTextarea :placeholder="field.placeholder" class="w-full" />
       </template>
       <template v-else-if="field.type==='select'">
-        <label class="block mb-1">{{ field.label }}</label>
+        <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
         <PrimeDropdown class="w-full" :options="(field.meta?.options as any[])||[]" option-label="label" option-value="value" />
       </template>
       <template v-else-if="field.type==='radio'">
-        <label class="block mb-1">{{ field.label }}</label>
+        <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
         <div class="flex gap-3">
           <label v-for="op in ((field.meta?.options as any[])||[])" :key="op.value" class="inline-flex align-items-center gap-2">
             <PrimeRadioButton :input-id="String(op.value)" :value="op.value" name="radio-demo" />
