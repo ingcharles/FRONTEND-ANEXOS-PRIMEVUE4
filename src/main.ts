@@ -31,6 +31,7 @@ import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import PrimeMenu from 'primevue/menu'
 import PrimeMenubar from 'primevue/menubar'
+import PrimePanelMenu from 'primevue/panelmenu'
 import PrimeDivider from 'primevue/divider'
 import PrimeTreeSelect from 'primevue/treeselect'
 import PrimeCalendar from 'primevue/calendar'
@@ -100,6 +101,7 @@ app.component('TabPanels', TabPanels)
 app.component('TabPanel', TabPanel)
 app.component('PrimeMenu', PrimeMenu)
 app.component('PrimeMenubar', PrimeMenubar)
+app.component('PrimePanelMenu', PrimePanelMenu)
 app.component('PrimeDivider', PrimeDivider)
 app.component('PrimeTreeSelect', PrimeTreeSelect)
 app.component('PrimeCalendar', PrimeCalendar)
