@@ -212,7 +212,7 @@ window.addEventListener('keydown', manejarAtajos)
                 :title="'Arrastrar ' + element.label"
               >
                 <i class="pi pi-grip-vertical text-muted-color text-xs opacity-50 group-hover:opacity-90 transition-opacity" />
-                <i :class="['pi', element.icon, 'text-sm text-primary-600 dark:text-primary-300']" />
+                <i :class="['pi', element.icon, 'text-muted-color']" />
                 <span class="font-medium leading-none">{{ element.label }}</span>
                 <PrimeTag severity="secondary" v-if="element.type==='panel'" value="Contenedor" class="ml-auto text-[10px] py-0 px-1" />
                 <PrimeTag severity="contrast" v-else-if="element.type==='table'" value="Data" class="ml-auto text-[10px] py-0 px-1" />
@@ -221,8 +221,8 @@ window.addEventListener('keydown', manejarAtajos)
           </draggable>
         </div>
         <!-- Cabecera de categoría -->
-        <div v-else class="flex items-center gap-2 py-1 px-2 rounded-md font-semibold text-[11px] tracking-wide uppercase text-muted-color">
-          <i :class="['pi', item.icon, 'text-xs opacity-70']" />
+        <div v-else class="flex items-center gap-2 py-1 px-2 rounded-md font-semibold text-[12px] tracking-wide uppercase text-muted-color">
+          <i :class="['pi', item.icon, 'text-sky-500 dark:text-sky-400']" />
           <span class="flex-1">{{ item.label }}</span>
           <span v-if="item.items" class="pi pi-angle-down text-primary ml-auto" />
           <PrimeTag :value="item.items?.length || 0" severity="contrast" class="text-[10px] py-0 px-1" />
@@ -246,18 +246,8 @@ window.addEventListener('keydown', manejarAtajos)
   border: 0;
 }
 
-:deep(.p-panelmenu-header) {
-  padding: 0.15rem 0.25rem;
-  background: transparent;
-  border: 0;
-  font-size: 0.75rem;
-}
 
-:deep(.p-panelmenu-content) {
-  background: transparent;
-  border: 0;
-  padding: 0.15rem 0 0.35rem 0.25rem;
-}
+
 
 /* Suavizar transiciones */
 .custom-panel-menu :deep(a) { transition: background-color .15s ease, color .15s ease; }
