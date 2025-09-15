@@ -108,13 +108,13 @@ function actualizarAddRows(v: boolean): void {
     </div>
     <div class="field">
       <label class="flex align-items-center gap-2">
-  <PrimeCheckbox :model-value="!!campo?.visible" @update:model-value="(v: boolean)=> actualizarBooleano('visible', v)" />
+        <PrimeCheckbox binary :model-value="!!campo?.visible" @update:model-value="(v: boolean)=> actualizarBooleano('visible', v)" />
         Visible
       </label>
     </div>
     <div class="field">
       <label class="flex align-items-center gap-2">
-  <PrimeCheckbox :model-value="!!campo?.required" @update:model-value="(v: boolean)=> actualizarBooleano('required', v)" />
+        <PrimeCheckbox binary :model-value="!!campo?.required" @update:model-value="(v: boolean)=> actualizarBooleano('required', v)" />
         Requerido
       </label>
     </div>
@@ -165,7 +165,7 @@ function actualizarAddRows(v: boolean): void {
     </div>
     <div class="mt-2">
       <label class="inline-flex align-items-center gap-2">
-        <PrimeCheckbox :model-value="Boolean((campo?.meta as any)?.addRows)" @update:model-value="(v:boolean)=> actualizarAddRows(v)" />
+  <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.addRows)" @update:model-value="(v:boolean)=> actualizarAddRows(v)" />
         Permitir añadir filas
       </label>
     </div>
