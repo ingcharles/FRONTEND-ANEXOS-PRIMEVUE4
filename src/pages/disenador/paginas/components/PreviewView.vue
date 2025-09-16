@@ -36,6 +36,37 @@ function construirMapaIdNombre(list: FieldSchema[]): Record<string, string> {
 
 const idAName = computed(() => construirMapaIdNombre(campos.value))
 
+// Tipos auxiliares para tabla
+type ColumnaTabla = { name: string; label?: string; type?: 'text' | 'number' }
+function obtenerColumnasTabla(field: FieldSchema): ColumnaTabla[] {
+  const meta = field.meta as Record<string, unknown> | undefined
+  const raw = meta?.columns as unknown
+  return Array.isArray(raw) ? (raw as ColumnaTabla[]).filter(c => c && typeof c.name === 'string') : []
+}
+function obtenerFilasTabla(field: FieldSchema): number {
+  const meta = field.meta as Record<string, unknown> | undefined
+  const r = meta?.rows as unknown
+  return typeof r === 'number' && r > 0 ? r : 1
+}
+function crearFilaVacia(cols: ColumnaTabla[]): Record<string, unknown> {
+  const obj: Record<string, unknown> = {}
+  for (const c of cols) obj[c.name] = undefined
+  return obj
+}
+function agregarFilaCampo(field: FieldSchema): void {
+  const nombre = field.name || ''
+  if (!nombre) return
+  const cols = obtenerColumnasTabla(field)
+  const nueva = crearFilaVacia(cols)
+  const dict = valores.value as Record<string, unknown>
+  const actual = dict[nombre]
+  if (Array.isArray(actual)) {
+    ;(actual as unknown[]).push(nueva)
+  } else {
+    dict[nombre] = [nueva]
+  }
+}
+
 type Opcion = { label: string; value: unknown }
 function obtenerOpciones(field: FieldSchema): Opcion[] {
   const meta = field.meta as Record<string, unknown> | undefined
@@ -68,6 +99,16 @@ function crearSchema(): z.ZodObject<Record<string, z.ZodTypeAny>> {
     if (f.type === 'radio' || f.type === 'select') base = z.any()
     if (f.type === 'checkbox') {
       base = checkboxEsGrupo(f) ? z.array(z.any()) : z.boolean().or(z.any())
+    }
+    if (f.type === 'table') {
+      // Tabla: un array de objetos con keys de columnas
+      const cols = obtenerColumnasTabla(f)
+      const rowShape: Record<string, z.ZodTypeAny> = {}
+      for (const c of cols) {
+        if ((c.type || 'text') === 'number') rowShape[c.name] = z.preprocess((v) => typeof v === 'string' ? (v.trim()==='' ? undefined : Number(v)) : v, z.number().optional())
+        else rowShape[c.name] = z.string().optional()
+      }
+      base = z.array(z.object(rowShape)).optional()
     }
 
     // Aplicar lógica para required dinámico (usa mapa global id->name)
@@ -168,6 +209,12 @@ function aplicarValoresPorDefecto(list: FieldSchema[], sobrescribirSiVacio = fal
         // asegurar arreglo para defaults múltiples si hay opciones
         if (!Array.isArray(def)) def = []
       }
+      if (f.type === 'table') {
+        const cols = obtenerColumnasTabla(f)
+        const rows = obtenerFilasTabla(f)
+        const plantilla = Array.from({ length: Math.max(1, rows) }, () => crearFilaVacia(cols))
+        if (def === undefined) def = plantilla
+      }
       // Respetar visibilidad
       const estado = EvaluarReglasCampo(f, valores.value as Record<string, unknown>, idAName.value)
       if (def !== undefined && estado.visible) {
@@ -255,6 +302,30 @@ function enviar(): void {
             </template>
           </div>
           <PrimeDivider v-else-if="f.type==='divider'" />
+          <!-- Tabla: edición por filas/columnas -->
+          <div v-else-if="f.type==='table'">
+            <div class="overflow-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr>
+                    <th v-for="col in ((f.meta as any)?.columns||[])" :key="col.name" class="text-left p-2 border-bottom-1 surface-border">{{ col.label }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(row, rIdx) in (((valores as any)[f.name||''] as any[])||[])" :key="rIdx">
+                    <td v-for="col in ((f.meta as any)?.columns||[])" :key="col.name" class="p-2">
+                      <PrimeInputText v-if="(col.type||'text')==='text'" v-model="(valores as any)[f.name||''][rIdx][col.name]" class="w-full" :disabled="f.disabled" />
+                      <PrimeInputNumber v-else-if="col.type==='number'" v-model="(valores as any)[f.name||''][rIdx][col.name]" class="w-full" :disabled="f.disabled" />
+                      <span v-else class="text-muted-color">—</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="mt-2" v-if="(f.meta as any)?.addRows">
+              <PrimeButton size="small" icon="pi pi-plus" label="Añadir fila" @click.prevent="agregarFilaCampo(f)" />
+            </div>
+          </div>
           <div v-else-if="f.type==='radio'" :class="['flex', ((f.meta as any)?.layout==='horizontal' ? 'flex-row gap-3' : 'flex-column gap-2') ]">
             <label v-for="op in ((f.meta?.options as any[])||[])" :key="op.value" class="inline-flex align-items-center gap-2">
               <PrimeRadioButton :input-id="String(op.value)" v-model="(valores as any)[f.name||'']" :value="op.value" :name="f.name" :disabled="f.disabled" />
@@ -290,6 +361,29 @@ function enviar(): void {
                     </template>
                   </div>
                   <PrimeDivider v-else-if="ch.type==='divider'" />
+                  <div v-else-if="ch.type==='table'">
+                    <div class="overflow-auto">
+                      <table class="w-full text-sm">
+                        <thead>
+                          <tr>
+                            <th v-for="col in ((ch.meta as any)?.columns||[])" :key="col.name" class="text-left p-2 border-bottom-1 surface-border">{{ col.label }}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr v-for="(row, rIdx) in (((valores as any)[ch.name||''] as any[])||[])" :key="rIdx">
+                            <td v-for="col in ((ch.meta as any)?.columns||[])" :key="col.name" class="p-2">
+                              <PrimeInputText v-if="(col.type||'text')==='text'" v-model="(valores as any)[ch.name||''][rIdx][col.name]" class="w-full" :disabled="ch.disabled" />
+                              <PrimeInputNumber v-else-if="col.type==='number'" v-model="(valores as any)[ch.name||''][rIdx][col.name]" class="w-full" :disabled="ch.disabled" />
+                              <span v-else class="text-muted-color">—</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="mt-2" v-if="(ch.meta as any)?.addRows">
+                      <PrimeButton size="small" icon="pi pi-plus" label="Añadir fila" @click.prevent="agregarFilaCampo(ch)" />
+                    </div>
+                  </div>
                   <div v-else-if="ch.type==='radio'" :class="['flex', ((ch.meta as any)?.layout==='horizontal' ? 'flex-row gap-3' : 'flex-column gap-2')]">
                     <label v-for="op in ((ch.meta?.options as any[])||[])" :key="op.value" class="inline-flex align-items-center gap-2">
                       <PrimeRadioButton :input-id="String(op.value)" v-model="(valores as any)[ch.name||'']" :value="op.value" :name="ch.name" :disabled="ch.disabled" />

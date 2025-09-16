@@ -267,8 +267,26 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
       </template>
       <template v-else-if="field.type==='table'">
         <div class="border rounded-border p-2">
-          <div class="font-semibold mb-2">Tabla (mock)</div>
-          <div class="text-sm text-muted-color">Configura columnas en Propiedades</div>
+          <div class="font-semibold mb-2">Tabla</div>
+          <div class="overflow-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr>
+                  <th v-for="col in ((field.meta as any)?.columns||[])" :key="col.name" class="text-left p-2 border-bottom-1 surface-border">{{ col.label }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td v-for="col in ((field.meta as any)?.columns||[])" :key="col.name" class="p-2">
+                    <PrimeInputText v-if="(col.type||'text')==='text'" class="w-full" disabled placeholder="Texto" />
+                    <PrimeInputNumber v-else-if="col.type==='number'" class="w-full" disabled placeholder="0" />
+                    <span v-else class="text-muted-color">—</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="text-xs text-muted-color mt-2">Configura columnas y filas en Propiedades.</div>
         </div>
       </template>
       <template v-else-if="field.type==='panel'">

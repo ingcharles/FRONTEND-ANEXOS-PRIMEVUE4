@@ -646,5 +646,14 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
         Permitir añadir filas
       </label>
     </div>
+    <div class="mt-2 grid align-items-end">
+      <div class="col-4">
+        <label class="block mb-1">Filas</label>
+        <PrimeInputNumber :model-value="Number(((campo?.meta as any)?.rows ?? 1))" :min="1" @update:model-value="(v:any)=> { const meta = { ...(campo?.meta as any) }; meta.rows = Math.max(1, Number(v||1)); store.actualizarCampo(campo!.id, { meta }) }" class="w-full" />
+      </div>
+      <div class="col-8">
+        <small class="text-muted-color">Se aplicará al inicializar los datos o cuando estén vacíos.</small>
+      </div>
+    </div>
   </div>
 </template>

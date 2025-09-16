@@ -1,5 +1,6 @@
 declare module '*.vue' {
   import { DefineComponent } from 'vue';
-  const component: DefineComponent<{}, {}, any>;
+  // Usar tipos estrictos para evitar any/{} vacíos
+  const component: DefineComponent<Record<string, never>, Record<string, never>, unknown>;
   export default component;
 }

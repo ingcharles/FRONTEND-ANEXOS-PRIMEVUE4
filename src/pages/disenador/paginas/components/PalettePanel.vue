@@ -65,7 +65,21 @@ const paletteItems: { type: FieldType; icon: string; defaultProps?: Partial<Fiel
   { type: 'button', icon: 'pi pi-check', label: 'Botón' },
   { type: 'divider', icon: 'pi pi-minus', label: 'Divisor' },
   { type: 'panel', icon: 'pi pi-window-maximize', label: 'Panel', defaultProps: { children: [] } },
-  { type: 'table', icon: 'pi pi-table', label: 'Tabla', defaultProps: { meta: { columns: [], addRows: true } } },
+  {
+    type: 'table',
+    icon: 'pi pi-table',
+    label: 'Tabla',
+    defaultProps: {
+      meta: {
+        columns: [
+          { name: 'col1', label: 'Columna 1', type: 'text' },
+          { name: 'col2', label: 'Columna 2', type: 'number' },
+        ],
+        rows: 1,
+        addRows: true,
+      },
+    },
+  },
 ]
 
 // Estructura para PanelMenu
