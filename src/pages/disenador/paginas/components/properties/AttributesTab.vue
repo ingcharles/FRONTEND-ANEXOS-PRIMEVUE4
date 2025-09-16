@@ -52,11 +52,12 @@ function eliminarOpcion(ind: number): void {
 
 // Columnas para tabla
 type ColumnaTabla = { name: string; label: string; type?: 'text' | 'number' }
+type ColumnaTablaExt = ColumnaTabla & { agg?: 'none'|'sum'|'avg'|'count'|'min'|'max'; aggPrefix?: string; aggSuffix?: string; decimals?: number }
 function obtenerColumnas(): ColumnaTabla[] {
-  const cols = (campo.value?.meta as Record<string, unknown> | undefined)?.columns as unknown as ColumnaTabla[] | undefined
+  const cols = (campo.value?.meta as Record<string, unknown> | undefined)?.columns as unknown as ColumnaTablaExt[] | undefined
   return Array.isArray(cols) ? cols : []
 }
-function actualizarColumnas(nuevas: ColumnaTabla[]): void {
+function actualizarColumnas(nuevas: ColumnaTablaExt[]): void {
   if (!campo.value) return
   const meta = { ...(campo.value.meta ?? {}) } as Record<string, unknown>
   meta.columns = nuevas
@@ -66,7 +67,7 @@ function agregarColumna(): void {
   const cols = obtenerColumnas()
   actualizarColumnas([...cols, { name: `col${cols.length + 1}`, label: `Columna ${cols.length + 1}`, type: 'text' }])
 }
-function actualizarColumna(ind: number, prop: keyof ColumnaTabla, valor: string): void {
+function actualizarColumna(ind: number, prop: keyof ColumnaTablaExt, valor: string | number): void {
   const cols = obtenerColumnas().map((c, i) => (i === ind ? { ...c, [prop]: valor } : c))
   actualizarColumnas(cols)
 }
@@ -636,6 +637,26 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
         <label class="block mb-1">Tipo</label>
   <PrimeSelect :model-value="col.type || 'text'" :options="['text','number']" @update:model-value="(v:string)=> actualizarColumna(i,'type', v)" />
       </div>
+      <div class="col-12 mt-2">
+        <div class="grid">
+          <div class="col-3">
+            <label class="block mb-1">Agregado</label>
+            <PrimeSelect :model-value="(col as any).agg || 'none'" :options="['none','sum','avg','count','min','max']" @update:model-value="(v:string)=> actualizarColumna(i,'agg', v)" />
+          </div>
+          <div class="col-3">
+            <label class="block mb-1">Prefijo</label>
+            <PrimeInputText :model-value="(col as any).aggPrefix || ''" @update:model-value="(v:string)=> actualizarColumna(i,'aggPrefix', v)" />
+          </div>
+          <div class="col-3">
+            <label class="block mb-1">Sufijo</label>
+            <PrimeInputText :model-value="(col as any).aggSuffix || ''" @update:model-value="(v:string)=> actualizarColumna(i,'aggSuffix', v)" />
+          </div>
+          <div class="col-3">
+            <label class="block mb-1">Decimales</label>
+            <PrimeInputNumber :model-value="(col as any).decimals ?? 2" :min="0" :max="8" @update:model-value="(v:any)=> actualizarColumna(i,'decimals', typeof v==='number'? v : 2)" class="w-full" />
+          </div>
+        </div>
+      </div>
       <div class="col-1">
         <PrimeButton icon="pi pi-trash" severity="danger" text @click="() => eliminarColumna(i)" />
       </div>
@@ -653,6 +674,40 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
       </div>
       <div class="col-8">
         <small class="text-muted-color">Se aplicará al inicializar los datos o cuando estén vacíos.</small>
+      </div>
+    </div>
+    <div class="mt-3">
+      <div class="font-semibold mb-2">Resumen</div>
+      <div class="grid">
+        <div class="col-4">
+          <label class="block mb-1">Mostrar resumen</label>
+          <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.showSummary)" @update:model-value="(v:boolean)=> { const meta = { ...(campo?.meta as any) }; meta.showSummary = v; store.actualizarCampo(campo!.id, { meta }) }" />
+        </div>
+        <div class="col-8">
+          <label class="block mb-1">Etiqueta resumen</label>
+          <PrimeInputText :model-value="String(((campo?.meta as any)?.summaryLabel ?? 'Total'))" @update:model-value="(v:string)=> { const meta = { ...(campo?.meta as any) }; meta.summaryLabel = v; store.actualizarCampo(campo!.id, { meta }) }" />
+        </div>
+      </div>
+    </div>
+    <div class="mt-3">
+      <div class="font-semibold mb-2">Estilo de tabla</div>
+      <div class="grid">
+        <div class="col-3">
+          <label class="block mb-1">Bordes</label>
+          <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.tableStyle?.bordered)" @update:model-value="(v:boolean)=> { const meta = { ...(campo?.meta as any), tableStyle: { ...((campo?.meta as any)?.tableStyle||{}) } }; meta.tableStyle.bordered = v; store.actualizarCampo(campo!.id, { meta }) }" />
+        </div>
+        <div class="col-3">
+          <label class="block mb-1">Zebra</label>
+          <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.tableStyle?.striped)" @update:model-value="(v:boolean)=> { const meta = { ...(campo?.meta as any), tableStyle: { ...((campo?.meta as any)?.tableStyle||{}) } }; meta.tableStyle.striped = v; store.actualizarCampo(campo!.id, { meta }) }" />
+        </div>
+        <div class="col-3">
+          <label class="block mb-1">Hover</label>
+          <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.tableStyle?.hover)" @update:model-value="(v:boolean)=> { const meta = { ...(campo?.meta as any), tableStyle: { ...((campo?.meta as any)?.tableStyle||{}) } }; meta.tableStyle.hover = v; store.actualizarCampo(campo!.id, { meta }) }" />
+        </div>
+        <div class="col-3">
+          <label class="block mb-1">Padding</label>
+          <PrimeSelect :model-value="(((campo?.meta as any)?.tableStyle?.padding) || 'md')" :options="['sm','md','lg']" @update:model-value="(v:string)=> { const meta = { ...(campo?.meta as any), tableStyle: { ...((campo?.meta as any)?.tableStyle||{}) } }; meta.tableStyle.padding = v; store.actualizarCampo(campo!.id, { meta }) }" />
+        </div>
       </div>
     </div>
   </div>

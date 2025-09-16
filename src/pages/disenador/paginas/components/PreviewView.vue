@@ -38,10 +38,11 @@ const idAName = computed(() => construirMapaIdNombre(campos.value))
 
 // Tipos auxiliares para tabla
 type ColumnaTabla = { name: string; label?: string; type?: 'text' | 'number' }
-function obtenerColumnasTabla(field: FieldSchema): ColumnaTabla[] {
+type ColumnaTablaExt = ColumnaTabla & { agg?: 'none'|'sum'|'avg'|'count'|'min'|'max'; aggPrefix?: string; aggSuffix?: string; decimals?: number }
+function obtenerColumnasTabla(field: FieldSchema): ColumnaTablaExt[] {
   const meta = field.meta as Record<string, unknown> | undefined
   const raw = meta?.columns as unknown
-  return Array.isArray(raw) ? (raw as ColumnaTabla[]).filter(c => c && typeof c.name === 'string') : []
+  return Array.isArray(raw) ? (raw as ColumnaTablaExt[]).filter(c => c && typeof c.name === 'string') : []
 }
 function obtenerFilasTabla(field: FieldSchema): number {
   const meta = field.meta as Record<string, unknown> | undefined
@@ -65,6 +66,64 @@ function agregarFilaCampo(field: FieldSchema): void {
   } else {
     dict[nombre] = [nueva]
   }
+}
+
+// Estilos de tabla desde meta
+type EstiloTabla = { bordered?: boolean; striped?: boolean; hover?: boolean; padding?: 'sm'|'md'|'lg' }
+function obtenerEstiloTabla(field: FieldSchema): EstiloTabla {
+  const meta = field.meta as Record<string, unknown> | undefined
+  const estilo = (meta?.tableStyle ?? {}) as Partial<EstiloTabla>
+  let padding: 'sm'|'md'|'lg' = 'md'
+  if (estilo.padding === 'sm' || estilo.padding === 'md' || estilo.padding === 'lg') padding = estilo.padding
+  return { bordered: !!estilo.bordered, striped: !!estilo.striped, hover: !!estilo.hover, padding }
+}
+function clasePaddingTabla(field: FieldSchema): string {
+  const p = obtenerEstiloTabla(field).padding
+  return p === 'sm' ? 'p-1' : p === 'lg' ? 'p-3' : 'p-2'
+}
+function clasesTabla(field: FieldSchema): string[] {
+  const estilo = obtenerEstiloTabla(field)
+  return [
+    'w-full',
+    'text-sm',
+    estilo.bordered ? 'border-1 surface-border' : '',
+  ]
+}
+function clasesCelda(field: FieldSchema): string[] {
+  const estilo = obtenerEstiloTabla(field)
+  const pad = clasePaddingTabla(field)
+  return [pad, estilo.bordered ? 'border-bottom-1 surface-border' : '']
+}
+function clasesFila(field: FieldSchema, index: number): string[] {
+  const estilo = obtenerEstiloTabla(field)
+  const zebra = estilo.striped && index % 2 === 1 ? 'surface-50' : ''
+  const hover = estilo.hover ? 'fila-hover' : ''
+  return [zebra, hover]
+}
+
+// Agregaciones por columna
+function calcularAgregado(col: ColumnaTablaExt, filas: Record<string, unknown>[]): number | null {
+  const vals = filas.map(r => r[col.name])
+  if (col.agg === 'count') {
+    return vals.filter(v => v !== undefined && v !== null && String(v).trim() !== '').length
+  }
+  const nums = vals.map(v => typeof v === 'string' ? (v.trim()==='' ? NaN : Number(v)) : (typeof v === 'number' ? v : NaN)).filter(n => !Number.isNaN(n)) as number[]
+  if (nums.length === 0) return col.agg ? 0 : null
+  switch (col.agg) {
+    case 'sum': return nums.reduce((a,b)=>a+b,0)
+    case 'avg': return nums.reduce((a,b)=>a+b,0) / nums.length
+    case 'min': return Math.min(...nums)
+    case 'max': return Math.max(...nums)
+    default: return null
+  }
+}
+function formatearAgregado(col: ColumnaTablaExt, valor: number | null): string {
+  if (valor == null) return ''
+  const decimals = typeof col.decimals === 'number' ? Math.max(0, Math.min(8, col.decimals)) : 2
+  const numStr = (col.agg === 'count') ? String(valor) : (Number(valor).toFixed(decimals))
+  const pre = col.aggPrefix ?? ''
+  const suf = col.aggSuffix ?? ''
+  return `${pre}${numStr}${suf}`.trim()
 }
 
 type Opcion = { label: string; value: unknown }
@@ -305,21 +364,33 @@ function enviar(): void {
           <!-- Tabla: edición por filas/columnas -->
           <div v-else-if="f.type==='table'">
             <div class="overflow-auto">
-              <table class="w-full text-sm">
+              <table :class="clasesTabla(f)">
                 <thead>
                   <tr>
-                    <th v-for="col in ((f.meta as any)?.columns||[])" :key="col.name" class="text-left p-2 border-bottom-1 surface-border">{{ col.label }}</th>
+                    <th v-for="col in obtenerColumnasTabla(f)" :key="col.name" :class="['text-left', clasePaddingTabla(f), obtenerEstiloTabla(f).bordered ? 'border-bottom-1 surface-border' : '']">{{ col.label }}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(row, rIdx) in (((valores as any)[f.name||''] as any[])||[])" :key="rIdx">
-                    <td v-for="col in ((f.meta as any)?.columns||[])" :key="col.name" class="p-2">
+                  <tr v-for="(row, rIdx) in (((valores as any)[f.name||''] as any[])||[])" :key="rIdx" :class="clasesFila(f, rIdx)">
+                    <td v-for="col in obtenerColumnasTabla(f)" :key="col.name" :class="clasesCelda(f)">
                       <PrimeInputText v-if="(col.type||'text')==='text'" v-model="(valores as any)[f.name||''][rIdx][col.name]" class="w-full" :disabled="f.disabled" />
                       <PrimeInputNumber v-else-if="col.type==='number'" v-model="(valores as any)[f.name||''][rIdx][col.name]" class="w-full" :disabled="f.disabled" />
                       <span v-else class="text-muted-color">—</span>
                     </td>
                   </tr>
                 </tbody>
+                <tfoot v-if="obtenerColumnasTabla(f).some(c => c.agg && c.agg !== 'none') || (f.meta as any)?.showSummary">
+                  <tr>
+                    <td v-for="(col, idx) in obtenerColumnasTabla(f)" :key="col.name" :class="[clasesCelda(f), 'font-semibold']">
+                      <template v-if="idx===0">
+                        {{ (f.meta as any)?.summaryLabel ?? 'Total' }}
+                      </template>
+                      <template v-else>
+                        {{ formatearAgregado(col as any, calcularAgregado(col as any, (((valores as any)[f.name||''] as Record<string, unknown>[])||[]))) }}
+                      </template>
+                    </td>
+                  </tr>
+                </tfoot>
               </table>
             </div>
             <div class="mt-2" v-if="(f.meta as any)?.addRows">
@@ -363,21 +434,33 @@ function enviar(): void {
                   <PrimeDivider v-else-if="ch.type==='divider'" />
                   <div v-else-if="ch.type==='table'">
                     <div class="overflow-auto">
-                      <table class="w-full text-sm">
+                      <table :class="clasesTabla(ch)">
                         <thead>
                           <tr>
-                            <th v-for="col in ((ch.meta as any)?.columns||[])" :key="col.name" class="text-left p-2 border-bottom-1 surface-border">{{ col.label }}</th>
+                             <th v-for="col in obtenerColumnasTabla(ch)" :key="col.name" :class="['text-left', clasePaddingTabla(ch), obtenerEstiloTabla(ch).bordered ? 'border-bottom-1 surface-border' : '']">{{ col.label }}</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr v-for="(row, rIdx) in (((valores as any)[ch.name||''] as any[])||[])" :key="rIdx">
-                            <td v-for="col in ((ch.meta as any)?.columns||[])" :key="col.name" class="p-2">
+                           <tr v-for="(row, rIdx) in (((valores as any)[ch.name||''] as any[])||[])" :key="rIdx" :class="clasesFila(ch, rIdx)">
+                             <td v-for="col in obtenerColumnasTabla(ch)" :key="col.name" :class="clasesCelda(ch)">
                               <PrimeInputText v-if="(col.type||'text')==='text'" v-model="(valores as any)[ch.name||''][rIdx][col.name]" class="w-full" :disabled="ch.disabled" />
                               <PrimeInputNumber v-else-if="col.type==='number'" v-model="(valores as any)[ch.name||''][rIdx][col.name]" class="w-full" :disabled="ch.disabled" />
                               <span v-else class="text-muted-color">—</span>
                             </td>
                           </tr>
                         </tbody>
+                        <tfoot v-if="obtenerColumnasTabla(ch).some(c => c.agg && c.agg !== 'none') || (ch.meta as any)?.showSummary">
+                          <tr>
+                            <td v-for="(col, idx) in obtenerColumnasTabla(ch)" :key="col.name" :class="[clasesCelda(ch), 'font-semibold']">
+                              <template v-if="idx===0">
+                                {{ (ch.meta as any)?.summaryLabel ?? 'Total' }}
+                              </template>
+                              <template v-else>
+                                {{ formatearAgregado(col as any, calcularAgregado(col as any, (((valores as any)[ch.name||''] as Record<string, unknown>[])||[]))) }}
+                              </template>
+                            </td>
+                          </tr>
+                        </tfoot>
                       </table>
                     </div>
                     <div class="mt-2" v-if="(ch.meta as any)?.addRows">
@@ -400,3 +483,7 @@ function enviar(): void {
     </form>
   </div>
 </template>
+
+<style scoped>
+.fila-hover:hover { background: var(--p-surface-100); }
+</style>

@@ -72,11 +72,14 @@ const paletteItems: { type: FieldType; icon: string; defaultProps?: Partial<Fiel
     defaultProps: {
       meta: {
         columns: [
-          { name: 'col1', label: 'Columna 1', type: 'text' },
-          { name: 'col2', label: 'Columna 2', type: 'number' },
+          { name: 'col1', label: 'Columna 1', type: 'text', agg: 'count', aggPrefix: 'Total ', aggSuffix: '', decimals: 0 },
+          { name: 'col2', label: 'Columna 2', type: 'number', agg: 'sum', aggPrefix: '$', aggSuffix: '', decimals: 2 },
         ],
         rows: 1,
         addRows: true,
+        showSummary: true,
+        summaryLabel: 'Total',
+        tableStyle: { bordered: true, striped: true, hover: true, padding: 'md' },
       },
     },
   },
