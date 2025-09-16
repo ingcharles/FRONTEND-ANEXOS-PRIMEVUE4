@@ -439,7 +439,7 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
   <!-- General -->
   <div class="mb-3">
     <div class="font-semibold mb-2">General</div>
-    <div class="flex flex-column gap-2">
+    <div class="flex flex-col gap-2">
       <div class="field" v-if="campo && campo.type!=='panel'">
         <label class="block mb-1">Tipo de campo</label>
         <PrimeSelect :model-value="(campo.type as any)" :options="opcionesTipo" option-label="label" option-value="value" class="w-full" @update:model-value="(v:TipoSimple)=> cambiarTipoCampo(v)" />
@@ -478,37 +478,37 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
         <PrimeInputNumber :model-value="(campo?.meta as any)?.valorPorDefecto ?? null" @update:model-value="(v:any)=> actualizarValorPorDefecto(v)" class="w-full" />
       </div>
       <!-- Restricciones numéricas -->
-      <div class="field grid" v-if="campo && campo.type==='number'">
-        <div class="col-4">
+      <div class="field grid grid-cols-12 gap-3" v-if="campo && campo.type==='number'">
+        <div class="col-span-12 md:col-span-4">
           <label class="block mb-1">Mínimo</label>
           <PrimeInputNumber :model-value="obtenerMetaNumero().min ?? null" @update:model-value="(v:any)=> actualizarMetaNumero({ min: typeof v==='number'? v : undefined })" class="w-full" />
         </div>
-        <div class="col-4">
+        <div class="col-span-12 md:col-span-4">
           <label class="block mb-1">Máximo</label>
           <PrimeInputNumber :model-value="obtenerMetaNumero().max ?? null" @update:model-value="(v:any)=> actualizarMetaNumero({ max: typeof v==='number'? v : undefined })" class="w-full" />
         </div>
-        <div class="col-4">
+        <div class="col-span-12 md:col-span-4">
           <label class="block mb-1">Paso</label>
           <PrimeInputNumber :model-value="obtenerMetaNumero().step ?? 1" @update:model-value="(v:any)=> actualizarMetaNumero({ step: typeof v==='number'? v : 1 })" class="w-full" />
         </div>
-        <div class="col-12" v-if="minMayorQueMax()">
+        <div class="col-span-12" v-if="minMayorQueMax()">
           <small class="text-red-500">El mínimo no debe ser mayor que el máximo.</small>
         </div>
       </div>
-      <div class="field grid" v-if="campo && campo.type==='number'">
-        <div class="col-6">
+      <div class="field grid grid-cols-12 gap-3" v-if="campo && campo.type==='number'">
+        <div class="col-span-12 md:col-span-6">
           <label class="block mb-1">Mensaje error mínimo</label>
           <PrimeInputText :model-value="obtenerMetaNumero().minMessage" @update:model-value="(v:string)=> actualizarMetaNumero({ minMessage: v })" />
         </div>
-        <div class="col-6">
+        <div class="col-span-12 md:col-span-6">
           <label class="block mb-1">Mensaje error máximo</label>
           <PrimeInputText :model-value="obtenerMetaNumero().maxMessage" @update:model-value="(v:string)=> actualizarMetaNumero({ maxMessage: v })" />
         </div>
-        <small class="col-12 text-muted-color">Si los dejas vacíos, se usarán mensajes por defecto.</small>
+        <small class="col-span-12 text-muted-color">Si los dejas vacíos, se usarán mensajes por defecto.</small>
       </div>
       <!-- Valor por defecto para checkbox (booleano) cuando NO tiene opciones -->
   <div class="field" v-if="campo && campo.type==='checkbox' && ((!Array.isArray((campo.meta as any)?.options)) || (((campo.meta as any)?.options?.length || 0)===0))">
-        <label class="inline-flex align-items-center gap-2">
+        <label class="inline-flex items-center gap-2">
           <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.valorPorDefecto)" @update:model-value="(v:boolean)=> actualizarValorPorDefecto(v)" />
           Activado por defecto
         </label>
@@ -532,16 +532,16 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
   <!-- Diseño -->
   <div class="mb-3">
     <div class="font-semibold mb-2">Diseño</div>
-    <div class="field grid">
-      <div class="col-4">
+    <div class="field grid grid-cols-12 gap-3">
+      <div class="col-span-12 md:col-span-4">
         <label class="block mb-1">Cols sm</label>
   <PrimeSelect :model-value="campo?.grid?.sm ?? 12" :options="[1,2,3,4,5,6,7,8,9,10,11,12]" class="w-full" @update:model-value="(v: number | null)=> actualizarGrid({ sm: Number(v ?? 12) })" />
       </div>
-      <div class="col-4">
+      <div class="col-span-12 md:col-span-4">
         <label class="block mb-1">Cols md</label>
   <PrimeSelect :model-value="campo?.grid?.md ?? 6" :options="[1,2,3,4,5,6,7,8,9,10,11,12]" class="w-full" @update:model-value="(v: number | null)=> actualizarGrid({ md: Number(v ?? 6) })" />
       </div>
-      <div class="col-4">
+      <div class="col-span-12 md:col-span-4">
         <label class="block mb-1">Cols lg</label>
   <PrimeSelect :model-value="campo?.grid?.lg ?? 6" :options="[1,2,3,4,5,6,7,8,9,10,11,12]" class="w-full" @update:model-value="(v: number | null)=> actualizarGrid({ lg: Number(v ?? 6) })" />
       </div>
@@ -552,13 +552,13 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
   <div class="mb-3">
     <div class="font-semibold mb-2">Comportamiento</div>
     <div class="field">
-      <label class="inline-flex align-items-center gap-2">
+      <label class="inline-flex items-center gap-2">
         <PrimeCheckbox binary :model-value="!!campo?.visible" @update:model-value="(v: boolean)=> actualizarBooleano('visible', v)" />
         Visible
       </label>
     </div>
     <div class="field" v-if="campo?.type!=='divider' && campo?.type!=='label' && campo?.type!=='panel' && campo?.type!=='button'">
-      <label class="inline-flex align-items-center gap-2">
+      <label class="inline-flex items-center gap-2">
         <PrimeCheckbox binary :model-value="!!campo?.required" @update:model-value="(v: boolean)=> actualizarBooleano('required', v)" />
         Requerido
       </label>
@@ -569,13 +569,13 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
       <small class="text-muted-color">Se mostrará en la vista previa cuando el campo sea obligatorio.</small>
     </div>
   <div class="field" v-if="campo && (campo.type==='text'||campo.type==='textarea'||campo.type==='email'||campo.type==='password'||campo.type==='select'||campo.type==='radio'||campo.type==='time'||campo.type==='date'||campo.type==='button'||campo.type==='number'||campo.type==='checkbox')">
-      <label class="inline-flex align-items-center gap-2">
+      <label class="inline-flex items-center gap-2">
         <PrimeCheckbox binary :model-value="!!campo?.disabled" @update:model-value="(v: boolean)=> store.actualizarCampo(campo!.id, { disabled: v })" />
         Deshabilitado
       </label>
     </div>
     <div class="field" v-if="campo && (campo.type==='text'||campo.type==='textarea'||campo.type==='email'||campo.type==='password'||campo.type==='number')">
-      <label class="inline-flex align-items-center gap-2">
+      <label class="inline-flex items-center gap-2">
         <PrimeCheckbox binary :model-value="!!campo?.readonly" @update:model-value="(v: boolean)=> store.actualizarCampo(campo!.id, { readonly: v })" />
         Solo lectura
       </label>
@@ -590,8 +590,8 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
   <!-- Datos para select/radio/checkbox (grupo) -->
   <div v-if="campo?.type==='select' || campo?.type==='radio' || campo?.type==='checkbox'" class="mb-3">
     <div class="font-semibold mb-2">Datos</div>
-    <div class="grid mb-2">
-      <div class="col-12">
+    <div class="grid grid-cols-12 gap-3 mb-2">
+      <div class="col-span-12">
         <label class="block mb-1">Fuente de opciones</label>
         <PrimeSelect
           :model-value="obtenerModoOpciones()"
@@ -606,20 +606,20 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
 
     <!-- UI Modo Manual -->
     <template v-if="obtenerModoOpciones()==='manual'">
-    <div class="flex justify-content-between align-items-center mb-2">
+    <div class="flex justify-between items-center mb-2">
       <span class="font-semibold">Opciones</span>
       <PrimeButton label="Agregar" size="small" icon="pi pi-plus" @click="agregarOpcion" />
     </div>
-    <div v-for="(op, i) in obtenerOpciones()" :key="i" class="grid align-items-end">
-      <div class="col-5">
+    <div v-for="(op, i) in obtenerOpciones()" :key="i" class="grid grid-cols-12 gap-3 items-end">
+      <div class="col-span-12 md:col-span-5">
         <label class="block mb-1">Etiqueta</label>
         <PrimeInputText :model-value="String(op.label)" @update:model-value="(v:string)=> actualizarOpcion(i,'label', v)" />
       </div>
-      <div class="col-5">
+      <div class="col-span-12 md:col-span-5">
         <label class="block mb-1">Valor</label>
         <PrimeInputText :model-value="String(op.value ?? '')" @update:model-value="(v:string)=> actualizarOpcion(i,'value', v)" />
       </div>
-      <div class="col-2">
+      <div class="col-span-12 md:col-span-2">
         <PrimeButton icon="pi pi-trash" severity="danger" text @click="() => eliminarOpcion(i)" />
       </div>
     </div>
@@ -628,12 +628,12 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
     <!-- UI Modo API -->
     <div v-if="obtenerModoOpciones()==='api'" class="mt-2 p-2 border-1 surface-border border-round">
       <div class="font-semibold mb-2 text-sm">Cargar opciones por API</div>
-      <div class="grid">
-        <div class="col-12">
+      <div class="grid grid-cols-12 gap-3">
+        <div class="col-span-12">
           <label class="block mb-1">URL</label>
           <PrimeInputText :model-value="obtenerConfigApi().url" placeholder="https://api.midominio.com/opciones" @update:model-value="(v:string)=> actualizarConfigApi({ url: v })" />
         </div>
-        <div class="col-4">
+        <div class="col-span-12 md:col-span-4">
           <label class="block mb-1">Método</label>
           <PrimeSelect
             :model-value="obtenerConfigApi().method || 'GET'"
@@ -644,7 +644,7 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
             @update:model-value="(v:'GET'|'POST')=> actualizarConfigApi({ method: v })"
           />
         </div>
-        <div class="col-8">
+        <div class="col-span-12 md:col-span-8">
           <label class="block mb-1">Content-Type</label>
           <PrimeSelect
             :model-value="obtenerConfigApi().contentType || 'application/json'"
@@ -659,28 +659,28 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
             @update:model-value="(v:string)=> actualizarConfigApi({ contentType: v })"
           />
         </div>
-        <div class="col-6">
+        <div class="col-span-12 md:col-span-6">
           <label class="block mb-1">Ruta datos (opcional)</label>
           <PrimeInputText :model-value="obtenerConfigApi().dataPath" placeholder="por ej.: data.items" @update:model-value="(v:string)=> actualizarConfigApi({ dataPath: v })" />
         </div>
-        <div class="col-3">
+        <div class="col-span-12 md:col-span-3">
           <label class="block mb-1">labelKey</label>
           <PrimeInputText :model-value="obtenerConfigApi().labelKey" placeholder="label" @update:model-value="(v:string)=> actualizarConfigApi({ labelKey: v })" />
         </div>
-        <div class="col-3">
+        <div class="col-span-12 md:col-span-3">
           <label class="block mb-1">valueKey</label>
           <PrimeInputText :model-value="obtenerConfigApi().valueKey" placeholder="value" @update:model-value="(v:string)=> actualizarConfigApi({ valueKey: v })" />
         </div>
-        <div class="col-12" v-if="(obtenerConfigApi().method||'GET')==='POST'">
+        <div class="col-span-12" v-if="(obtenerConfigApi().method||'GET')==='POST'">
           <label class="block mb-1">Body (JSON o texto)</label>
           <PrimeTextarea :model-value="obtenerConfigApi().body" rows="4" placeholder='{"page":1}' @update:model-value="(v:string)=> actualizarConfigApi({ body: v })" />
         </div>
-        <div class="col-12">
+        <div class="col-span-12">
           <label class="block mb-1">Headers (JSON opcional)</label>
           <PrimeTextarea :model-value="obtenerConfigApi().headersJson" rows="3" placeholder='{"Authorization":"Bearer ..."}' @update:model-value="(v:string)=> actualizarConfigApi({ headersJson: v })" />
         </div>
       </div>
-      <div class="flex align-items-center gap-2 flex-wrap">
+      <div class="flex items-center gap-2 flex-wrap">
         <PrimeButton :disabled="cargandoApi" size="small" icon="pi pi-refresh" :label="cargandoApi ? 'Cargando…' : 'Reemplazar con API'" @click="cargarOpcionesDesdeApi('reemplazar')" />
         <PrimeButton :disabled="cargandoApi" size="small" icon="pi pi-plus" severity="secondary" label="Añadir desde API" @click="cargarOpcionesDesdeApi('agregar')" />
         <small v-if="errorApi" class="text-red-500">{{ errorApi }}</small>
