@@ -42,7 +42,28 @@ const errores = ref<Record<string, string>>({})
 
 // Tipos auxiliares para tabla
 type ColumnaTabla = { name: string; label?: string; type?: 'text' | 'number' }
-type ColumnaTablaExt = ColumnaTabla & { agg?: 'none'|'sum'|'avg'|'count'|'min'|'max'; aggPrefix?: string; aggSuffix?: string; decimals?: number }
+type ColumnaTablaExt = ColumnaTabla & {
+  // Formato de celda
+  formatMode?: 'decimal' | 'currency' | 'percent'
+  currency?: string
+  locale?: string
+  prefix?: string
+  suffix?: string
+  minFractionDigits?: number
+  maxFractionDigits?: number
+  percentScale?: 'whole' | 'fraction'
+  // Agregados
+  agg?: 'none'|'sum'|'avg'|'count'|'min'|'max'
+  aggPrefix?: string
+  aggSuffix?: string
+  decimals?: number
+  // Validación por columna
+  required?: boolean
+  min?: number | null
+  max?: number | null
+  minMessage?: string
+  maxMessage?: string
+}
 function obtenerColumnasTabla(field: FieldSchema): ColumnaTablaExt[] {
   const meta = field.meta as Record<string, unknown> | undefined
   const raw = meta?.columns as unknown
@@ -131,6 +152,7 @@ function formatearAgregado(col: ColumnaTablaExt, valor: number | null): string {
   return `${pre}${numStr}${suf}`.trim()
 }
 
+
 type Opcion = { label: string; value: unknown }
 function obtenerOpciones(field: FieldSchema): Opcion[] {
   const meta = field.meta as Record<string, unknown> | undefined
@@ -169,8 +191,23 @@ function crearSchema(): z.ZodObject<Record<string, z.ZodTypeAny>> {
       const cols = obtenerColumnasTabla(f)
       const rowShape: Record<string, z.ZodTypeAny> = {}
       for (const c of cols) {
-        if ((c.type || 'text') === 'number') rowShape[c.name] = z.preprocess((v) => typeof v === 'string' ? (v.trim()==='' ? undefined : Number(v)) : v, z.number().optional())
-        else rowShape[c.name] = z.string().optional()
+        if ((c.type || 'text') === 'number') {
+          let num: z.ZodTypeAny = z.preprocess((v) => typeof v === 'string' ? (v.trim()==='' ? undefined : Number(v)) : v, z.number())
+          // Rango por columna
+          const cMin = typeof c.min === 'number' ? c.min : undefined
+          const cMax = typeof c.max === 'number' ? c.max : undefined
+          const minMsg = typeof c.minMessage === 'string' && c.minMessage ? String(c.minMessage) : (typeof cMin === 'number' ? `Debe ser >= ${cMin}` : 'Valor demasiado pequeño')
+          const maxMsg = typeof c.maxMessage === 'string' && c.maxMessage ? String(c.maxMessage) : (typeof cMax === 'number' ? `Debe ser <= ${cMax}` : 'Valor demasiado grande')
+          if (typeof cMin === 'number') num = (num as z.ZodNumber).min(cMin, minMsg)
+          if (typeof cMax === 'number') num = (num as z.ZodNumber).max(cMax, maxMsg)
+          // Requerido por columna
+          const requerido = Boolean(c.required)
+          rowShape[c.name] = requerido ? num : (num.optional())
+        } else {
+          const requerido = Boolean(c.required)
+          const s = z.string()
+          rowShape[c.name] = requerido ? s : s.optional()
+        }
       }
       base = z.array(z.object(rowShape)).optional()
     }
@@ -377,7 +414,21 @@ function enviar(): void {
                   <tr v-for="(row, rIdx) in (((valores as any)[f.name||''] as any[])||[])" :key="rIdx" :class="clasesFila(f)">
                     <td v-for="col in obtenerColumnasTabla(f)" :key="col.name" :class="clasesCelda(f)">
                       <PrimeInputText v-if="(col.type||'text')==='text'" v-model="(valores as any)[f.name||''][rIdx][col.name]" class="w-full" :disabled="f.disabled" />
-                      <PrimeInputNumber v-else-if="col.type==='number'" v-model="(valores as any)[f.name||''][rIdx][col.name]" class="w-full" :disabled="f.disabled" />
+                      <template v-else-if="col.type==='number'">
+                        <PrimeInputNumber
+                          :model-value="(col as any).formatMode==='percent' && (col as any).percentScale==='fraction' ? (((valores as any)[f.name||''][rIdx][col.name] ?? null) as any) * 100 : ((valores as any)[f.name||''][rIdx][col.name])"
+                          @update:model-value="(v:any) => { if ((col as any).formatMode==='percent' && (col as any).percentScale==='fraction') { (valores as any)[f.name||''][rIdx][col.name] = (typeof v==='number'? v/100 : v) } else { (valores as any)[f.name||''][rIdx][col.name] = v } }"
+                          class="w-full"
+                          :disabled="f.disabled"
+                          :mode="(col as any).formatMode==='currency' ? 'currency' : ((col as any).formatMode==='percent' ? 'decimal' : 'decimal')"
+                          :currency="(col as any).formatMode==='currency' ? ((col as any).currency || 'USD') : undefined"
+                          :locale="(col as any).locale || 'es-ES'"
+                          :prefix="(col as any).prefix || ''"
+                          :suffix="(col as any).formatMode==='percent' ? '%' : ((col as any).suffix || '')"
+                          :min-fraction-digits="(col as any).minFractionDigits ?? 0"
+                          :max-fraction-digits="(col as any).maxFractionDigits ?? 2"
+                        />
+                      </template>
                       <span v-else class="text-muted-color">—</span>
                     </td>
                   </tr>
@@ -385,12 +436,10 @@ function enviar(): void {
                 <tfoot v-if="obtenerColumnasTabla(f).some(c => c.agg && c.agg !== 'none') || (f.meta as any)?.showSummary">
                   <tr>
                     <td v-for="(col, idx) in obtenerColumnasTabla(f)" :key="col.name" :class="[clasesCelda(f), 'font-semibold']">
-                      <template v-if="idx===0">
-                        {{ (f.meta as any)?.summaryLabel ?? 'Total' }}
-                      </template>
-                      <template v-else>
+                      <span v-if="idx===0">{{ (f.meta as any)?.summaryLabel ?? 'Total' }}</span>
+                      <span class="ml-2" v-if="col.agg && col.agg!=='none'">
                         {{ formatearAgregado(col as any, calcularAgregado(col as any, (((valores as any)[f.name||''] as Record<string, unknown>[])||[]))) }}
-                      </template>
+                      </span>
                     </td>
                   </tr>
                 </tfoot>
@@ -447,7 +496,21 @@ function enviar(): void {
                           <tr v-for="(row, rIdx) in (((valores as any)[ch.name||''] as any[])||[])" :key="rIdx" :class="clasesFila(ch)">
                              <td v-for="col in obtenerColumnasTabla(ch)" :key="col.name" :class="clasesCelda(ch)">
                               <PrimeInputText v-if="(col.type||'text')==='text'" v-model="(valores as any)[ch.name||''][rIdx][col.name]" class="w-full" :disabled="ch.disabled" />
-                              <PrimeInputNumber v-else-if="col.type==='number'" v-model="(valores as any)[ch.name||''][rIdx][col.name]" class="w-full" :disabled="ch.disabled" />
+                              <template v-else-if="col.type==='number'">
+                                <PrimeInputNumber
+                                  :model-value="(col as any).formatMode==='percent' && (col as any).percentScale==='fraction' ? (((valores as any)[ch.name||''][rIdx][col.name] ?? null) as any) * 100 : ((valores as any)[ch.name||''][rIdx][col.name])"
+                                  @update:model-value="(v:any) => { if ((col as any).formatMode==='percent' && (col as any).percentScale==='fraction') { (valores as any)[ch.name||''][rIdx][col.name] = (typeof v==='number'? v/100 : v) } else { (valores as any)[ch.name||''][rIdx][col.name] = v } }"
+                                  class="w-full"
+                                  :disabled="ch.disabled"
+                                  :mode="(col as any).formatMode==='currency' ? 'currency' : ((col as any).formatMode==='percent' ? 'decimal' : 'decimal')"
+                                  :currency="(col as any).formatMode==='currency' ? ((col as any).currency || 'USD') : undefined"
+                                  :locale="(col as any).locale || 'es-ES'"
+                                  :prefix="(col as any).prefix || ''"
+                                  :suffix="(col as any).formatMode==='percent' ? '%' : ((col as any).suffix || '')"
+                                  :min-fraction-digits="(col as any).minFractionDigits ?? 0"
+                                  :max-fraction-digits="(col as any).maxFractionDigits ?? 2"
+                                />
+                              </template>
                               <span v-else class="text-muted-color">—</span>
                             </td>
                           </tr>
@@ -455,12 +518,10 @@ function enviar(): void {
                         <tfoot v-if="obtenerColumnasTabla(ch).some(c => c.agg && c.agg !== 'none') || (ch.meta as any)?.showSummary">
                           <tr>
                             <td v-for="(col, idx) in obtenerColumnasTabla(ch)" :key="col.name" :class="[clasesCelda(ch), 'font-semibold']">
-                              <template v-if="idx===0">
-                                {{ (ch.meta as any)?.summaryLabel ?? 'Total' }}
-                              </template>
-                              <template v-else>
+                              <span v-if="idx===0">{{ (ch.meta as any)?.summaryLabel ?? 'Total' }}</span>
+                              <span class="ml-2" v-if="col.agg && col.agg!=='none'">
                                 {{ formatearAgregado(col as any, calcularAgregado(col as any, (((valores as any)[ch.name||''] as Record<string, unknown>[])||[]))) }}
-                              </template>
+                              </span>
                             </td>
                           </tr>
                         </tfoot>

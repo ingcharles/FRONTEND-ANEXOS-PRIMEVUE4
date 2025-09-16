@@ -12,6 +12,40 @@ function actualizarTexto(clave: 'label' | 'name' | 'placeholder', valor: string)
   store.actualizarCampo(campo.value.id, { [clave]: valor })
 }
 
+// Cambiar tipo de campo
+type TipoSimple = 'text'|'textarea'|'email'|'password'|'number'|'time'|'date'|'select'|'radio'|'checkbox'|'label'|'button'|'divider'|'panel'|'table'
+const opcionesTipo: { label: string; value: TipoSimple }[] = [
+  { label: 'Texto', value: 'text' },
+  { label: 'Área', value: 'textarea' },
+  { label: 'Email', value: 'email' },
+  { label: 'Password', value: 'password' },
+  { label: 'Número', value: 'number' },
+  { label: 'Hora', value: 'time' },
+  { label: 'Fecha', value: 'date' },
+  { label: 'Select', value: 'select' },
+  { label: 'Radio', value: 'radio' },
+  { label: 'Checkbox', value: 'checkbox' },
+  { label: 'Etiqueta', value: 'label' },
+  { label: 'Botón', value: 'button' },
+  { label: 'Divisor', value: 'divider' },
+  { label: 'Panel', value: 'panel' },
+  { label: 'Tabla', value: 'table' },
+]
+function obtenerMetaPorDefecto(tipo: TipoSimple): Record<string, unknown> | undefined {
+  if (tipo === 'select' || tipo === 'radio') return { options: [{ label: 'Item 1', value: 'item1' }, { label: 'Item 2', value: 'item2' }] }
+  if (tipo === 'checkbox') return { valorPorDefecto: false }
+  if (tipo === 'table') return { columns: [ { name:'col1', label:'Columna 1', type:'text' }, { name:'col2', label:'Columna 2', type:'number' } ], rows: 1, addRows: true, showSummary: true, summaryLabel: 'Total', tableStyle: { bordered: true, striped: true, hover: true, padding: 'md' } }
+  return undefined
+}
+function cambiarTipoCampo(nuevo: TipoSimple): void {
+  if (!campo.value) return
+  const meta = { ...(campo.value.meta ?? {}) } as Record<string, unknown>
+  const defecto = obtenerMetaPorDefecto(nuevo)
+  const metaFinal = defecto ? { ...meta, ...defecto } : meta
+  // Al cambiar tipo, aseguramos coherencia básica
+  store.actualizarCampo(campo.value.id, { type: nuevo, meta: metaFinal })
+}
+
 function actualizarGrid(parcial: { sm?: number; md?: number; lg?: number }): void {
   if (!campo.value) return
   const actual = campo.value.grid ?? {}
@@ -52,7 +86,28 @@ function eliminarOpcion(ind: number): void {
 
 // Columnas para tabla
 type ColumnaTabla = { name: string; label: string; type?: 'text' | 'number' }
-type ColumnaTablaExt = ColumnaTabla & { agg?: 'none'|'sum'|'avg'|'count'|'min'|'max'; aggPrefix?: string; aggSuffix?: string; decimals?: number }
+type ColumnaTablaExt = ColumnaTabla & {
+  // Formato de celda
+  formatMode?: 'decimal' | 'currency' | 'percent'
+  currency?: string
+  locale?: string
+  prefix?: string
+  suffix?: string
+  minFractionDigits?: number
+  maxFractionDigits?: number
+  percentScale?: 'whole' | 'fraction'
+  // Agregados de columna
+  agg?: 'none'|'sum'|'avg'|'count'|'min'|'max'
+  aggPrefix?: string
+  aggSuffix?: string
+  decimals?: number
+  // Validación por columna
+  required?: boolean
+  min?: number | null
+  max?: number | null
+  minMessage?: string
+  maxMessage?: string
+}
 function obtenerColumnas(): ColumnaTabla[] {
   const cols = (campo.value?.meta as Record<string, unknown> | undefined)?.columns as unknown as ColumnaTablaExt[] | undefined
   return Array.isArray(cols) ? cols : []
@@ -80,6 +135,18 @@ function actualizarAddRows(v: boolean): void {
   const meta = { ...(campo.value.meta ?? {}) } as Record<string, unknown>
   meta.addRows = v
   store.actualizarCampo(campo.value.id, { meta })
+}
+
+// Selección de columna para edición individual
+const indiceColumna = ref<number>(0)
+function asegurarIndiceColumna(): void {
+  const total = obtenerColumnas().length
+  if (total <= 0) {
+    indiceColumna.value = 0
+    return
+  }
+  if (indiceColumna.value < 0) indiceColumna.value = 0
+  if (indiceColumna.value > total - 1) indiceColumna.value = total - 1
 }
 
 // Reglas de validación - requerido
@@ -342,6 +409,10 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
   <div class="mb-3">
     <div class="font-semibold mb-2">General</div>
     <div class="flex flex-column gap-2">
+      <div class="field" v-if="campo && campo.type!=='panel'">
+        <label class="block mb-1">Tipo de campo</label>
+        <PrimeSelect :model-value="(campo.type as any)" :options="opcionesTipo" option-label="label" option-value="value" class="w-full" @update:model-value="(v:TipoSimple)=> cambiarTipoCampo(v)" />
+      </div>
       <div class="field">
         <label class="block mb-1">Etiqueta</label>
         <PrimeInputText :model-value="campo?.label || ''" @update:model-value="(v: string)=> actualizarTexto('label', v)" />
@@ -622,45 +693,118 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
     <div class="font-semibold mb-2">Tabla</div>
     <div class="flex justify-content-between align-items-center mb-2">
       <span class="font-semibold">Columnas</span>
-      <PrimeButton label="Agregar" size="small" icon="pi pi-plus" @click="agregarColumna" />
+      <div class="flex gap-2 align-items-center">
+        <PrimeSelect
+          :model-value="indiceColumna"
+          :options="obtenerColumnas().map((c, i) => ({ label: (c.label || c.name || ('Col '+(i+1))), value: i }))"
+          option-label="label" option-value="value" class="w-16rem"
+          @update:model-value="(v:number)=> { indiceColumna = v as any; asegurarIndiceColumna() }"
+        />
+        <PrimeButton label="Agregar" size="small" icon="pi pi-plus" @click="() => { agregarColumna(); indiceColumna = obtenerColumnas().length - 1; asegurarIndiceColumna() }" />
+        <PrimeButton label="Eliminar" size="small" icon="pi pi-trash" severity="danger" :disabled="obtenerColumnas().length===0" @click="() => { eliminarColumna(indiceColumna); asegurarIndiceColumna() }" />
+      </div>
     </div>
-    <div v-for="(col, i) in obtenerColumnas()" :key="i" class="grid align-items-end">
-      <div class="col-4">
-        <label class="block mb-1">Nombre</label>
-        <PrimeInputText :model-value="col.name" @update:model-value="(v:string)=> actualizarColumna(i,'name', v)" />
+    <template v-if="obtenerColumnas().length">
+      <div class="grid align-items-end">
+        <div class="col-4">
+          <label class="block mb-1">Nombre</label>
+          <PrimeInputText :model-value="obtenerColumnas()[indiceColumna].name" @update:model-value="(v:string)=> actualizarColumna(indiceColumna,'name', v)" />
+        </div>
+        <div class="col-4">
+          <label class="block mb-1">Etiqueta</label>
+          <PrimeInputText :model-value="obtenerColumnas()[indiceColumna].label" @update:model-value="(v:string)=> actualizarColumna(indiceColumna,'label', v)" />
+        </div>
+        <div class="col-3">
+          <label class="block mb-1">Tipo</label>
+          <PrimeSelect :model-value="obtenerColumnas()[indiceColumna].type || 'text'" :options="['text','number']" @update:model-value="(v:string)=> actualizarColumna(indiceColumna,'type', v)" />
+        </div>
       </div>
-      <div class="col-4">
-        <label class="block mb-1">Etiqueta</label>
-        <PrimeInputText :model-value="col.label" @update:model-value="(v:string)=> actualizarColumna(i,'label', v)" />
-      </div>
-      <div class="col-3">
-        <label class="block mb-1">Tipo</label>
-  <PrimeSelect :model-value="col.type || 'text'" :options="['text','number']" @update:model-value="(v:string)=> actualizarColumna(i,'type', v)" />
-      </div>
-      <div class="col-12 mt-2">
+      <div class="col-12 mt-2" v-if="obtenerColumnas()[indiceColumna].type==='number'">
+        <div class="font-semibold mb-1">Formato</div>
         <div class="grid">
           <div class="col-3">
-            <label class="block mb-1">Agregado</label>
-            <PrimeSelect :model-value="(col as any).agg || 'none'" :options="['none','sum','avg','count','min','max']" @update:model-value="(v:string)=> actualizarColumna(i,'agg', v)" />
+            <label class="block mb-1">Modo</label>
+            <PrimeSelect :model-value="(obtenerColumnas()[indiceColumna] as any).formatMode || 'decimal'" :options="['decimal','currency','percent']" @update:model-value="(v:string)=> actualizarColumna(indiceColumna,'formatMode', v as any)" />
+          </div>
+          <div class="col-3" v-if="(obtenerColumnas()[indiceColumna] as any).formatMode==='currency'">
+            <label class="block mb-1">Moneda</label>
+            <PrimeInputText :model-value="(obtenerColumnas()[indiceColumna] as any).currency || 'USD'" @update:model-value="(v:string)=> actualizarColumna(indiceColumna,'currency', v as any)" />
+          </div>
+          <div class="col-3">
+            <label class="block mb-1">Locale</label>
+            <PrimeInputText :model-value="(obtenerColumnas()[indiceColumna] as any).locale || 'es-ES'" @update:model-value="(v:string)=> actualizarColumna(indiceColumna,'locale', v as any)" />
           </div>
           <div class="col-3">
             <label class="block mb-1">Prefijo</label>
-            <PrimeInputText :model-value="(col as any).aggPrefix || ''" @update:model-value="(v:string)=> actualizarColumna(i,'aggPrefix', v)" />
+            <PrimeInputText :model-value="(obtenerColumnas()[indiceColumna] as any).prefix || ''" @update:model-value="(v:string)=> actualizarColumna(indiceColumna,'prefix', v as any)" />
           </div>
           <div class="col-3">
             <label class="block mb-1">Sufijo</label>
-            <PrimeInputText :model-value="(col as any).aggSuffix || ''" @update:model-value="(v:string)=> actualizarColumna(i,'aggSuffix', v)" />
+            <PrimeInputText :model-value="(obtenerColumnas()[indiceColumna] as any).suffix || ''" @update:model-value="(v:string)=> actualizarColumna(indiceColumna,'suffix', v as any)" />
           </div>
           <div class="col-3">
-            <label class="block mb-1">Decimales</label>
-            <PrimeInputNumber :model-value="(col as any).decimals ?? 2" :min="0" :max="8" @update:model-value="(v:any)=> actualizarColumna(i,'decimals', typeof v==='number'? v : 2)" class="w-full" />
+            <label class="block mb-1">Mín. decimales</label>
+            <PrimeInputNumber :model-value="(obtenerColumnas()[indiceColumna] as any).minFractionDigits ?? 0" :min="0" :max="8" @update:model-value="(v:any)=> actualizarColumna(indiceColumna,'minFractionDigits', (typeof v==='number'? v : 0) as any)" class="w-full" />
+          </div>
+          <div class="col-3">
+            <label class="block mb-1">Máx. decimales</label>
+            <PrimeInputNumber :model-value="(obtenerColumnas()[indiceColumna] as any).maxFractionDigits ?? 2" :min="0" :max="8" @update:model-value="(v:any)=> actualizarColumna(indiceColumna,'maxFractionDigits', (typeof v==='number'? v : 2) as any)" class="w-full" />
+          </div>
+          <div class="col-3" v-if="(obtenerColumnas()[indiceColumna] as any).formatMode==='percent'">
+            <label class="block mb-1">Escala porcentaje</label>
+            <PrimeSelect :model-value="(obtenerColumnas()[indiceColumna] as any).percentScale || 'whole'" :options="[{label:'15 = 15%', value:'whole'},{label:'0.15 = 15%', value:'fraction'}]" option-label="label" option-value="value" @update:model-value="(v:'whole'|'fraction')=> actualizarColumna(indiceColumna,'percentScale', v as any)" />
           </div>
         </div>
       </div>
-      <div class="col-1">
-        <PrimeButton icon="pi pi-trash" severity="danger" text @click="() => eliminarColumna(i)" />
+      <div class="col-12 mt-2">
+        <div class="font-semibold mb-1">Agregado</div>
+        <div class="grid">
+          <div class="col-3">
+            <label class="block mb-1">Función</label>
+            <PrimeSelect :model-value="(obtenerColumnas()[indiceColumna] as any).agg || 'none'" :options="['none','sum','avg','count','min','max']" @update:model-value="(v:string)=> actualizarColumna(indiceColumna,'agg', v)" />
+          </div>
+          <div class="col-3">
+            <label class="block mb-1">Prefijo</label>
+            <PrimeInputText :model-value="(obtenerColumnas()[indiceColumna] as any).aggPrefix || ''" @update:model-value="(v:string)=> actualizarColumna(indiceColumna,'aggPrefix', v)" />
+          </div>
+          <div class="col-3">
+            <label class="block mb-1">Sufijo</label>
+            <PrimeInputText :model-value="(obtenerColumnas()[indiceColumna] as any).aggSuffix || ''" @update:model-value="(v:string)=> actualizarColumna(indiceColumna,'aggSuffix', v)" />
+          </div>
+          <div class="col-3">
+            <label class="block mb-1">Decimales</label>
+            <PrimeInputNumber :model-value="(obtenerColumnas()[indiceColumna] as any).decimals ?? 2" :min="0" :max="8" @update:model-value="(v:any)=> actualizarColumna(indiceColumna,'decimals', typeof v==='number'? v : 2)" class="w-full" />
+          </div>
+        </div>
       </div>
-    </div>
+      <div class="col-12 mt-2">
+        <div class="font-semibold mb-1">Validación</div>
+        <div class="grid">
+          <div class="col-3">
+            <label class="inline-flex align-items-center gap-2">
+              <PrimeCheckbox binary :model-value="Boolean((obtenerColumnas()[indiceColumna] as any).required)" @update:model-value="(v:boolean)=> actualizarColumna(indiceColumna,'required', v as any)" />
+              Requerido
+            </label>
+          </div>
+          <div class="col-3" v-if="obtenerColumnas()[indiceColumna].type==='number'">
+            <label class="block mb-1">Mínimo</label>
+            <PrimeInputNumber :model-value="(obtenerColumnas()[indiceColumna] as any).min ?? null" @update:model-value="(v:any)=> actualizarColumna(indiceColumna,'min', typeof v==='number'? v : (null as any))" class="w-full" />
+          </div>
+          <div class="col-3" v-if="obtenerColumnas()[indiceColumna].type==='number'">
+            <label class="block mb-1">Máximo</label>
+            <PrimeInputNumber :model-value="(obtenerColumnas()[indiceColumna] as any).max ?? null" @update:model-value="(v:any)=> actualizarColumna(indiceColumna,'max', typeof v==='number'? v : (null as any))" class="w-full" />
+          </div>
+          <div class="col-6" v-if="obtenerColumnas()[indiceColumna].type==='number'">
+            <label class="block mb-1">Mensaje min</label>
+            <PrimeInputText :model-value="(obtenerColumnas()[indiceColumna] as any).minMessage || ''" @update:model-value="(v:string)=> actualizarColumna(indiceColumna,'minMessage', v as any)" />
+          </div>
+          <div class="col-6" v-if="obtenerColumnas()[indiceColumna].type==='number'">
+            <label class="block mb-1">Mensaje max</label>
+            <PrimeInputText :model-value="(obtenerColumnas()[indiceColumna] as any).maxMessage || ''" @update:model-value="(v:string)=> actualizarColumna(indiceColumna,'maxMessage', v as any)" />
+          </div>
+        </div>
+      </div>
+    </template>
     <div class="mt-2">
       <label class="inline-flex align-items-center gap-2">
   <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.addRows)" @update:model-value="(v:boolean)=> actualizarAddRows(v)" />
