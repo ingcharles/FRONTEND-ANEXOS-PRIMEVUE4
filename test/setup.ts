@@ -11,6 +11,10 @@ import RadioButton from 'primevue/radiobutton'
 import Textarea from 'primevue/textarea'
 import Panel from 'primevue/panel'
 import Divider from 'primevue/divider'
+import Tag from 'primevue/tag'
+import PanelMenu from 'primevue/panelmenu'
+import SelectButton from 'primevue/selectbutton'
+import Tooltip from 'primevue/tooltip'
 import { beforeEach, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 
@@ -30,6 +34,7 @@ config.global.components = {
   Textarea,
   Panel,
   Divider,
+  Tag,
   // Alias con prefijo usado en componentes
   PrimeButton: Button,
   PrimeInputText: InputText,
@@ -42,6 +47,15 @@ config.global.components = {
   PrimeTextarea: Textarea,
   PrimePanel: Panel,
   PrimeDivider: Divider,
+  PrimeTag: Tag,
+  PrimePanelMenu: PanelMenu,
+  PrimeSelectButton: SelectButton,
+  // Stubs de Tabs de PrimeVue 4 (Headless)
+  Tabs: { template: '<div><slot /></div>' },
+  TabList: { template: '<div><slot /></div>' },
+  Tab: { template: '<div><slot /></div>' },
+  TabPanels: { template: '<div><slot /></div>' },
+  TabPanel: { template: '<div><slot /></div>' },
 }
 
 // Stubs para transiciones y router
@@ -49,6 +63,11 @@ config.global.stubs = {
   transition: false,
   'router-link': { template: '<a><slot /></a>' },
   'router-view': { template: '<div><slot /></div>' }
+}
+
+// Directivas
+config.global.directives = {
+  tooltip: Tooltip,
 }
 
 // Configuración de Pinia para cada prueba
@@ -66,3 +85,18 @@ Object.defineProperty(URL, 'revokeObjectURL', {
   writable: true,
   value: vi.fn()
 })
+
+// Mock de matchMedia requerido por algunos componentes (Select)
+if (!('matchMedia' in window)) {
+  // @ts-expect-error jsdom no define matchMedia
+  window.matchMedia = (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })
+}

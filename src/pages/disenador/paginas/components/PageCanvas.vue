@@ -35,6 +35,7 @@ function clasesColumna(f: FieldSchema): string[] {
 <template>
   <div class="border-1 border-dashed border-round surface-border p-2 w-full">
     <draggable
+      :key="page.id"
       class="grid w-full"
       :list="page.fields"
       item-key="id"

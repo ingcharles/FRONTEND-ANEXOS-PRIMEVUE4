@@ -12,6 +12,17 @@ export default defineConfig({
     vueDevTools(),
     // Tailwind v4: plugin recomendado para mejorar HMR de CSS/variantes
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          primevue: ['primevue/config', 'primevue/button', 'primevue/inputtext', 'primevue/inputnumber', 'primevue/select', 'primevue/multiselect', 'primevue/datepicker', 'primevue/checkbox', 'primevue/radiobutton', 'primevue/textarea', 'primevue/panel', 'primevue/divider'],
+          primeicons: ['primeicons/primeicons.css'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1200,
+  },
   server: {
     // Mejora la detección de cambios en Windows / discos en red / antivirus
     watch: {

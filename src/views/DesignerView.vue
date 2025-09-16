@@ -5,14 +5,14 @@ import PageCanvas from '@pages/disenador/paginas/components/PageCanvas.vue'
 import PropertiesTabs from '@pages/disenador/paginas/components/PropertiesTabs.vue'
 import PreviewView from '@pages/disenador/paginas/components/PreviewView.vue'
 import JsonView from '@pages/disenador/paginas/components/JsonView.vue'
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
 import { z } from 'zod'
 import type { FieldSchema } from '@/types/form-schema'
 import { EvaluarReglasCampo } from '@/utils/logic'
 
 const store = useDesignerStore()
 
-const paginaActual = store.paginaActiva
+const paginaActual = computed(() => store.formSchema.pages[store.activePageIndex])
 const totalPaginas = computed(() => store.formSchema.pages.length)
 const pestana = ref<string>('disenador')
 const tabTitles = [
@@ -56,7 +56,26 @@ function enviarDesdeDisenador(): void {
       if (f.type === 'text' || f.type === 'email' || f.type === 'password' || f.type === 'textarea') base = z.string()
       if (f.type === 'number') base = z.any() // reconstruir con min/max abajo
       if (f.type === 'time') base = z.any()
-      if (f.type === 'date') base = z.any()
+      if (f.type === 'date') {
+        let dateRule = z.date()
+        const meta = f.meta as Record<string, unknown> | undefined
+        const parseFecha = (fv: unknown): Date | undefined => {
+          if (fv instanceof Date) return isNaN(fv.getTime()) ? undefined : fv
+          if (typeof fv === 'string' && fv.trim()) { const d = new Date(fv); return isNaN(d.getTime()) ? undefined : d }
+          return undefined
+        }
+        const minD = parseFecha(meta?.minDate)
+        const maxD = parseFecha(meta?.maxDate)
+        if (minD) dateRule = dateRule.min(minD, `Debe ser posterior a ${minD.toISOString().slice(0,10)}`)
+        if (maxD) dateRule = dateRule.max(maxD, `Debe ser anterior a ${maxD.toISOString().slice(0,10)}`)
+        const dateSchema = z.preprocess((v) => {
+          if (v == null || v === '') return undefined
+          if (v instanceof Date) return v
+          if (typeof v === 'string') { const d = new Date(v); return isNaN(d.getTime()) ? undefined : d }
+          return v
+        }, dateRule)
+        base = dateSchema.optional()
+      }
       if (f.type === 'radio' || f.type === 'select') base = z.any()
       if (f.type === 'checkbox') {
         const metaObj = f.meta as Record<string, unknown> | undefined
@@ -133,8 +152,11 @@ function enviarDesdeDisenador(): void {
             } else {
               base = z.literal(true)
             }
-          } else {
+          } else if (f.type !== 'date') {
             base = base.refine((v: unknown) => (typeof v === 'string' ? v.trim().length > 0 : v != null), f.validations?.find(v=>v.type==='required')?.message || 'Requerido')
+          }
+          if (f.type === 'date') {
+            base = (base as z.ZodTypeAny).refine((v: unknown) => v instanceof Date, f.validations?.find(v=>v.type==='required')?.message || 'Requerido')
           }
         }
         if (f.type === 'number') {
@@ -214,15 +236,15 @@ function crearPaginaDespuesActual(): void {
           <TabPanel value="disenador">
             <div class="flex justify-between items-center mb-3">
               <div v-if="totalPaginas>1" class="flex items-center gap-2">
-                <PrimeButton label="Anterior" icon="pi pi-angle-left" :disabled="store.activePageIndex===0" @click="() => (store.activePageIndex = Math.max(0, store.activePageIndex-1))" />
+                <PrimeButton label="Anterior" icon="pi pi-angle-left" :disabled="store.activePageIndex===0" @click="async () => { store.activePageIndex = Math.max(0, store.activePageIndex-1); store.seleccionarCampo(null); await nextTick() }" />
                 <div class="font-semibold">{{ paginaActual.title || ('Página ' + (store.activePageIndex+1)) }}</div>
-                <PrimeButton label="Siguiente" icon-pos="right" icon="pi pi-angle-right" :disabled="store.activePageIndex>=store.formSchema.pages.length-1" @click="() => (store.activePageIndex = Math.min(store.formSchema.pages.length-1, store.activePageIndex+1))" />
+                <PrimeButton label="Siguiente" icon-pos="right" icon="pi pi-angle-right" :disabled="store.activePageIndex>=store.formSchema.pages.length-1" @click="async () => { store.activePageIndex = Math.min(store.formSchema.pages.length-1, store.activePageIndex+1); store.seleccionarCampo(null); await nextTick() }" />
               </div>
               <div class="ml-auto">
                 <PrimeButton v-if="totalPaginas===1 || store.activePageIndex>=store.formSchema.pages.length-1" label="Enviar" icon="pi pi-check" @click="enviarDesdeDisenador" />
               </div>
             </div>
-            <PageCanvas :page="paginaActual" />
+            <PageCanvas :key="store.activePageIndex + ':' + (paginaActual.id || '')" :page="paginaActual" />
           </TabPanel>
           <TabPanel value="preview">
             <PreviewView />

@@ -113,7 +113,28 @@ function crearSchema(): z.ZodObject<Record<string, z.ZodTypeAny>> {
     if (f.type === 'text' || f.type === 'email' || f.type === 'password' || f.type === 'textarea') base = z.string()
     if (f.type === 'number') base = z.preprocess((v) => typeof v === 'string' ? (v.trim()==='' ? undefined : Number(v)) : v, z.number().optional())
   if (f.type === 'time') base = z.any()
-  if (f.type === 'date') base = z.any()
+  if (f.type === 'date') {
+    // Validación de fecha con min/max opcional en meta
+    let dateRule = z.date()
+    const meta = f.meta as Record<string, unknown> | undefined
+    const minD = meta?.minDate as unknown
+    const maxD = meta?.maxDate as unknown
+    const parseDate = (v: unknown): Date | undefined => {
+      if (v instanceof Date) return isNaN(v.getTime()) ? undefined : v
+      if (typeof v === 'string' && v.trim()) { const d = new Date(v); return isNaN(d.getTime()) ? undefined : d }
+      return undefined
+    }
+    const md = parseDate(minD); const Mx = parseDate(maxD)
+    if (md) dateRule = dateRule.min(md, `Debe ser posterior a ${md.toISOString().slice(0,10)}`)
+    if (Mx) dateRule = dateRule.max(Mx, `Debe ser anterior a ${Mx.toISOString().slice(0,10)}`)
+    const dateSchema = z.preprocess((v) => {
+      if (v == null || v === '') return undefined
+      if (v instanceof Date) return v
+      if (typeof v === 'string') { const d = new Date(v); return isNaN(d.getTime()) ? undefined : d }
+      return v
+    }, dateRule)
+    base = dateSchema.optional()
+  }
     if (f.type === 'radio' || f.type === 'select') base = z.any()
     if (f.type === 'checkbox') {
       base = checkboxEsGrupo(f) ? z.array(z.any()) : z.boolean().or(z.any())
@@ -163,8 +184,12 @@ function crearSchema(): z.ZodObject<Record<string, z.ZodTypeAny>> {
           } else {
             base = z.literal(true)
           }
-        } else {
+        } else if (f.type !== 'date') {
           base = base.refine((v: unknown) => (typeof v === 'string' ? v.trim().length > 0 : v != null), f.validations?.find(v=>v.type==='required')?.message || 'Requerido')
+        }
+        if (f.type === 'date') {
+          // Hacerlo requerido explícitamente
+          base = (base as z.ZodTypeAny).refine((v: unknown) => v instanceof Date, f.validations?.find(v=>v.type==='required')?.message || 'Requerido')
         }
       }
       // Validación adicional para número con min/max (reconstruir esquema para evitar min/max sobre ZodEffects)
