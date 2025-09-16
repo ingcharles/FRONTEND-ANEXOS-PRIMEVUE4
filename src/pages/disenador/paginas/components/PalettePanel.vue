@@ -33,6 +33,7 @@ const paletteItems: { type: FieldType; icon: string; defaultProps?: Partial<Fiel
   { type: 'textarea', icon: 'pi pi-align-left', label: 'Área' },
   { type: 'number', icon: 'pi pi-hashtag', label: 'Número', defaultProps: { meta: { valorPorDefecto: 0 } } },
   { type: 'time', icon: 'pi pi-clock', label: 'Hora' },
+  { type: 'date', icon: 'pi pi-calendar', label: 'Fecha' },
   { type: 'checkbox', icon: 'pi pi-check-square', label: 'Checkbox', defaultProps: { meta: { valorPorDefecto: false } } },
   {
     type: 'select',
@@ -80,6 +81,7 @@ const items = ref<BaseCategoria[]>([
       { key: '0_3', label: 'Área', type: 'textarea', icon: 'pi pi-align-left' },
   { key: '0_4', label: 'Número', type: 'number', icon: 'pi pi-hashtag' },
   { key: '0_5', label: 'Hora', type: 'time', icon: 'pi pi-clock' },
+      { key: '0_6', label: 'Fecha', type: 'date', icon: 'pi pi-calendar' },
     ]
   },
   {
@@ -100,8 +102,22 @@ const items = ref<BaseCategoria[]>([
       { key: '2_0', label: 'Etiqueta', type: 'label', icon: 'pi pi-info-circle' },
       { key: '2_1', label: 'Botón', type: 'button', icon: 'pi pi-check' },
       { key: '2_2', label: 'Divisor', type: 'divider', icon: 'pi pi-minus' },
-      { key: '2_3', label: 'Panel', type: 'panel', icon: 'pi pi-window-maximize' },
-      { key: '2_4', label: 'Tabla', type: 'table', icon: 'pi pi-table' },
+    ]
+  },
+  {
+    key: '3',
+    label: 'Contenedor',
+    icon: 'pi pi-window-maximize',
+    items: [
+      { key: '3_0', label: 'Panel', type: 'panel', icon: 'pi pi-window-maximize' },
+    ]
+  },
+  {
+    key: '4',
+    label: 'Datos',
+    icon: 'pi pi-database',
+    items: [
+      { key: '4_0', label: 'Tabla', type: 'table', icon: 'pi pi-table' },
     ]
   }
 ])

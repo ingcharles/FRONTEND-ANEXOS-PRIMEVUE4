@@ -177,6 +177,14 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
           :readonly="field.readonly"
         />
       </template>
+      <template v-else-if="field.type==='date'">
+        <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
+        <PrimeDatePicker
+          class="w-full"
+          :model-value="(valorActual instanceof Date) ? valorActual : (typeof valorActual==='string' && valorActual ? new Date(valorActual) : undefined)"
+          :disabled="field.disabled"
+        />
+      </template>
       <template v-else-if="field.type==='time'">
         <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
         <PrimeDatePicker

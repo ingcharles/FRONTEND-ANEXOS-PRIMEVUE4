@@ -418,6 +418,13 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
       </div>
     </div>
   </div>
+  <!-- Valor por defecto para campo de fecha -->
+  <div class="field" v-if="campo && campo.type==='date'">
+    <label class="block mb-1">Fecha por defecto</label>
+    <PrimeDatePicker :model-value="(typeof (campo?.meta as any)?.valorPorDefecto==='string' ? new Date((campo?.meta as any)?.valorPorDefecto) : ((campo?.meta as any)?.valorPorDefecto instanceof Date ? (campo?.meta as any)?.valorPorDefecto : null))"
+      @update:model-value="(v:any)=> actualizarValorPorDefecto(v)" />
+    <small class="text-muted-color">Puedes definirla como Date o como cadena ISO (YYYY-MM-DD).</small>
+  </div>
 
   <!-- Diseño -->
   <div class="mb-3">
@@ -458,7 +465,7 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
       <PrimeInputText :model-value="obtenerMensajeRequerido()" @update:model-value="(v:string)=> actualizarMensajeRequerido(v)" />
       <small class="text-muted-color">Se mostrará en la vista previa cuando el campo sea obligatorio.</small>
     </div>
-    <div class="field" v-if="campo && (campo.type==='text'||campo.type==='textarea'||campo.type==='email'||campo.type==='password'||campo.type==='select'||campo.type==='radio'||campo.type==='time'||campo.type==='button'||campo.type==='number'||campo.type==='checkbox')">
+  <div class="field" v-if="campo && (campo.type==='text'||campo.type==='textarea'||campo.type==='email'||campo.type==='password'||campo.type==='select'||campo.type==='radio'||campo.type==='time'||campo.type==='date'||campo.type==='button'||campo.type==='number'||campo.type==='checkbox')">
       <label class="inline-flex align-items-center gap-2">
         <PrimeCheckbox binary :model-value="!!campo?.disabled" @update:model-value="(v: boolean)=> store.actualizarCampo(campo!.id, { disabled: v })" />
         Deshabilitado

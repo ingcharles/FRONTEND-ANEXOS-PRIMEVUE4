@@ -63,7 +63,8 @@ function crearSchema(): z.ZodObject<Record<string, z.ZodTypeAny>> {
     let base: z.ZodTypeAny = z.any()
     if (f.type === 'text' || f.type === 'email' || f.type === 'password' || f.type === 'textarea') base = z.string()
     if (f.type === 'number') base = z.preprocess((v) => typeof v === 'string' ? (v.trim()==='' ? undefined : Number(v)) : v, z.number().optional())
-    if (f.type === 'time') base = z.any()
+  if (f.type === 'time') base = z.any()
+  if (f.type === 'date') base = z.any()
     if (f.type === 'radio' || f.type === 'select') base = z.any()
     if (f.type === 'checkbox') {
       base = checkboxEsGrupo(f) ? z.array(z.any()) : z.boolean().or(z.any())
@@ -151,6 +152,13 @@ function aplicarValoresPorDefecto(list: FieldSchema[], sobrescribirSiVacio = fal
         const n = Number(def)
         if (!Number.isNaN(n)) def = n
       }
+      if (f.type === 'date') {
+        // permitir cadena YYYY-MM-DD o Date para default
+        if (typeof def === 'string' && def.trim()) {
+          const d = new Date(def)
+          if (!isNaN(d.getTime())) def = d
+        }
+      }
       if (f.type === 'checkbox' && typeof def === 'string') {
         // permitir 'true'/'false' como cadena para default simple
         if (def.toLowerCase() === 'true') def = true
@@ -228,6 +236,7 @@ function enviar(): void {
           <PrimeInputText v-if="f.type==='text' || f.type==='email' || f.type==='password'" v-model="(valores as any)[f.name||'']" :placeholder="f.placeholder" class="w-full" :disabled="f.disabled" :readonly="f.readonly" />
           <PrimeTextarea v-else-if="f.type==='textarea'" v-model="(valores as any)[f.name||'']" :placeholder="f.placeholder" class="w-full" :disabled="f.disabled" :readonly="f.readonly" />
           <PrimeDatePicker v-else-if="f.type==='time'" v-model="(valores as any)[f.name||'']" time-only hour-format="24" class="w-full" :disabled="f.disabled" />
+          <PrimeDatePicker v-else-if="f.type==='date'" v-model="(valores as any)[f.name||'']" class="w-full" :disabled="f.disabled" />
           <PrimeSelect v-else-if="f.type==='select'" v-model="(valores as any)[f.name||'']" :options="(f.meta?.options as any[])||[]" option-label="label" option-value="value" class="w-full" :disabled="f.disabled" />
           <PrimeInputNumber v-else-if="f.type==='number'" v-model="(valores as any)[f.name||'']" class="w-full" :placeholder="f.placeholder" :min="(f.meta as any)?.min" :max="(f.meta as any)?.max" :step="(f.meta as any)?.step ?? 1" :disabled="f.disabled" :readonly="f.readonly" />
           <div v-else-if="f.type==='checkbox'">
@@ -262,6 +271,7 @@ function enviar(): void {
                   <PrimeInputText v-if="ch.type==='text' || ch.type==='email' || ch.type==='password'" v-model="(valores as any)[ch.name||'']" :placeholder="ch.placeholder" class="w-full" :disabled="ch.disabled" :readonly="ch.readonly" />
                   <PrimeTextarea v-else-if="ch.type==='textarea'" v-model="(valores as any)[ch.name||'']" :placeholder="ch.placeholder" class="w-full" :disabled="ch.disabled" :readonly="ch.readonly" />
                   <PrimeDatePicker v-else-if="ch.type==='time'" v-model="(valores as any)[ch.name||'']" time-only hour-format="24" class="w-full" :disabled="ch.disabled" />
+                  <PrimeDatePicker v-else-if="ch.type==='date'" v-model="(valores as any)[ch.name||'']" class="w-full" :disabled="ch.disabled" />
                   <PrimeSelect v-else-if="ch.type==='select'" v-model="(valores as any)[ch.name||'']" :options="(ch.meta?.options as any[])||[]" option-label="label" option-value="value" class="w-full" :disabled="ch.disabled" />
                   <PrimeInputNumber v-else-if="ch.type==='number'" v-model="(valores as any)[ch.name||'']" class="w-full" :placeholder="ch.placeholder" :min="(ch.meta as any)?.min" :max="(ch.meta as any)?.max" :step="(ch.meta as any)?.step ?? 1" :disabled="ch.disabled" :readonly="ch.readonly" />
                   <div v-else-if="ch.type==='checkbox'">

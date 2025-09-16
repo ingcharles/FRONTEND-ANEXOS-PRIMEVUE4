@@ -12,6 +12,7 @@ export type FieldType =
   | 'password'
   | 'number'
   | 'time'
+  | 'date'
   | 'select'
   | 'radio'
   | 'checkbox'
@@ -95,6 +96,7 @@ export const zFieldSchema: z.ZodType<FieldSchema> = z.lazy(() =>
       'password',
       'number',
       'time',
+  'date',
       'select',
       'radio',
       'checkbox',
