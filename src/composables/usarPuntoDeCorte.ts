@@ -10,8 +10,9 @@ export function usarPuntoDeCorte() {
   let mmLg: MediaQueryList | null = null
 
   function actualizar() {
-    const isLg = mmLg?.matches ?? window.matchMedia('(min-width: 992px)').matches
-    const isMd = mmMd?.matches ?? window.matchMedia('(min-width: 768px)').matches
+    const hasMM = typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+    const isLg = mmLg?.matches ?? (hasMM ? window.matchMedia('(min-width: 992px)').matches : false)
+    const isMd = mmMd?.matches ?? (hasMM ? window.matchMedia('(min-width: 768px)').matches : false)
     punto.value = isLg ? 'lg' : isMd ? 'md' : 'sm'
   }
 
@@ -20,10 +21,16 @@ export function usarPuntoDeCorte() {
   }
 
   onMounted(() => {
-    mmMd = window.matchMedia('(min-width: 768px)')
-    mmLg = window.matchMedia('(min-width: 992px)')
-    mmMd.addEventListener('change', onChange)
-    mmLg.addEventListener('change', onChange)
+    const hasMM = typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+    if (hasMM) {
+      mmMd = window.matchMedia('(min-width: 768px)')
+      mmLg = window.matchMedia('(min-width: 992px)')
+      mmMd.addEventListener('change', onChange)
+      mmLg.addEventListener('change', onChange)
+    } else {
+      mmMd = null
+      mmLg = null
+    }
     actualizar()
   })
 

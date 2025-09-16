@@ -10,9 +10,11 @@ export type FieldType =
   | 'textarea'
   | 'email'
   | 'password'
+  | 'number'
   | 'time'
   | 'select'
   | 'radio'
+  | 'checkbox'
   | 'label'
   | 'panel'
   | 'table'
@@ -91,9 +93,11 @@ export const zFieldSchema: z.ZodType<FieldSchema> = z.lazy(() =>
       'textarea',
       'email',
       'password',
+      'number',
       'time',
       'select',
       'radio',
+      'checkbox',
       'label',
       'panel',
       'table',

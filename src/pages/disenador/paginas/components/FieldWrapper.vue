@@ -179,7 +179,13 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
       </template>
       <template v-else-if="field.type==='time'">
         <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
-        <PrimeCalendar time-only hour-format="24" class="w-full" />
+        <PrimeCalendar
+          time-only
+          hour-format="24"
+          class="w-full"
+          :model-value="(typeof valorActual==='string' && /^([01]?\d|2[0-3]):([0-5]\d)$/.test(valorActual as any)) ? (()=>{ const [hh,mm] = String(valorActual).split(':'); const d = new Date(); d.setHours(Number(hh), Number(mm), 0, 0); return d; })() : undefined"
+          :disabled="field.disabled"
+        />
       </template>
       <template v-else-if="field.type==='textarea'">
         <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
@@ -201,6 +207,22 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
           :model-value="valorActual"
           :disabled="field.disabled"
         />
+      </template>
+      <template v-else-if="field.type==='number'">
+        <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
+        <PrimeInputNumber
+          class="w-full"
+          :model-value="(valorActualTexto!=null && valorActualTexto!=='' && !Number.isNaN(Number(valorActualTexto))) ? Number(valorActualTexto) : undefined"
+          :placeholder="field.placeholder"
+          :disabled="field.disabled"
+          :readonly="field.readonly"
+        />
+      </template>
+      <template v-else-if="field.type==='checkbox'">
+        <div class="flex align-items-center gap-2">
+          <PrimeCheckbox :binary="true" :model-value="Boolean(valorActual)" :disabled="field.disabled" />
+          <label class="mb-0">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
+        </div>
       </template>
       <template v-else-if="field.type==='radio'">
         <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>

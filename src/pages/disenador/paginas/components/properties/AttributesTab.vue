@@ -126,6 +126,39 @@ function actualizarValorPorDefecto(v: unknown): void {
   store.actualizarCampo(campo.value.id, { meta })
 }
 
+// ---- Valor por defecto para campo de hora (time) ----
+function parsearHoraCadenaAFecha(cadena: string): Date | null {
+  const m = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(cadena)
+  if (!m) return null
+  const [, hh, mm] = m
+  const d = new Date()
+  d.setHours(Number(hh), Number(mm), 0, 0)
+  return d
+}
+
+function formatearFechaAHHMM(fecha: Date | null | undefined): string | null {
+  if (!fecha || !(fecha instanceof Date)) return null
+  const hh = String(fecha.getHours()).padStart(2, '0')
+  const mm = String(fecha.getMinutes()).padStart(2, '0')
+  return `${hh}:${mm}`
+}
+
+function obtenerValorPorDefectoTiempoComoFecha(): Date | null {
+  const meta = (campo.value?.meta ?? {}) as Record<string, unknown>
+  const raw = meta.valorPorDefecto
+  if (typeof raw === 'string') return parsearHoraCadenaAFecha(raw)
+  if (raw instanceof Date) return raw
+  return null
+}
+
+function actualizarValorPorDefectoTiempo(fecha: Date | null): void {
+  if (!campo.value) return
+  const meta = { ...(campo.value.meta ?? {}) } as Record<string, unknown>
+  const hhmm = formatearFechaAHHMM(fecha || undefined)
+  meta.valorPorDefecto = hhmm
+  store.actualizarCampo(campo.value.id, { meta })
+}
+
 // ----- Cargar opciones por API (select / radio) -----
 type ConfigApi = {
   url?: string
@@ -283,6 +316,40 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
         <label class="block mb-1">Placeholder</label>
         <PrimeInputText :model-value="campo?.placeholder || ''" @update:model-value="(v: string)=> actualizarTexto('placeholder', v)" />
       </div>
+      <!-- Valor por defecto para campos de texto -->
+      <div class="field" v-if="campo && (campo.type==='text'||campo.type==='email'||campo.type==='password'||campo.type==='textarea')">
+        <label class="block mb-1">Valor por defecto</label>
+        <PrimeInputText
+          v-if="campo.type!=='textarea'"
+          :model-value="(campo?.meta as any)?.valorPorDefecto ?? ''"
+          @update:model-value="(v:string)=> actualizarValorPorDefecto(v)"
+        />
+        <PrimeTextarea
+          v-else
+          :model-value="(campo?.meta as any)?.valorPorDefecto ?? ''"
+          rows="3"
+          @update:model-value="(v:string)=> actualizarValorPorDefecto(v)"
+        />
+        <small class="text-muted-color">Se aplicará inicialmente en la vista previa y no sobrescribirá lo que el usuario escriba.</small>
+      </div>
+      <!-- Valor por defecto para campo numérico -->
+      <div class="field" v-if="campo && campo.type==='number'">
+        <label class="block mb-1">Valor por defecto</label>
+        <PrimeInputNumber :model-value="(campo?.meta as any)?.valorPorDefecto ?? null" @update:model-value="(v:any)=> actualizarValorPorDefecto(v)" class="w-full" />
+      </div>
+      <!-- Valor por defecto para checkbox (booleano) -->
+      <div class="field" v-if="campo && campo.type==='checkbox'">
+        <label class="inline-flex align-items-center gap-2">
+          <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.valorPorDefecto)" @update:model-value="(v:boolean)=> actualizarValorPorDefecto(v)" />
+          Activado por defecto
+        </label>
+      </div>
+      <!-- Valor por defecto para campo de hora -->
+      <div class="field" v-if="campo && campo.type==='time'">
+        <label class="block mb-1">Hora por defecto</label>
+        <PrimeCalendar time-only hour-format="24" :model-value="obtenerValorPorDefectoTiempoComoFecha()" @update:model-value="(v:any)=> actualizarValorPorDefectoTiempo(v as Date | null)" />
+        <small class="text-muted-color">Se guarda como HH:mm; se convertirá a Date en la vista previa.</small>
+      </div>
     </div>
   </div>
 
@@ -325,13 +392,13 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
       <PrimeInputText :model-value="obtenerMensajeRequerido()" @update:model-value="(v:string)=> actualizarMensajeRequerido(v)" />
       <small class="text-muted-color">Se mostrará en la vista previa cuando el campo sea obligatorio.</small>
     </div>
-    <div class="field" v-if="campo && (campo.type==='text'||campo.type==='textarea'||campo.type==='email'||campo.type==='password'||campo.type==='select'||campo.type==='radio'||campo.type==='time'||campo.type==='button')">
+    <div class="field" v-if="campo && (campo.type==='text'||campo.type==='textarea'||campo.type==='email'||campo.type==='password'||campo.type==='select'||campo.type==='radio'||campo.type==='time'||campo.type==='button'||campo.type==='number'||campo.type==='checkbox')">
       <label class="inline-flex align-items-center gap-2">
         <PrimeCheckbox binary :model-value="!!campo?.disabled" @update:model-value="(v: boolean)=> store.actualizarCampo(campo!.id, { disabled: v })" />
         Deshabilitado
       </label>
     </div>
-    <div class="field" v-if="campo && (campo.type==='text'||campo.type==='textarea'||campo.type==='email'||campo.type==='password')">
+    <div class="field" v-if="campo && (campo.type==='text'||campo.type==='textarea'||campo.type==='email'||campo.type==='password'||campo.type==='number')">
       <label class="inline-flex align-items-center gap-2">
         <PrimeCheckbox binary :model-value="!!campo?.readonly" @update:model-value="(v: boolean)=> store.actualizarCampo(campo!.id, { readonly: v })" />
         Solo lectura

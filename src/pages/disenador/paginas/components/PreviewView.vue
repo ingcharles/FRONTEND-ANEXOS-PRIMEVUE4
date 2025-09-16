@@ -24,9 +24,10 @@ function clasesColumna(f: FieldSchema): string[] {
 
 function construirMapaIdNombre(list: FieldSchema[]): Record<string, string> {
   const map: Record<string, string> = {}
-  const stack: FieldSchema[] = [...list]
+  const stack: Array<FieldSchema | null | undefined> = [...list]
   while (stack.length) {
     const f = stack.shift()!
+    if (!f) continue
     if (f.id && f.name) map[f.id] = f.name
     if (f.children && f.children.length) stack.push(...f.children)
   }
@@ -38,6 +39,7 @@ const idAName = computed(() => construirMapaIdNombre(campos.value))
 // construir zod schema dinámico
 function recolectarCamposConNombre(list: FieldSchema[], out: FieldSchema[] = []): FieldSchema[] {
   for (const f of list) {
+    if (!f) continue
     if (f.name) out.push(f)
     if (f.children && f.children.length) recolectarCamposConNombre(f.children, out)
   }
@@ -50,8 +52,10 @@ function crearSchema(): z.ZodObject<Record<string, z.ZodTypeAny>> {
   for (const f of todos) {
     let base: z.ZodTypeAny = z.any()
     if (f.type === 'text' || f.type === 'email' || f.type === 'password' || f.type === 'textarea') base = z.string()
+    if (f.type === 'number') base = z.number().or(z.string())
     if (f.type === 'time') base = z.any()
     if (f.type === 'radio' || f.type === 'select') base = z.any()
+    if (f.type === 'checkbox') base = z.boolean().or(z.array(z.any())).or(z.any())
 
     // Aplicar lógica para required dinámico (usa mapa global id->name)
     const estado = EvaluarReglasCampo(f, valores.value as Record<string, unknown>, idAName.value)
@@ -60,7 +64,13 @@ function crearSchema(): z.ZodObject<Record<string, z.ZodTypeAny>> {
     if (!esVisible) {
       base = base.optional()
     } else {
-      if (esRequerido) base = base.refine((v: unknown) => (typeof v === 'string' ? v.trim().length > 0 : v != null), f.validations?.find(v=>v.type==='required')?.message || 'Requerido')
+      if (esRequerido) {
+        if (f.type === 'checkbox') {
+          base = z.literal(true)
+        } else {
+          base = base.refine((v: unknown) => (typeof v === 'string' ? v.trim().length > 0 : v != null), f.validations?.find(v=>v.type==='required')?.message || 'Requerido')
+        }
+      }
       for (const v of f.validations || []) {
         if (v.type === 'minLength') base = (base as z.ZodString).min(Number(v.value || 0), v.message)
         if (v.type === 'maxLength') base = (base as z.ZodString).max(Number(v.value || 9999), v.message)
@@ -92,11 +102,34 @@ function esVacio(v: unknown): boolean {
   return v === undefined || v === null || (typeof v === 'string' && v.trim() === '')
 }
 
+function parsearHoraCadenaAFecha(cadena: string): Date | null {
+  const m = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(cadena)
+  if (!m) return null
+  const [, hh, mm] = m
+  const d = new Date()
+  d.setHours(Number(hh), Number(mm), 0, 0)
+  return d
+}
+
 function aplicarValoresPorDefecto(list: FieldSchema[], sobrescribirSiVacio = false): void {
   for (const f of list) {
+    if (!f) continue
     if (f.name) {
       const meta = f.meta as Record<string, unknown> | undefined
-      const def = meta?.valorPorDefecto
+      let def = meta?.valorPorDefecto as unknown
+      // Normalizar defaults por tipo (por ejemplo, time HH:mm -> Date)
+      if (f.type === 'time' && typeof def === 'string') {
+        def = parsearHoraCadenaAFecha(def) || def
+      }
+      if (f.type === 'number' && typeof def === 'string' && def.trim() !== '') {
+        const n = Number(def)
+        if (!Number.isNaN(n)) def = n
+      }
+      if (f.type === 'checkbox' && typeof def === 'string') {
+        // permitir 'true'/'false' como cadena para default simple
+        if (def.toLowerCase() === 'true') def = true
+        else if (def.toLowerCase() === 'false') def = false
+      }
       // Respetar visibilidad
       const estado = EvaluarReglasCampo(f, valores.value as Record<string, unknown>, idAName.value)
       if (def !== undefined && estado.visible) {
@@ -113,6 +146,7 @@ function aplicarValoresPorDefecto(list: FieldSchema[], sobrescribirSiVacio = fal
 // Firma para detectar cambios en valorPorDefecto profundamente
 function recolectarFirmasDefaults(list: FieldSchema[], out: Array<string> = []): Array<string> {
   for (const f of list) {
+    if (!f) continue
     const def = (f.meta as Record<string, unknown> | undefined)?.valorPorDefecto
     if (f.name) out.push(`${f.name}::${JSON.stringify(def)}`)
     if (f.children && f.children.length) recolectarFirmasDefaults(f.children, out)
@@ -165,6 +199,10 @@ function enviar(): void {
           <PrimeTextarea v-else-if="f.type==='textarea'" v-model="(valores as any)[f.name||'']" :placeholder="f.placeholder" class="w-full" :disabled="f.disabled" :readonly="f.readonly" />
           <PrimeCalendar v-else-if="f.type==='time'" v-model="(valores as any)[f.name||'']" time-only hour-format="24" class="w-full" :disabled="f.disabled" />
           <PrimeDropdown v-else-if="f.type==='select'" v-model="(valores as any)[f.name||'']" :options="(f.meta?.options as any[])||[]" option-label="label" option-value="value" class="w-full" :disabled="f.disabled" />
+          <PrimeInputNumber v-else-if="f.type==='number'" v-model="(valores as any)[f.name||'']" class="w-full" :placeholder="f.placeholder" :disabled="f.disabled" :readonly="f.readonly" />
+          <div v-else-if="f.type==='checkbox'" class="inline-flex align-items-center gap-2">
+            <PrimeCheckbox v-model="(valores as any)[f.name||'']" :binary="true" :disabled="f.disabled" />
+          </div>
           <PrimeDivider v-else-if="f.type==='divider'" />
           <div v-else-if="f.type==='radio'" class="flex gap-3">
             <label v-for="op in ((f.meta?.options as any[])||[])" :key="op.value" class="inline-flex align-items-center gap-2">
@@ -183,6 +221,10 @@ function enviar(): void {
                   <PrimeTextarea v-else-if="ch.type==='textarea'" v-model="(valores as any)[ch.name||'']" :placeholder="ch.placeholder" class="w-full" :disabled="ch.disabled" :readonly="ch.readonly" />
                   <PrimeCalendar v-else-if="ch.type==='time'" v-model="(valores as any)[ch.name||'']" time-only hour-format="24" class="w-full" :disabled="ch.disabled" />
                   <PrimeDropdown v-else-if="ch.type==='select'" v-model="(valores as any)[ch.name||'']" :options="(ch.meta?.options as any[])||[]" option-label="label" option-value="value" class="w-full" :disabled="ch.disabled" />
+                  <PrimeInputNumber v-else-if="ch.type==='number'" v-model="(valores as any)[ch.name||'']" class="w-full" :placeholder="ch.placeholder" :disabled="ch.disabled" :readonly="ch.readonly" />
+                  <div v-else-if="ch.type==='checkbox'" class="inline-flex align-items-center gap-2">
+                    <PrimeCheckbox v-model="(valores as any)[ch.name||'']" :binary="true" :disabled="ch.disabled" />
+                  </div>
                   <PrimeDivider v-else-if="ch.type==='divider'" />
                   <div v-else-if="ch.type==='radio'" class="flex gap-3">
                     <label v-for="op in ((ch.meta?.options as any[])||[])" :key="op.value" class="inline-flex align-items-center gap-2">

@@ -31,7 +31,9 @@ const paletteItems: { type: FieldType; icon: string; defaultProps?: Partial<Fiel
   { type: 'email', icon: 'pi pi-at', label: 'Email' },
   { type: 'password', icon: 'pi pi-lock', label: 'Password' },
   { type: 'textarea', icon: 'pi pi-align-left', label: 'Área' },
+  { type: 'number', icon: 'pi pi-hashtag', label: 'Número', defaultProps: { meta: { valorPorDefecto: 0 } } },
   { type: 'time', icon: 'pi pi-clock', label: 'Hora' },
+  { type: 'checkbox', icon: 'pi pi-check-square', label: 'Checkbox', defaultProps: { meta: { valorPorDefecto: false } } },
   {
     type: 'select',
     icon: 'pi pi-list',
@@ -76,7 +78,8 @@ const items = ref<BaseCategoria[]>([
       { key: '0_1', label: 'Email', type: 'email', icon: 'pi pi-at' },
       { key: '0_2', label: 'Password', type: 'password', icon: 'pi pi-lock' },
       { key: '0_3', label: 'Área', type: 'textarea', icon: 'pi pi-align-left' },
-      { key: '0_4', label: 'Hora', type: 'time', icon: 'pi pi-clock' },
+  { key: '0_4', label: 'Número', type: 'number', icon: 'pi pi-hashtag' },
+  { key: '0_5', label: 'Hora', type: 'time', icon: 'pi pi-clock' },
     ]
   },
   {
@@ -86,6 +89,7 @@ const items = ref<BaseCategoria[]>([
     items: [
       { key: '1_0', label: 'Select', type: 'select', icon: 'pi pi-list' },
       { key: '1_1', label: 'Radio', type: 'radio', icon: 'pi pi-circle' },
+      { key: '1_2', label: 'Checkbox', type: 'checkbox', icon: 'pi pi-check-square' },
     ]
   },
   {
@@ -137,8 +141,11 @@ function getPaletteItemByType(type: FieldType): { type: FieldType; icon: string;
 
 // Función para clonar desde el menú
 function clonarDesdeMenu(menuItem: ElementoPalette): FieldSchema | null {
-  const paletteItem = getPaletteItemByType(menuItem.type)
-  if (!paletteItem) return null
+  const paletteItem = getPaletteItemByType(menuItem.type) ?? {
+    type: menuItem.type,
+    icon: menuItem.icon,
+    label: menuItem.label,
+  }
   return clonarDesdePaleta(paletteItem)
 }
 
