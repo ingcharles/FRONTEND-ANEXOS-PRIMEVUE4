@@ -297,6 +297,43 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
     cargandoApi.value = false
   }
 }
+
+// ----- Meta numérica (min, max, step y mensajes) -----
+type MetaNumero = { min?: number; max?: number; step?: number; minMessage?: string; maxMessage?: string }
+function obtenerMetaNumero(): MetaNumero {
+  const m = (campo.value?.meta ?? {}) as Record<string, unknown>
+  return {
+    min: typeof m.min === 'number' ? (m.min as number) : undefined,
+    max: typeof m.max === 'number' ? (m.max as number) : undefined,
+    step: typeof m.step === 'number' ? (m.step as number) : 1,
+    minMessage: typeof m.minMessage === 'string' ? (m.minMessage as string) : '',
+    maxMessage: typeof m.maxMessage === 'string' ? (m.maxMessage as string) : '',
+  }
+}
+function actualizarMetaNumero(parcial: Partial<MetaNumero>): void {
+  if (!campo.value) return
+  const meta = { ...(campo.value.meta ?? {}) } as Record<string, unknown>
+  Object.assign(meta, parcial)
+  store.actualizarCampo(campo.value.id, { meta })
+}
+function minMayorQueMax(): boolean {
+  const m = obtenerMetaNumero()
+  return typeof m.min === 'number' && typeof m.max === 'number' && m.min > m.max
+}
+
+// ----- Layout de grupo (checkbox / radio) -----
+type LayoutGrupo = 'vertical' | 'horizontal'
+function obtenerLayoutGrupo(): LayoutGrupo {
+  const m = (campo.value?.meta ?? {}) as Record<string, unknown>
+  const lay = m.layout
+  return lay === 'horizontal' ? 'horizontal' : 'vertical'
+}
+function actualizarLayoutGrupo(l: LayoutGrupo): void {
+  if (!campo.value) return
+  const meta = { ...(campo.value.meta ?? {}) } as Record<string, unknown>
+  meta.layout = l
+  store.actualizarCampo(campo.value.id, { meta })
+}
 </script>
 
 <template>
@@ -336,6 +373,35 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
       <div class="field" v-if="campo && campo.type==='number'">
         <label class="block mb-1">Valor por defecto</label>
         <PrimeInputNumber :model-value="(campo?.meta as any)?.valorPorDefecto ?? null" @update:model-value="(v:any)=> actualizarValorPorDefecto(v)" class="w-full" />
+      </div>
+      <!-- Restricciones numéricas -->
+      <div class="field grid" v-if="campo && campo.type==='number'">
+        <div class="col-4">
+          <label class="block mb-1">Mínimo</label>
+          <PrimeInputNumber :model-value="obtenerMetaNumero().min ?? null" @update:model-value="(v:any)=> actualizarMetaNumero({ min: typeof v==='number'? v : undefined })" class="w-full" />
+        </div>
+        <div class="col-4">
+          <label class="block mb-1">Máximo</label>
+          <PrimeInputNumber :model-value="obtenerMetaNumero().max ?? null" @update:model-value="(v:any)=> actualizarMetaNumero({ max: typeof v==='number'? v : undefined })" class="w-full" />
+        </div>
+        <div class="col-4">
+          <label class="block mb-1">Paso</label>
+          <PrimeInputNumber :model-value="obtenerMetaNumero().step ?? 1" @update:model-value="(v:any)=> actualizarMetaNumero({ step: typeof v==='number'? v : 1 })" class="w-full" />
+        </div>
+        <div class="col-12" v-if="minMayorQueMax()">
+          <small class="text-red-500">El mínimo no debe ser mayor que el máximo.</small>
+        </div>
+      </div>
+      <div class="field grid" v-if="campo && campo.type==='number'">
+        <div class="col-6">
+          <label class="block mb-1">Mensaje error mínimo</label>
+          <PrimeInputText :model-value="obtenerMetaNumero().minMessage" @update:model-value="(v:string)=> actualizarMetaNumero({ minMessage: v })" />
+        </div>
+        <div class="col-6">
+          <label class="block mb-1">Mensaje error máximo</label>
+          <PrimeInputText :model-value="obtenerMetaNumero().maxMessage" @update:model-value="(v:string)=> actualizarMetaNumero({ maxMessage: v })" />
+        </div>
+        <small class="col-12 text-muted-color">Si los dejas vacíos, se usarán mensajes por defecto.</small>
       </div>
       <!-- Valor por defecto para checkbox (booleano) cuando NO tiene opciones -->
   <div class="field" v-if="campo && campo.type==='checkbox' && ((!Array.isArray((campo.meta as any)?.options)) || (((campo.meta as any)?.options?.length || 0)===0))">
@@ -403,6 +469,11 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
         <PrimeCheckbox binary :model-value="!!campo?.readonly" @update:model-value="(v: boolean)=> store.actualizarCampo(campo!.id, { readonly: v })" />
         Solo lectura
       </label>
+    </div>
+    <div class="field" v-if="campo && (campo.type==='radio'||campo.type==='checkbox') && ((campo.meta as any)?.options?.length||0) > 0">
+      <label class="block mb-1">Distribución de opciones</label>
+      <PrimeSelectButton :model-value="obtenerLayoutGrupo()" :options="[{label:'Vertical', value:'vertical'},{label:'Horizontal', value:'horizontal'}]" option-label="label" option-value="value" @update:model-value="(v:'vertical'|'horizontal')=> actualizarLayoutGrupo(v)" />
+      <small class="text-muted-color">Controla si las opciones se muestran en columna o en fila.</small>
     </div>
   </div>
 

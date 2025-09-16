@@ -92,8 +92,10 @@ function crearSchema(): z.ZodObject<Record<string, z.ZodTypeAny>> {
         const meta = f.meta as Record<string, unknown> | undefined
         const min = typeof meta?.min === 'number' ? (meta!.min as number) : undefined
         const max = typeof meta?.max === 'number' ? (meta!.max as number) : undefined
-        if (typeof min === 'number') base = (base as z.ZodNumber).min(min, `Debe ser >= ${min}`)
-        if (typeof max === 'number') base = (base as z.ZodNumber).max(max, `Debe ser <= ${max}`)
+        const minMsg = typeof meta?.minMessage === 'string' && meta!.minMessage ? String(meta!.minMessage) : `Debe ser >= ${min}`
+        const maxMsg = typeof meta?.maxMessage === 'string' && meta!.maxMessage ? String(meta!.maxMessage) : `Debe ser <= ${max}`
+        if (typeof min === 'number') base = (base as z.ZodNumber).min(min, minMsg)
+        if (typeof max === 'number') base = (base as z.ZodNumber).max(max, maxMsg)
       }
       for (const v of f.validations || []) {
         if (v.type === 'minLength') base = (base as z.ZodString).min(Number(v.value || 0), v.message)
@@ -230,7 +232,7 @@ function enviar(): void {
           <PrimeInputNumber v-else-if="f.type==='number'" v-model="(valores as any)[f.name||'']" class="w-full" :placeholder="f.placeholder" :min="(f.meta as any)?.min" :max="(f.meta as any)?.max" :step="(f.meta as any)?.step ?? 1" :disabled="f.disabled" :readonly="f.readonly" />
           <div v-else-if="f.type==='checkbox'">
             <template v-if="Array.isArray((f.meta as any)?.options) && ((f.meta as any)?.options?.length||0) > 0">
-              <div class="flex flex-column gap-2">
+              <div :class="['flex', ((f.meta as any)?.layout==='horizontal' ? 'flex-row gap-3' : 'flex-column gap-2')]">
                 <label v-for="op in ((f.meta?.options as any[])||[])" :key="String(op.value)" class="inline-flex align-items-center gap-2">
                   <PrimeCheckbox :input-id="String(op.value)" :value="op.value" v-model="(valores as any)[f.name||'']" :disabled="f.disabled" />
                   <span>{{ op.label }}</span>
@@ -264,7 +266,7 @@ function enviar(): void {
                   <PrimeInputNumber v-else-if="ch.type==='number'" v-model="(valores as any)[ch.name||'']" class="w-full" :placeholder="ch.placeholder" :min="(ch.meta as any)?.min" :max="(ch.meta as any)?.max" :step="(ch.meta as any)?.step ?? 1" :disabled="ch.disabled" :readonly="ch.readonly" />
                   <div v-else-if="ch.type==='checkbox'">
                     <template v-if="Array.isArray((ch.meta as any)?.options) && ((ch.meta as any)?.options?.length||0) > 0">
-                      <div class="flex flex-column gap-2">
+                      <div :class="['flex', ((ch.meta as any)?.layout==='horizontal' ? 'flex-row gap-3' : 'flex-column gap-2')]">
                         <label v-for="op in ((ch.meta?.options as any[])||[])" :key="String(op.value)" class="inline-flex align-items-center gap-2">
                           <PrimeCheckbox :input-id="String(op.value)" :value="op.value" v-model="(valores as any)[ch.name||'']" :disabled="ch.disabled" />
                           <span>{{ op.label }}</span>
