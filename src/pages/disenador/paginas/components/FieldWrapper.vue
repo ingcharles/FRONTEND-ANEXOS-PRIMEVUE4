@@ -32,6 +32,29 @@ const conteoHijos = computed<number>(() =>
   props.field.type === 'panel' ? (props.field.children?.length ?? 0) : 0
 )
 
+const conteoOpciones = computed<number>(() => {
+  if (!(props.field.type === 'select' || props.field.type === 'radio')) return 0
+  const opts = (props.field.meta as Record<string, unknown> | undefined)?.options as unknown
+  return Array.isArray(opts) ? opts.length : 0
+})
+
+// Valor actual persistido (Preview) o por defecto desde meta
+const valorActual = computed<unknown>(() => {
+  const meta = props.field.meta as Record<string, unknown> | undefined
+  const defecto = meta?.valorPorDefecto
+  const nombre = props.field.name
+  if (!nombre) return defecto
+  const paginaId = store.paginaActiva.id
+  const mapa = store.obtenerValoresPagina(paginaId) as Record<string, unknown>
+  const v = mapa[nombre]
+  return v !== undefined ? v : defecto
+})
+
+const valorActualTexto = computed<string | undefined>(() => {
+  const v = valorActual.value
+  return v == null ? undefined : String(v)
+})
+
 
 const arrastrando = ref(false)
 let inicioX = 0
@@ -118,14 +141,15 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
     @click="seleccionar"
   >
     <!-- Badge informativo (superior derecha) con dos columnas: texto izquierda, acciones derecha -->
-    <div class="info-badge">
+    <div v-if="selected" class="info-badge">
       <PrimeTag class="text-xs px-1 py-1 pointer-events-auto min-w-64" severity="primary">
         <div class="grid w-full align-items-start">
           <!-- Columna izquierda (8/12): textos -->
           <div class="col-8 flex flex-column gap-1 text-[10px]">
             <span class="font-medium">{{ `${field.type || field.label  }: ${field.id}` }}</span>
             <span class="font-medium ">{{ `${punto.toUpperCase()}: ${colActual} Cols` }}</span>
-            <span class="font-medium text-red-500!" v-if="field.type==='panel'">Elementos: {{ conteoHijos }}</span>
+            <span class="font-medium text-red-500" v-if="field.type==='panel'">Elementos: {{ conteoHijos }}</span>
+            <span class="font-medium" v-if="field.type==='select' || field.type==='radio'">Opciones: {{ conteoOpciones }}</span>
           </div>
           <!-- Columna derecha (4/12): acciones -->
           <div class="col-4 flex justify-content-end">
@@ -145,7 +169,13 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
     <div>
       <template v-if="field.type==='text' || field.type==='email' || field.type==='password'">
         <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
-        <PrimeInputText :placeholder="field.placeholder" class="w-full" />
+        <PrimeInputText
+          :model-value="valorActualTexto"
+          :placeholder="field.placeholder"
+          class="w-full"
+          :disabled="field.disabled"
+          :readonly="field.readonly"
+        />
       </template>
       <template v-else-if="field.type==='time'">
         <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
@@ -153,17 +183,34 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
       </template>
       <template v-else-if="field.type==='textarea'">
         <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
-        <PrimeTextarea :placeholder="field.placeholder" class="w-full" />
+        <PrimeTextarea
+          :model-value="valorActualTexto"
+          :placeholder="field.placeholder"
+          class="w-full"
+          :disabled="field.disabled"
+          :readonly="field.readonly"
+        />
       </template>
       <template v-else-if="field.type==='select'">
         <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
-        <PrimeDropdown class="w-full" :options="(field.meta?.options as any[])||[]" option-label="label" option-value="value" />
+        <PrimeDropdown
+          class="w-full"
+          :options="(field.meta?.options as Array<{ label: string; value: unknown }>) || []"
+          option-label="label"
+          option-value="value"
+          :model-value="valorActual"
+          :disabled="field.disabled"
+        />
       </template>
       <template v-else-if="field.type==='radio'">
         <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
         <div class="flex gap-3">
-          <label v-for="op in ((field.meta?.options as any[])||[])" :key="op.value" class="inline-flex align-items-center gap-2">
-            <PrimeRadioButton :input-id="String(op.value)" :value="op.value" name="radio-demo" />
+          <label
+            v-for="op in ((field.meta?.options as Array<{ label: string; value: unknown }>) || [])"
+            :key="String(op.value)"
+            class="inline-flex align-items-center gap-2"
+          >
+            <PrimeRadioButton :input-id="String(op.value)" :value="op.value" :name="field.name || ('radio_'+field.id)" :model-value="valorActual" :disabled="field.disabled" />
             <span>{{ op.label }}</span>
           </label>
         </div>

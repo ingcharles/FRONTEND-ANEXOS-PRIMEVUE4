@@ -46,6 +46,8 @@ export interface FieldSchema {
   maxWidth?: number
   required?: boolean
   visible?: boolean
+  disabled?: boolean
+  readonly?: boolean
   validations?: ValidationRule[]
   logic?: LogicRule[]
   children?: FieldSchema[]
@@ -107,6 +109,8 @@ export const zFieldSchema: z.ZodType<FieldSchema> = z.lazy(() =>
     maxWidth: z.number().optional(),
     required: z.boolean().optional(),
     visible: z.boolean().optional(),
+  disabled: z.boolean().optional(),
+  readonly: z.boolean().optional(),
     validations: z.array(zValidationRule).optional(),
     logic: z.array(zLogicRule).optional(),
     children: z.array(z.lazy(() => zFieldSchema)).optional(),

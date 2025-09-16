@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, reactive } from 'vue'
 import type { FieldSchema, FormSchema, PageSchema } from '@/types/form-schema'
 import { clonarProfundo, duplicarConNuevosIds } from '@/utils/clone'
 import { deserializarFormulario, serializarFormulario } from '@/utils/serializer'
@@ -25,6 +25,8 @@ export const useDesignerStore = defineStore('designer', () => {
   const selectedFieldId = ref<string | null>(null)
   const clipboard = ref<ClipboardItem | null>(null)
   const activePageIndex = ref<number>(0)
+  // Valores actuales por página (no se serializan)
+  const valoresPorPagina = ref<Record<string, Record<string, unknown>>>({})
 
   const gridSnap = computed({
     get: () => formSchema.value.settings?.gridSnap ?? true,
@@ -146,6 +148,8 @@ export const useDesignerStore = defineStore('designer', () => {
     formSchema.value = deserializarFormulario(json)
     selectedFieldId.value = null
     activePageIndex.value = 0
+    // Reiniciar valores al cargar un nuevo formulario
+    valoresPorPagina.value = {}
   }
 
   function exportarJson(): void {
@@ -167,7 +171,12 @@ export const useDesignerStore = defineStore('designer', () => {
 
   function eliminarPagina(indice: number): void {
     if (formSchema.value.pages.length <= 1) return
+    const pageId = formSchema.value.pages[indice]?.id
     formSchema.value.pages.splice(indice, 1)
+    // Eliminar valores asociados a la página
+    if (pageId && pageId in valoresPorPagina.value) {
+      delete valoresPorPagina.value[pageId]
+    }
     activePageIndex.value = Math.max(0, activePageIndex.value - 1)
   }
 
@@ -181,17 +190,34 @@ export const useDesignerStore = defineStore('designer', () => {
     activePageIndex.value = indice + 1
   }
 
+  // Gestión de valores (persistencia entre pestañas)
+  function obtenerValoresPagina(pageId: string): Record<string, unknown> {
+    let mapa = valoresPorPagina.value[pageId]
+    if (!mapa) {
+      mapa = reactive({}) as Record<string, unknown>
+      valoresPorPagina.value[pageId] = mapa
+    }
+    return mapa
+  }
+
+  function actualizarValorCampo(pageId: string, nombre: string, valor: unknown): void {
+    const mapa = obtenerValoresPagina(pageId)
+    ;(mapa as Record<string, unknown>)[nombre] = valor
+  }
+
   return {
     // estado
     formSchema,
     selectedFieldId,
     clipboard,
     activePageIndex,
+    valoresPorPagina,
     gridSnap,
     // getters
     paginaActiva,
     camposPagina,
     campoSeleccionado,
+    obtenerValoresPagina,
     // acciones
     seleccionarCampo,
     agregarCampo,
@@ -206,5 +232,6 @@ export const useDesignerStore = defineStore('designer', () => {
     agregarPagina,
     eliminarPagina,
     duplicarPagina,
+    actualizarValorCampo,
   }
 })

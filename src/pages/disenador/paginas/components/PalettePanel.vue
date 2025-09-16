@@ -32,8 +32,32 @@ const paletteItems: { type: FieldType; icon: string; defaultProps?: Partial<Fiel
   { type: 'password', icon: 'pi pi-lock', label: 'Password' },
   { type: 'textarea', icon: 'pi pi-align-left', label: 'Área' },
   { type: 'time', icon: 'pi pi-clock', label: 'Hora' },
-  { type: 'select', icon: 'pi pi-list', label: 'Select', defaultProps: { meta: { options: [] } } },
-  { type: 'radio', icon: 'pi pi-circle', label: 'Radio', defaultProps: { meta: { options: [] } } },
+  {
+    type: 'select',
+    icon: 'pi pi-list',
+    label: 'Select',
+    defaultProps: {
+      meta: {
+        options: [
+          { label: 'Item 1', value: 'item1' },
+          { label: 'Item 2', value: 'item2' },
+        ],
+      },
+    },
+  },
+  {
+    type: 'radio',
+    icon: 'pi pi-circle',
+    label: 'Radio',
+    defaultProps: {
+      meta: {
+        options: [
+          { label: 'Item 1', value: 'item1' },
+          { label: 'Item 2', value: 'item2' },
+        ],
+      },
+    },
+  },
   { type: 'label', icon: 'pi pi-info-circle', label: 'Etiqueta' },
   { type: 'button', icon: 'pi pi-check', label: 'Botón' },
   { type: 'divider', icon: 'pi pi-minus', label: 'Divisor' },
