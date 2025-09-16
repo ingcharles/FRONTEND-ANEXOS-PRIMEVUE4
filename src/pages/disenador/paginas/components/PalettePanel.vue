@@ -135,6 +135,7 @@ const items = ref<BaseCategoria[]>([
     icon: 'pi pi-database',
     items: [
       { key: '4_0', label: 'Tabla', type: 'table', icon: 'pi pi-table' },
+      { key: '4_1', label: 'Tabla Precio/Tasa', type: 'table', icon: 'pi pi-percentage' },
     ]
   }
 ])
@@ -174,10 +175,31 @@ function getPaletteItemByType(type: FieldType): { type: FieldType; icon: string;
 
 // Función para clonar desde el menú
 function clonarDesdeMenu(menuItem: ElementoPalette): FieldSchema | null {
-  const paletteItem = getPaletteItemByType(menuItem.type) ?? {
+  let paletteItem = getPaletteItemByType(menuItem.type) ?? {
     type: menuItem.type,
     icon: menuItem.icon,
     label: menuItem.label,
+  }
+  // preset especial para Precio/Tasa
+  if (menuItem.key === '4_1') {
+    paletteItem = {
+      type: 'table',
+      icon: 'pi pi-percentage',
+      label: 'Tabla Precio/Tasa',
+      defaultProps: {
+        meta: {
+          columns: [
+            { name: 'precio', label: 'Precio', type: 'number', formatMode: 'currency', currency: 'USD', locale: 'es-EC', minFractionDigits: 2, maxFractionDigits: 2, agg: 'sum', aggPrefix: 'Total $', decimals: 2 },
+            { name: 'tasa', label: 'Tasa', type: 'number', formatMode: 'percent', percentScale: 'fraction', minFractionDigits: 2, maxFractionDigits: 2, agg: 'avg', aggSuffix: '%', decimals: 2 },
+          ],
+          rows: 1,
+          addRows: true,
+          showSummary: true,
+          summaryLabel: 'Resumen',
+          tableStyle: { bordered: true, striped: true, hover: true, padding: 'md' },
+        },
+      },
+    }
   }
   return clonarDesdePaleta(paletteItem)
 }

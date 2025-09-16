@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useDesignerStore } from '@/stores/useDesignerStore'
 import type { ValidationRule } from '@/types/form-schema'
+import draggable from 'vuedraggable'
 
 defineProps<{ fieldId: string }>()
 const store = useDesignerStore()
@@ -85,7 +86,7 @@ function eliminarOpcion(ind: number): void {
 }
 
 // Columnas para tabla
-type ColumnaTabla = { name: string; label: string; type?: 'text' | 'number' }
+type ColumnaTabla = { name: string; label: string; type?: 'text' | 'number' | 'date' }
 type ColumnaTablaExt = ColumnaTabla & {
   // Formato de celda
   formatMode?: 'decimal' | 'currency' | 'percent'
@@ -735,6 +736,35 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
         <PrimeButton label="Eliminar" size="small" icon="pi pi-trash" severity="danger" :disabled="obtenerColumnas().length===0" @click="() => { eliminarColumna(indiceColumna); asegurarIndiceColumna() }" />
       </div>
     </div>
+    <div class="mb-2">
+      <draggable
+        :list="obtenerColumnas() as any"
+        item-key="name"
+        handle=".drag-handle"
+        ghost-class="surface-100"
+        class="grid grid-cols-12 gap-2"
+        @end="(e:any) => {
+          const current = obtenerColumnas()
+          // vuedraggable ya reordenó la lista reactiva en meta; sin embargo, forzamos persistencia explícita
+          actualizarColumnas([...current])
+          // ajustar índice seleccionado si es necesario
+          asegurarIndiceColumna()
+        }"
+      >
+        <template #item="{ element, index }">
+          <div class="col-span-12 md:col-span-6 flex items-center justify-between p-2 border-1 surface-border border-round">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-bars drag-handle cursor-move" />
+              <span class="font-medium">{{ element.label || element.name || ('Col ' + (index+1)) }}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <PrimeTag v-if="element.type" :value="String(element.type)" severity="secondary" />
+            </div>
+          </div>
+        </template>
+      </draggable>
+      <small class="text-muted-color">Arrastra para reordenar columnas. La configuración se mantiene para cada columna.</small>
+    </div>
     <template v-if="obtenerColumnas().length">
       <div class="grid grid-cols-12 gap-3 items-end">
         <div class="col-span-12 md:col-span-4">
@@ -748,7 +778,7 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
         </div>
         <div class="col-span-12 md:col-span-4">
           <label class="block mb-1">Tipo</label>
-          <PrimeSelect :model-value="obtenerColumnas()[indiceColumna].type || 'text'" :options="['text','number']" @update:model-value="(v:string)=> actualizarColumna(indiceColumna,'type', v)" />
+          <PrimeSelect :model-value="obtenerColumnas()[indiceColumna].type || 'text'" :options="['text','number','date']" @update:model-value="(v:string)=> actualizarColumna(indiceColumna,'type', v)" />
         </div>
       </div>
       <div class="col-12 mt-2" v-if="obtenerColumnas()[indiceColumna].type==='number'">
@@ -852,7 +882,7 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
         <small class="text-muted-color">Se aplicará al inicializar los datos o cuando estén vacíos.</small>
       </div>
     </div>
-    <div class="mt-3">
+    <!-- <div class="mt-3">
       <div class="font-semibold mb-2">Resumen</div>
       <div class="grid grid-cols-12 gap-3">
         <div class="col-span-12 md:col-span-4">
@@ -864,7 +894,7 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
           <PrimeInputText :model-value="String(((campo?.meta as any)?.summaryLabel ?? 'Total'))" @update:model-value="(v:string)=> { const meta = { ...(campo?.meta as any) }; meta.summaryLabel = v; store.actualizarCampo(campo!.id, { meta }) }" />
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="mt-3">
       <div class="font-semibold mb-2">Estilo de tabla</div>
       <div class="grid grid-cols-12 gap-3">

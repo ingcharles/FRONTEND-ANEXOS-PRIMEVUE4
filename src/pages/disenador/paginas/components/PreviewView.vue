@@ -8,6 +8,7 @@ import { EvaluarReglasCampo } from '@/utils/logic'
 const store = useDesignerStore()
 const paginaIndex = ref(0)
 const paginaActual = computed(() => store.formSchema.pages[paginaIndex.value])
+const totalPaginas = computed(() => store.formSchema.pages.length)
 const campos = computed<FieldSchema[]>(() => paginaActual.value.fields)
 
 function clasesColumna(f: FieldSchema): string[] {
@@ -41,7 +42,7 @@ const valores = computed<Record<string, unknown>>(() => store.obtenerValoresPagi
 const errores = ref<Record<string, string>>({})
 
 // Tipos auxiliares para tabla
-type ColumnaTabla = { name: string; label?: string; type?: 'text' | 'number' }
+type ColumnaTabla = { name: string; label?: string; type?: 'text' | 'number' | 'date' }
 type ColumnaTablaExt = ColumnaTabla & {
   // Formato de celda
   formatMode?: 'decimal' | 'currency' | 'percent'
@@ -192,17 +193,22 @@ function crearSchema(): z.ZodObject<Record<string, z.ZodTypeAny>> {
       const rowShape: Record<string, z.ZodTypeAny> = {}
       for (const c of cols) {
         if ((c.type || 'text') === 'number') {
-          let num: z.ZodTypeAny = z.preprocess((v) => typeof v === 'string' ? (v.trim()==='' ? undefined : Number(v)) : v, z.number())
-          // Rango por columna
+          // Construir regla numérica con min/max y luego envolver con preprocess
+          let numRule = z.number()
           const cMin = typeof c.min === 'number' ? c.min : undefined
           const cMax = typeof c.max === 'number' ? c.max : undefined
           const minMsg = typeof c.minMessage === 'string' && c.minMessage ? String(c.minMessage) : (typeof cMin === 'number' ? `Debe ser >= ${cMin}` : 'Valor demasiado pequeño')
           const maxMsg = typeof c.maxMessage === 'string' && c.maxMessage ? String(c.maxMessage) : (typeof cMax === 'number' ? `Debe ser <= ${cMax}` : 'Valor demasiado grande')
-          if (typeof cMin === 'number') num = (num as z.ZodNumber).min(cMin, minMsg)
-          if (typeof cMax === 'number') num = (num as z.ZodNumber).max(cMax, maxMsg)
+          if (typeof cMin === 'number') numRule = numRule.min(cMin, minMsg)
+          if (typeof cMax === 'number') numRule = numRule.max(cMax, maxMsg)
+          const num = z.preprocess((v) => typeof v === 'string' ? (v.trim()==='' ? undefined : Number(v)) : v, numRule)
           // Requerido por columna
           const requerido = Boolean(c.required)
           rowShape[c.name] = requerido ? num : (num.optional())
+        } else if ((c.type || 'text') === 'date') {
+          const requerido = Boolean(c.required)
+          const s = z.any()
+          rowShape[c.name] = requerido ? s : s.optional()
         } else {
           const requerido = Boolean(c.required)
           const s = z.string()
@@ -230,15 +236,18 @@ function crearSchema(): z.ZodObject<Record<string, z.ZodTypeAny>> {
           base = base.refine((v: unknown) => (typeof v === 'string' ? v.trim().length > 0 : v != null), f.validations?.find(v=>v.type==='required')?.message || 'Requerido')
         }
       }
-      // Validación adicional para número con min/max
+      // Validación adicional para número con min/max (reconstruir esquema para evitar min/max sobre ZodEffects)
       if (f.type === 'number') {
         const meta = f.meta as Record<string, unknown> | undefined
         const min = typeof meta?.min === 'number' ? (meta!.min as number) : undefined
         const max = typeof meta?.max === 'number' ? (meta!.max as number) : undefined
         const minMsg = typeof meta?.minMessage === 'string' && meta!.minMessage ? String(meta!.minMessage) : `Debe ser >= ${min}`
         const maxMsg = typeof meta?.maxMessage === 'string' && meta!.maxMessage ? String(meta!.maxMessage) : `Debe ser <= ${max}`
-        if (typeof min === 'number') base = (base as z.ZodNumber).min(min, minMsg)
-        if (typeof max === 'number') base = (base as z.ZodNumber).max(max, maxMsg)
+        let numRule = z.number()
+        if (typeof min === 'number') numRule = numRule.min(min, minMsg)
+        if (typeof max === 'number') numRule = numRule.max(max, maxMsg)
+        const num = z.preprocess((v) => typeof v === 'string' ? (v.trim()==='' ? undefined : Number(v)) : v, numRule)
+        base = esRequerido ? num : num.optional()
       }
       for (const v of f.validations || []) {
         if (v.type === 'minLength') base = (base as z.ZodString).min(Number(v.value || 0), v.message)
@@ -352,28 +361,126 @@ watch(firmaDefaults, () => {
 
 function enviar(): void {
   errores.value = {}
-  // Recalcular esquema por si cambió la lógica de requerido según valores actuales
-  schema.value = crearSchema()
-  const res = schema.value.safeParse(valores.value)
-  if (!res.success) {
-    const map: Record<string, string> = {}
-    for (const issue of res.error.issues) {
-      const path = issue.path[0] as string
-      map[path] = issue.message
+  // Validar TODO el formulario: iterar todas las páginas y sus campos
+  const erroresGlobales: Record<string, string> = {}
+  const valoresGlobales: Record<string, unknown> = {}
+  for (const page of store.formSchema.pages) {
+    // valores actuales por página
+    const valsPagina = store.obtenerValoresPagina(page.id)
+    Object.assign(valoresGlobales, valsPagina)
+    // construir esquema por página (reutilizando helpers pero con campos de esa página)
+    const shape: Record<string, z.ZodTypeAny> = {}
+    const todos = recolectarCamposConNombre(page.fields, [])
+    const idToName = construirMapaIdNombre(page.fields)
+    for (const f of todos) {
+      let base: z.ZodTypeAny = z.any()
+      if (f.type === 'text' || f.type === 'email' || f.type === 'password' || f.type === 'textarea') base = z.string()
+  if (f.type === 'number') base = z.any() // se reconstruye más abajo con min/max y required
+      if (f.type === 'time') base = z.any()
+      if (f.type === 'date') base = z.any()
+      if (f.type === 'radio' || f.type === 'select') base = z.any()
+      if (f.type === 'checkbox') {
+        const metaObj = f.meta as Record<string, unknown> | undefined
+        const opts = metaObj?.options as unknown
+        const esGrupo = Array.isArray(opts) && opts.length > 0
+        base = esGrupo ? z.array(z.any()) : z.boolean().or(z.any())
+      }
+      if (f.type === 'table') {
+        const cols = obtenerColumnasTabla(f)
+        const rowShape: Record<string, z.ZodTypeAny> = {}
+        for (const c of cols) {
+          if ((c.type || 'text') === 'number') {
+            let numRule = z.number()
+            const cMin = typeof c.min === 'number' ? c.min : undefined
+            const cMax = typeof c.max === 'number' ? c.max : undefined
+            const minMsg = typeof c.minMessage === 'string' && c.minMessage ? String(c.minMessage) : (typeof cMin === 'number' ? `Debe ser >= ${cMin}` : 'Valor demasiado pequeño')
+            const maxMsg = typeof c.maxMessage === 'string' && c.maxMessage ? String(c.maxMessage) : (typeof cMax === 'number' ? `Debe ser <= ${cMax}` : 'Valor demasiado grande')
+            if (typeof cMin === 'number') numRule = numRule.min(cMin, minMsg)
+            if (typeof cMax === 'number') numRule = numRule.max(cMax, maxMsg)
+            const num = z.preprocess((v) => typeof v === 'string' ? (v.trim()==='' ? undefined : Number(v)) : v, numRule)
+            const requerido = Boolean(c.required)
+            rowShape[c.name] = requerido ? num : (num.optional())
+          } else {
+            const requerido = Boolean(c.required)
+            const s = z.string()
+            rowShape[c.name] = requerido ? s : s.optional()
+          }
+        }
+        base = z.array(z.object(rowShape)).optional()
+      }
+      const estado = EvaluarReglasCampo(f, valsPagina as Record<string, unknown>, idToName)
+      const esVisible = estado.visible
+      const esRequerido = estado.required && !f.disabled
+      if (!esVisible) {
+        base = base.optional()
+      } else {
+        if (esRequerido) {
+          if (f.type === 'checkbox') {
+            const metaObj = f.meta as Record<string, unknown> | undefined
+            const opts = metaObj?.options as unknown
+            if (Array.isArray(opts) && opts.length > 0) {
+              base = z.array(z.any()).refine((arr) => Array.isArray(arr) && arr.length > 0, f.validations?.find(v=>v.type==='required')?.message || 'Seleccione al menos una opción')
+            } else {
+              base = z.literal(true)
+            }
+          } else {
+            base = base.refine((v: unknown) => (typeof v === 'string' ? v.trim().length > 0 : v != null), f.validations?.find(v=>v.type==='required')?.message || 'Requerido')
+          }
+        }
+        if (f.type === 'number') {
+          const meta = f.meta as Record<string, unknown> | undefined
+          const min = typeof meta?.min === 'number' ? (meta!.min as number) : undefined
+          const max = typeof meta?.max === 'number' ? (meta!.max as number) : undefined
+          const minMsg = typeof meta?.minMessage === 'string' && meta!.minMessage ? String(meta!.minMessage) : `Debe ser >= ${min}`
+          const maxMsg = typeof meta?.maxMessage === 'string' && meta!.maxMessage ? String(meta!.maxMessage) : `Debe ser <= ${max}`
+          let numRule = z.number()
+          if (typeof min === 'number') numRule = numRule.min(min, minMsg)
+          if (typeof max === 'number') numRule = numRule.max(max, maxMsg)
+          const num = z.preprocess((v) => typeof v === 'string' ? (v.trim()==='' ? undefined : Number(v)) : v, numRule)
+          base = esRequerido ? num : num.optional()
+        }
+        for (const v of f.validations || []) {
+          if (v.type === 'minLength') base = (base as z.ZodString).min(Number(v.value || 0), v.message)
+          if (v.type === 'maxLength') base = (base as z.ZodString).max(Number(v.value || 9999), v.message)
+          if (v.type === 'pattern' && typeof v.value === 'string') base = (base as z.ZodString).regex(new RegExp(v.value), v.message)
+          if (v.type === 'custom' && typeof v.value === 'string') {
+            try {
+              const fn = new Function('valor', `return (${v.value})`) as (valor: unknown) => boolean
+              base = base.refine((valor) => {
+                try { return !!fn(valor) } catch { return true }
+              }, v.message)
+            } catch { /* noop */ }
+          }
+        }
+      }
+      shape[f.name!] = base
     }
-    errores.value = map
-  } else {
-    alert('Formulario válido:\n' + JSON.stringify(res.data, null, 2))
+    const schemaPagina = z.object(shape)
+    const res = schemaPagina.safeParse(valsPagina)
+    if (!res.success) {
+      for (const issue of res.error.issues) {
+        const path = String(issue.path[0] || '')
+        if (path) erroresGlobales[path] = issue.message
+      }
+    }
   }
+  if (Object.keys(erroresGlobales).length > 0) {
+    errores.value = erroresGlobales
+    return
+  }
+  alert('Formulario válido:\n' + JSON.stringify(valoresGlobales, null, 2))
 }
 </script>
 
 <template>
   <div class="p-3">
-    <div class="flex justify-content-between mb-3">
-  <PrimeButton label="Anterior" icon="pi pi-angle-left" :disabled="paginaIndex===0" @click="paginaIndex--" />
+    <div class="flex justify-between items-center mb-3" v-if="totalPaginas>1">
+      <PrimeButton label="Anterior" icon="pi pi-angle-left" :disabled="paginaIndex===0" @click="paginaIndex--" />
       <div class="font-semibold">{{ paginaActual.title || ('Página ' + (paginaIndex+1)) }}</div>
-  <PrimeButton label="Siguiente" icon-pos="right" icon="pi pi-angle-right" :disabled="paginaIndex>=store.formSchema.pages.length-1" @click="paginaIndex++" />
+      <PrimeButton label="Siguiente" icon-pos="right" icon="pi pi-angle-right" :disabled="paginaIndex>=store.formSchema.pages.length-1" @click="paginaIndex++" />
+    </div>
+    <div class="mb-2" v-else>
+      <div class="font-semibold">{{ paginaActual.title || ('Página ' + (paginaIndex+1)) }}</div>
     </div>
     <form class="grid" @submit.prevent="enviar">
       <template v-for="f in campos" :key="f.id">
@@ -414,6 +521,7 @@ function enviar(): void {
                   <tr v-for="(row, rIdx) in (((valores as any)[f.name||''] as any[])||[])" :key="rIdx" :class="clasesFila(f)">
                     <td v-for="col in obtenerColumnasTabla(f)" :key="col.name" :class="clasesCelda(f)">
                       <PrimeInputText v-if="(col.type||'text')==='text'" v-model="(valores as any)[f.name||''][rIdx][col.name]" class="w-full" :disabled="f.disabled" />
+                      <PrimeDatePicker v-else-if="col.type==='date'" v-model="(valores as any)[f.name||''][rIdx][col.name]" class="w-full" :disabled="f.disabled" />
                       <template v-else-if="col.type==='number'">
                         <PrimeInputNumber
                           :model-value="(col as any).formatMode==='percent' && (col as any).percentScale==='fraction' ? (((valores as any)[f.name||''][rIdx][col.name] ?? null) as any) * 100 : ((valores as any)[f.name||''][rIdx][col.name])"
@@ -496,6 +604,7 @@ function enviar(): void {
                           <tr v-for="(row, rIdx) in (((valores as any)[ch.name||''] as any[])||[])" :key="rIdx" :class="clasesFila(ch)">
                              <td v-for="col in obtenerColumnasTabla(ch)" :key="col.name" :class="clasesCelda(ch)">
                               <PrimeInputText v-if="(col.type||'text')==='text'" v-model="(valores as any)[ch.name||''][rIdx][col.name]" class="w-full" :disabled="ch.disabled" />
+                              <PrimeDatePicker v-else-if="col.type==='date'" v-model="(valores as any)[ch.name||''][rIdx][col.name]" class="w-full" :disabled="ch.disabled" />
                               <template v-else-if="col.type==='number'">
                                 <PrimeInputNumber
                                   :model-value="(col as any).formatMode==='percent' && (col as any).percentScale==='fraction' ? (((valores as any)[ch.name||''][rIdx][col.name] ?? null) as any) * 100 : ((valores as any)[ch.name||''][rIdx][col.name])"
@@ -544,6 +653,10 @@ function enviar(): void {
           <div v-if="f.name && errores[f.name]" class="text-red-500 mt-1">{{ errores[f.name] }}</div>
         </div>
       </template>
+      <!-- Botón Enviar de respaldo: si no hay botón en la página y es la última o única -->
+      <div class="col-12" v-if="(totalPaginas===1 || paginaIndex>=store.formSchema.pages.length-1) && !campos.some(f=>f.type==='button')">
+        <PrimeButton label="Enviar" type="submit" icon="pi pi-check" />
+      </div>
     </form>
   </div>
 </template>
