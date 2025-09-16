@@ -179,7 +179,7 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
       </template>
       <template v-else-if="field.type==='time'">
         <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
-        <PrimeCalendar
+        <PrimeDatePicker
           time-only
           hour-format="24"
           class="w-full"
@@ -199,7 +199,7 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
       </template>
       <template v-else-if="field.type==='select'">
         <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
-        <PrimeDropdown
+        <PrimeSelect
           class="w-full"
           :options="(field.meta?.options as Array<{ label: string; value: unknown }>) || []"
           option-label="label"
@@ -221,7 +221,7 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
       <template v-else-if="field.type==='checkbox'">
         <template v-if="Array.isArray((field.meta as any)?.options) && ((field.meta as any)?.options?.length||0) > 0">
           <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
-          <div class="flex flex-column gap-2">
+          <div :class="['flex', ((field.meta as any)?.layout==='horizontal' ? 'flex-row gap-3' : 'flex-column gap-2')]">
             <label v-for="op in ((field.meta?.options as any[])||[])" :key="String(op.value)" class="inline-flex align-items-center gap-2">
               <PrimeCheckbox :input-id="String(op.value)" :value="op.value" :model-value="[]" disabled />
               <span>{{ op.label }}</span>
@@ -237,7 +237,7 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
       </template>
       <template v-else-if="field.type==='radio'">
         <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
-        <div class="flex gap-3">
+        <div :class="['flex', ((field.meta as any)?.layout==='horizontal' ? 'flex-row gap-3' : 'flex-column gap-2')]">
           <label
             v-for="op in ((field.meta?.options as Array<{ label: string; value: unknown }>) || [])"
             :key="String(op.value)"

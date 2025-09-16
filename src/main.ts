@@ -11,7 +11,7 @@ import PrimeButton from 'primevue/button'
 import PrimeInputText from 'primevue/inputtext'
 import PrimeTextarea from 'primevue/textarea'
 import PrimeInputNumber from 'primevue/inputnumber'
-import PrimeDropdown from 'primevue/dropdown'
+import PrimeSelect from 'primevue/select'
 import PrimeMultiSelect from 'primevue/multiselect'
 import PrimeCheckbox from 'primevue/checkbox'
 import PrimeRadioButton from 'primevue/radiobutton'
@@ -34,7 +34,7 @@ import PrimeMenubar from 'primevue/menubar'
 import PrimePanelMenu from 'primevue/panelmenu'
 import PrimeDivider from 'primevue/divider'
 import PrimeTreeSelect from 'primevue/treeselect'
-import PrimeCalendar from 'primevue/calendar'
+import PrimeDatePicker from 'primevue/datepicker'
 import PrimeColorPicker from 'primevue/colorpicker'
 import PrimeFileUpload from 'primevue/fileupload'
 import PrimeRating from 'primevue/rating'
@@ -79,7 +79,7 @@ app.component('PrimeButton', PrimeButton)
 app.component('PrimeInputText', PrimeInputText)
 app.component('PrimeTextarea', PrimeTextarea)
 app.component('PrimeInputNumber', PrimeInputNumber)
-app.component('PrimeDropdown', PrimeDropdown)
+app.component('PrimeSelect', PrimeSelect)
 app.component('PrimeMultiSelect', PrimeMultiSelect)
 app.component('PrimeCheckbox', PrimeCheckbox)
 app.component('PrimeRadioButton', PrimeRadioButton)
@@ -104,7 +104,7 @@ app.component('PrimeMenubar', PrimeMenubar)
 app.component('PrimePanelMenu', PrimePanelMenu)
 app.component('PrimeDivider', PrimeDivider)
 app.component('PrimeTreeSelect', PrimeTreeSelect)
-app.component('PrimeCalendar', PrimeCalendar)
+app.component('PrimeDatePicker', PrimeDatePicker)
 app.component('PrimeColorPicker', PrimeColorPicker)
 app.component('PrimeFileUpload', PrimeFileUpload)
 app.component('PrimeRating', PrimeRating)

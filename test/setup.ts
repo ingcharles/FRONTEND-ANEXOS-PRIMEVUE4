@@ -3,9 +3,9 @@ import PrimeVue from 'primevue/config'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
-import Dropdown from 'primevue/dropdown'
+import Select from 'primevue/select'
 import MultiSelect from 'primevue/multiselect'
-import Calendar from 'primevue/calendar'
+import DatePicker from 'primevue/datepicker'
 import Checkbox from 'primevue/checkbox'
 import RadioButton from 'primevue/radiobutton'
 import Textarea from 'primevue/textarea'
@@ -22,9 +22,9 @@ config.global.components = {
   Button,
   InputText,
   InputNumber,
-  Dropdown,
+  Select,
   MultiSelect,
-  Calendar,
+  DatePicker,
   Checkbox,
   RadioButton,
   Textarea,
@@ -34,9 +34,9 @@ config.global.components = {
   PrimeButton: Button,
   PrimeInputText: InputText,
   PrimeInputNumber: InputNumber,
-  PrimeDropdown: Dropdown,
+  PrimeSelect: Select,
   PrimeMultiSelect: MultiSelect,
-  PrimeCalendar: Calendar,
+  PrimeDatePicker: DatePicker,
   PrimeCheckbox: Checkbox,
   PrimeRadioButton: RadioButton,
   PrimeTextarea: Textarea,
@@ -66,4 +66,3 @@ Object.defineProperty(URL, 'revokeObjectURL', {
   writable: true,
   value: vi.fn()
 })
-

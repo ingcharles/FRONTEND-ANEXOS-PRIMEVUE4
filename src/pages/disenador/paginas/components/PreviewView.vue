@@ -227,8 +227,8 @@ function enviar(): void {
           <label v-if="f.label" class="block mb-1">{{ f.label }}<span v-if="EvaluarReglasCampo(f, valores as any, idAName).required" class="text-red-500"> *</span></label>
           <PrimeInputText v-if="f.type==='text' || f.type==='email' || f.type==='password'" v-model="(valores as any)[f.name||'']" :placeholder="f.placeholder" class="w-full" :disabled="f.disabled" :readonly="f.readonly" />
           <PrimeTextarea v-else-if="f.type==='textarea'" v-model="(valores as any)[f.name||'']" :placeholder="f.placeholder" class="w-full" :disabled="f.disabled" :readonly="f.readonly" />
-          <PrimeCalendar v-else-if="f.type==='time'" v-model="(valores as any)[f.name||'']" time-only hour-format="24" class="w-full" :disabled="f.disabled" />
-          <PrimeDropdown v-else-if="f.type==='select'" v-model="(valores as any)[f.name||'']" :options="(f.meta?.options as any[])||[]" option-label="label" option-value="value" class="w-full" :disabled="f.disabled" />
+          <PrimeDatePicker v-else-if="f.type==='time'" v-model="(valores as any)[f.name||'']" time-only hour-format="24" class="w-full" :disabled="f.disabled" />
+          <PrimeSelect v-else-if="f.type==='select'" v-model="(valores as any)[f.name||'']" :options="(f.meta?.options as any[])||[]" option-label="label" option-value="value" class="w-full" :disabled="f.disabled" />
           <PrimeInputNumber v-else-if="f.type==='number'" v-model="(valores as any)[f.name||'']" class="w-full" :placeholder="f.placeholder" :min="(f.meta as any)?.min" :max="(f.meta as any)?.max" :step="(f.meta as any)?.step ?? 1" :disabled="f.disabled" :readonly="f.readonly" />
           <div v-else-if="f.type==='checkbox'">
             <template v-if="Array.isArray((f.meta as any)?.options) && ((f.meta as any)?.options?.length||0) > 0">
@@ -246,7 +246,7 @@ function enviar(): void {
             </template>
           </div>
           <PrimeDivider v-else-if="f.type==='divider'" />
-          <div v-else-if="f.type==='radio'" class="flex gap-3">
+          <div v-else-if="f.type==='radio'" :class="['flex', ((f.meta as any)?.layout==='horizontal' ? 'flex-row gap-3' : 'flex-column gap-2') ]">
             <label v-for="op in ((f.meta?.options as any[])||[])" :key="op.value" class="inline-flex align-items-center gap-2">
               <PrimeRadioButton :input-id="String(op.value)" v-model="(valores as any)[f.name||'']" :value="op.value" :name="f.name" :disabled="f.disabled" />
               <span>{{ op.label }}</span>
@@ -261,8 +261,8 @@ function enviar(): void {
                   <label v-if="ch.label" class="block mb-1">{{ ch.label }}<span v-if="EvaluarReglasCampo(ch, valores as any, idAName).required" class="text-red-500"> *</span></label>
                   <PrimeInputText v-if="ch.type==='text' || ch.type==='email' || ch.type==='password'" v-model="(valores as any)[ch.name||'']" :placeholder="ch.placeholder" class="w-full" :disabled="ch.disabled" :readonly="ch.readonly" />
                   <PrimeTextarea v-else-if="ch.type==='textarea'" v-model="(valores as any)[ch.name||'']" :placeholder="ch.placeholder" class="w-full" :disabled="ch.disabled" :readonly="ch.readonly" />
-                  <PrimeCalendar v-else-if="ch.type==='time'" v-model="(valores as any)[ch.name||'']" time-only hour-format="24" class="w-full" :disabled="ch.disabled" />
-                  <PrimeDropdown v-else-if="ch.type==='select'" v-model="(valores as any)[ch.name||'']" :options="(ch.meta?.options as any[])||[]" option-label="label" option-value="value" class="w-full" :disabled="ch.disabled" />
+                  <PrimeDatePicker v-else-if="ch.type==='time'" v-model="(valores as any)[ch.name||'']" time-only hour-format="24" class="w-full" :disabled="ch.disabled" />
+                  <PrimeSelect v-else-if="ch.type==='select'" v-model="(valores as any)[ch.name||'']" :options="(ch.meta?.options as any[])||[]" option-label="label" option-value="value" class="w-full" :disabled="ch.disabled" />
                   <PrimeInputNumber v-else-if="ch.type==='number'" v-model="(valores as any)[ch.name||'']" class="w-full" :placeholder="ch.placeholder" :min="(ch.meta as any)?.min" :max="(ch.meta as any)?.max" :step="(ch.meta as any)?.step ?? 1" :disabled="ch.disabled" :readonly="ch.readonly" />
                   <div v-else-if="ch.type==='checkbox'">
                     <template v-if="Array.isArray((ch.meta as any)?.options) && ((ch.meta as any)?.options?.length||0) > 0">
@@ -280,7 +280,7 @@ function enviar(): void {
                     </template>
                   </div>
                   <PrimeDivider v-else-if="ch.type==='divider'" />
-                  <div v-else-if="ch.type==='radio'" class="flex gap-3">
+                  <div v-else-if="ch.type==='radio'" :class="['flex', ((ch.meta as any)?.layout==='horizontal' ? 'flex-row gap-3' : 'flex-column gap-2')]">
                     <label v-for="op in ((ch.meta?.options as any[])||[])" :key="op.value" class="inline-flex align-items-center gap-2">
                       <PrimeRadioButton :input-id="String(op.value)" v-model="(valores as any)[ch.name||'']" :value="op.value" :name="ch.name" :disabled="ch.disabled" />
                       <span>{{ op.label }}</span>

@@ -37,7 +37,7 @@ function agregarRegla(): void {
         </div>
         <div class="col-3">
           <label class="block mb-1">Operador</label>
-          <PrimeDropdown v-model="regla.operator" :options="['equals','not_equals','contains','gt','lt','custom']" />
+          <PrimeSelect v-model="regla.operator" :options="['equals','not_equals','contains','gt','lt','custom']" />
         </div>
         <div class="col-3">
           <label class="block mb-1">Valor</label>
@@ -45,7 +45,7 @@ function agregarRegla(): void {
         </div>
         <div class="col-2">
           <label class="block mb-1">Acción</label>
-          <PrimeDropdown v-model="regla.action" :options="['show','hide','require','optional']" />
+          <PrimeSelect v-model="regla.action" :options="['show','hide','require','optional']" />
         </div>
       </div>
       <div v-if="regla.operator==='custom'" class="mt-2">

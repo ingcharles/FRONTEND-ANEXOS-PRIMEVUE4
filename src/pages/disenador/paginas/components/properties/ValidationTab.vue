@@ -28,7 +28,7 @@ function agregar(type: ValidationRule['type']) {
     <div v-for="(r, i) in reglas" :key="i" class="grid align-items-end gap-2">
       <div class="col-4">
         <label class="block mb-1">Tipo</label>
-        <PrimeDropdown v-model="r.type" :options="['required','minLength','maxLength','pattern','custom']" />
+  <PrimeSelect v-model="r.type" :options="['required','minLength','maxLength','pattern','custom']" />
       </div>
       <div class="col-8">
         <label class="block mb-1">Valor / expresión</label>

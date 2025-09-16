@@ -413,7 +413,7 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
       <!-- Valor por defecto para campo de hora -->
       <div class="field" v-if="campo && campo.type==='time'">
         <label class="block mb-1">Hora por defecto</label>
-        <PrimeCalendar time-only hour-format="24" :model-value="obtenerValorPorDefectoTiempoComoFecha()" @update:model-value="(v:any)=> actualizarValorPorDefectoTiempo(v as Date | null)" />
+  <PrimeDatePicker time-only hour-format="24" :model-value="obtenerValorPorDefectoTiempoComoFecha()" @update:model-value="(v:any)=> actualizarValorPorDefectoTiempo(v as Date | null)" />
         <small class="text-muted-color">Se guarda como HH:mm; se convertirá a Date en la vista previa.</small>
       </div>
     </div>
@@ -425,15 +425,15 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
     <div class="field grid">
       <div class="col-4">
         <label class="block mb-1">Cols sm</label>
-        <PrimeDropdown :model-value="campo?.grid?.sm ?? 12" :options="[1,2,3,4,5,6,7,8,9,10,11,12]" class="w-full" @update:model-value="(v: number | null)=> actualizarGrid({ sm: Number(v ?? 12) })" />
+  <PrimeSelect :model-value="campo?.grid?.sm ?? 12" :options="[1,2,3,4,5,6,7,8,9,10,11,12]" class="w-full" @update:model-value="(v: number | null)=> actualizarGrid({ sm: Number(v ?? 12) })" />
       </div>
       <div class="col-4">
         <label class="block mb-1">Cols md</label>
-        <PrimeDropdown :model-value="campo?.grid?.md ?? 6" :options="[1,2,3,4,5,6,7,8,9,10,11,12]" class="w-full" @update:model-value="(v: number | null)=> actualizarGrid({ md: Number(v ?? 6) })" />
+  <PrimeSelect :model-value="campo?.grid?.md ?? 6" :options="[1,2,3,4,5,6,7,8,9,10,11,12]" class="w-full" @update:model-value="(v: number | null)=> actualizarGrid({ md: Number(v ?? 6) })" />
       </div>
       <div class="col-4">
         <label class="block mb-1">Cols lg</label>
-        <PrimeDropdown :model-value="campo?.grid?.lg ?? 6" :options="[1,2,3,4,5,6,7,8,9,10,11,12]" class="w-full" @update:model-value="(v: number | null)=> actualizarGrid({ lg: Number(v ?? 6) })" />
+  <PrimeSelect :model-value="campo?.grid?.lg ?? 6" :options="[1,2,3,4,5,6,7,8,9,10,11,12]" class="w-full" @update:model-value="(v: number | null)=> actualizarGrid({ lg: Number(v ?? 6) })" />
       </div>
     </div>
   </div>
@@ -483,7 +483,7 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
     <div class="grid mb-2">
       <div class="col-12">
         <label class="block mb-1">Fuente de opciones</label>
-        <PrimeDropdown
+        <PrimeSelect
           :model-value="obtenerModoOpciones()"
           :options="[{ label: 'Manual', value: 'manual' }, { label: 'API', value: 'api' }]"
           option-label="label"
@@ -525,7 +525,7 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
         </div>
         <div class="col-4">
           <label class="block mb-1">Método</label>
-          <PrimeDropdown
+          <PrimeSelect
             :model-value="obtenerConfigApi().method || 'GET'"
             :options="[{ label: 'GET', value: 'GET' }, { label: 'POST', value: 'POST' }]"
             option-label="label"
@@ -536,7 +536,7 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
         </div>
         <div class="col-8">
           <label class="block mb-1">Content-Type</label>
-          <PrimeDropdown
+          <PrimeSelect
             :model-value="obtenerConfigApi().contentType || 'application/json'"
             :options="[
               { label: 'application/json', value: 'application/json' },
@@ -595,7 +595,7 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
         <small class="text-muted-color">Puedes preseleccionar varias opciones para el grupo de checkboxes.</small>
       </template>
       <template v-else>
-        <PrimeDropdown
+        <PrimeSelect
           :model-value="obtenerValorPorDefecto() as any"
           :options="obtenerOpciones()"
           option-label="label"
@@ -627,7 +627,7 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
       </div>
       <div class="col-3">
         <label class="block mb-1">Tipo</label>
-        <PrimeDropdown :model-value="col.type || 'text'" :options="['text','number']" @update:model-value="(v:string)=> actualizarColumna(i,'type', v)" />
+  <PrimeSelect :model-value="col.type || 'text'" :options="['text','number']" @update:model-value="(v:string)=> actualizarColumna(i,'type', v)" />
       </div>
       <div class="col-1">
         <PrimeButton icon="pi pi-trash" severity="danger" text @click="() => eliminarColumna(i)" />
