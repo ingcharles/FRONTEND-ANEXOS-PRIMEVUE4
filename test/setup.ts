@@ -87,16 +87,26 @@ Object.defineProperty(URL, 'revokeObjectURL', {
 })
 
 // Mock de matchMedia requerido por algunos componentes (Select)
-if (!('matchMedia' in window)) {
-  // @ts-expect-error jsdom no define matchMedia
-  window.matchMedia = (query: string) => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })
+// Mock robusto de matchMedia para componentes que lo utilizan (Select/DatePicker)
+// jsdom no define matchMedia por defecto en algunos entornos
+type MatchMediaLike = (query: string) => {
+  matches: boolean;
+  media: string;
+  onchange: ((this: MediaQueryList, ev: MediaQueryListEvent) => unknown) | null;
+  addListener: (listener: (this: MediaQueryList, ev: MediaQueryListEvent) => unknown) => void;
+  removeListener: (listener: (this: MediaQueryList, ev: MediaQueryListEvent) => unknown) => void;
+  addEventListener: (type: string, listener: EventListenerOrEventListenerObject) => void;
+  removeEventListener: (type: string, listener: EventListenerOrEventListenerObject) => void;
+  dispatchEvent: (event: Event) => boolean;
 }
+const mm: MatchMediaLike | undefined = (window as unknown as { matchMedia?: MatchMediaLike }).matchMedia
+window.matchMedia = mm || ((query: string) => ({
+  matches: false,
+  media: query,
+  onchange: null,
+  addListener: vi.fn(),
+  removeListener: vi.fn(),
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
+  dispatchEvent: vi.fn(),
+}))

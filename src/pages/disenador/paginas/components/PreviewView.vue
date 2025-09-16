@@ -333,7 +333,26 @@ function enviar(): void {
       if (f.type === 'text' || f.type === 'email' || f.type === 'password' || f.type === 'textarea') base = z.string()
   if (f.type === 'number') base = z.any() // se reconstruye más abajo con min/max y required
       if (f.type === 'time') base = z.any()
-      if (f.type === 'date') base = z.any()
+      if (f.type === 'date') {
+        let dateRule = z.date()
+        const meta = f.meta as Record<string, unknown> | undefined
+        const parseFecha = (fv: unknown): Date | undefined => {
+          if (fv instanceof Date) return isNaN(fv.getTime()) ? undefined : fv
+          if (typeof fv === 'string' && fv.trim()) { const d = new Date(fv); return isNaN(d.getTime()) ? undefined : d }
+          return undefined
+        }
+        const minD = parseFecha(meta?.minDate)
+        const maxD = parseFecha(meta?.maxDate)
+        if (minD) dateRule = dateRule.min(minD, `Debe ser posterior a ${minD.toISOString().slice(0,10)}`)
+        if (maxD) dateRule = dateRule.max(maxD, `Debe ser anterior a ${maxD.toISOString().slice(0,10)}`)
+        const dateSchema = z.preprocess((v) => {
+          if (v == null || v === '') return undefined
+          if (v instanceof Date) return v
+          if (typeof v === 'string') { const d = new Date(v); return isNaN(d.getTime()) ? undefined : d }
+          return v
+        }, dateRule)
+        base = dateSchema.optional()
+      }
       if (f.type === 'radio' || f.type === 'select') base = z.any()
       if (f.type === 'checkbox') {
         const metaObj = f.meta as Record<string, unknown> | undefined
@@ -379,8 +398,11 @@ function enviar(): void {
             } else {
               base = z.literal(true)
             }
-          } else {
+          } else if (f.type !== 'date') {
             base = base.refine((v: unknown) => (typeof v === 'string' ? v.trim().length > 0 : v != null), f.validations?.find(v=>v.type==='required')?.message || 'Requerido')
+          }
+          if (f.type === 'date') {
+            base = (base as z.ZodTypeAny).refine((v: unknown) => v instanceof Date, f.validations?.find(v=>v.type==='required')?.message || 'Requerido')
           }
         }
         if (f.type === 'number') {
