@@ -36,6 +36,10 @@ function construirMapaIdNombre(list: FieldSchema[]): Record<string, string> {
 
 const idAName = computed(() => construirMapaIdNombre(campos.value))
 
+// Valores persistentes por página (antes de crear el schema para evitar TDZ)
+const valores = computed<Record<string, unknown>>(() => store.obtenerValoresPagina(paginaActual.value.id))
+const errores = ref<Record<string, string>>({})
+
 // Tipos auxiliares para tabla
 type ColumnaTabla = { name: string; label?: string; type?: 'text' | 'number' }
 type ColumnaTablaExt = ColumnaTabla & { agg?: 'none'|'sum'|'avg'|'count'|'min'|'max'; aggPrefix?: string; aggSuffix?: string; decimals?: number }
@@ -94,11 +98,12 @@ function clasesCelda(field: FieldSchema): string[] {
   const pad = clasePaddingTabla(field)
   return [pad, estilo.bordered ? 'border-bottom-1 surface-border' : '']
 }
-function clasesFila(field: FieldSchema, index: number): string[] {
+function clasesFila(field: FieldSchema): string[] {
   const estilo = obtenerEstiloTabla(field)
-  const zebra = estilo.striped && index % 2 === 1 ? 'surface-50' : ''
-  const hover = estilo.hover ? 'fila-hover' : ''
-  return [zebra, hover]
+  return [
+    estilo.striped ? 'odd:bg-surface-100' : '',
+    estilo.hover ? 'hover:bg-surface-100' : '',
+  ]
 }
 
 // Agregaciones por columna
@@ -220,9 +225,7 @@ function crearSchema(): z.ZodObject<Record<string, z.ZodTypeAny>> {
 const schema = ref(crearSchema())
 watch(campos, () => (schema.value = crearSchema()))
 
-// Valores persistentes por página
-const valores = computed<Record<string, unknown>>(() => store.obtenerValoresPagina(paginaActual.value.id))
-const errores = ref<Record<string, string>>({})
+// (valores/errores ya declarados arriba)
 
 // Establecer valores por defecto desde meta.valorPorDefecto para campos con name
 function esVacio(v: unknown): boolean {
@@ -371,7 +374,7 @@ function enviar(): void {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(row, rIdx) in (((valores as any)[f.name||''] as any[])||[])" :key="rIdx" :class="clasesFila(f, rIdx)">
+                  <tr v-for="(row, rIdx) in (((valores as any)[f.name||''] as any[])||[])" :key="rIdx" :class="clasesFila(f)">
                     <td v-for="col in obtenerColumnasTabla(f)" :key="col.name" :class="clasesCelda(f)">
                       <PrimeInputText v-if="(col.type||'text')==='text'" v-model="(valores as any)[f.name||''][rIdx][col.name]" class="w-full" :disabled="f.disabled" />
                       <PrimeInputNumber v-else-if="col.type==='number'" v-model="(valores as any)[f.name||''][rIdx][col.name]" class="w-full" :disabled="f.disabled" />
@@ -441,7 +444,7 @@ function enviar(): void {
                           </tr>
                         </thead>
                         <tbody>
-                           <tr v-for="(row, rIdx) in (((valores as any)[ch.name||''] as any[])||[])" :key="rIdx" :class="clasesFila(ch, rIdx)">
+                          <tr v-for="(row, rIdx) in (((valores as any)[ch.name||''] as any[])||[])" :key="rIdx" :class="clasesFila(ch)">
                              <td v-for="col in obtenerColumnasTabla(ch)" :key="col.name" :class="clasesCelda(ch)">
                               <PrimeInputText v-if="(col.type||'text')==='text'" v-model="(valores as any)[ch.name||''][rIdx][col.name]" class="w-full" :disabled="ch.disabled" />
                               <PrimeInputNumber v-else-if="col.type==='number'" v-model="(valores as any)[ch.name||''][rIdx][col.name]" class="w-full" :disabled="ch.disabled" />
@@ -485,5 +488,4 @@ function enviar(): void {
 </template>
 
 <style scoped>
-.fila-hover:hover { background: var(--p-surface-100); }
 </style>
