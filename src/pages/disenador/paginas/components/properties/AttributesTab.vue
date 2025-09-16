@@ -337,8 +337,8 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
         <label class="block mb-1">Valor por defecto</label>
         <PrimeInputNumber :model-value="(campo?.meta as any)?.valorPorDefecto ?? null" @update:model-value="(v:any)=> actualizarValorPorDefecto(v)" class="w-full" />
       </div>
-      <!-- Valor por defecto para checkbox (booleano) -->
-      <div class="field" v-if="campo && campo.type==='checkbox'">
+      <!-- Valor por defecto para checkbox (booleano) cuando NO tiene opciones -->
+  <div class="field" v-if="campo && campo.type==='checkbox' && ((!Array.isArray((campo.meta as any)?.options)) || (((campo.meta as any)?.options?.length || 0)===0))">
         <label class="inline-flex align-items-center gap-2">
           <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.valorPorDefecto)" @update:model-value="(v:boolean)=> actualizarValorPorDefecto(v)" />
           Activado por defecto
@@ -406,11 +406,11 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
     </div>
   </div>
 
-  <!-- Datos para select/radio -->
-  <div v-if="campo?.type==='select' || campo?.type==='radio'" class="mb-3">
-    <div class="font-semibold mb-2">Datos (Select/Radio)</div>
+  <!-- Datos para select/radio/checkbox (grupo) -->
+  <div v-if="campo?.type==='select' || campo?.type==='radio' || campo?.type==='checkbox'" class="mb-3">
+    <div class="font-semibold mb-2">Datos</div>
     <div class="grid mb-2">
-      <div class="col-6">
+      <div class="col-12">
         <label class="block mb-1">Fuente de opciones</label>
         <PrimeDropdown
           :model-value="obtenerModoOpciones()"
@@ -510,16 +510,31 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
     <!-- Selector de valor por defecto -->
     <div class="mt-3">
       <label class="block mb-1">Valor por defecto</label>
-      <PrimeDropdown
-        :model-value="obtenerValorPorDefecto() as any"
-        :options="obtenerOpciones()"
-        option-label="label"
-        option-value="value"
-        placeholder="(sin valor por defecto)"
-        class="w-full mb-2"
-        @update:model-value="(v:any)=> actualizarValorPorDefecto(v)"
-      />
-      <small class="text-muted-color">Selecciona qué opción quedará preseleccionada por defecto.</small>
+      <template v-if="campo?.type==='checkbox'">
+        <PrimeMultiSelect
+          :model-value="(Array.isArray(obtenerValorPorDefecto()) ? (obtenerValorPorDefecto() as any[]) : [])"
+          :options="obtenerOpciones()"
+          option-label="label"
+          option-value="value"
+          placeholder="(sin valores por defecto)"
+          class="w-full mb-2"
+          display="chip"
+          @update:model-value="(v:any[])=> actualizarValorPorDefecto(v)"
+        />
+        <small class="text-muted-color">Puedes preseleccionar varias opciones para el grupo de checkboxes.</small>
+      </template>
+      <template v-else>
+        <PrimeDropdown
+          :model-value="obtenerValorPorDefecto() as any"
+          :options="obtenerOpciones()"
+          option-label="label"
+          option-value="value"
+          placeholder="(sin valor por defecto)"
+          class="w-full mb-2"
+          @update:model-value="(v:any)=> actualizarValorPorDefecto(v)"
+        />
+        <small class="text-muted-color">Selecciona qué opción quedará preseleccionada por defecto.</small>
+      </template>
     </div>
   </div>
 

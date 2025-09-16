@@ -4,6 +4,7 @@ import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
 import Dropdown from 'primevue/dropdown'
+import MultiSelect from 'primevue/multiselect'
 import Calendar from 'primevue/calendar'
 import Checkbox from 'primevue/checkbox'
 import RadioButton from 'primevue/radiobutton'
@@ -22,6 +23,7 @@ config.global.components = {
   InputText,
   InputNumber,
   Dropdown,
+  MultiSelect,
   Calendar,
   Checkbox,
   RadioButton,
@@ -33,6 +35,7 @@ config.global.components = {
   PrimeInputText: InputText,
   PrimeInputNumber: InputNumber,
   PrimeDropdown: Dropdown,
+  PrimeMultiSelect: MultiSelect,
   PrimeCalendar: Calendar,
   PrimeCheckbox: Checkbox,
   PrimeRadioButton: RadioButton,

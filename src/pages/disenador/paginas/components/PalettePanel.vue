@@ -252,7 +252,7 @@ window.addEventListener('keydown', manejarAtajos)
           </draggable>
         </div>
         <!-- Cabecera de categoría -->
-        <div v-else class="flex items-center gap-2 py-1 px-2 rounded-md font-semibold text-[12px] tracking-wide uppercase text-muted-color">
+        <div v-else class="flex items-center gap-2 py-1 px-2 rounded-md font-semibold text-[12px] tracking-wide uppercase">
           <i :class="['pi', item.icon, 'text-sky-500 dark:text-sky-400']" />
           <span class="flex-1">{{ item.label }}</span>
           <span v-if="item.items" class="pi pi-angle-down text-primary ml-auto" />

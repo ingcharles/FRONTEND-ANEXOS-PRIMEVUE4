@@ -219,10 +219,21 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
         />
       </template>
       <template v-else-if="field.type==='checkbox'">
-        <div class="flex align-items-center gap-2">
-          <PrimeCheckbox :binary="true" :model-value="Boolean(valorActual)" :disabled="field.disabled" />
-          <label class="mb-0">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
-        </div>
+        <template v-if="Array.isArray((field.meta as any)?.options) && ((field.meta as any)?.options?.length||0) > 0">
+          <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
+          <div class="flex flex-column gap-2">
+            <label v-for="op in ((field.meta?.options as any[])||[])" :key="String(op.value)" class="inline-flex align-items-center gap-2">
+              <PrimeCheckbox :input-id="String(op.value)" :value="op.value" :model-value="[]" disabled />
+              <span>{{ op.label }}</span>
+            </label>
+          </div>
+        </template>
+        <template v-else>
+          <div class="flex align-items-center gap-2">
+            <PrimeCheckbox :binary="true" :model-value="Boolean(valorActual)" :disabled="field.disabled" />
+            <label class="mb-0">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
+          </div>
+        </template>
       </template>
       <template v-else-if="field.type==='radio'">
         <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>

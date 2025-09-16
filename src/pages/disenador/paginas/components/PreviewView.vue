@@ -36,6 +36,16 @@ function construirMapaIdNombre(list: FieldSchema[]): Record<string, string> {
 
 const idAName = computed(() => construirMapaIdNombre(campos.value))
 
+type Opcion = { label: string; value: unknown }
+function obtenerOpciones(field: FieldSchema): Opcion[] {
+  const meta = field.meta as Record<string, unknown> | undefined
+  const raw = meta?.options as unknown
+  return Array.isArray(raw) ? (raw as Opcion[]) : []
+}
+function checkboxEsGrupo(field: FieldSchema): boolean {
+  return obtenerOpciones(field).length > 0
+}
+
 // construir zod schema dinámico
 function recolectarCamposConNombre(list: FieldSchema[], out: FieldSchema[] = []): FieldSchema[] {
   for (const f of list) {
@@ -52,10 +62,12 @@ function crearSchema(): z.ZodObject<Record<string, z.ZodTypeAny>> {
   for (const f of todos) {
     let base: z.ZodTypeAny = z.any()
     if (f.type === 'text' || f.type === 'email' || f.type === 'password' || f.type === 'textarea') base = z.string()
-    if (f.type === 'number') base = z.number().or(z.string())
+    if (f.type === 'number') base = z.preprocess((v) => typeof v === 'string' ? (v.trim()==='' ? undefined : Number(v)) : v, z.number().optional())
     if (f.type === 'time') base = z.any()
     if (f.type === 'radio' || f.type === 'select') base = z.any()
-    if (f.type === 'checkbox') base = z.boolean().or(z.array(z.any())).or(z.any())
+    if (f.type === 'checkbox') {
+      base = checkboxEsGrupo(f) ? z.array(z.any()) : z.boolean().or(z.any())
+    }
 
     // Aplicar lógica para required dinámico (usa mapa global id->name)
     const estado = EvaluarReglasCampo(f, valores.value as Record<string, unknown>, idAName.value)
@@ -66,10 +78,22 @@ function crearSchema(): z.ZodObject<Record<string, z.ZodTypeAny>> {
     } else {
       if (esRequerido) {
         if (f.type === 'checkbox') {
-          base = z.literal(true)
+          if (checkboxEsGrupo(f)) {
+            base = z.array(z.any()).refine((arr) => Array.isArray(arr) && arr.length > 0, f.validations?.find(v=>v.type==='required')?.message || 'Seleccione al menos una opción')
+          } else {
+            base = z.literal(true)
+          }
         } else {
           base = base.refine((v: unknown) => (typeof v === 'string' ? v.trim().length > 0 : v != null), f.validations?.find(v=>v.type==='required')?.message || 'Requerido')
         }
+      }
+      // Validación adicional para número con min/max
+      if (f.type === 'number') {
+        const meta = f.meta as Record<string, unknown> | undefined
+        const min = typeof meta?.min === 'number' ? (meta!.min as number) : undefined
+        const max = typeof meta?.max === 'number' ? (meta!.max as number) : undefined
+        if (typeof min === 'number') base = (base as z.ZodNumber).min(min, `Debe ser >= ${min}`)
+        if (typeof max === 'number') base = (base as z.ZodNumber).max(max, `Debe ser <= ${max}`)
       }
       for (const v of f.validations || []) {
         if (v.type === 'minLength') base = (base as z.ZodString).min(Number(v.value || 0), v.message)
@@ -129,6 +153,10 @@ function aplicarValoresPorDefecto(list: FieldSchema[], sobrescribirSiVacio = fal
         // permitir 'true'/'false' como cadena para default simple
         if (def.toLowerCase() === 'true') def = true
         else if (def.toLowerCase() === 'false') def = false
+      }
+      if (f.type === 'checkbox' && checkboxEsGrupo(f)) {
+        // asegurar arreglo para defaults múltiples si hay opciones
+        if (!Array.isArray(def)) def = []
       }
       // Respetar visibilidad
       const estado = EvaluarReglasCampo(f, valores.value as Record<string, unknown>, idAName.value)
@@ -199,9 +227,21 @@ function enviar(): void {
           <PrimeTextarea v-else-if="f.type==='textarea'" v-model="(valores as any)[f.name||'']" :placeholder="f.placeholder" class="w-full" :disabled="f.disabled" :readonly="f.readonly" />
           <PrimeCalendar v-else-if="f.type==='time'" v-model="(valores as any)[f.name||'']" time-only hour-format="24" class="w-full" :disabled="f.disabled" />
           <PrimeDropdown v-else-if="f.type==='select'" v-model="(valores as any)[f.name||'']" :options="(f.meta?.options as any[])||[]" option-label="label" option-value="value" class="w-full" :disabled="f.disabled" />
-          <PrimeInputNumber v-else-if="f.type==='number'" v-model="(valores as any)[f.name||'']" class="w-full" :placeholder="f.placeholder" :disabled="f.disabled" :readonly="f.readonly" />
-          <div v-else-if="f.type==='checkbox'" class="inline-flex align-items-center gap-2">
-            <PrimeCheckbox v-model="(valores as any)[f.name||'']" :binary="true" :disabled="f.disabled" />
+          <PrimeInputNumber v-else-if="f.type==='number'" v-model="(valores as any)[f.name||'']" class="w-full" :placeholder="f.placeholder" :min="(f.meta as any)?.min" :max="(f.meta as any)?.max" :step="(f.meta as any)?.step ?? 1" :disabled="f.disabled" :readonly="f.readonly" />
+          <div v-else-if="f.type==='checkbox'">
+            <template v-if="Array.isArray((f.meta as any)?.options) && ((f.meta as any)?.options?.length||0) > 0">
+              <div class="flex flex-column gap-2">
+                <label v-for="op in ((f.meta?.options as any[])||[])" :key="String(op.value)" class="inline-flex align-items-center gap-2">
+                  <PrimeCheckbox :input-id="String(op.value)" :value="op.value" v-model="(valores as any)[f.name||'']" :disabled="f.disabled" />
+                  <span>{{ op.label }}</span>
+                </label>
+              </div>
+            </template>
+            <template v-else>
+              <div class="inline-flex align-items-center gap-2">
+                <PrimeCheckbox v-model="(valores as any)[f.name||'']" :binary="true" :disabled="f.disabled" />
+              </div>
+            </template>
           </div>
           <PrimeDivider v-else-if="f.type==='divider'" />
           <div v-else-if="f.type==='radio'" class="flex gap-3">
@@ -221,9 +261,21 @@ function enviar(): void {
                   <PrimeTextarea v-else-if="ch.type==='textarea'" v-model="(valores as any)[ch.name||'']" :placeholder="ch.placeholder" class="w-full" :disabled="ch.disabled" :readonly="ch.readonly" />
                   <PrimeCalendar v-else-if="ch.type==='time'" v-model="(valores as any)[ch.name||'']" time-only hour-format="24" class="w-full" :disabled="ch.disabled" />
                   <PrimeDropdown v-else-if="ch.type==='select'" v-model="(valores as any)[ch.name||'']" :options="(ch.meta?.options as any[])||[]" option-label="label" option-value="value" class="w-full" :disabled="ch.disabled" />
-                  <PrimeInputNumber v-else-if="ch.type==='number'" v-model="(valores as any)[ch.name||'']" class="w-full" :placeholder="ch.placeholder" :disabled="ch.disabled" :readonly="ch.readonly" />
-                  <div v-else-if="ch.type==='checkbox'" class="inline-flex align-items-center gap-2">
-                    <PrimeCheckbox v-model="(valores as any)[ch.name||'']" :binary="true" :disabled="ch.disabled" />
+                  <PrimeInputNumber v-else-if="ch.type==='number'" v-model="(valores as any)[ch.name||'']" class="w-full" :placeholder="ch.placeholder" :min="(ch.meta as any)?.min" :max="(ch.meta as any)?.max" :step="(ch.meta as any)?.step ?? 1" :disabled="ch.disabled" :readonly="ch.readonly" />
+                  <div v-else-if="ch.type==='checkbox'">
+                    <template v-if="Array.isArray((ch.meta as any)?.options) && ((ch.meta as any)?.options?.length||0) > 0">
+                      <div class="flex flex-column gap-2">
+                        <label v-for="op in ((ch.meta?.options as any[])||[])" :key="String(op.value)" class="inline-flex align-items-center gap-2">
+                          <PrimeCheckbox :input-id="String(op.value)" :value="op.value" v-model="(valores as any)[ch.name||'']" :disabled="ch.disabled" />
+                          <span>{{ op.label }}</span>
+                        </label>
+                      </div>
+                    </template>
+                    <template v-else>
+                      <div class="inline-flex align-items-center gap-2">
+                        <PrimeCheckbox v-model="(valores as any)[ch.name||'']" :binary="true" :disabled="ch.disabled" />
+                      </div>
+                    </template>
                   </div>
                   <PrimeDivider v-else-if="ch.type==='divider'" />
                   <div v-else-if="ch.type==='radio'" class="flex gap-3">
