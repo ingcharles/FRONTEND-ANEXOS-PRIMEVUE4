@@ -4,6 +4,7 @@ import { z } from 'zod'
 import type { FieldSchema } from '@/types/form-schema'
 import { useDesignerStore } from '@/stores/useDesignerStore'
 import { EvaluarReglasCampo } from '@/utils/logic'
+import CampoRenderer from './CampoRenderer.vue'
 
 const store = useDesignerStore()
 const paginaIndex = ref(0)
@@ -75,83 +76,13 @@ function obtenerFilasTabla(field: FieldSchema): number {
   const r = meta?.rows as unknown
   return typeof r === 'number' && r > 0 ? r : 1
 }
-function crearFilaVacia(cols: ColumnaTabla[]): Record<string, unknown> {
-  const obj: Record<string, unknown> = {}
-  for (const c of cols) obj[c.name] = undefined
-  return obj
-}
-function agregarFilaCampo(field: FieldSchema): void {
-  const nombre = field.name || ''
-  if (!nombre) return
-  const cols = obtenerColumnasTabla(field)
-  const nueva = crearFilaVacia(cols)
-  const dict = valores.value as Record<string, unknown>
-  const actual = dict[nombre]
-  if (Array.isArray(actual)) {
-    ;(actual as unknown[]).push(nueva)
-  } else {
-    dict[nombre] = [nueva]
-  }
-}
+function crearFilaVacia(cols: ColumnaTabla[]): Record<string, unknown> { const obj: Record<string, unknown> = {}; for (const c of cols) obj[c.name] = undefined; return obj }
 
 // Estilos de tabla desde meta
-type EstiloTabla = { bordered?: boolean; striped?: boolean; hover?: boolean; padding?: 'sm'|'md'|'lg' }
-function obtenerEstiloTabla(field: FieldSchema): EstiloTabla {
-  const meta = field.meta as Record<string, unknown> | undefined
-  const estilo = (meta?.tableStyle ?? {}) as Partial<EstiloTabla>
-  let padding: 'sm'|'md'|'lg' = 'md'
-  if (estilo.padding === 'sm' || estilo.padding === 'md' || estilo.padding === 'lg') padding = estilo.padding
-  return { bordered: !!estilo.bordered, striped: !!estilo.striped, hover: !!estilo.hover, padding }
-}
-function clasePaddingTabla(field: FieldSchema): string {
-  const p = obtenerEstiloTabla(field).padding
-  return p === 'sm' ? 'p-1' : p === 'lg' ? 'p-3' : 'p-2'
-}
-function clasesTabla(field: FieldSchema): string[] {
-  const estilo = obtenerEstiloTabla(field)
-  return [
-    'w-full',
-    'text-sm',
-    estilo.bordered ? 'border-1 surface-border' : '',
-  ]
-}
-function clasesCelda(field: FieldSchema): string[] {
-  const estilo = obtenerEstiloTabla(field)
-  const pad = clasePaddingTabla(field)
-  return [pad, estilo.bordered ? 'border-bottom-1 surface-border' : '']
-}
-function clasesFila(field: FieldSchema): string[] {
-  const estilo = obtenerEstiloTabla(field)
-  return [
-    estilo.striped ? 'odd:bg-surface-100' : '',
-    estilo.hover ? 'hover:bg-surface-100' : '',
-  ]
-}
+// Helpers de estilos de tabla se movieron a CampoRenderer
+// Nota: helpers visuales de tabla ahora viven en CampoRenderer
 
 // Agregaciones por columna
-function calcularAgregado(col: ColumnaTablaExt, filas: Record<string, unknown>[]): number | null {
-  const vals = filas.map(r => r[col.name])
-  if (col.agg === 'count') {
-    return vals.filter(v => v !== undefined && v !== null && String(v).trim() !== '').length
-  }
-  const nums = vals.map(v => typeof v === 'string' ? (v.trim()==='' ? NaN : Number(v)) : (typeof v === 'number' ? v : NaN)).filter(n => !Number.isNaN(n)) as number[]
-  if (nums.length === 0) return col.agg ? 0 : null
-  switch (col.agg) {
-    case 'sum': return nums.reduce((a,b)=>a+b,0)
-    case 'avg': return nums.reduce((a,b)=>a+b,0) / nums.length
-    case 'min': return Math.min(...nums)
-    case 'max': return Math.max(...nums)
-    default: return null
-  }
-}
-function formatearAgregado(col: ColumnaTablaExt, valor: number | null): string {
-  if (valor == null) return ''
-  const decimals = typeof col.decimals === 'number' ? Math.max(0, Math.min(8, col.decimals)) : 2
-  const numStr = (col.agg === 'count') ? String(valor) : (Number(valor).toFixed(decimals))
-  const pre = col.aggPrefix ?? ''
-  const suf = col.aggSuffix ?? ''
-  return `${pre}${numStr}${suf}`.trim()
-}
 
 
 type Opcion = { label: string; value: unknown }
@@ -484,173 +415,8 @@ function enviar(): void {
     </div>
     <form class="grid" @submit.prevent="enviar">
       <template v-for="f in campos" :key="f.id">
-        <div :class="clasesColumna(f)" v-if="EvaluarReglasCampo(f, valores as any, idAName).visible">
-          <label v-if="f.label" class="block mb-1">{{ f.label }}<span v-if="EvaluarReglasCampo(f, valores as any, idAName).required" class="text-red-500"> *</span></label>
-          <PrimeInputText v-if="f.type==='text' || f.type==='email' || f.type==='password'" v-model="(valores as any)[f.name||'']" :placeholder="f.placeholder" class="w-full" :disabled="f.disabled" :readonly="f.readonly" />
-          <PrimeTextarea v-else-if="f.type==='textarea'" v-model="(valores as any)[f.name||'']" :placeholder="f.placeholder" class="w-full" :disabled="f.disabled" :readonly="f.readonly" />
-          <PrimeDatePicker v-else-if="f.type==='time'" v-model="(valores as any)[f.name||'']" time-only hour-format="24" class="w-full" :disabled="f.disabled" />
-          <PrimeDatePicker v-else-if="f.type==='date'" v-model="(valores as any)[f.name||'']" class="w-full" :disabled="f.disabled" />
-          <PrimeSelect v-else-if="f.type==='select'" v-model="(valores as any)[f.name||'']" :options="(f.meta?.options as any[])||[]" option-label="label" option-value="value" class="w-full" :disabled="f.disabled" />
-          <PrimeInputNumber v-else-if="f.type==='number'" v-model="(valores as any)[f.name||'']" class="w-full" :placeholder="f.placeholder" :min="(f.meta as any)?.min" :max="(f.meta as any)?.max" :step="(f.meta as any)?.step ?? 1" :disabled="f.disabled" :readonly="f.readonly" />
-          <div v-else-if="f.type==='checkbox'">
-            <template v-if="Array.isArray((f.meta as any)?.options) && ((f.meta as any)?.options?.length||0) > 0">
-              <div :class="['flex', ((f.meta as any)?.layout==='horizontal' ? 'flex-row gap-3' : 'flex-column gap-2')]">
-                <label v-for="op in ((f.meta?.options as any[])||[])" :key="String(op.value)" class="inline-flex align-items-center gap-2">
-                  <PrimeCheckbox :input-id="String(op.value)" :value="op.value" v-model="(valores as any)[f.name||'']" :disabled="f.disabled" />
-                  <span>{{ op.label }}</span>
-                </label>
-              </div>
-            </template>
-            <template v-else>
-              <div class="inline-flex align-items-center gap-2">
-                <PrimeCheckbox v-model="(valores as any)[f.name||'']" :binary="true" :disabled="f.disabled" />
-              </div>
-            </template>
-          </div>
-          <PrimeDivider v-else-if="f.type==='divider'" />
-          <!-- Tabla: edición por filas/columnas -->
-          <div v-else-if="f.type==='table'">
-            <div class="overflow-auto">
-              <table :class="clasesTabla(f)">
-                <thead>
-                  <tr>
-                    <th v-for="col in obtenerColumnasTabla(f)" :key="col.name" :class="['text-left', clasePaddingTabla(f), obtenerEstiloTabla(f).bordered ? 'border-bottom-1 surface-border' : '']">{{ col.label }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(row, rIdx) in (((valores as any)[f.name||''] as any[])||[])" :key="rIdx" :class="clasesFila(f)">
-                    <td v-for="col in obtenerColumnasTabla(f)" :key="col.name" :class="clasesCelda(f)">
-                      <PrimeInputText v-if="(col.type||'text')==='text'" v-model="(valores as any)[f.name||''][rIdx][col.name]" class="w-full" :disabled="f.disabled" />
-                      <PrimeDatePicker v-else-if="col.type==='date'" v-model="(valores as any)[f.name||''][rIdx][col.name]" class="w-full" :disabled="f.disabled" />
-                      <template v-else-if="col.type==='number'">
-                        <PrimeInputNumber
-                          :model-value="(col as any).formatMode==='percent' && (col as any).percentScale==='fraction' ? (((valores as any)[f.name||''][rIdx][col.name] ?? null) as any) * 100 : ((valores as any)[f.name||''][rIdx][col.name])"
-                          @update:model-value="(v:any) => { if ((col as any).formatMode==='percent' && (col as any).percentScale==='fraction') { (valores as any)[f.name||''][rIdx][col.name] = (typeof v==='number'? v/100 : v) } else { (valores as any)[f.name||''][rIdx][col.name] = v } }"
-                          class="w-full"
-                          :disabled="f.disabled"
-                          :mode="(col as any).formatMode==='currency' ? 'currency' : ((col as any).formatMode==='percent' ? 'decimal' : 'decimal')"
-                          :currency="(col as any).formatMode==='currency' ? ((col as any).currency || 'USD') : undefined"
-                          :locale="(col as any).locale || 'es-ES'"
-                          :prefix="(col as any).prefix || ''"
-                          :suffix="(col as any).formatMode==='percent' ? '%' : ((col as any).suffix || '')"
-                          :min-fraction-digits="(col as any).minFractionDigits ?? 0"
-                          :max-fraction-digits="(col as any).maxFractionDigits ?? 2"
-                        />
-                      </template>
-                      <span v-else class="text-muted-color">—</span>
-                    </td>
-                  </tr>
-                </tbody>
-                <tfoot v-if="obtenerColumnasTabla(f).some(c => c.agg && c.agg !== 'none') || (f.meta as any)?.showSummary">
-                  <tr>
-                    <td v-for="(col, idx) in obtenerColumnasTabla(f)" :key="col.name" :class="[clasesCelda(f), 'font-semibold']">
-                      <span v-if="idx===0">{{ (f.meta as any)?.summaryLabel ?? 'Total' }}</span>
-                      <span class="ml-2" v-if="col.agg && col.agg!=='none'">
-                        {{ formatearAgregado(col as any, calcularAgregado(col as any, (((valores as any)[f.name||''] as Record<string, unknown>[])||[]))) }}
-                      </span>
-                    </td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
-            <div class="mt-2" v-if="(f.meta as any)?.addRows">
-              <PrimeButton size="small" icon="pi pi-plus" label="Añadir fila" @click.prevent="agregarFilaCampo(f)" />
-            </div>
-          </div>
-          <div v-else-if="f.type==='radio'" :class="['flex', ((f.meta as any)?.layout==='horizontal' ? 'flex-row gap-3' : 'flex-column gap-2') ]">
-            <label v-for="op in ((f.meta?.options as any[])||[])" :key="op.value" class="inline-flex align-items-center gap-2">
-              <PrimeRadioButton :input-id="String(op.value)" v-model="(valores as any)[f.name||'']" :value="op.value" :name="f.name" :disabled="f.disabled" />
-              <span>{{ op.label }}</span>
-            </label>
-          </div>
-          <PrimeButton v-else-if="f.type==='button' && paginaIndex>=store.formSchema.pages.length-1" :label="f.label || 'Enviar'" type="submit" />
-          <!-- Panel: renderizar hijos respetando grid -->
-          <PrimePanel v-else-if="f.type==='panel'" :header="f.label || 'Panel'">
-            <div class="grid">
-              <template v-for="ch in (f.children||[])" :key="ch.id">
-                <div :class="clasesColumna(ch)" v-if="EvaluarReglasCampo(ch, valores as any, idAName).visible">
-                  <label v-if="ch.label" class="block mb-1">{{ ch.label }}<span v-if="EvaluarReglasCampo(ch, valores as any, idAName).required" class="text-red-500"> *</span></label>
-                  <PrimeInputText v-if="ch.type==='text' || ch.type==='email' || ch.type==='password'" v-model="(valores as any)[ch.name||'']" :placeholder="ch.placeholder" class="w-full" :disabled="ch.disabled" :readonly="ch.readonly" />
-                  <PrimeTextarea v-else-if="ch.type==='textarea'" v-model="(valores as any)[ch.name||'']" :placeholder="ch.placeholder" class="w-full" :disabled="ch.disabled" :readonly="ch.readonly" />
-                  <PrimeDatePicker v-else-if="ch.type==='time'" v-model="(valores as any)[ch.name||'']" time-only hour-format="24" class="w-full" :disabled="ch.disabled" />
-                  <PrimeDatePicker v-else-if="ch.type==='date'" v-model="(valores as any)[ch.name||'']" class="w-full" :disabled="ch.disabled" />
-                  <PrimeSelect v-else-if="ch.type==='select'" v-model="(valores as any)[ch.name||'']" :options="(ch.meta?.options as any[])||[]" option-label="label" option-value="value" class="w-full" :disabled="ch.disabled" />
-                  <PrimeInputNumber v-else-if="ch.type==='number'" v-model="(valores as any)[ch.name||'']" class="w-full" :placeholder="ch.placeholder" :min="(ch.meta as any)?.min" :max="(ch.meta as any)?.max" :step="(ch.meta as any)?.step ?? 1" :disabled="ch.disabled" :readonly="ch.readonly" />
-                  <div v-else-if="ch.type==='checkbox'">
-                    <template v-if="Array.isArray((ch.meta as any)?.options) && ((ch.meta as any)?.options?.length||0) > 0">
-                      <div :class="['flex', ((ch.meta as any)?.layout==='horizontal' ? 'flex-row gap-3' : 'flex-column gap-2')]">
-                        <label v-for="op in ((ch.meta?.options as any[])||[])" :key="String(op.value)" class="inline-flex align-items-center gap-2">
-                          <PrimeCheckbox :input-id="String(op.value)" :value="op.value" v-model="(valores as any)[ch.name||'']" :disabled="ch.disabled" />
-                          <span>{{ op.label }}</span>
-                        </label>
-                      </div>
-                    </template>
-                    <template v-else>
-                      <div class="inline-flex align-items-center gap-2">
-                        <PrimeCheckbox v-model="(valores as any)[ch.name||'']" :binary="true" :disabled="ch.disabled" />
-                      </div>
-                    </template>
-                  </div>
-                  <PrimeDivider v-else-if="ch.type==='divider'" />
-                  <div v-else-if="ch.type==='table'">
-                    <div class="overflow-auto">
-                      <table :class="clasesTabla(ch)">
-                        <thead>
-                          <tr>
-                             <th v-for="col in obtenerColumnasTabla(ch)" :key="col.name" :class="['text-left', clasePaddingTabla(ch), obtenerEstiloTabla(ch).bordered ? 'border-bottom-1 surface-border' : '']">{{ col.label }}</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr v-for="(row, rIdx) in (((valores as any)[ch.name||''] as any[])||[])" :key="rIdx" :class="clasesFila(ch)">
-                             <td v-for="col in obtenerColumnasTabla(ch)" :key="col.name" :class="clasesCelda(ch)">
-                              <PrimeInputText v-if="(col.type||'text')==='text'" v-model="(valores as any)[ch.name||''][rIdx][col.name]" class="w-full" :disabled="ch.disabled" />
-                              <PrimeDatePicker v-else-if="col.type==='date'" v-model="(valores as any)[ch.name||''][rIdx][col.name]" class="w-full" :disabled="ch.disabled" />
-                              <template v-else-if="col.type==='number'">
-                                <PrimeInputNumber
-                                  :model-value="(col as any).formatMode==='percent' && (col as any).percentScale==='fraction' ? (((valores as any)[ch.name||''][rIdx][col.name] ?? null) as any) * 100 : ((valores as any)[ch.name||''][rIdx][col.name])"
-                                  @update:model-value="(v:any) => { if ((col as any).formatMode==='percent' && (col as any).percentScale==='fraction') { (valores as any)[ch.name||''][rIdx][col.name] = (typeof v==='number'? v/100 : v) } else { (valores as any)[ch.name||''][rIdx][col.name] = v } }"
-                                  class="w-full"
-                                  :disabled="ch.disabled"
-                                  :mode="(col as any).formatMode==='currency' ? 'currency' : ((col as any).formatMode==='percent' ? 'decimal' : 'decimal')"
-                                  :currency="(col as any).formatMode==='currency' ? ((col as any).currency || 'USD') : undefined"
-                                  :locale="(col as any).locale || 'es-ES'"
-                                  :prefix="(col as any).prefix || ''"
-                                  :suffix="(col as any).formatMode==='percent' ? '%' : ((col as any).suffix || '')"
-                                  :min-fraction-digits="(col as any).minFractionDigits ?? 0"
-                                  :max-fraction-digits="(col as any).maxFractionDigits ?? 2"
-                                />
-                              </template>
-                              <span v-else class="text-muted-color">—</span>
-                            </td>
-                          </tr>
-                        </tbody>
-                        <tfoot v-if="obtenerColumnasTabla(ch).some(c => c.agg && c.agg !== 'none') || (ch.meta as any)?.showSummary">
-                          <tr>
-                            <td v-for="(col, idx) in obtenerColumnasTabla(ch)" :key="col.name" :class="[clasesCelda(ch), 'font-semibold']">
-                              <span v-if="idx===0">{{ (ch.meta as any)?.summaryLabel ?? 'Total' }}</span>
-                              <span class="ml-2" v-if="col.agg && col.agg!=='none'">
-                                {{ formatearAgregado(col as any, calcularAgregado(col as any, (((valores as any)[ch.name||''] as Record<string, unknown>[])||[]))) }}
-                              </span>
-                            </td>
-                          </tr>
-                        </tfoot>
-                      </table>
-                    </div>
-                    <div class="mt-2" v-if="(ch.meta as any)?.addRows">
-                      <PrimeButton size="small" icon="pi pi-plus" label="Añadir fila" @click.prevent="agregarFilaCampo(ch)" />
-                    </div>
-                  </div>
-                  <div v-else-if="ch.type==='radio'" :class="['flex', ((ch.meta as any)?.layout==='horizontal' ? 'flex-row gap-3' : 'flex-column gap-2')]">
-                    <label v-for="op in ((ch.meta?.options as any[])||[])" :key="op.value" class="inline-flex align-items-center gap-2">
-                      <PrimeRadioButton :input-id="String(op.value)" v-model="(valores as any)[ch.name||'']" :value="op.value" :name="ch.name" :disabled="ch.disabled" />
-                      <span>{{ op.label }}</span>
-                    </label>
-                  </div>
-                </div>
-              </template>
-            </div>
-          </PrimePanel>
-          <div v-if="f.name && errores[f.name]" class="text-red-500 mt-1">{{ errores[f.name] }}</div>
+        <div :class="clasesColumna(f)">
+          <CampoRenderer :field="f" :valores="(valores as any)" :id-a-name="idAName" :errores="(errores as any)" />
         </div>
       </template>
       <!-- Botón Enviar de respaldo: si no hay botón en la página y es la última o única -->
