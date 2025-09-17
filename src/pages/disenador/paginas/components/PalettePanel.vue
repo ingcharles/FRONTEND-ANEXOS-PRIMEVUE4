@@ -22,7 +22,7 @@ interface ElementoPalette {
 // (NodoPalette eliminado si se necesitara en futuro se reintroduce)
 
 // Primera categoría expandida por defecto
-const expandedKeys = ref<Record<string, boolean>>({ '0': true })
+const expandedKeys = ref<Record<string, boolean>>({ '0': true,'1':true })
 const filtro = ref('')
 
 // Elementos de la paleta organizados por categorías
@@ -89,53 +89,53 @@ const paletteItems: { type: FieldType; icon: string; defaultProps?: Partial<Fiel
 const items = ref<BaseCategoria[]>([
   {
     key: '0',
-    label: 'Campos de Entrada',
-    icon: 'pi pi-pencil',
+    label: 'Contenedor',
+    icon: 'pi pi-window-maximize',
     items: [
-      { key: '0_0', label: 'Texto', type: 'text', icon: 'pi pi-pencil' },
-      { key: '0_1', label: 'Email', type: 'email', icon: 'pi pi-at' },
-      { key: '0_2', label: 'Password', type: 'password', icon: 'pi pi-lock' },
-      { key: '0_3', label: 'Área', type: 'textarea', icon: 'pi pi-align-left' },
-  { key: '0_4', label: 'Número', type: 'number', icon: 'pi pi-hashtag' },
-  { key: '0_5', label: 'Hora', type: 'time', icon: 'pi pi-clock' },
-      { key: '0_6', label: 'Fecha', type: 'date', icon: 'pi pi-calendar' },
+      { key: '0_0', label: 'Panel', type: 'panel', icon: 'pi pi-window-maximize' },
     ]
   },
   {
     key: '1',
-    label: 'Selección',
-    icon: 'pi pi-list',
+    label: 'Campos de Entrada',
+    icon: 'pi pi-pencil',
     items: [
-      { key: '1_0', label: 'Select', type: 'select', icon: 'pi pi-list' },
-      { key: '1_1', label: 'Radio', type: 'radio', icon: 'pi pi-circle' },
-      { key: '1_2', label: 'Checkbox', type: 'checkbox', icon: 'pi pi-check-square' },
+      { key: '1_0', label: 'Texto', type: 'text', icon: 'pi pi-pencil' },
+      { key: '1_1', label: 'Email', type: 'email', icon: 'pi pi-at' },
+      { key: '1_2', label: 'Password', type: 'password', icon: 'pi pi-lock' },
+      { key: '1_3', label: 'Área', type: 'textarea', icon: 'pi pi-align-left' },
+  { key: '1_4', label: 'Número', type: 'number', icon: 'pi pi-hashtag' },
+  { key: '1_5', label: 'Hora', type: 'time', icon: 'pi pi-clock' },
+      { key: '1_6', label: 'Fecha', type: 'date', icon: 'pi pi-calendar' },
     ]
   },
   {
     key: '2',
-    label: 'Elementos UI',
-    icon: 'pi pi-window-maximize',
+    label: 'Selección',
+    icon: 'pi pi-list',
     items: [
-      { key: '2_0', label: 'Etiqueta', type: 'label', icon: 'pi pi-info-circle' },
-      { key: '2_1', label: 'Botón', type: 'button', icon: 'pi pi-check' },
-      { key: '2_2', label: 'Divisor', type: 'divider', icon: 'pi pi-minus' },
+      { key: '2_0', label: 'Select', type: 'select', icon: 'pi pi-list' },
+      { key: '2_1', label: 'Radio', type: 'radio', icon: 'pi pi-circle' },
+      { key: '2_2', label: 'Checkbox', type: 'checkbox', icon: 'pi pi-check-square' },
     ]
   },
-  {
+   {
     key: '3',
-    label: 'Contenedor',
-    icon: 'pi pi-window-maximize',
+    label: 'Datos',
+    icon: 'pi pi-database',
     items: [
-      { key: '3_0', label: 'Panel', type: 'panel', icon: 'pi pi-window-maximize' },
+      { key: '3_0', label: 'Tabla', type: 'table', icon: 'pi pi-table' },
+      { key: '3_1', label: 'Tabla Precio/Tasa', type: 'table', icon: 'pi pi-percentage' },
     ]
   },
   {
     key: '4',
-    label: 'Datos',
-    icon: 'pi pi-database',
+    label: 'Elementos UI',
+    icon: 'pi pi-window-maximize',
     items: [
-      { key: '4_0', label: 'Tabla', type: 'table', icon: 'pi pi-table' },
-      { key: '4_1', label: 'Tabla Precio/Tasa', type: 'table', icon: 'pi pi-percentage' },
+      { key: '4_0', label: 'Etiqueta', type: 'label', icon: 'pi pi-info-circle' },
+      { key: '4_1', label: 'Botón', type: 'button', icon: 'pi pi-check' },
+      { key: '4_2', label: 'Divisor', type: 'divider', icon: 'pi pi-minus' },
     ]
   }
 ])

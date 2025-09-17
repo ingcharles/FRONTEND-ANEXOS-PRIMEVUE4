@@ -2,7 +2,6 @@
 import type { FieldSchema } from '@/types/form-schema'
 import { useDesignerStore } from '@/stores/useDesignerStore'
 import { computed, defineAsyncComponent, ref } from 'vue'
-import PrimeTag from 'primevue/tag'
 import { usarPuntoDeCorte } from '@/composables/usarPuntoDeCorte'
 
 const props = defineProps<{ field: FieldSchema; selected?: boolean }>()

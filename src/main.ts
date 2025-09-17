@@ -20,15 +20,18 @@ import PrimeSplitter from 'primevue/splitter'
 import PrimeSplitterPanel from 'primevue/splitterpanel'
 import PrimeCard from 'primevue/card'
 import PrimePanel from 'primevue/panel'
+import PrimeTab from 'primevue/tab'
+import PrimeTabPanels from 'primevue/tabpanels'
 import PrimeDialog from 'primevue/dialog'
 import PrimeToast from 'primevue/toast'
 import PrimeTabs from 'primevue/tabs'
 import PrimeTabPanel from 'primevue/tabpanel'
-import Tabs from 'primevue/tabs'
-import TabList from 'primevue/tablist'
-import Tab from 'primevue/tab'
-import TabPanels from 'primevue/tabpanels'
-import TabPanel from 'primevue/tabpanel'
+import PrimeTabList from 'primevue/tablist'
+// import Tabs from 'primevue/tabs'
+// import TabList from 'primevue/tablist'
+// import Tab from 'primevue/tab'
+// import TabPanels from 'primevue/tabpanels'
+// import TabPanel from 'primevue/tabpanel'
 import PrimeMenu from 'primevue/menu'
 import PrimeMenubar from 'primevue/menubar'
 import PrimePanelMenu from 'primevue/panelmenu'
@@ -41,6 +44,7 @@ import PrimeRating from 'primevue/rating'
 import PrimeToggleButton from 'primevue/togglebutton'
 import PrimeSelectButton from 'primevue/selectbutton'
 import PrimeScrollPanel from 'primevue/scrollpanel'
+import PrimeTag from 'primevue/tag'
 
 // Styles
 import './assets/main.css' // TailwindCSS + estilos personalizados
@@ -88,17 +92,20 @@ app.component('PrimeSplitter', PrimeSplitter)
 app.component('PrimeSplitterPanel', PrimeSplitterPanel)
 app.component('PrimeCard', PrimeCard)
 app.component('PrimePanel', PrimePanel)
+app.component('PrimeTabPanels', PrimeTabPanels)
+app.component('PrimeTabList', PrimeTabList)
 app.component('PrimeDialog', PrimeDialog)
 app.component('PrimeToast', PrimeToast)
+app.component('PrimeTab', PrimeTab)
 app.component('PrimeTabs', PrimeTabs)
 app.component('PrimeTabPanel', PrimeTabPanel)
-// eslint-disable-next-line vue/multi-word-component-names
-app.component('Tabs', Tabs)
-app.component('TabList', TabList)
-// eslint-disable-next-line vue/multi-word-component-names
-app.component('Tab', Tab)
-app.component('TabPanels', TabPanels)
-app.component('TabPanel', TabPanel)
+// // eslint-disable-next-line vue/multi-word-component-names
+// app.component('Tabs', Tabs)
+// app.component('TabList', TabList)
+// // eslint-disable-next-line vue/multi-word-component-names
+// app.component('Tab', Tab)
+// app.component('TabPanels', TabPanels)
+// app.component('TabPanel', TabPanel)
 app.component('PrimeMenu', PrimeMenu)
 app.component('PrimeMenubar', PrimeMenubar)
 app.component('PrimePanelMenu', PrimePanelMenu)
@@ -111,6 +118,7 @@ app.component('PrimeRating', PrimeRating)
 app.component('PrimeToggleButton', PrimeToggleButton)
 app.component('PrimeSelectButton', PrimeSelectButton)
 app.component('PrimeScrollPanel', PrimeScrollPanel)
+app.component('PrimeTag', PrimeTag)
 
 app.mount('#app')
 

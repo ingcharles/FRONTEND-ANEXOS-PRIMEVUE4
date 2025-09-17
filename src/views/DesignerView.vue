@@ -220,20 +220,20 @@ function crearPaginaDespuesActual(): void {
           <!-- <PrimeToggleButton :model-value="store.gridSnap" on-label="Grid" off-label="Grid" @update:model-value="(v:boolean)=> (store.gridSnap = v)" /> -->
         </div>
       </div>
-      <Tabs v-model:value="pestana" class="center-tabs">
+      <PrimeTabs v-model:value="pestana" class="center-tabs">
         <div class="center-tabs-header">
-          <TabList>
+          <PrimeTabList>
             <template v-for="tab in tabTitles" :key="tab.value">
-              <Tab :value="tab.value" as="div" class="flex items-center gap-2">
+              <PrimeTab :value="tab.value" as="div" class="flex items-center gap-2">
                 <i :class="tab.icon"></i>
                 <span class="font-bold whitespace-nowrap">{{ tab.label }}</span>
-              </Tab>
+              </PrimeTab>
             </template>
-          </TabList>
+          </PrimeTabList>
         </div>
 
-        <TabPanels>
-          <TabPanel value="disenador">
+        <PrimeTabPanels>
+          <PrimeTabPanel value="disenador">
             <div class="flex justify-between items-center mb-3">
               <div v-if="totalPaginas>1" class="flex items-center gap-2">
                 <PrimeButton label="Anterior" icon="pi pi-angle-left" :disabled="store.activePageIndex===0" @click="async () => { store.activePageIndex = Math.max(0, store.activePageIndex-1); store.seleccionarCampo(null); await nextTick() }" />
@@ -245,15 +245,15 @@ function crearPaginaDespuesActual(): void {
               </div>
             </div>
             <PageCanvas :key="store.activePageIndex + ':' + (paginaActual.id || '')" :page="paginaActual" />
-          </TabPanel>
-          <TabPanel value="preview">
+          </PrimeTabPanel>
+          <PrimeTabPanel value="preview">
             <PreviewView />
-          </TabPanel>
-          <TabPanel value="json">
+          </PrimeTabPanel>
+          <PrimeTabPanel value="json">
             <JsonView />
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
+          </PrimeTabPanel>
+        </PrimeTabPanels>
+      </PrimeTabs>
     </div>
     <div class="col-12 md:col-2">
       <PropertiesTabs />
