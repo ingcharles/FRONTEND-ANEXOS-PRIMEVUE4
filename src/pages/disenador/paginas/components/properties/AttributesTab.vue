@@ -296,8 +296,8 @@ function obtenerConfigApi(): ConfigApi {
     url: cfg.url || '',
     method: cfg.method || 'GET',
     dataPath: cfg.dataPath || '',
-    labelKey: cfg.labelKey || 'label',
-    valueKey: cfg.valueKey || 'value',
+    labelKey: cfg.labelKey || 'etiqueta',
+    valueKey: cfg.valueKey || 'valor',
     contentType: cfg.contentType || 'application/json',
     body: cfg.body || '',
     headersJson: cfg.headersJson || '',
@@ -665,12 +665,12 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
           <PrimeInputText :model-value="obtenerConfigApi().dataPath" placeholder="por ej.: data.items" @update:model-value="(v:string)=> actualizarConfigApi({ dataPath: v })" />
         </div>
         <div class="col-span-12 md:col-span-3">
-          <label class="block mb-1">labelKey</label>
-          <PrimeInputText :model-value="obtenerConfigApi().labelKey" placeholder="label" @update:model-value="(v:string)=> actualizarConfigApi({ labelKey: v })" />
+          <label class="block mb-1">Clave Valor</label>
+          <PrimeInputText :model-value="obtenerConfigApi().valueKey" placeholder="valor" @update:model-value="(v:string)=> actualizarConfigApi({ valueKey: v })" />
         </div>
         <div class="col-span-12 md:col-span-3">
-          <label class="block mb-1">valueKey</label>
-          <PrimeInputText :model-value="obtenerConfigApi().valueKey" placeholder="value" @update:model-value="(v:string)=> actualizarConfigApi({ valueKey: v })" />
+          <label class="block mb-1">Clave Etiqueta</label>
+          <PrimeInputText :model-value="obtenerConfigApi().labelKey" placeholder="etiqueta" @update:model-value="(v:string)=> actualizarConfigApi({ labelKey: v })" />
         </div>
         <div class="col-span-12" v-if="(obtenerConfigApi().method||'GET')==='POST'">
           <label class="block mb-1">Body (JSON o texto)</label>
