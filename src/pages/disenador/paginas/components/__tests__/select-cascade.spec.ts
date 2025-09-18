@@ -77,4 +77,33 @@ describe('Cascada de Selects', () => {
     // No debe tener query param duplicado
     expect(llamada.includes('?')).toBe(false)
   })
+
+  it('Deveria funcionar Path sin paramKey (concatena segmento)', async () => {
+    const json = [ { label: 'X', value: 'x' } ]
+    const mockFetch = vi.fn().mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(json) })
+  ;(globalThis as unknown as { fetch: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> }).fetch = mockFetch as unknown as (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
+
+    const store = useDesignerStore()
+    store.formSchema.pages = [
+      {
+        id: 'p1',
+        title: 'P1',
+        fields: [
+          { id: 'f1', type: 'select', name: 'padre', label: 'Padre', grid: { sm: 12 }, meta: { optionsMode: 'manual', options: [ { label: 'Item 1', value: 'item 1' } ] } },
+          { id: 'f2', type: 'select', name: 'hijo', label: 'Hijo', grid: { sm: 12 }, meta: { optionsMode: 'api', optionsApi: { url: 'http://localhost:8086/xxx/', method: 'GET', labelKey: 'label', valueKey: 'value' }, dependencia: { campoPadre: 'padre', modoEnvio: 'path', limpiarAlCambiar: true, deshabilitarHastaValor: true } } },
+        ],
+      },
+    ]
+    store.activePageIndex = 0
+
+    mount(PreviewView, { global: { stubs: { PrimePanel: true } } })
+    const valores = store.obtenerValoresPagina('p1') as Record<string, unknown>
+    valores['padre'] = 'item 1'
+    await new Promise(r => setTimeout(r))
+
+    expect(mockFetch).toHaveBeenCalled()
+    const llamada = mockFetch.mock.calls[0][0] as string
+    expect(llamada).toContain('http://localhost:8086/xxx/')
+    expect(llamada).toContain('item%201')
+  })
 })

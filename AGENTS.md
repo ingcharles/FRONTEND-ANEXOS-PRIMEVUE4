@@ -38,6 +38,8 @@ assets/
 
 ## Principios de código
 
+- Principios solidos de desarrollo
+- Aplicar buenas paracticas de desarrollo
 - TypeScript estricto: evita `any` implícito, usa tipos/`interface` y genéricos.
 - Composition API + `<script setup>` por defecto.
 - Componentes pequeños (<200 líneas), con `name` y `props`/`emits` tipados.

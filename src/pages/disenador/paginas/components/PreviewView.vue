@@ -71,7 +71,9 @@ async function cargarOpcionesDependientes(hijo: FieldSchema, valorPadre: unknown
   const dep = (meta.dependencia || {}) as Dependencia
   const api = (meta.optionsApi || {}) as Record<string, unknown>
   const url = String(api.url || '')
-  if (!url || !dep.paramKey) return
+  if (!url) return
+  const modo = dep.modoEnvio || 'query'
+  if (modo !== 'path' && !dep.paramKey) return
   const metodo = String((api.method || 'GET')).toUpperCase()
   const headers: Record<string, string> = {}
   let finalUrl = url
@@ -115,9 +117,11 @@ async function cargarOpcionesDependientes(hijo: FieldSchema, valorPadre: unknown
       }
     }
   }
-  else if (dep.modoEnvio === 'header') headers[dep.paramKey] = String(valorPadre ?? '')
+  else if (dep.modoEnvio === 'header') {
+    if (dep.paramKey) headers[dep.paramKey] = String(valorPadre ?? '')
+  }
   else if (dep.modoEnvio === 'query' || !dep.modoEnvio) {
-    finalUrl = construirUrlConQuery(url, { [dep.paramKey]: valorPadre as unknown })
+    if (dep.paramKey) finalUrl = construirUrlConQuery(url, { [dep.paramKey]: valorPadre as unknown })
   }
 
   const contentType = String(api.contentType || 'application/json')
@@ -125,7 +129,7 @@ async function cargarOpcionesDependientes(hijo: FieldSchema, valorPadre: unknown
     headers['Content-Type'] = contentType
     if (dep.modoEnvio === 'body') {
       const plantilla = String(api.body || '')
-      const procesado = inyectarEnBodyTemplate(plantilla, dep.paramKey, valorPadre)
+      const procesado = inyectarEnBodyTemplate(plantilla, dep.paramKey || 'valorPadre', valorPadre)
       body = procesado
     } else if (api.body) {
       body = String(api.body)

@@ -46,13 +46,11 @@ function cambiarTipoCampo(nuevo: TipoSimple): void {
   // Al cambiar tipo, aseguramos coherencia básica
   store.actualizarCampo(campo.value.id, { type: nuevo, meta: metaFinal })
 }
-
 function actualizarGrid(parcial: { sm?: number; md?: number; lg?: number }): void {
   if (!campo.value) return
   const actual = campo.value.grid ?? {}
   store.actualizarCampo(campo.value.id, { grid: { ...actual, ...parcial } })
 }
-
 function actualizarBooleano(clave: 'visible' | 'required', valor: boolean): void {
   if (!campo.value) return
   store.actualizarCampo(campo.value.id, { [clave]: valor } as { [k in typeof clave]: boolean })
@@ -82,7 +80,8 @@ type Dependencia = {
   deshabilitarHastaValor?: boolean
 }
 
-function aplanarCampos(list: any[], out: any[] = []): any[] {
+type CampoBasico = { id?: string; name?: string; label?: string; children?: CampoBasico[] }
+function aplanarCampos(list: CampoBasico[], out: CampoBasico[] = []): CampoBasico[] {
   for (const f of list || []) {
     if (!f) continue
     out.push(f)
@@ -118,15 +117,34 @@ function actualizarDependencia<K extends keyof Dependencia>(prop: K, valor: Depe
   if (!campo.value) return
   const meta = { ...(campo.value.meta ?? {}) } as Record<string, unknown>
   const dep = ((meta.dependencia as Dependencia) || {})
-  ;(meta as any).dependencia = { ...dep, [prop]: valor }
+  ;(meta as Record<string, unknown>).dependencia = { ...dep, [prop]: valor as unknown }
   store.actualizarCampo(campo.value.id, { meta })
 }
 
 function limpiarDependencia(): void {
   if (!campo.value) return
   const meta = { ...(campo.value.meta ?? {}) } as Record<string, unknown>
-  if ('dependencia' in meta) delete (meta as any).dependencia
+  if ('dependencia' in meta) delete (meta as Record<string, unknown>).dependencia
   store.actualizarCampo(campo.value.id, { meta })
+}
+
+// Helpers UI de Dependencias
+function obtenerModoEnvioDependencia(): 'query'|'body'|'header'|'path' {
+  const meta = (campo.value?.meta as Record<string, unknown> | undefined)
+  const dep = (meta?.dependencia as { modoEnvio?: 'query'|'body'|'header'|'path' } | undefined)
+  return (dep?.modoEnvio) || 'query'
+}
+function hayPlaceholderEnUrlDependencia(): boolean {
+  const url = obtenerConfigApi().url || ''
+  return /\{[^}]+\}/.test(url)
+}
+function debeMostrarParamKeyDependencia(): boolean {
+  const modo = obtenerModoEnvioDependencia()
+  const hayPH = hayPlaceholderEnUrlDependencia()
+  return modo === 'query' || modo === 'header' || modo === 'body' || (modo === 'path' && hayPH)
+}
+function placeholderParamKeyDependencia(): string {
+  return obtenerModoEnvioDependencia() === 'path' ? 'Opcional si usas {placeholder} en la URL' : 'p.ej. countryId'
 }
 function agregarOpcion(): void {
   const lista = obtenerOpciones()
@@ -779,29 +797,6 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
     <div class="mt-3 p-2 border-1 surface-border border-round">
       <div class="font-semibold mb-2 text-sm">Dependencias</div>
       <div class="grid grid-cols-12 gap-3">
-        <div class="col-span-12 md:col-span-6">
-          <label class="block mb-1">Campo padre</label>
-          <PrimeSelect
-            :model-value="(((campo?.meta as any)?.dependencia||{}).campoPadre || '')"
-            :options="camposPaginaActual"
-            option-label="label"
-            option-value="value"
-            placeholder="Seleccione un campo"
-            class="w-full"
-            @focus="asegurarDependencia()"
-            @update:model-value="(v:string)=> actualizarDependencia('campoPadre', v)"
-          />
-        </div>
-        <div class="col-span-12 md:col-span-6">
-          <label class="block mb-1">Nombre de parámetro (paramKey)</label>
-          <PrimeInputText
-            :model-value="(((campo?.meta as any)?.dependencia||{}).paramKey || '')"
-            placeholder="p.ej. countryId"
-            class="w-full"
-            @focus="asegurarDependencia()"
-            @update:model-value="(v:string)=> actualizarDependencia('paramKey', v)"
-          />
-        </div>
         <div class="col-span-12 md:col-span-4">
           <label class="block mb-1">Modo de envío</label>
           <PrimeSelect
@@ -817,6 +812,29 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
             class="w-full"
             @focus="asegurarDependencia()"
             @update:model-value="(v:'query'|'body'|'header'|'path')=> actualizarDependencia('modoEnvio', v)"
+          />
+        </div>
+        <div class="col-span-12 md:col-span-6">
+          <label class="block mb-1">Campo padre</label>
+          <PrimeSelect
+            :model-value="(((campo?.meta as any)?.dependencia||{}).campoPadre || '')"
+            :options="camposPaginaActual"
+            option-label="label"
+            option-value="value"
+            placeholder="Seleccione un campo"
+            class="w-full"
+            @focus="asegurarDependencia()"
+            @update:model-value="(v:string)=> actualizarDependencia('campoPadre', v)"
+          />
+        </div>
+        <div class="col-span-12 md:col-span-6" v-if="debeMostrarParamKeyDependencia()">
+          <label class="block mb-1">Nombre de parámetro (paramKey)</label>
+          <PrimeInputText
+            :model-value="(((campo?.meta as any)?.dependencia||{}).paramKey || '')"
+            :placeholder="placeholderParamKeyDependencia()"
+            class="w-full"
+            @focus="asegurarDependencia()"
+            @update:model-value="(v:string)=> actualizarDependencia('paramKey', v)"
           />
         </div>
         <div class="col-span-12 md:col-span-4 flex items-center gap-2">
@@ -841,7 +859,7 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
           <PrimeButton label="Quitar dependencia" severity="secondary" icon="pi pi-times" size="small" @click="limpiarDependencia" />
         </div>
       </div>
-      <small class="text-muted-color block mt-2">Si el campo usa API, se inyectará el valor del padre según el modo seleccionado.</small>
+      <small class="text-muted-color block mt-2">Si el campo usa API, se inyectará el valor del padre según el modo seleccionado. En Path, si la URL no tiene placeholder se concatenará el valor al final.</small>
     </div>
   </div>
 
