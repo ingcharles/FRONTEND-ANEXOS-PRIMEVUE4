@@ -42,6 +42,149 @@ const idAName = computed(() => construirMapaIdNombre(campos.value))
 const valores = computed<Record<string, unknown>>(() => store.obtenerValoresPagina(paginaActual.value.id))
 const errores = ref<Record<string, string>>({})
 
+// ----- Dependencias dinámicas (select/radio/checkbox) -----
+type Dependencia = { campoPadre?: string; paramKey?: string; modoEnvio?: 'query'|'body'|'header'|'path'; limpiarAlCambiar?: boolean; deshabilitarHastaValor?: boolean }
+const registroDependencias = new Map<string, () => void>()
+const controladoresCarga = new Map<string, AbortController>()
+
+function aplanarCampos(list: FieldSchema[], out: FieldSchema[] = []): FieldSchema[] {
+  for (const f of list || []) { if (!f) continue; out.push(f); if (f.children && f.children.length) aplanarCampos(f.children, out) }
+  return out
+}
+
+function construirUrlConQuery(base: string, params: Record<string, unknown>): string {
+  try {
+    const url = new URL(base, window.location.origin)
+    Object.entries(params).forEach(([k, v]) => { if (v !== undefined && v !== null && v !== '') url.searchParams.set(k, String(v)) })
+    return url.toString()
+  } catch { return base }
+}
+
+function inyectarEnBodyTemplate(template: string, paramKey: string, valorPadre: unknown): string {
+  const key = paramKey || 'valorPadre'
+  const re = new RegExp(`\\{\\{${key}\\}\\}`, 'g')
+  return String(template || '').replace(re, String(valorPadre ?? ''))
+}
+
+async function cargarOpcionesDependientes(hijo: FieldSchema, valorPadre: unknown): Promise<void> {
+  const meta = (hijo.meta || {}) as Record<string, unknown>
+  const dep = (meta.dependencia || {}) as Dependencia
+  const api = (meta.optionsApi || {}) as Record<string, unknown>
+  const url = String(api.url || '')
+  if (!url || !dep.paramKey) return
+  const metodo = String((api.method || 'GET')).toUpperCase()
+  const headers: Record<string, string> = {}
+  let finalUrl = url
+  let body: BodyInit | undefined
+  const key = hijo.id || hijo.name || Math.random().toString(36).slice(2)
+
+  // cancelación
+  controladoresCarga.get(key)?.abort()
+  const ac = new AbortController()
+  controladoresCarga.set(key, ac)
+
+  if (dep.modoEnvio === 'path') {
+    const key = dep.paramKey || 'valor'
+    const valor = String(valorPadre ?? '')
+    // Reemplazar placeholders {paramKey} o {valor}
+  let reemplazada = false
+  const tmp = url.replace(new RegExp('\\{' + key + '\\}', 'g'), encodeURIComponent(valor))
+    if (tmp !== url) reemplazada = true
+    const tmp2 = tmp.replace(/\{valor\}/g, encodeURIComponent(valor))
+    if (tmp2 !== tmp) reemplazada = true
+    finalUrl = tmp2
+    // Si no hay placeholder, concatenar el valor como segmento de path
+    if (!reemplazada) {
+      const seg = valor.trim()
+      if (seg) {
+        try {
+          const u = new URL(url, window.location.origin)
+          const basePath = u.pathname.endsWith('/') ? u.pathname : u.pathname + '/'
+          // Usar encodeURIComponent para el segmento
+          u.pathname = basePath + encodeURIComponent(seg)
+          finalUrl = u.toString()
+        } catch {
+          // Fallback manual sin romper query/hash
+          const m = url.match(/^([^?#]*)(\?[^#]*)?(#.*)?$/)
+          const basePath = (m && m[1]) || url
+          const qs = (m && m[2]) || ''
+          const hs = (m && m[3]) || ''
+          const sep = basePath.endsWith('/') ? '' : '/'
+          finalUrl = basePath + sep + encodeURIComponent(seg) + qs + hs
+        }
+      }
+    }
+  }
+  else if (dep.modoEnvio === 'header') headers[dep.paramKey] = String(valorPadre ?? '')
+  else if (dep.modoEnvio === 'query' || !dep.modoEnvio) {
+    finalUrl = construirUrlConQuery(url, { [dep.paramKey]: valorPadre as unknown })
+  }
+
+  const contentType = String(api.contentType || 'application/json')
+  if (metodo === 'POST') {
+    headers['Content-Type'] = contentType
+    if (dep.modoEnvio === 'body') {
+      const plantilla = String(api.body || '')
+      const procesado = inyectarEnBodyTemplate(plantilla, dep.paramKey, valorPadre)
+      body = procesado
+    } else if (api.body) {
+      body = String(api.body)
+    }
+  }
+
+  try {
+    const res = await fetch(finalUrl, { method: metodo, headers, body, signal: ac.signal })
+    if (!res.ok) throw new Error('HTTP ' + res.status)
+    const json = await res.json()
+    let datos: unknown = json
+    const dataPath = String(api.dataPath || '')
+    if (dataPath) {
+      const partes = dataPath.split('.')
+      let actual: unknown = json
+      for (const p of partes) {
+        if (actual && typeof actual === 'object' && p in (actual as Record<string, unknown>)) actual = (actual as Record<string, unknown>)[p]
+        else { actual = []; break }
+      }
+      datos = actual
+    }
+    const labelKey = String(api.labelKey || 'label')
+    const valueKey = String(api.valueKey || 'value')
+    const arr: unknown[] = Array.isArray(datos) ? (datos as unknown[]) : []
+    const options = arr.map((it) => {
+      const o = (typeof it === 'object' && it !== null) ? (it as Record<string, unknown>) : {}
+      return { label: String(o[labelKey] ?? ''), value: o[valueKey] ?? null }
+    }) as Array<{ label: string; value: unknown }>
+    const metaH = (hijo.meta ||= {}) as Record<string, unknown>
+    metaH.options = options
+  } catch {
+    const metaH = (hijo.meta ||= {}) as Record<string, unknown>
+    metaH.options = []
+  }
+}
+
+function reconfigurarDependencias(): void {
+  registroDependencias.forEach(stop => stop())
+  registroDependencias.clear()
+  const all = aplanarCampos(campos.value, [])
+  for (const f of all) {
+    const meta = (f.meta || {}) as Record<string, unknown>
+    const dep = (meta.dependencia || {}) as Dependencia
+    if (!f.name || !dep.campoPadre) continue
+    const stop = watch(() => (valores.value as Record<string, unknown>)[dep.campoPadre!], async (nuevo) => {
+      if (dep.limpiarAlCambiar !== false) {
+        ;(valores.value as Record<string, unknown>)[f.name!] = null as unknown
+      }
+      if (dep.deshabilitarHastaValor !== false && (nuevo === null || nuevo === undefined || nuevo === '')) {
+        const metaH = (f.meta ||= {}) as Record<string, unknown>
+        metaH.options = []
+        return
+      }
+      await cargarOpcionesDependientes(f, nuevo)
+    }, { immediate: true })
+    registroDependencias.set(f.id, stop)
+  }
+}
+
 // Tipos auxiliares para tabla
 type ColumnaTabla = { name: string; label?: string; type?: 'text' | 'number' | 'date' }
 type ColumnaTablaExt = ColumnaTabla & {
@@ -225,7 +368,48 @@ function crearSchema(): z.ZodObject<Record<string, z.ZodTypeAny>> {
 }
 
 const schema = ref(crearSchema())
-watch(campos, () => (schema.value = crearSchema()))
+
+function recolectarFirmaSchema(list: FieldSchema[], out: Array<Record<string, unknown>> = []): Array<Record<string, unknown>> {
+  for (const f of list) {
+    if (!f) continue
+    const meta = (f.meta || {}) as Record<string, unknown>
+    out.push({
+      id: f.id,
+      type: f.type,
+      name: f.name,
+      required: f.required,
+      grid: f.grid,
+      // solo props relevantes al esquema/validación
+      m: {
+        min: meta.min,
+        max: meta.max,
+        step: meta.step,
+        minDate: meta.minDate,
+        maxDate: meta.maxDate,
+        valorPorDefecto: meta.valorPorDefecto,
+      },
+      v: (f.validations || []).map(v => ({ t: v.type, val: v.value })),
+    })
+    if (f.children && f.children.length) recolectarFirmaSchema(f.children, out)
+  }
+  return out
+}
+
+const firmaSchema = computed(() => JSON.stringify(recolectarFirmaSchema(campos.value, [])))
+const firmaDependencias = computed(() => {
+  const arr: Array<Record<string, unknown>> = []
+  const stack: FieldSchema[] = []
+  stack.push(...campos.value)
+  while (stack.length) {
+    const f = stack.shift()!
+    if (!f) continue
+    const meta = (f.meta || {}) as Record<string, unknown>
+    const dep = (meta.dependencia || {}) as Record<string, unknown>
+    arr.push({ id: f.id, name: f.name, dep })
+    if (f.children && f.children.length) stack.push(...f.children)
+  }
+  return JSON.stringify(arr)
+})
 
 // (valores/errores ya declarados arriba)
 
@@ -305,10 +489,14 @@ function recolectarFirmasDefaults(list: FieldSchema[], out: Array<string> = []):
 const firmaDefaults = computed(() => recolectarFirmasDefaults(campos.value, []).join('|'))
 
 // Aplicar al cargar/actualizar campos o cambiar de página (inicial, no sobreescribe)
-watch([campos, paginaIndex], () => {
+watch([firmaSchema, paginaIndex], () => {
   schema.value = crearSchema()
   aplicarValoresPorDefecto(campos.value, false)
-}, { immediate: true, deep: true })
+}, { immediate: true })
+
+watch([firmaDependencias, paginaIndex], () => {
+  reconfigurarDependencias()
+}, { immediate: true })
 
 // Aplicar cuando cambie algún valorPorDefecto: sobreescribe si el valor actual está vacío
 watch(firmaDefaults, () => {

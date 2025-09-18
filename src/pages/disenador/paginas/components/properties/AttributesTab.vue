@@ -72,6 +72,62 @@ function actualizarOpciones(nuevas: Array<{ label: string; value: unknown }>): v
   ;(meta as Record<string, unknown>).options = nuevas
   store.actualizarCampo(campo.value.id, { meta })
 }
+
+// ----- Dependencias (select/radio/checkbox) -----
+type Dependencia = {
+  campoPadre?: string
+  paramKey?: string
+  modoEnvio?: 'query' | 'body' | 'header' | 'path'
+  limpiarAlCambiar?: boolean
+  deshabilitarHastaValor?: boolean
+}
+
+function aplanarCampos(list: any[], out: any[] = []): any[] {
+  for (const f of list || []) {
+    if (!f) continue
+    out.push(f)
+    if (Array.isArray(f.children) && f.children.length) aplanarCampos(f.children, out)
+  }
+  return out
+}
+
+const camposPaginaActual = computed(() => {
+  const page = store.paginaActiva
+  const arr = aplanarCampos(page?.fields || [])
+  const actualId = campo.value?.id
+  return arr
+    .filter((f) => !!f?.name && f?.id !== actualId)
+    .map((f) => ({ label: String(f.label || f.name), value: String(f.name) }))
+})
+
+function asegurarDependencia(): void {
+  if (!campo.value) return
+  const meta = { ...(campo.value.meta ?? {}) } as Record<string, unknown>
+  const dep = (meta.dependencia as Dependencia | undefined) || {}
+  meta.dependencia = {
+    campoPadre: dep.campoPadre || '',
+    paramKey: dep.paramKey || '',
+    modoEnvio: dep.modoEnvio || 'query',
+    limpiarAlCambiar: dep.limpiarAlCambiar !== false,
+    deshabilitarHastaValor: dep.deshabilitarHastaValor !== false,
+  } satisfies Dependencia
+  store.actualizarCampo(campo.value.id, { meta })
+}
+
+function actualizarDependencia<K extends keyof Dependencia>(prop: K, valor: Dependencia[K]): void {
+  if (!campo.value) return
+  const meta = { ...(campo.value.meta ?? {}) } as Record<string, unknown>
+  const dep = ((meta.dependencia as Dependencia) || {})
+  ;(meta as any).dependencia = { ...dep, [prop]: valor }
+  store.actualizarCampo(campo.value.id, { meta })
+}
+
+function limpiarDependencia(): void {
+  if (!campo.value) return
+  const meta = { ...(campo.value.meta ?? {}) } as Record<string, unknown>
+  if ('dependencia' in meta) delete (meta as any).dependencia
+  store.actualizarCampo(campo.value.id, { meta })
+}
 function agregarOpcion(): void {
   const lista = obtenerOpciones()
   actualizarOpciones([...lista, { label: 'Opción', value: '' }])
@@ -296,8 +352,8 @@ function obtenerConfigApi(): ConfigApi {
     url: cfg.url || '',
     method: cfg.method || 'GET',
     dataPath: cfg.dataPath || '',
-    labelKey: cfg.labelKey || 'etiqueta',
-    valueKey: cfg.valueKey || 'valor',
+    labelKey: cfg.labelKey || 'label',
+    valueKey: cfg.valueKey || 'value',
     contentType: cfg.contentType || 'application/json',
     body: cfg.body || '',
     headersJson: cfg.headersJson || '',
@@ -717,6 +773,75 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
         />
         <small class="text-muted-color">Selecciona qué opción quedará preseleccionada por defecto.</small>
       </template>
+    </div>
+
+    <!-- Dependencias -->
+    <div class="mt-3 p-2 border-1 surface-border border-round">
+      <div class="font-semibold mb-2 text-sm">Dependencias</div>
+      <div class="grid grid-cols-12 gap-3">
+        <div class="col-span-12 md:col-span-6">
+          <label class="block mb-1">Campo padre</label>
+          <PrimeSelect
+            :model-value="(((campo?.meta as any)?.dependencia||{}).campoPadre || '')"
+            :options="camposPaginaActual"
+            option-label="label"
+            option-value="value"
+            placeholder="Seleccione un campo"
+            class="w-full"
+            @focus="asegurarDependencia()"
+            @update:model-value="(v:string)=> actualizarDependencia('campoPadre', v)"
+          />
+        </div>
+        <div class="col-span-12 md:col-span-6">
+          <label class="block mb-1">Nombre de parámetro (paramKey)</label>
+          <PrimeInputText
+            :model-value="(((campo?.meta as any)?.dependencia||{}).paramKey || '')"
+            placeholder="p.ej. countryId"
+            class="w-full"
+            @focus="asegurarDependencia()"
+            @update:model-value="(v:string)=> actualizarDependencia('paramKey', v)"
+          />
+        </div>
+        <div class="col-span-12 md:col-span-4">
+          <label class="block mb-1">Modo de envío</label>
+          <PrimeSelect
+            :model-value="(((campo?.meta as any)?.dependencia||{}).modoEnvio || 'query')"
+            :options="[
+              { label: 'Query (?key=valor)', value: 'query' },
+              { label: 'Body (POST)', value: 'body' },
+              { label: 'Header', value: 'header' },
+              { label: 'Path (/api/{valor})', value: 'path' },
+            ]"
+            option-label="label"
+            option-value="value"
+            class="w-full"
+            @focus="asegurarDependencia()"
+            @update:model-value="(v:'query'|'body'|'header'|'path')=> actualizarDependencia('modoEnvio', v)"
+          />
+        </div>
+        <div class="col-span-12 md:col-span-4 flex items-center gap-2">
+          <PrimeCheckbox
+            binary
+            :model-value="(((campo?.meta as any)?.dependencia||{}).limpiarAlCambiar !== false)"
+            @focus="asegurarDependencia()"
+            @update:model-value="(v:boolean)=> actualizarDependencia('limpiarAlCambiar', v)"
+          />
+          <span class="text-sm">Limpiar al cambiar padre</span>
+        </div>
+        <div class="col-span-12 md:col-span-4 flex items-center gap-2">
+          <PrimeCheckbox
+            binary
+            :model-value="(((campo?.meta as any)?.dependencia||{}).deshabilitarHastaValor !== false)"
+            @focus="asegurarDependencia()"
+            @update:model-value="(v:boolean)=> actualizarDependencia('deshabilitarHastaValor', v)"
+          />
+          <span class="text-sm">Deshabilitar hasta que el padre tenga valor</span>
+        </div>
+        <div class="col-span-12">
+          <PrimeButton label="Quitar dependencia" severity="secondary" icon="pi pi-times" size="small" @click="limpiarDependencia" />
+        </div>
+      </div>
+      <small class="text-muted-color block mt-2">Si el campo usa API, se inyectará el valor del padre según el modo seleccionado.</small>
     </div>
   </div>
 

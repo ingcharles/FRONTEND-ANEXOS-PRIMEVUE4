@@ -129,7 +129,14 @@ const requerido = computed(() => EvaluarReglasCampo(props.field, props.valores, 
       <PrimeTextarea v-else-if="field.type==='textarea'" v-model="(valores as any)[field.name||'']" :placeholder="field.placeholder" class="w-full" :disabled="field.disabled" :readonly="field.readonly" />
       <PrimeDatePicker v-else-if="field.type==='time'" v-model="(valores as any)[field.name||'']" time-only hour-format="24" class="w-full" :disabled="field.disabled" />
       <PrimeDatePicker v-else-if="field.type==='date'" v-model="(valores as any)[field.name||'']" class="w-full" :disabled="field.disabled" />
-      <PrimeSelect v-else-if="field.type==='select'" v-model="(valores as any)[field.name||'']" :options="(field.meta?.options as any[])||[]" option-label="label" option-value="value" class="w-full" :disabled="field.disabled" />
+      <PrimeSelect v-else-if="field.type==='select'"
+        v-model="(valores as any)[field.name||'']"
+        :options="(field.meta?.options as any[])||[]"
+        option-label="label"
+        option-value="value"
+        class="w-full"
+        :disabled="field.disabled || (((field.meta as any)?.dependencia?.deshabilitarHastaValor) && !valores[(field.meta as any)?.dependencia?.campoPadre || ''])"
+      />
       <PrimeInputNumber v-else-if="field.type==='number'" v-model="(valores as any)[field.name||'']" class="w-full" :placeholder="field.placeholder" :min="(field.meta as any)?.min" :max="(field.meta as any)?.max" :step="(field.meta as any)?.step ?? 1" :disabled="field.disabled" :readonly="field.readonly" />
       <div v-else-if="field.type==='checkbox'">
         <template v-if="Array.isArray((field.meta as any)?.options) && ((field.meta as any)?.options?.length||0) > 0">
