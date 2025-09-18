@@ -60,11 +60,7 @@ function construirUrlConQuery(base: string, params: Record<string, unknown>): st
   } catch { return base }
 }
 
-function inyectarEnBodyTemplate(template: string, paramKey: string, valorPadre: unknown): string {
-  const key = paramKey || 'valorPadre'
-  const re = new RegExp(`\\{\\{${key}\\}\\}`, 'g')
-  return String(template || '').replace(re, String(valorPadre ?? ''))
-}
+
 
 async function cargarOpcionesDependientes(hijo: FieldSchema, valorPadre: unknown): Promise<void> {
   const meta = (hijo.meta || {}) as Record<string, unknown>
@@ -80,48 +76,84 @@ async function cargarOpcionesDependientes(hijo: FieldSchema, valorPadre: unknown
   let body: BodyInit | undefined
   const key = hijo.id || hijo.name || Math.random().toString(36).slice(2)
 
+  // Preparar mapa de valores de padres
+  const nombresPadres = String(dep.campoPadre || '').split(',').map(s => s.trim()).filter(Boolean)
+  const valorMap: Record<string, unknown> = {}
+  if (valorPadre && typeof valorPadre === 'object' && !Array.isArray(valorPadre)) {
+    Object.assign(valorMap, valorPadre as Record<string, unknown>)
+  } else if (nombresPadres.length > 0) {
+    valorMap[nombresPadres[0]] = valorPadre
+  } else {
+    valorMap['valor'] = valorPadre
+  }
+  // Alias genérico 'valor' para el primero no vacío
+  const primero = nombresPadres.find(n => valorMap[n] !== undefined && valorMap[n] !== null && valorMap[n] !== '')
+  if (primero) valorMap['valor'] = valorMap[primero]
+
   // cancelación
   controladoresCarga.get(key)?.abort()
   const ac = new AbortController()
   controladoresCarga.set(key, ac)
 
   if (dep.modoEnvio === 'path') {
-    const key = dep.paramKey || 'valor'
-    const valor = String(valorPadre ?? '')
-    // Reemplazar placeholders {paramKey} o {valor}
-  let reemplazada = false
-  const tmp = url.replace(new RegExp('\\{' + key + '\\}', 'g'), encodeURIComponent(valor))
-    if (tmp !== url) reemplazada = true
-    const tmp2 = tmp.replace(/\{valor\}/g, encodeURIComponent(valor))
-    if (tmp2 !== tmp) reemplazada = true
-    finalUrl = tmp2
-    // Si no hay placeholder, concatenar el valor como segmento de path
-    if (!reemplazada) {
-      const seg = valor.trim()
-      if (seg) {
+    // Reemplazar placeholders por cualquiera de las claves disponibles (incluye 'valor' y nombres de padres)
+    let replacedAny = false
+    let tmp = url
+    for (const [k, v] of Object.entries(valorMap)) {
+      const before = tmp
+      tmp = tmp.replace(new RegExp('\\{' + k + '\\}', 'g'), encodeURIComponent(String(v ?? '')))
+      if (tmp !== before) replacedAny = true
+    }
+    finalUrl = tmp
+    // Si no hubo reemplazos, concatenar segmentos en el orden de los padres
+    if (!replacedAny) {
+      const segmentos: string[] = []
+      const orden = nombresPadres.length ? nombresPadres : (Object.keys(valorMap))
+      for (const n of orden) {
+        const v = valorMap[n]
+        if (v !== undefined && v !== null && String(v).trim() !== '') segmentos.push(encodeURIComponent(String(v)))
+      }
+      if (segmentos.length) {
         try {
           const u = new URL(url, window.location.origin)
           const basePath = u.pathname.endsWith('/') ? u.pathname : u.pathname + '/'
-          // Usar encodeURIComponent para el segmento
-          u.pathname = basePath + encodeURIComponent(seg)
+          u.pathname = (basePath + segmentos.join('/'))
+          // Normalizar dobles barras en el path
+          u.pathname = u.pathname.replace(/\/{2,}/g, '/')
           finalUrl = u.toString()
         } catch {
-          // Fallback manual sin romper query/hash
           const m = url.match(/^([^?#]*)(\?[^#]*)?(#.*)?$/)
           const basePath = (m && m[1]) || url
           const qs = (m && m[2]) || ''
           const hs = (m && m[3]) || ''
           const sep = basePath.endsWith('/') ? '' : '/'
-          finalUrl = basePath + sep + encodeURIComponent(seg) + qs + hs
+          const pathCat = (basePath + sep + segmentos.join('/')).replace(/(^https?:\/\/[^/]+)\/{2,}/, '$1/').replace(/([^:])\/{2,}/g, '$1/')
+          finalUrl = pathCat + qs + hs
         }
       }
+    } else {
+      // Normalizar dobles barras si quedaron
+      try {
+        const u = new URL(finalUrl, window.location.origin)
+        u.pathname = u.pathname.replace(/\/{2,}/g, '/')
+        finalUrl = u.toString()
+      } catch { /* noop */ }
     }
-  }
-  else if (dep.modoEnvio === 'header') {
+  } else if (dep.modoEnvio === 'header') {
     if (dep.paramKey) headers[dep.paramKey] = String(valorPadre ?? '')
   }
   else if (dep.modoEnvio === 'query' || !dep.modoEnvio) {
-    if (dep.paramKey) finalUrl = construirUrlConQuery(url, { [dep.paramKey]: valorPadre as unknown })
+    const params: Record<string, unknown> = {}
+    const keys = (dep.paramKey || '').split(',').map(s=>s.trim()).filter(Boolean)
+    if (keys.length > 1 && keys.length === nombresPadres.length) {
+      for (let i=0;i<keys.length;i++) params[keys[i]] = valorMap[nombresPadres[i]]
+    } else if (dep.paramKey && nombresPadres.length<=1) {
+      params[dep.paramKey] = valorPadre as unknown
+    } else {
+      // usar nombres de padres como claves
+      for (const n of nombresPadres) params[n] = valorMap[n]
+    }
+    if (Object.keys(params).length) finalUrl = construirUrlConQuery(url, params)
   }
 
   const contentType = String(api.contentType || 'application/json')
@@ -129,7 +161,17 @@ async function cargarOpcionesDependientes(hijo: FieldSchema, valorPadre: unknown
     headers['Content-Type'] = contentType
     if (dep.modoEnvio === 'body') {
       const plantilla = String(api.body || '')
-      const procesado = inyectarEnBodyTemplate(plantilla, dep.paramKey || 'valorPadre', valorPadre)
+      // Reemplazar {{clave}} para todas las entradas del mapa
+      let procesado = plantilla
+      for (const [k, v] of Object.entries(valorMap)) {
+        const re = new RegExp(`\\{\\{${k}\\}\\}`, 'g')
+        procesado = procesado.replace(re, String(v ?? ''))
+      }
+      // Compatibilidad: también reemplazar {{paramKey}} si se definió
+      if (dep.paramKey) {
+        const rePk = new RegExp(`\\{\\{${dep.paramKey}\\}\\}`, 'g')
+        procesado = procesado.replace(rePk, String(valorPadre ?? ''))
+      }
       body = procesado
     } else if (api.body) {
       body = String(api.body)
@@ -174,17 +216,33 @@ function reconfigurarDependencias(): void {
     const meta = (f.meta || {}) as Record<string, unknown>
     const dep = (meta.dependencia || {}) as Dependencia
     if (!f.name || !dep.campoPadre) continue
-    const stop = watch(() => (valores.value as Record<string, unknown>)[dep.campoPadre!], async (nuevo) => {
-      if (dep.limpiarAlCambiar !== false) {
-        ;(valores.value as Record<string, unknown>)[f.name!] = null as unknown
-      }
-      if (dep.deshabilitarHastaValor !== false && (nuevo === null || nuevo === undefined || nuevo === '')) {
-        const metaH = (f.meta ||= {}) as Record<string, unknown>
-        metaH.options = []
-        return
-      }
-      await cargarOpcionesDependientes(f, nuevo)
-    }, { immediate: true })
+    const padres = String(dep.campoPadre).split(',').map(s=>s.trim()).filter(Boolean)
+    const leerValoresPadres = (): Record<string, unknown> | unknown => {
+      if (padres.length <= 1) return (valores.value as Record<string, unknown>)[padres[0]]
+      const m: Record<string, unknown> = {}
+      for (const n of padres) m[n] = (valores.value as Record<string, unknown>)[n]
+      return m
+    }
+    const stop = watch(
+      () => padres.map(n => (valores.value as Record<string, unknown>)[n]),
+      async () => {
+        const actual = leerValoresPadres()
+        if (dep.limpiarAlCambiar !== false) {
+          ;(valores.value as Record<string, unknown>)[f.name!] = null as unknown
+        }
+        const estaVacio = (v: unknown): boolean => v === null || v === undefined || (typeof v === 'string' && v.trim() === '')
+        if (dep.deshabilitarHastaValor !== false) {
+          const faltante = padres.some(n => estaVacio((valores.value as Record<string, unknown>)[n]))
+          if (faltante) {
+            const metaH = (f.meta ||= {}) as Record<string, unknown>
+            metaH.options = []
+            return
+          }
+        }
+        await cargarOpcionesDependientes(f, actual)
+      },
+      { immediate: true }
+    )
     registroDependencias.set(f.id, stop)
   }
 }
