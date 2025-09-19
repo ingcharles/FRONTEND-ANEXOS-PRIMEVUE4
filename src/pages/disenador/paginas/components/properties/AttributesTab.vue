@@ -125,6 +125,8 @@ function limpiarDependencia(): void {
   if (!campo.value) return
   const meta = { ...(campo.value.meta ?? {}) } as Record<string, unknown>
   if ('dependencia' in meta) delete (meta as Record<string, unknown>).dependencia
+  // Limpiar también las opciones cargadas por dependencia
+  if ('options' in meta) delete (meta as Record<string, unknown>).options
   store.actualizarCampo(campo.value.id, { meta })
 }
 

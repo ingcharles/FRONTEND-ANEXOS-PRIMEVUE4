@@ -153,6 +153,14 @@ const requerido = computed(() => EvaluarReglasCampo(props.field, props.valores, 
           </div>
         </template>
       </div>
+      <div v-else-if="field.type==='radio'">
+        <div :class="['flex', ((field.meta as any)?.layout==='horizontal' ? 'flex-row gap-3' : 'flex-column gap-2')]">
+          <label v-for="op in ((field.meta?.options as any[])||[])" :key="String(op.value)" class="inline-flex align-items-center gap-2">
+            <PrimeRadioButton :input-id="String(op.value)" :value="op.value" v-model="(valores as any)[field.name||'']" :disabled="field.disabled" />
+            <span>{{ op.label }}</span>
+          </label>
+        </div>
+      </div>
       <PrimeDivider v-else-if="field.type==='divider'" />
       <div v-else-if="field.type==='table'">
         <div class="overflow-auto">
