@@ -140,8 +140,11 @@ const requerido = computed(() => EvaluarReglasCampo(props.field, props.valores, 
       <PrimeInputNumber v-else-if="field.type==='number'" v-model="(valores as any)[field.name||'']" class="w-full" :placeholder="field.placeholder" :min="(field.meta as any)?.min" :max="(field.meta as any)?.max" :step="(field.meta as any)?.step ?? 1" :disabled="field.disabled" :readonly="field.readonly" />
       <div v-else-if="field.type==='checkbox'">
         <template v-if="Array.isArray((field.meta as any)?.options) && ((field.meta as any)?.options?.length||0) > 0">
-          <div :class="['flex', ((field.meta as any)?.layout==='horizontal' ? 'flex-row gap-3' : 'flex-column gap-2')]">
-            <label v-for="op in ((field.meta?.options as any[])||[])" :key="String(op.value)" class="inline-flex align-items-center gap-2">
+          <div :class="[
+            'flex', 
+            ((field.meta as any)?.layout==='horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')
+          ]">
+            <label v-for="op in ((field.meta?.options as any[])||[])" :key="String(op.value)" class="inline-flex align-items-center gap-2 flex-shrink-0">
               <PrimeCheckbox :input-id="String(op.value)" :value="op.value" v-model="(valores as any)[field.name||'']" :disabled="field.disabled" />
               <span>{{ op.label }}</span>
             </label>
@@ -154,8 +157,11 @@ const requerido = computed(() => EvaluarReglasCampo(props.field, props.valores, 
         </template>
       </div>
       <div v-else-if="field.type==='radio'">
-        <div :class="['flex', ((field.meta as any)?.layout==='horizontal' ? 'flex-row gap-3' : 'flex-column gap-2')]">
-          <label v-for="op in ((field.meta?.options as any[])||[])" :key="String(op.value)" class="inline-flex align-items-center gap-2">
+        <div :class="[
+          'flex', 
+          ((field.meta as any)?.layout==='horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')
+        ]">
+          <label v-for="op in ((field.meta?.options as any[])||[])" :key="String(op.value)" class="inline-flex align-items-center gap-2 flex-shrink-0">
             <PrimeRadioButton :input-id="String(op.value)" :value="op.value" v-model="(valores as any)[field.name||'']" :disabled="field.disabled" />
             <span>{{ op.label }}</span>
           </label>
