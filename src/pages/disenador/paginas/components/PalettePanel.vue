@@ -300,8 +300,6 @@ window.addEventListener('keydown', manejarAtajos)
                 <i class="pi pi-grip-vertical text-muted-color text-xs opacity-50 group-hover:opacity-90 transition-opacity" />
                 <i :class="['pi', element.icon, 'text-muted-color']" />
                 <span class="font-medium leading-none">{{ element.label }}</span>
-                <PrimeTag severity="secondary" v-if="element.type==='panel'" value="Contenedor" class="ml-auto text-[10px] py-0 px-1" />
-                <PrimeTag severity="contrast" v-else-if="element.type==='table'" value="Data" class="ml-auto text-[10px] py-0 px-1" />
               </div>
             </template>
           </draggable>
