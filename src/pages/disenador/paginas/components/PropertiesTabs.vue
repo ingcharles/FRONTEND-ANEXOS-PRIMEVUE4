@@ -25,12 +25,12 @@ watch(() => seleccionado.value?.id, () => {
           <PrimeTab value="logic">Lógica</PrimeTab>
           <PrimeTab value="valid">Validaciones</PrimeTab>
         </PrimeTabList>
-        
-        <PrimeTabPanels>
+
+        <PrimeTabPanels class="px-0">
           <PrimeTabPanel value="attrs">
             <AttributesTab :field-id="seleccionado.id" />
           </PrimeTabPanel>
-          <PrimeTabPanel value="logic">
+          <PrimeTabPanel value="logic" >
             <LogicTab :field-id="seleccionado.id" />
           </PrimeTabPanel>
           <PrimeTabPanel value="valid">
