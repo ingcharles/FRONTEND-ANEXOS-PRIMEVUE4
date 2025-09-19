@@ -143,8 +143,19 @@ function debeMostrarParamKeyDependencia(): boolean {
   const hayPH = hayPlaceholderEnUrlDependencia()
   return modo === 'query' || modo === 'header' || modo === 'body' || (modo === 'path' && hayPH)
 }
+function obtenerListaPadresDependencia(): string[] {
+  const meta = (campo.value?.meta as Record<string, unknown> | undefined)
+  const dep = (meta?.dependencia as { campoPadre?: string } | undefined)
+  const raw = (dep?.campoPadre || '') as string
+  return String(raw).split(',').map(s => s.trim()).filter(Boolean)
+}
 function placeholderParamKeyDependencia(): string {
-  return obtenerModoEnvioDependencia() === 'path' ? 'Opcional si usas {placeholder} en la URL' : 'p.ej. countryId'
+  const modo = obtenerModoEnvioDependencia()
+  const padres = obtenerListaPadresDependencia()
+  if (modo === 'path') return 'Opcional si usas {placeholder} en la URL (p.ej. {pais}/{region})'
+  if (modo === 'query' && padres.length > 1) return 'En orden: country,region'
+  if (modo === 'body') return 'Opcional si usas {{clave}} en el body'
+  return 'p.ej. countryId'
 }
 function agregarOpcion(): void {
   const lista = obtenerOpciones()
@@ -401,6 +412,25 @@ function extraerPorRuta(obj: unknown, ruta: string | undefined): unknown {
   return actual
 }
 
+function detectarEstructuraApi(datos: unknown[]): { labelKey: string; valueKey: string } {
+  if (!Array.isArray(datos) || datos.length === 0) return { labelKey: 'label', valueKey: 'value' }
+  
+  const primer = datos[0]
+  if (typeof primer !== 'object' || primer === null) return { labelKey: 'label', valueKey: 'value' }
+  
+  const obj = primer as Record<string, unknown>
+  const keys = Object.keys(obj)
+  
+  // Detectar claves comunes para etiqueta
+  const labelKeys = ['etiqueta', 'label', 'texto', 'nombre', 'name', 'title']
+  const valueKeys = ['valor', 'value', 'id', 'codigo', 'code']
+  
+  const labelKey = labelKeys.find(k => keys.includes(k)) || keys[0] || 'label'
+  const valueKey = valueKeys.find(k => keys.includes(k)) || keys[1] || 'value'
+  
+  return { labelKey, valueKey }
+}
+
 type ModoCarga = 'reemplazar' | 'agregar'
 
 async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<void> {
@@ -447,6 +477,21 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
     const data = await res.json()
     const arr = extraerPorRuta(data, cfg.dataPath)
     const lista = Array.isArray(arr) ? arr : (Array.isArray(data) ? data : [])
+    
+    // Detectar estructura automáticamente si es el primer cargar o si las claves son las por defecto
+    if (lista.length > 0 && (cfg.labelKey === 'label' || cfg.valueKey === 'value')) {
+      const estructura = detectarEstructuraApi(lista)
+      if (estructura.labelKey !== cfg.labelKey || estructura.valueKey !== cfg.valueKey) {
+        // Actualizar configuración automáticamente
+        actualizarConfigApi({ 
+          labelKey: estructura.labelKey, 
+          valueKey: estructura.valueKey 
+        })
+        cfg.labelKey = estructura.labelKey
+        cfg.valueKey = estructura.valueKey
+      }
+    }
+    
     const mapped = (lista as unknown[]).map((it) => {
       const obj = (typeof it === 'object' && it !== null) ? (it as Record<string, unknown>) : {}
       const label = cfg.labelKey ? obj[cfg.labelKey] : obj['label']
@@ -754,6 +799,17 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
           <label class="block mb-1">Headers (JSON opcional)</label>
           <PrimeTextarea :model-value="obtenerConfigApi().headersJson" rows="3" placeholder='{"Authorization":"Bearer ..."}' @update:model-value="(v:string)=> actualizarConfigApi({ headersJson: v })" />
         </div>
+        <div class="col-span-12" v-if="obtenerOpciones().length > 0">
+          <div class="p-2 bg-blue-50 border-1 border-blue-200 border-round">
+            <div class="text-sm font-medium text-blue-800 mb-1">Estructura detectada:</div>
+            <div class="text-xs text-blue-700 font-mono">
+              {{ JSON.stringify(obtenerOpciones()[0], null, 2) }}
+            </div>
+            <small class="text-blue-600 block mt-1">
+              Si tu API usa claves diferentes (como "etiqueta"/"valor"), se detectarán automáticamente al cargar desde la API.
+            </small>
+          </div>
+        </div>
       </div>
       <div class="flex items-center gap-2 flex-wrap">
         <PrimeButton :disabled="cargandoApi" size="small" icon="pi pi-refresh" :label="cargandoApi ? 'Cargando…' : 'Reemplazar con API'" @click="cargarOpcionesDesdeApi('reemplazar')" />
@@ -815,17 +871,19 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
           />
         </div>
         <div class="col-span-12 md:col-span-6">
-          <label class="block mb-1">Campo padre</label>
-          <PrimeSelect
-            :model-value="(((campo?.meta as any)?.dependencia||{}).campoPadre || '')"
+          <label class="block mb-1">Campo padre(s)</label>
+          <PrimeMultiSelect
+            :model-value="String((((campo?.meta as any)?.dependencia||{}).campoPadre || '')).split(',').map((s:string)=>s.trim()).filter((s:string)=>!!s)"
             :options="camposPaginaActual"
             option-label="label"
             option-value="value"
-            placeholder="Seleccione un campo"
+            placeholder="Selecciona uno o varios campos"
             class="w-full"
+            display="chip"
             @focus="asegurarDependencia()"
-            @update:model-value="(v:string)=> actualizarDependencia('campoPadre', v)"
+            @update:model-value="(v:string[])=> actualizarDependencia('campoPadre', Array.isArray(v) ? v.join(',') : '')"
           />
+          <small class="text-muted-color">Puedes elegir múltiples padres; se guardan separados por comas y se respetará el orden.</small>
         </div>
         <div class="col-span-12 md:col-span-6" v-if="debeMostrarParamKeyDependencia()">
           <label class="block mb-1">Nombre de parámetro (paramKey)</label>
@@ -859,7 +917,9 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
           <PrimeButton label="Quitar dependencia" severity="secondary" icon="pi pi-times" size="small" @click="limpiarDependencia" />
         </div>
       </div>
-      <small class="text-muted-color block mt-2">Si el campo usa API, se inyectará el valor del padre según el modo seleccionado. En Path, si la URL no tiene placeholder se concatenará el valor al final.</small>
+      <small class="text-muted-color block mt-2">
+        • Puedes seleccionar múltiples padres. Para Query, si defines varias claves en <strong>paramKey</strong>, sepáralas por comas en el mismo orden (p.ej., <code>country,region</code>). Para Body, puedes usar plantillas <code>{{clave}}</code> sin necesidad de <strong>paramKey</strong>. Para Path, usa placeholders en la URL (p.ej., <code>/paises/{pais}/regiones/{region}</code>); si no hay placeholders, se concatenarán los segmentos al final y se normalizarán los <code>//</code>.
+      </small>
     </div>
   </div>
 
