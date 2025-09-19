@@ -12,6 +12,7 @@ import Textarea from 'primevue/textarea'
 import Panel from 'primevue/panel'
 import Divider from 'primevue/divider'
 import Tag from 'primevue/tag'
+import Tabs from 'primevue/tabs'
 import PanelMenu from 'primevue/panelmenu'
 import SelectButton from 'primevue/selectbutton'
 import Tooltip from 'primevue/tooltip'
@@ -48,6 +49,7 @@ config.global.components = {
   PrimePanel: Panel,
   PrimeDivider: Divider,
   PrimeTag: Tag,
+  PrimeTags: Tabs,
   PrimePanelMenu: PanelMenu,
   PrimeSelectButton: SelectButton,
   // Stubs de Tabs de PrimeVue 4 (Headless)
@@ -56,6 +58,17 @@ config.global.components = {
   Tab: { template: '<div><slot /></div>' },
   TabPanels: { template: '<div><slot /></div>' },
   TabPanel: { template: '<div><slot /></div>' },
+
+  PrimeTabList: { template: '<div class="tab-list"><slot /></div>' },
+  PrimeTab: {
+    template: '<div class="tab" :value="value"><slot /></div>',
+    props: ['value']
+  },
+  PrimeTabPanels: { template: '<div class="tab-panels"><slot /></div>' },
+  PrimeTabPanel: {
+    template: '<div class="tab-panel" :value="value" :header="header"><slot /></div>',
+    props: ['value', 'header']
+  },
 }
 
 // Stubs para transiciones y router

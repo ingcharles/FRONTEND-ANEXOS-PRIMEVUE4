@@ -56,11 +56,12 @@ export const useDesignerStore = defineStore('designer', () => {
     selectedFieldId.value = id
   }
 
-  function agregarCampo(campo: FieldSchema, indice?: number): void {
+  function agregarCampo(campo: FieldSchema, indice?: number): string {
     const copia = clonarProfundo(campo)
     if (!copia.id) copia.id = generarId('field')
     paginaActiva.value.fields.splice(indice ?? paginaActiva.value.fields.length, 0, copia)
     seleccionarCampo(copia.id)
+    return copia.id
   }
 
   function moverCampo(indiceOrigen: number, indiceDestino: number): void {
