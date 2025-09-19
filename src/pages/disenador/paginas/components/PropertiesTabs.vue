@@ -9,8 +9,8 @@ const store = useDesignerStore()
 const seleccionado = computed(() => store.campoSeleccionado)
 const activeTab = ref<'attrs' | 'logic' | 'valid'>('attrs')
 
-// Resetear el tab activo cuando se selecciona un nuevo campo
-watch(seleccionado, () => {
+// Resetear el tab activo solo cuando se selecciona un campo DIFERENTE
+watch(() => seleccionado.value?.id, () => {
   activeTab.value = 'attrs'
 })
 </script>
