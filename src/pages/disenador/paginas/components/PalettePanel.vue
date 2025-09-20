@@ -42,8 +42,8 @@ const paletteItems: { type: FieldType; icon: string; defaultProps?: Partial<Fiel
     defaultProps: {
       meta: {
         options: [
-          { label: 'Item 1', value: 'item1' },
-          { label: 'Item 2', value: 'item2' },
+          { label: 'Opción 1', value: 'opcion1' },
+          { label: 'Opción 2', value: 'opcion2' },
         ],
       },
     },
