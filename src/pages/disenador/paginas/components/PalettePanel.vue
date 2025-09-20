@@ -34,7 +34,20 @@ const paletteItems: { type: FieldType; icon: string; defaultProps?: Partial<Fiel
   { type: 'number', icon: 'pi pi-hashtag', label: 'Número', defaultProps: { meta: { valorPorDefecto: 0 } } },
   { type: 'time', icon: 'pi pi-clock', label: 'Hora' },
   { type: 'date', icon: 'pi pi-calendar', label: 'Fecha' },
-  { type: 'checkbox', icon: 'pi pi-check-square', label: 'Checkbox', defaultProps: { meta: { valorPorDefecto: false } } },
+  { 
+    type: 'checkbox', 
+    icon: 'pi pi-check-square', 
+    label: 'Checkbox', 
+    defaultProps: { 
+      meta: { 
+        valorPorDefecto: false,
+        options: [
+          { label: 'Opción 1', value: 'opcion1' },
+          { label: 'Opción 2', value: 'opcion2' },
+        ],
+      } 
+    } 
+  },
   {
     type: 'select',
     icon: 'pi pi-list',
@@ -55,8 +68,8 @@ const paletteItems: { type: FieldType; icon: string; defaultProps?: Partial<Fiel
     defaultProps: {
       meta: {
         options: [
-          { label: 'Item 1', value: 'item1' },
-          { label: 'Item 2', value: 'item2' },
+          { label: 'Opción 1', value: 'opcion1' },
+          { label: 'Opción 2', value: 'opcion2' },
         ],
       },
     },
