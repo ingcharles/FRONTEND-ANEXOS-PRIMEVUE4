@@ -203,7 +203,7 @@ function crearPaginaDespuesActual(): void {
     <div class="col-12 md:col-2">
       <PalettePanel />
     </div>
-    <div class="col-12 md:col-8">
+    <div class="col-12 md:col-7">
       <div class="flex items-center justify-between mb-2">
         <div class="flex gap-2">
           <PrimeButton label="Añadir página" icon="pi pi-plus" @click="crearPaginaDespuesActual" />
@@ -255,7 +255,7 @@ function crearPaginaDespuesActual(): void {
         </PrimeTabPanels>
       </PrimeTabs>
     </div>
-    <div class="col-12 md:col-2">
+    <div class="col-12 md:col-3">
       <PropertiesTabs />
     </div>
   </div>
