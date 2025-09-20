@@ -32,7 +32,7 @@ const conteoHijos = computed<number>(() =>
 )
 
 const conteoOpciones = computed<number>(() => {
-  if (!(props.field.type === 'select' || props.field.type === 'radio')) return 0
+  if (!(props.field.type === 'select' || props.field.type === 'radio' || props.field.type === 'checkbox')) return 0
   const opts = (props.field.meta as Record<string, unknown> | undefined)?.options as unknown
   return Array.isArray(opts) ? opts.length : 0
 })
@@ -148,7 +148,7 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
             <span class="font-medium">{{ `${field.type || field.label  }: ${field.id}` }}</span>
             <span class="font-medium ">{{ `${punto.toUpperCase()}: ${colActual} Cols` }}</span>
             <span class="font-medium text-red-500" v-if="field.type==='panel'">Elementos: {{ conteoHijos }}</span>
-            <span class="font-medium" v-if="field.type==='select' || field.type==='radio'">Opciones: {{ conteoOpciones }}</span>
+            <span class="font-medium" v-if="field.type==='select' || field.type==='radio' || field.type==='checkbox'">Opciones: {{ conteoOpciones }}</span>
           </div>
           <!-- Columna derecha (4/12): acciones -->
           <div class="col-4 flex justify-content-end">
@@ -229,7 +229,7 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
         <template v-if="Array.isArray((field.meta as any)?.options) && ((field.meta as any)?.options?.length||0) > 0">
           <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
           <div :class="[
-            'flex', 
+            'flex',
             ((field.meta as any)?.layout==='horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')
           ]">
             <label v-for="op in ((field.meta?.options as any[])||[])" :key="String(op.value)" class="inline-flex align-items-center gap-2 flex-shrink-0">
@@ -248,7 +248,7 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
       <template v-else-if="field.type==='radio'">
         <label class="block mb-1">{{ field.label }}<span v-if="field.required" class="text-red-500"> *</span></label>
         <div :class="[
-          'flex', 
+          'flex',
           ((field.meta as any)?.layout==='horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')
         ]">
           <label
