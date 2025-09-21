@@ -29,7 +29,7 @@ function crearPagina() {
 }
 
 describe('percentScale en Preview', () => {
-  it('Deveria transformar fraction x100 en UI y /100 al guardar', async () => {
+  it('Debería transformar fraction x100 en UI y /100 al guardar', async () => {
     setActivePinia(createPinia())
     const store = useDesignerStore()
     store.formSchema.pages = [crearPagina()]

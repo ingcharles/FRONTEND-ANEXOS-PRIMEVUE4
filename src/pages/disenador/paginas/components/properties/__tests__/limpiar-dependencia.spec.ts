@@ -8,13 +8,13 @@ function crearSelectConDependencia() {
       id: 'p1',
       title: 'P1',
       fields: [
-        { 
-          id: 'f1', 
-          type: 'select', 
-          name: 'selector', 
-          label: 'Selector', 
-          grid: { sm: 12 }, 
-          meta: { 
+        {
+          id: 'f1',
+          type: 'select',
+          name: 'selector',
+          label: 'Selector',
+          grid: { sm: 12 },
+          meta: {
             optionsMode: 'api',
             optionsApi: {
               url: 'http://test.com/api',
@@ -33,7 +33,7 @@ function crearSelectConDependencia() {
               { label: 'Opción 1', value: 1 },
               { label: 'Opción 2', value: 2 }
             ]
-          } 
+          }
         }
       ]
     }
@@ -44,13 +44,13 @@ function crearSelectConDependencia() {
 }
 
 describe('Limpiar dependencia', () => {
-  it('Deveria limpiar tanto la dependencia como las opciones al presionar "Quitar dependencia"', async () => {
+  it('Debería limpiar tanto la dependencia como las opciones al presionar "Quitar dependencia"', async () => {
     const store = crearSelectConDependencia()
-    
+
     // Verificar estado inicial - debe tener dependencia y opciones
     let campo = store.campoSeleccionado!
     let meta = campo.meta as Record<string, unknown>
-    
+
     expect(meta.dependencia).toBeDefined()
     expect(meta.options).toBeDefined()
     expect(Array.isArray(meta.options)).toBe(true)
@@ -67,14 +67,14 @@ describe('Limpiar dependencia', () => {
     // Verificar que se limpió la dependencia Y las opciones
     campo = store.campoSeleccionado!
     meta = campo.meta as Record<string, unknown>
-    
+
     expect(meta.dependencia).toBeUndefined()
     expect(meta.options).toBeUndefined()
   })
 
-  it('Deveria mantener otras propiedades de meta intactas al limpiar dependencia', async () => {
+  it('Debería mantener otras propiedades de meta intactas al limpiar dependencia', async () => {
     const store = crearSelectConDependencia()
-    
+
     // Añadir una propiedad adicional al meta
     const campo = store.campoSeleccionado!
     const meta = { ...campo.meta } as Record<string, unknown>
@@ -95,7 +95,7 @@ describe('Limpiar dependencia', () => {
     // Verificar que otras propiedades se mantuvieron
     const campoFinal = store.campoSeleccionado!
     const metaFinal = campoFinal.meta as Record<string, unknown>
-    
+
     expect(metaFinal.dependencia).toBeUndefined()
     expect(metaFinal.options).toBeUndefined()
     expect(metaFinal.optionsMode).toBe('api')

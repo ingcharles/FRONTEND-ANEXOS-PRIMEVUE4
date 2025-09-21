@@ -10,13 +10,13 @@ function crearFormularioConSelect() {
       id: 'p1',
       title: 'P1',
       fields: [
-        { 
-          id: 'f1', 
-          type: 'select', 
-          name: 'selector', 
-          label: 'Selector', 
-          grid: { sm: 12 }, 
-          meta: { 
+        {
+          id: 'f1',
+          type: 'select',
+          name: 'selector',
+          label: 'Selector',
+          grid: { sm: 12 },
+          meta: {
             optionsMode: 'api',
             optionsApi: {
               url: 'http://test.com/api',
@@ -24,7 +24,7 @@ function crearFormularioConSelect() {
               labelKey: 'label', // Valores por defecto
               valueKey: 'value'
             }
-          } 
+          }
         }
       ]
     }
@@ -35,7 +35,7 @@ function crearFormularioConSelect() {
 }
 
 describe('Detección automática de estructura API', () => {
-  it('Deveria detectar automáticamente claves "etiqueta" y "valor"', async () => {
+  it('Debería detectar automáticamente claves "etiqueta" y "valor"', async () => {
     // Mock de fetch con estructura custom
     const respuestaApi = [{"etiqueta":"uno","valor":1}, {"etiqueta":"dos","valor":2}]
     const mockFetch = vi.fn().mockResolvedValue({
@@ -54,14 +54,14 @@ describe('Detección automática de estructura API', () => {
     const campo = store.campoSeleccionado!
     const meta = { ...campo.meta } as Record<string, unknown>
     const api = (meta.optionsApi as Record<string, unknown>) || {}
-    
+
     // Simular el proceso de carga que haría cargarOpcionesDesdeApi
     const estructura = { labelKey: 'etiqueta', valueKey: 'valor' }
     const opcionesNuevas = respuestaApi.map(item => ({
       label: String(item.etiqueta),
       value: item.valor
     }))
-    
+
     // Actualizar configuración como lo haría la detección automática
     meta.optionsApi = { ...api, ...estructura }
     meta.options = opcionesNuevas
@@ -72,10 +72,10 @@ describe('Detección automática de estructura API', () => {
     // Verificar que se detectaron las claves correctas
     const campoFinal = store.campoSeleccionado
     const apiFinal = (campoFinal?.meta as Record<string, unknown>)?.optionsApi as Record<string, unknown>
-    
+
     expect(apiFinal.labelKey).toBe('etiqueta')
     expect(apiFinal.valueKey).toBe('valor')
-    
+
     // Verificar que las opciones se cargaron correctamente
     const opciones = (campoFinal?.meta as Record<string, unknown>)?.options as Array<{ label: string; value: unknown }>
     expect(Array.isArray(opciones)).toBe(true)
@@ -84,7 +84,7 @@ describe('Detección automática de estructura API', () => {
     expect(opciones[1]).toEqual({ label: 'dos', value: 2 })
   })
 
-  it('Deveria mantener configuración manual si las claves no son por defecto', async () => {
+  it('Debería mantener configuración manual si las claves no son por defecto', async () => {
     const respuestaApi = [{"nombre":"test","id":99}]
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,
@@ -93,7 +93,7 @@ describe('Detección automática de estructura API', () => {
     ;(globalThis as unknown as { fetch: typeof fetch }).fetch = mockFetch as unknown as typeof fetch
 
     const store = crearFormularioConSelect()
-    
+
     // Configurar claves manuales primero
     const campo = store.campoSeleccionado!
     const meta = { ...campo.meta } as Record<string, unknown>
@@ -109,7 +109,7 @@ describe('Detección automática de estructura API', () => {
     // Verificar que las claves manuales se mantuvieron
     const campoActual = store.campoSeleccionado
     const apiActual = (campoActual?.meta as Record<string, unknown>)?.optionsApi as Record<string, unknown>
-    
+
     expect(apiActual.labelKey).toBe('nombre')
     expect(apiActual.valueKey).toBe('id')
   })

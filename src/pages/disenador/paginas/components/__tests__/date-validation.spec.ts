@@ -21,7 +21,7 @@ function paginaConFecha(meta: Record<string, unknown> = {}) {
 }
 
 describe('Validación de fecha (min/max)', () => {
-  it('Deveria requerir fecha válida y respetar min/max', async () => {
+  it('Debería requerir fecha válida y respetar min/max', async () => {
     setActivePinia(createPinia())
     const store = useDesignerStore()
     // min: 2025-01-10, max: 2025-01-20

@@ -9,7 +9,7 @@ describe('Renderizado de Radio Button', () => {
     setActivePinia(createPinia())
   })
 
-  it('Deveria renderizar radio buttons con opciones', () => {
+  it('Debería renderizar radio buttons con opciones', () => {
     const campoRadio: FieldSchema = {
       id: 'radio1',
       type: 'radio',
@@ -52,7 +52,7 @@ describe('Renderizado de Radio Button', () => {
     expect(wrapper.text()).toContain('Género')
   })
 
-  it('Deveria actualizar el valor al seleccionar una opción', async () => {
+  it('Debería actualizar el valor al seleccionar una opción', async () => {
     const campoRadio: FieldSchema = {
       id: 'radio1',
       type: 'radio',
@@ -89,7 +89,7 @@ describe('Renderizado de Radio Button', () => {
     expect(valores.color).toBe('azul')
   })
 
-  it('Deveria mostrar layout horizontal cuando se especifica', () => {
+  it('Debería mostrar layout horizontal cuando se especifica', () => {
     const campoRadio: FieldSchema = {
       id: 'radio1',
       type: 'radio',
@@ -122,7 +122,7 @@ describe('Renderizado de Radio Button', () => {
     expect(container.classes()).toContain('gap-3')
   })
 
-  it('Deveria mostrar layout vertical por defecto', () => {
+  it('Debería mostrar layout vertical por defecto', () => {
     const campoRadio: FieldSchema = {
       id: 'radio1',
       type: 'radio',
@@ -153,7 +153,7 @@ describe('Renderizado de Radio Button', () => {
     expect(container.classes()).toContain('gap-2')
   })
 
-  it('Deveria estar deshabilitado cuando el campo está disabled', () => {
+  it('Debería estar deshabilitado cuando el campo está disabled', () => {
     const campoRadio: FieldSchema = {
       id: 'radio1',
       type: 'radio',

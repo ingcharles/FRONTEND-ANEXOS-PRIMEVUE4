@@ -20,7 +20,7 @@ function crearFormulario() {
 }
 
 describe('Cascada de Selects', () => {
-  it('Deveria cargar opciones del hijo cuando cambia el padre (query)', async () => {
+  it('Debería cargar opciones del hijo cuando cambia el padre (query)', async () => {
     const json = [ { label: 'Bogotá', value: 'BOG' }, { label: 'Medellín', value: 'MED' } ]
   const mockFetch = vi.fn().mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(json) })
   ;(globalThis as unknown as { fetch: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> }).fetch = mockFetch as (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
@@ -45,7 +45,7 @@ describe('Cascada de Selects', () => {
     expect(llamada.includes('country=CO')).toBe(true)
   })
 
-  it('Deveria construir URL con path cuando no hay placeholder', async () => {
+  it('Debería construir URL con path cuando no hay placeholder', async () => {
     const json = [ { label: 'Item A', value: 'A' } ]
     const mockFetch = vi.fn().mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(json) })
     ;(globalThis as unknown as { fetch: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> }).fetch = mockFetch as (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
@@ -78,7 +78,7 @@ describe('Cascada de Selects', () => {
     expect(llamada.includes('?')).toBe(false)
   })
 
-  it('Deveria funcionar Path sin paramKey (concatena segmento)', async () => {
+  it('Debería funcionar Path sin paramKey (concatena segmento)', async () => {
     const json = [ { label: 'X', value: 'x' } ]
     const mockFetch = vi.fn().mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(json) })
   ;(globalThis as unknown as { fetch: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> }).fetch = mockFetch as unknown as (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
@@ -107,7 +107,7 @@ describe('Cascada de Selects', () => {
     expect(llamada).toContain('item%201')
   })
 
-  it('Deveria construir URL Path con múltiples placeholders y normalizar path', async () => {
+  it('Debería construir URL Path con múltiples placeholders y normalizar path', async () => {
     const json = [ { label: 'Lima', value: 'LIM' } ]
     const mockFetch = vi.fn().mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(json) })
     ;(globalThis as unknown as { fetch: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> }).fetch = mockFetch as (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
@@ -141,7 +141,7 @@ describe('Cascada de Selects', () => {
     expect(llamada.includes('?')).toBe(false)
   })
 
-  it('Deveria concatenar segmentos en Path sin placeholders con múltiples padres', async () => {
+  it('Debería concatenar segmentos en Path sin placeholders con múltiples padres', async () => {
     const json = [ { label: 'Cusco', value: 'CUZ' } ]
     const mockFetch = vi.fn().mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(json) })
     ;(globalThis as unknown as { fetch: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> }).fetch = mockFetch as (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
@@ -174,7 +174,7 @@ describe('Cascada de Selects', () => {
     expect(llamada.includes('?')).toBe(false)
   })
 
-  it('Deveria mapear múltiples padres a múltiples keys en Query', async () => {
+  it('Debería mapear múltiples padres a múltiples keys en Query', async () => {
     const json = [ { label: 'Ciudad', value: 'C' } ]
     const mockFetch = vi.fn().mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(json) })
     ;(globalThis as unknown as { fetch: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> }).fetch = mockFetch as (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>

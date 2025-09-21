@@ -34,7 +34,7 @@ function crearPaginaConTabla() {
 }
 
 describe('Tabla en Preview', () => {
-  it('Deveria inicializar filas según meta.rows cuando está vacío', async () => {
+  it('Debería inicializar filas según meta.rows cuando está vacío', async () => {
     setActivePinia(createPinia())
     const store = useDesignerStore()
     store.formSchema.pages = [crearPaginaConTabla()]
@@ -48,7 +48,7 @@ describe('Tabla en Preview', () => {
     expect(tabla.length).toBe(2)
   })
 
-  it('Deveria añadir una fila al pulsar "Añadir fila"', async () => {
+  it('Debería añadir una fila al pulsar "Añadir fila"', async () => {
     setActivePinia(createPinia())
     const store = useDesignerStore()
     store.formSchema.pages = [crearPaginaConTabla()]
@@ -67,7 +67,7 @@ describe('Tabla en Preview', () => {
     expect(tabla.length).toBe(3)
   })
 
-  it('Deveria calcular agregados (count y sum) en el pie', async () => {
+  it('Debería calcular agregados (count y sum) en el pie', async () => {
     setActivePinia(createPinia())
   const store = useDesignerStore()
   store.formSchema.pages = [crearPaginaConTabla()]

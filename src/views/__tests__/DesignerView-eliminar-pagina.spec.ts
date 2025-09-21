@@ -9,10 +9,10 @@ describe('DesignerView - Eliminar Página', () => {
     setActivePinia(createPinia())
   })
 
-  it('Deveria mostrar modal de confirmación al hacer clic en Eliminar página', async () => {
+  it('Debería mostrar modal de confirmación al hacer clic en Eliminar página', async () => {
     const wrapper = mount(DesignerView)
     const store = useDesignerStore()
-    
+
     // Agregar una página adicional para poder eliminar
     store.agregarPagina()
     await wrapper.vm.$nextTick()
@@ -20,7 +20,7 @@ describe('DesignerView - Eliminar Página', () => {
     // Buscar todos los botones
     const allButtons = wrapper.findAll('button')
     console.log('Total botones encontrados:', allButtons.length)
-    
+
     // Buscar el botón específico que contiene "Eliminar página"
     let eliminarButton = null
     for (const button of allButtons) {
@@ -29,7 +29,7 @@ describe('DesignerView - Eliminar Página', () => {
         break
       }
     }
-    
+
     expect(eliminarButton).not.toBeNull()
     expect(eliminarButton?.exists()).toBe(true)
 
@@ -41,10 +41,10 @@ describe('DesignerView - Eliminar Página', () => {
     expect(store.mostrarModalEliminarPagina).toBe(true)
   })
 
-  it('Deveria mostrar mensaje específico para eliminar página', async () => {
+  it('Debería mostrar mensaje específico para eliminar página', async () => {
     const wrapper = mount(DesignerView)
     const store = useDesignerStore()
-    
+
     // Agregar una página adicional
     store.agregarPagina()
     await wrapper.vm.$nextTick()
@@ -58,7 +58,7 @@ describe('DesignerView - Eliminar Página', () => {
         break
       }
     }
-    
+
     await eliminarButton!.trigger('click')
     await wrapper.vm.$nextTick()
 
@@ -68,10 +68,10 @@ describe('DesignerView - Eliminar Página', () => {
     expect(modal.props('message')).toBe('¿Estás seguro de que deseas eliminar esta página? Esta acción no se puede deshacer.')
   })
 
-  it('Deveria eliminar la página al confirmar', async () => {
+  it('Debería eliminar la página al confirmar', async () => {
     const wrapper = mount(DesignerView)
     const store = useDesignerStore()
-    
+
     // Agregar páginas adicionales
     store.agregarPagina()
     store.agregarPagina()
@@ -89,7 +89,7 @@ describe('DesignerView - Eliminar Página', () => {
         break
       }
     }
-    
+
     await eliminarButton!.trigger('click')
     await wrapper.vm.$nextTick()
 
@@ -100,15 +100,15 @@ describe('DesignerView - Eliminar Página', () => {
 
     // Verificar que la página fue eliminada
     expect(store.formSchema.pages.length).toBe(paginasIniciales - 1)
-    
+
     // Verificar que el modal se oculta
     expect(store.mostrarModalEliminarPagina).toBe(false)
   })
 
-  it('Deveria cancelar eliminación al hacer clic en cancelar', async () => {
+  it('Debería cancelar eliminación al hacer clic en cancelar', async () => {
     const wrapper = mount(DesignerView)
     const store = useDesignerStore()
-    
+
     // Agregar páginas adicionales
     store.agregarPagina()
     store.agregarPagina()
@@ -125,7 +125,7 @@ describe('DesignerView - Eliminar Página', () => {
         break
       }
     }
-    
+
     await eliminarButton!.trigger('click')
     await wrapper.vm.$nextTick()
 
@@ -136,7 +136,7 @@ describe('DesignerView - Eliminar Página', () => {
 
     // Verificar que la página NO fue eliminada
     expect(store.formSchema.pages.length).toBe(paginasIniciales)
-    
+
     // Verificar que el modal se oculta
     expect(store.mostrarModalEliminarPagina).toBe(false)
   })

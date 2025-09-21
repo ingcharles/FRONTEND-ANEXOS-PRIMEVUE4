@@ -5,6 +5,25 @@ import { clonarProfundo, duplicarConNuevosIds } from '@/utils/clone'
 import { deserializarFormulario, serializarFormulario } from '@/utils/serializer'
 import { generarId } from '@/utils/id'
 
+// Mapeo de tipos a nombres en español
+const tiposEspanol: Record<string, string> = {
+  'text': 'Texto',
+  'email': 'Email',
+  'password': 'Contraseña',
+  'textarea': 'Área de texto',
+  'number': 'Número',
+  'date': 'Fecha',
+  'time': 'Hora',
+  'select': 'Select',
+  'radio': 'Radio',
+  'checkbox': 'Checkbox',
+  'label': 'Etiqueta',
+  'button': 'Botón',
+  'divider': 'Divisor',
+  'panel': 'Panel',
+  'table': 'Tabla'
+}
+
 export interface ClipboardItem {
   field: FieldSchema
 }
@@ -31,6 +50,10 @@ export const useDesignerStore = defineStore('designer', () => {
   // Estado para modal de confirmación de eliminación de página
   const mostrarModalEliminarPagina = ref(false)
   const indicePaginaAEliminar = ref<number | null>(null)
+  
+  // Estado para modal de confirmación de eliminación de campo
+  const mostrarModalEliminarCampo = ref(false)
+  const idCampoAEliminar = ref<string | null>(null)
 
   const gridSnap = computed({
     get: () => formSchema.value.settings?.gridSnap ?? true,
@@ -54,6 +77,34 @@ export const useDesignerStore = defineStore('designer', () => {
       }
     }
     return null
+  })
+
+  const mensajeConfirmacionCampo = computed<string>(() => {
+    console.log('mensajeConfirmacionCampo computed called with idCampoAEliminar:', idCampoAEliminar.value)
+    if (!idCampoAEliminar.value) return ''
+    
+    // Buscar el campo usando la misma lógica que campoSeleccionado
+    let campo: FieldSchema | null = null
+    for (const page of formSchema.value.pages) {
+      const stack: FieldSchema[] = [...page.fields]
+      while (stack.length) {
+        const n = stack.shift()!
+        if (n.id === idCampoAEliminar.value) {
+          campo = n
+          break
+        }
+        if (n.children) stack.push(...n.children)
+      }
+      if (campo) break
+    }
+    
+    console.log('Campo encontrado:', campo)
+    if (!campo) return '¿Está usted seguro de eliminar este componente?'
+    
+    const tipoEspanol = tiposEspanol[campo.type] || campo.type
+    const mensaje = `¿Está usted seguro de eliminar el componente '${tipoEspanol}'?`
+    console.log('Mensaje generado:', mensaje)
+    return mensaje
   })
 
   function seleccionarCampo(id: string | null): void {
@@ -219,6 +270,26 @@ export const useDesignerStore = defineStore('designer', () => {
     indicePaginaAEliminar.value = null
   }
 
+  function confirmarEliminarCampo(id: string): void {
+    console.log('confirmarEliminarCampo called with id:', id)
+    idCampoAEliminar.value = id
+    mostrarModalEliminarCampo.value = true
+    console.log('idCampoAEliminar set to:', idCampoAEliminar.value)
+    console.log('mostrarModalEliminarCampo set to:', mostrarModalEliminarCampo.value)
+  }
+
+  function ejecutarEliminarCampo(): void {
+    if (idCampoAEliminar.value !== null) {
+      eliminarCampo(idCampoAEliminar.value)
+    }
+    cancelarEliminarCampo()
+  }
+
+  function cancelarEliminarCampo(): void {
+    mostrarModalEliminarCampo.value = false
+    idCampoAEliminar.value = null
+  }
+
   // Gestión de valores (persistencia entre pestañas)
   function obtenerValoresPagina(pageId: string): Record<string, unknown> {
     let mapa = valoresPorPagina.value[pageId]
@@ -244,10 +315,13 @@ export const useDesignerStore = defineStore('designer', () => {
     gridSnap,
     mostrarModalEliminarPagina,
     indicePaginaAEliminar,
+    mostrarModalEliminarCampo,
+    idCampoAEliminar,
     // getters
     paginaActiva,
     camposPagina,
     campoSeleccionado,
+    mensajeConfirmacionCampo,
     obtenerValoresPagina,
     // acciones
     seleccionarCampo,
@@ -267,6 +341,9 @@ export const useDesignerStore = defineStore('designer', () => {
     confirmarEliminarPagina,
     ejecutarEliminarPagina,
     cancelarEliminarPagina,
+    confirmarEliminarCampo,
+    ejecutarEliminarCampo,
+    cancelarEliminarCampo,
     actualizarValorCampo,
   }
 })

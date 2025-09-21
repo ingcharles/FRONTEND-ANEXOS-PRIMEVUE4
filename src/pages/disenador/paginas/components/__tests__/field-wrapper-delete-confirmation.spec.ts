@@ -9,7 +9,7 @@ describe('FieldWrapper - Confirmación de eliminación', () => {
     setActivePinia(createPinia())
   })
 
-  it('Deveria mostrar modal de confirmación al hacer click en eliminar', async () => {
+  it('Debería mostrar modal de confirmación al hacer click en eliminar', async () => {
     const testField: FieldSchema = {
       id: 'test-field',
       type: 'text',
@@ -30,11 +30,11 @@ describe('FieldWrapper - Confirmación de eliminación', () => {
             props: ['title', 'icon', 'text', 'rounded', 'size', 'severity'],
             emits: ['click']
           },
-          PrimeTag: { 
+          PrimeTag: {
             template: '<div class="tag"><slot /></div>',
             props: ['severity', 'value']
           },
-          PrimeInputText: { 
+          PrimeInputText: {
             template: '<input />',
             props: ['modelValue', 'placeholder', 'disabled', 'readonly']
           },
@@ -53,7 +53,7 @@ describe('FieldWrapper - Confirmación de eliminación', () => {
     // Buscar el botón eliminar por su icono
     const deleteButton = wrapper.find('[title="Eliminar"]')
     expect(deleteButton.exists()).toBe(true)
-    
+
     // Hacer click en el botón eliminar
     await deleteButton.trigger('click')
     await wrapper.vm.$nextTick()
@@ -63,7 +63,7 @@ describe('FieldWrapper - Confirmación de eliminación', () => {
     expect(wrapper.find('[data-testid="modal-confirm"]').text()).toContain('¿Está usted seguro de eliminar el componente \'Texto\'?')
   })
 
-  it('Deveria mostrar el tipo correcto en el mensaje de confirmación para diferentes tipos', async () => {
+  it('Debería mostrar el tipo correcto en el mensaje de confirmación para diferentes tipos', async () => {
     const tiposCasos = [
       { type: 'text', esperado: 'Texto' },
       { type: 'select', esperado: 'Select' },
@@ -94,19 +94,19 @@ describe('FieldWrapper - Confirmación de eliminación', () => {
               props: ['title', 'icon', 'text', 'rounded', 'size', 'severity'],
               emits: ['click']
             },
-            PrimeTag: { 
+            PrimeTag: {
               template: '<div class="tag"><slot /></div>',
               props: ['severity', 'value']
             },
-            PrimeInputText: { 
+            PrimeInputText: {
               template: '<input />',
               props: ['modelValue', 'placeholder', 'disabled', 'readonly']
             },
-            PrimeSelect: { 
+            PrimeSelect: {
               template: '<select />',
               props: ['options', 'optionLabel', 'optionValue', 'modelValue', 'disabled']
             },
-            PrimeCheckbox: { 
+            PrimeCheckbox: {
               template: '<input type="checkbox" />',
               props: ['inputId', 'value', 'modelValue', 'disabled']
             },
@@ -132,7 +132,7 @@ describe('FieldWrapper - Confirmación de eliminación', () => {
     }
   })
 
-  it('Deveria eliminar el campo cuando se confirma la acción', async () => {
+  it('Debería eliminar el campo cuando se confirma la acción', async () => {
     const testField: FieldSchema = {
       id: 'test-field-delete',
       type: 'text',
@@ -153,11 +153,11 @@ describe('FieldWrapper - Confirmación de eliminación', () => {
             props: ['title', 'icon', 'text', 'rounded', 'size', 'severity'],
             emits: ['click']
           },
-          PrimeTag: { 
+          PrimeTag: {
             template: '<div class="tag"><slot /></div>',
             props: ['severity', 'value']
           },
-          PrimeInputText: { 
+          PrimeInputText: {
             template: '<input />',
             props: ['modelValue', 'placeholder', 'disabled', 'readonly']
           },
@@ -174,10 +174,10 @@ describe('FieldWrapper - Confirmación de eliminación', () => {
     const deleteButton = wrapper.find('[title="Eliminar"]')
     await deleteButton.trigger('click')
     await wrapper.vm.$nextTick()
-    
+
     // Verificar que el modal de confirmación se muestra
     expect(wrapper.find('[data-testid="modal-confirm"]').exists()).toBe(true)
-    
+
     // Confirmar la eliminación
     await wrapper.find('[data-testid="confirm-btn"]').trigger('click')
     await wrapper.vm.$nextTick()
@@ -186,7 +186,7 @@ describe('FieldWrapper - Confirmación de eliminación', () => {
     expect(wrapper.find('[data-testid="modal-confirm"]').exists()).toBe(false)
   })
 
-  it('Deveria cancelar la eliminación cuando se cancela la acción', async () => {
+  it('Debería cancelar la eliminación cuando se cancela la acción', async () => {
     const testField: FieldSchema = {
       id: 'test-field-cancel',
       type: 'select',
@@ -207,11 +207,11 @@ describe('FieldWrapper - Confirmación de eliminación', () => {
             props: ['title', 'icon', 'text', 'rounded', 'size', 'severity'],
             emits: ['click']
           },
-          PrimeTag: { 
+          PrimeTag: {
             template: '<div class="tag"><slot /></div>',
             props: ['severity', 'value']
           },
-          PrimeSelect: { 
+          PrimeSelect: {
             template: '<select />',
             props: ['options', 'optionLabel', 'optionValue', 'modelValue', 'disabled']
           },
@@ -228,10 +228,10 @@ describe('FieldWrapper - Confirmación de eliminación', () => {
     const deleteButton = wrapper.find('[title="Eliminar"]')
     await deleteButton.trigger('click')
     await wrapper.vm.$nextTick()
-    
+
     // Verificar que el modal está visible
     expect(wrapper.find('[data-testid="modal-confirm"]').exists()).toBe(true)
-    
+
     // Cancelar la eliminación
     await wrapper.find('[data-testid="cancel-btn"]').trigger('click')
     await wrapper.vm.$nextTick()

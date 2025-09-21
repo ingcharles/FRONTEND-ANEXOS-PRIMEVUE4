@@ -10,26 +10,26 @@ describe('PropertiesTabs', () => {
     setActivePinia(createPinia())
   })
 
-  it('Deveria mostrar mensaje cuando no hay elemento seleccionado', () => {
+  it('Debería mostrar mensaje cuando no hay elemento seleccionado', () => {
     const wrapper = mount(PropertiesTabs)
     expect(wrapper.text()).toContain('Selecciona un elemento para ver propiedades')
   })
 
-  it('Deveria incluir el v-model en PrimeTabs', () => {
+  it('Debería incluir el v-model en PrimeTabs', () => {
     // Test simple que verifica que el código se actualizado correctamente
     // Al verificar el source code del componente PropertiesTabs
     const wrapper = mount(PropertiesTabs)
-    
+
     // Verificar que el componente se monta sin errores
     expect(wrapper.exists()).toBe(true)
-    
+
     // Verificar que contiene el texto de header
     expect(wrapper.text()).toContain('Propiedades')
   })
 
-  it('Deveria tener las correcciones implementadas', async () => {
+  it('Debería tener las correcciones implementadas', async () => {
     const store = useDesignerStore()
-    
+
     const campo: FieldSchema = {
       id: 'test-field',
       type: 'text',
@@ -46,7 +46,7 @@ describe('PropertiesTabs', () => {
 
     // Verificar que el v-model fue agregado correctamente verificando que hay un valor asignado
     const primeTabs = wrapper.find('[data-pc-name="tabs"]')
-    
+
     // Si el componente se renderiza sin errores, significa que la corrección funciona
     expect(wrapper.exists()).toBe(true)
   })

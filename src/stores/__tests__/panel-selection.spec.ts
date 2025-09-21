@@ -12,7 +12,7 @@ function crearPanel(id: string, label = 'Panel'): FieldSchema {
   return { id, type: 'panel', label, children: [] as FieldSchema[] } as FieldSchema
 }
 
-it('Deveria seleccionar elemento hijo dentro del panel al hacer click', async () => {
+it('Debería seleccionar elemento hijo dentro del panel al hacer click', async () => {
   setActivePinia(createPinia())
   const store = useDesignerStore()
   const panel = crearPanel('p1')

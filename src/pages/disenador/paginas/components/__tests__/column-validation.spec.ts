@@ -28,7 +28,7 @@ function crearPagina() {
 }
 
 describe('Validación por columna en tabla', () => {
-  it('Deveria fallar al enviar si n fuera de rango', async () => {
+  it('Debería fallar al enviar si n fuera de rango', async () => {
     setActivePinia(createPinia())
     const store = useDesignerStore()
     store.formSchema.pages = [crearPagina()]

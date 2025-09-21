@@ -294,7 +294,7 @@ it('carga usuarios desde el servicio', async () => {
 
 ## Ejemplo de plantilla de componente + test
 
-- Utilizar la palabra Deveria al incio de cada test.
+- Utilizar la palabra Debería al incio de cada test.
 
 ```vue
 <!-- src/components/usuarios/componentes/InputNombre.vue -->
@@ -320,7 +320,7 @@ import InputNombre from '@/components/InputNombre.vue'
 import InputText from 'primevue/inputtext'
 import PrimeVue from 'primevue/config'
 
-it('Deveria emitir submit con el valor', async () => {
+it('Debería emitir submit con el valor', async () => {
   const wrapper = mount(InputNombre, {
     global: { plugins: [[PrimeVue, {}]], components: { InputText } },
   })

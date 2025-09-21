@@ -11,28 +11,6 @@ const emit = defineEmits<{ (e: 'select'): void }>()
 const store = useDesignerStore()
 const { punto } = usarPuntoDeCorte()
 
-// Estado para modal de confirmación
-const mostrarConfirmacion = ref(false)
-
-// Mapeo de tipos a nombres en español
-const tiposEspanol: Record<string, string> = {
-  'text': 'Texto',
-  'email': 'Email',
-  'password': 'Contraseña',
-  'textarea': 'Área de texto',
-  'number': 'Número',
-  'date': 'Fecha',
-  'time': 'Hora',
-  'select': 'Select',
-  'radio': 'Radio',
-  'checkbox': 'Checkbox',
-  'label': 'Etiqueta',
-  'button': 'Botón',
-  'divider': 'Divisor',
-  'panel': 'Panel',
-  'table': 'Tabla'
-}
-
 const colActual = computed<number>({
   get() {
     const g = props.field.grid || {}
@@ -149,32 +127,6 @@ function seleccionar(): void {
   emit('select')
 }
 
-// Función para mostrar confirmación de eliminación
-function confirmarEliminar(): void {
-  mostrarConfirmacion.value = true
-}
-
-// Función para confirmar la eliminación
-function eliminarCampo(): void {
-  store.eliminarCampo(props.field.id)
-  mostrarConfirmacion.value = false
-}
-
-// Función para cancelar la eliminación
-function cancelarEliminar(): void {
-  mostrarConfirmacion.value = false
-}
-
-// Obtener el nombre del tipo en español
-const tipoEspanol = computed(() => {
-  return tiposEspanol[props.field.type] || props.field.type
-})
-
-// Mensaje de confirmación
-const mensajeConfirmacion = computed(() => {
-  return `¿Está usted seguro de eliminar el componente '${tipoEspanol.value}'?`
-})
-
 // Carga perezosa segura del contenedor de panel
 const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.vue'))
 </script>
@@ -202,7 +154,7 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
           <!-- Columna derecha (4/12): acciones -->
           <div class="col-4 flex justify-content-end">
             <PrimeButton icon="pi pi-copy" text rounded size="small" class="p-0" title="Duplicar" @click.stop="store.duplicarCampo(field.id)" />
-            <PrimeButton icon="pi pi-trash" text rounded size="small" class="p-0" severity="danger" title="Eliminar" @click.stop="confirmarEliminar" />
+            <PrimeButton icon="pi pi-trash" text rounded size="small" class="p-0" severity="danger" title="Eliminar" @click.stop="store.confirmarEliminarCampo(field.id)" />
           </div>
         </div>
       </PrimeTag>
@@ -361,10 +313,10 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
     
     <!-- Modal de confirmación para eliminar -->
     <ModalConfirm
-      :visible="mostrarConfirmacion"
-      :message="mensajeConfirmacion"
-      @confirm="eliminarCampo"
-      @cancel="cancelarEliminar"
+      :visible="store.mostrarModalEliminarCampo"
+      :message="store.mensajeConfirmacionCampo"
+      @confirm="store.ejecutarEliminarCampo"
+      @cancel="store.cancelarEliminarCampo"
     />
   </div>
 </template>
