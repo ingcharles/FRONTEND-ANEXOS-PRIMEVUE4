@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import FieldWrapper from '../FieldWrapper.vue'
+import { useDesignerStore } from '../../../../../stores/useDesignerStore'
 import type { FieldSchema, FieldType } from '../../../../../types/form-schema'
 
 describe('FieldWrapper - Confirmación de eliminación', () => {
@@ -46,6 +47,10 @@ describe('FieldWrapper - Confirmación de eliminación', () => {
         }
       }
     })
+
+    // Configurar el store DESPUÉS del mount para que use el mismo store que el componente
+    const store = useDesignerStore()
+    store.formSchema.pages[0].fields = [testField]
 
     // Inicialmente el modal no debe estar visible
     expect(wrapper.find('[data-testid="modal-confirm"]').exists()).toBe(false)
@@ -120,6 +125,10 @@ describe('FieldWrapper - Confirmación de eliminación', () => {
         }
       })
 
+      // Configurar el store DESPUÉS del mount para que use el mismo store que el componente
+      const store = useDesignerStore()
+      store.formSchema.pages[0].fields = [testField]
+
       // Hacer click en eliminar
       const deleteButton = wrapper.find('[title="Eliminar"]')
       await deleteButton.trigger('click')
@@ -142,6 +151,10 @@ describe('FieldWrapper - Confirmación de eliminación', () => {
       visible: true,
       required: false
     }
+
+    // Configurar el store con el campo de prueba
+    const store = useDesignerStore()
+    store.formSchema.pages[0].fields = [testField]
 
     const wrapper = mount(FieldWrapper, {
       props: { field: testField, selected: true },
@@ -196,6 +209,10 @@ describe('FieldWrapper - Confirmación de eliminación', () => {
       visible: true,
       required: false
     }
+
+    // Configurar el store con el campo de prueba
+    const store = useDesignerStore()
+    store.formSchema.pages[0].fields = [testField]
 
     const wrapper = mount(FieldWrapper, {
       props: { field: testField, selected: true },

@@ -80,7 +80,6 @@ export const useDesignerStore = defineStore('designer', () => {
   })
 
   const mensajeConfirmacionCampo = computed<string>(() => {
-    console.log('mensajeConfirmacionCampo computed called with idCampoAEliminar:', idCampoAEliminar.value)
     if (!idCampoAEliminar.value) return ''
     
     // Buscar el campo usando la misma lógica que campoSeleccionado
@@ -98,13 +97,10 @@ export const useDesignerStore = defineStore('designer', () => {
       if (campo) break
     }
     
-    console.log('Campo encontrado:', campo)
     if (!campo) return '¿Está usted seguro de eliminar este componente?'
     
     const tipoEspanol = tiposEspanol[campo.type] || campo.type
-    const mensaje = `¿Está usted seguro de eliminar el componente '${tipoEspanol}'?`
-    console.log('Mensaje generado:', mensaje)
-    return mensaje
+    return `¿Está usted seguro de eliminar el componente '${tipoEspanol}'?`
   })
 
   function seleccionarCampo(id: string | null): void {
@@ -271,11 +267,8 @@ export const useDesignerStore = defineStore('designer', () => {
   }
 
   function confirmarEliminarCampo(id: string): void {
-    console.log('confirmarEliminarCampo called with id:', id)
     idCampoAEliminar.value = id
     mostrarModalEliminarCampo.value = true
-    console.log('idCampoAEliminar set to:', idCampoAEliminar.value)
-    console.log('mostrarModalEliminarCampo set to:', mostrarModalEliminarCampo.value)
   }
 
   function ejecutarEliminarCampo(): void {
