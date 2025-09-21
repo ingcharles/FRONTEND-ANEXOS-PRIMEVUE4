@@ -17,18 +17,28 @@ describe('DesignerView - Eliminar Página', () => {
     store.agregarPagina()
     await wrapper.vm.$nextTick()
 
-    // Buscar el botón de eliminar página
-    const eliminarButton = wrapper.find('[label="Eliminar página"]')
-    expect(eliminarButton.exists()).toBe(true)
+    // Buscar todos los botones
+    const allButtons = wrapper.findAll('button')
+    console.log('Total botones encontrados:', allButtons.length)
+    
+    // Buscar el botón específico que contiene "Eliminar página"
+    let eliminarButton = null
+    for (const button of allButtons) {
+      if (button.text().includes('Eliminar página')) {
+        eliminarButton = button
+        break
+      }
+    }
+    
+    expect(eliminarButton).not.toBeNull()
+    expect(eliminarButton?.exists()).toBe(true)
 
     // Hacer clic en eliminar
-    await eliminarButton.trigger('click')
+    await eliminarButton!.trigger('click')
     await wrapper.vm.$nextTick()
 
     // Verificar que el modal aparece
-    const modal = wrapper.findComponent({ name: 'ModalConfirm' })
-    expect(modal.exists()).toBe(true)
-    expect(modal.props('visible')).toBe(true)
+    expect(store.mostrarModalEliminarPagina).toBe(true)
   })
 
   it('Deveria mostrar mensaje específico para eliminar página', async () => {
@@ -39,13 +49,22 @@ describe('DesignerView - Eliminar Página', () => {
     store.agregarPagina()
     await wrapper.vm.$nextTick()
 
-    // Hacer clic en eliminar
-    const eliminarButton = wrapper.find('[label="Eliminar página"]')
-    await eliminarButton.trigger('click')
+    // Buscar el botón de eliminar
+    const allButtons = wrapper.findAll('button')
+    let eliminarButton = null
+    for (const button of allButtons) {
+      if (button.text().includes('Eliminar página')) {
+        eliminarButton = button
+        break
+      }
+    }
+    
+    await eliminarButton!.trigger('click')
     await wrapper.vm.$nextTick()
 
-    // Verificar el mensaje del modal
+    // Verificar que el modal aparece con el mensaje correcto
     const modal = wrapper.findComponent({ name: 'ModalConfirm' })
+    expect(modal.exists()).toBe(true)
     expect(modal.props('message')).toBe('¿Estás seguro de que deseas eliminar esta página? Esta acción no se puede deshacer.')
   })
 
@@ -61,9 +80,17 @@ describe('DesignerView - Eliminar Página', () => {
     const paginasIniciales = store.formSchema.pages.length
     expect(paginasIniciales).toBe(3) // página inicial + 2 agregadas
 
-    // Hacer clic en eliminar
-    const eliminarButton = wrapper.find('[label="Eliminar página"]')
-    await eliminarButton.trigger('click')
+    // Buscar el botón de eliminar
+    const allButtons = wrapper.findAll('button')
+    let eliminarButton = null
+    for (const button of allButtons) {
+      if (button.text().includes('Eliminar página')) {
+        eliminarButton = button
+        break
+      }
+    }
+    
+    await eliminarButton!.trigger('click')
     await wrapper.vm.$nextTick()
 
     // Confirmar eliminación
@@ -75,7 +102,7 @@ describe('DesignerView - Eliminar Página', () => {
     expect(store.formSchema.pages.length).toBe(paginasIniciales - 1)
     
     // Verificar que el modal se oculta
-    expect(modal.props('visible')).toBe(false)
+    expect(store.mostrarModalEliminarPagina).toBe(false)
   })
 
   it('Deveria cancelar eliminación al hacer clic en cancelar', async () => {
@@ -89,9 +116,17 @@ describe('DesignerView - Eliminar Página', () => {
 
     const paginasIniciales = store.formSchema.pages.length
 
-    // Hacer clic en eliminar
-    const eliminarButton = wrapper.find('[label="Eliminar página"]')
-    await eliminarButton.trigger('click')
+    // Buscar el botón de eliminar
+    const allButtons = wrapper.findAll('button')
+    let eliminarButton = null
+    for (const button of allButtons) {
+      if (button.text().includes('Eliminar página')) {
+        eliminarButton = button
+        break
+      }
+    }
+    
+    await eliminarButton!.trigger('click')
     await wrapper.vm.$nextTick()
 
     // Cancelar eliminación
@@ -103,6 +138,6 @@ describe('DesignerView - Eliminar Página', () => {
     expect(store.formSchema.pages.length).toBe(paginasIniciales)
     
     // Verificar que el modal se oculta
-    expect(modal.props('visible')).toBe(false)
+    expect(store.mostrarModalEliminarPagina).toBe(false)
   })
 })

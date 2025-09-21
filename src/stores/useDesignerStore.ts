@@ -27,6 +27,10 @@ export const useDesignerStore = defineStore('designer', () => {
   const activePageIndex = ref<number>(0)
   // Valores actuales por página (no se serializan)
   const valoresPorPagina = ref<Record<string, Record<string, unknown>>>({})
+  
+  // Estado para modal de confirmación de eliminación de página
+  const mostrarModalEliminarPagina = ref(false)
+  const indicePaginaAEliminar = ref<number | null>(null)
 
   const gridSnap = computed({
     get: () => formSchema.value.settings?.gridSnap ?? true,
@@ -170,6 +174,13 @@ export const useDesignerStore = defineStore('designer', () => {
     activePageIndex.value = formSchema.value.pages.length - 1
   }
 
+  function crearPaginaDespuesActual(): void {
+    const indiceActual = activePageIndex.value
+    agregarPagina()
+    // Mantener el índice actual en lugar de ir al final
+    activePageIndex.value = indiceActual
+  }
+
   function eliminarPagina(indice: number): void {
     if (formSchema.value.pages.length <= 1) return
     const pageId = formSchema.value.pages[indice]?.id
@@ -189,6 +200,23 @@ export const useDesignerStore = defineStore('designer', () => {
     copia.fields = copia.fields.map((f) => duplicarConNuevosIds(f, () => generarId('field')))
     formSchema.value.pages.splice(indice + 1, 0, copia)
     activePageIndex.value = indice + 1
+  }
+
+  function confirmarEliminarPagina(indice: number): void {
+    indicePaginaAEliminar.value = indice
+    mostrarModalEliminarPagina.value = true
+  }
+
+  function ejecutarEliminarPagina(): void {
+    if (indicePaginaAEliminar.value !== null) {
+      eliminarPagina(indicePaginaAEliminar.value)
+    }
+    cancelarEliminarPagina()
+  }
+
+  function cancelarEliminarPagina(): void {
+    mostrarModalEliminarPagina.value = false
+    indicePaginaAEliminar.value = null
   }
 
   // Gestión de valores (persistencia entre pestañas)
@@ -214,6 +242,8 @@ export const useDesignerStore = defineStore('designer', () => {
     activePageIndex,
     valoresPorPagina,
     gridSnap,
+    mostrarModalEliminarPagina,
+    indicePaginaAEliminar,
     // getters
     paginaActiva,
     camposPagina,
@@ -231,8 +261,12 @@ export const useDesignerStore = defineStore('designer', () => {
     exportarJson,
     importarJson,
     agregarPagina,
+    crearPaginaDespuesActual,
     eliminarPagina,
     duplicarPagina,
+    confirmarEliminarPagina,
+    ejecutarEliminarPagina,
+    cancelarEliminarPagina,
     actualizarValorCampo,
   }
 })
