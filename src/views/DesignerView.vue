@@ -5,6 +5,7 @@ import PageCanvas from '@pages/disenador/paginas/components/PageCanvas.vue'
 import PropertiesTabs from '@pages/disenador/paginas/components/PropertiesTabs.vue'
 import PreviewView from '@pages/disenador/paginas/components/PreviewView.vue'
 import JsonView from '@pages/disenador/paginas/components/JsonView.vue'
+import ModalConfirm from '@/components/ModalConfirm.vue'
 import { ref, computed, nextTick } from 'vue'
 import { z } from 'zod'
 import type { FieldSchema } from '@/types/form-schema'
@@ -20,6 +21,10 @@ const tabTitles = [
   { value: 'preview', label: 'Vista previa', icon: 'pi pi-eye' },
   { value: 'json', label: 'JSON', icon: 'pi pi-code' },
 ]
+
+// Variables para modal de confirmación de eliminación de página
+const mostrarModalEliminarPagina = ref(false)
+const indicePaginaAEliminar = ref<number | null>(null)
 
 // Helpers mínimos para validación global (reutiliza lógica de Preview)
 function recolectarCamposConNombre(list: FieldSchema[], out: FieldSchema[] = []): FieldSchema[] {
@@ -196,6 +201,24 @@ function crearPaginaDespuesActual(): void {
   store.agregarPagina()
   store.activePageIndex = idx
 }
+
+// Funciones para confirmación de eliminación de página
+function confirmarEliminarPagina(indice: number): void {
+  indicePaginaAEliminar.value = indice
+  mostrarModalEliminarPagina.value = true
+}
+
+function eliminarPagina(): void {
+  if (indicePaginaAEliminar.value !== null) {
+    store.eliminarPagina(indicePaginaAEliminar.value)
+  }
+  cancelarEliminarPagina()
+}
+
+function cancelarEliminarPagina(): void {
+  mostrarModalEliminarPagina.value = false
+  indicePaginaAEliminar.value = null
+}
 </script>
 
 <template>
@@ -208,7 +231,7 @@ function crearPaginaDespuesActual(): void {
         <div class="flex gap-2">
           <PrimeButton label="Añadir página" icon="pi pi-plus" @click="crearPaginaDespuesActual" />
           <PrimeButton label="Duplicar página" icon="pi pi-copy" @click="store.duplicarPagina(store.activePageIndex)" />
-          <PrimeButton label="Eliminar página" severity="danger" icon="pi pi-trash" @click="store.eliminarPagina(store.activePageIndex)" />
+          <PrimeButton label="Eliminar página" severity="danger" icon="pi pi-trash" @click="confirmarEliminarPagina(store.activePageIndex)" />
         </div>
         <div class="flex gap-2 items-center">
           <PrimeButton label="Exportar" icon="pi pi-upload" @click="store.exportarJson" />
@@ -259,4 +282,12 @@ function crearPaginaDespuesActual(): void {
       <PropertiesTabs />
     </div>
   </div>
+
+  <!-- Modal de confirmación para eliminar página -->
+  <ModalConfirm
+    :visible="mostrarModalEliminarPagina"
+    message="¿Estás seguro de que deseas eliminar esta página? Esta acción no se puede deshacer."
+    @confirm="eliminarPagina"
+    @cancel="cancelarEliminarPagina"
+  />
 </template>
