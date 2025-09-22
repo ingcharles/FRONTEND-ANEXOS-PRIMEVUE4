@@ -60,7 +60,87 @@ function construirUrlConQuery(base: string, params: Record<string, unknown>): st
   } catch { return base }
 }
 
+async function cargarOpcionesIndependientes(campo: FieldSchema): Promise<void> {
+  const meta = (campo.meta || {}) as Record<string, unknown>
+  const api = (meta.optionsApi || {}) as Record<string, unknown>
+  const url = String(api.url || '')
+  if (!url) return
+  
+  const metodo = String((api.method || 'GET')).toUpperCase()
+  const headers: Record<string, string> = {}
+  let body: BodyInit | undefined
+  
+  const contentType = String(api.contentType || 'application/json')
+  if (metodo === 'POST') {
+    headers['Content-Type'] = contentType
+    if (api.body) {
+      body = String(api.body)
+    }
+  }
 
+  try {
+    const res = await fetch(url, { method: metodo, headers, body })
+    if (!res.ok) throw new Error('HTTP ' + res.status)
+    const json = await res.json()
+    
+    let datos: unknown = json
+    const dataPath = String(api.dataPath || '')
+    if (dataPath) {
+      const partes = dataPath.split('.')
+      let actual: unknown = json
+      for (const p of partes) {
+        if (actual && typeof actual === 'object' && p in (actual as Record<string, unknown>)) {
+          actual = (actual as Record<string, unknown>)[p]
+        } else { 
+          actual = []
+          break 
+        }
+      }
+      datos = actual
+    }
+    
+    const arr: unknown[] = Array.isArray(datos) ? (datos as unknown[]) : []
+    
+    // Detectar estructura automáticamente si es necesario
+    let finalLabelKey = String(api.labelKey || 'label')
+    let finalValueKey = String(api.valueKey || 'value')
+    
+    if (arr.length > 0 && (finalLabelKey === 'label' || finalValueKey === 'value')) {
+      const primer = arr[0]
+      if (primer && typeof primer === 'object') {
+        const obj = primer as Record<string, unknown>
+        const keys = Object.keys(obj)
+        
+        // Detectar claves comunes para etiqueta
+        const labelKeys = ['etiqueta', 'label', 'texto', 'nombre', 'name', 'title']
+        const valueKeys = ['valor', 'value', 'id', 'codigo', 'code']
+        
+        const detectedLabelKey = labelKeys.find(k => keys.includes(k))
+        const detectedValueKey = valueKeys.find(k => keys.includes(k))
+        
+        if (detectedLabelKey && detectedLabelKey !== finalLabelKey) {
+          finalLabelKey = detectedLabelKey
+        }
+        if (detectedValueKey && detectedValueKey !== finalValueKey) {
+          finalValueKey = detectedValueKey
+        }
+      }
+    }
+    
+    const options = arr.map((it) => {
+      const o = (typeof it === 'object' && it !== null) ? (it as Record<string, unknown>) : {}
+      return { label: String(o[finalLabelKey] ?? ''), value: o[finalValueKey] ?? null }
+    }) as Array<{ label: string; value: unknown }>
+    
+    // Actualizar las opciones del campo
+    const metaH = (campo.meta ||= {}) as Record<string, unknown>
+    metaH.options = options
+  } catch {
+    // En caso de error, asegurar que siempre hay un array vacío
+    const metaH = (campo.meta ||= {}) as Record<string, unknown>
+    metaH.options = []
+  }
+}
 
 async function cargarOpcionesDependientes(hijo: FieldSchema, valorPadre: unknown): Promise<void> {
   const meta = (hijo.meta || {}) as Record<string, unknown>
@@ -243,6 +323,14 @@ function reconfigurarDependencias(): void {
   for (const f of all) {
     const meta = (f.meta || {}) as Record<string, unknown>
     const dep = (meta.dependencia || {}) as Dependencia
+    
+    // Cargar opciones independientes (sin dependencias) que usan API
+    if (f.name && meta.optionsMode === 'api' && !dep.campoPadre) {
+      // Campo independiente que usa API - cargar opciones inmediatamente
+      cargarOpcionesIndependientes(f)
+    }
+    
+    // Configurar dependencias para campos que SÍ tienen padre
     if (!f.name || !dep.campoPadre) continue
     const padres = String(dep.campoPadre).split(',').map(s=>s.trim()).filter(Boolean)
     const leerValoresPadres = (): Record<string, unknown> | unknown => {
