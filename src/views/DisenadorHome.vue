@@ -8,6 +8,7 @@ const pestaña = ref<'designer' | 'preview' | 'json'>('designer')
 </script>
 
 <template>
+
 	<div class="p-3">
 		<PrimeTabs v-model:value="pestaña">
 			<PrimeTabPanel value="designer" header="Diseñador">

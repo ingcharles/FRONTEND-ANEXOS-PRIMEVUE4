@@ -373,12 +373,12 @@ function actualizarModoOpciones(modo: ModoOpciones): void {
   if (!campo.value) return
   const meta = { ...(campo.value.meta ?? {}) } as Record<string, unknown>
   meta.optionsMode = modo
-  
+
   // Asegurar que options existe como array cuando se cambia el modo
   if (!Array.isArray(meta.options)) {
     meta.options = []
   }
-  
+
   store.actualizarCampo(campo.value.id, { meta })
 }
 
@@ -389,8 +389,8 @@ function obtenerConfigApi(): ConfigApi {
     url: cfg.url || '',
     method: cfg.method || 'GET',
     dataPath: cfg.dataPath || '',
-    labelKey: cfg.labelKey || 'label',
-    valueKey: cfg.valueKey || 'value',
+    labelKey: cfg.labelKey || 'etiqueta',
+    valueKey: cfg.valueKey || 'valor',
     contentType: cfg.contentType || 'application/json',
     body: cfg.body || '',
     headersJson: cfg.headersJson || '',
@@ -422,20 +422,20 @@ function extraerPorRuta(obj: unknown, ruta: string | undefined): unknown {
 
 function detectarEstructuraApi(datos: unknown[]): { labelKey: string; valueKey: string } {
   if (!Array.isArray(datos) || datos.length === 0) return { labelKey: 'label', valueKey: 'value' }
-  
+
   const primer = datos[0]
   if (typeof primer !== 'object' || primer === null) return { labelKey: 'label', valueKey: 'value' }
-  
+
   const obj = primer as Record<string, unknown>
   const keys = Object.keys(obj)
-  
+
   // Detectar claves comunes para etiqueta
   const labelKeys = ['etiqueta', 'label', 'texto', 'nombre', 'name', 'title']
   const valueKeys = ['valor', 'value', 'id', 'codigo', 'code']
-  
+
   const labelKey = labelKeys.find(k => keys.includes(k)) || keys[0] || 'label'
   const valueKey = valueKeys.find(k => keys.includes(k)) || keys[1] || 'value'
-  
+
   return { labelKey, valueKey }
 }
 
@@ -485,21 +485,21 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
     const data = await res.json()
     const arr = extraerPorRuta(data, cfg.dataPath)
     const lista = Array.isArray(arr) ? arr : (Array.isArray(data) ? data : [])
-    
+
     // Detectar estructura automáticamente si es el primer cargar o si las claves son las por defecto
-    if (lista.length > 0 && (cfg.labelKey === 'label' || cfg.valueKey === 'value')) {
+    if (lista.length > 0 && (cfg.labelKey === 'etiqueta' || cfg.valueKey === 'valor')) {
       const estructura = detectarEstructuraApi(lista)
       if (estructura.labelKey !== cfg.labelKey || estructura.valueKey !== cfg.valueKey) {
         // Actualizar configuración automáticamente
-        actualizarConfigApi({ 
-          labelKey: estructura.labelKey, 
-          valueKey: estructura.valueKey 
+        actualizarConfigApi({
+          labelKey: estructura.labelKey,
+          valueKey: estructura.valueKey
         })
         cfg.labelKey = estructura.labelKey
         cfg.valueKey = estructura.valueKey
       }
     }
-    
+
     const mapped = (lista as unknown[]).map((it) => {
       const obj = (typeof it === 'object' && it !== null) ? (it as Record<string, unknown>) : {}
       const label = cfg.labelKey ? obj[cfg.labelKey] : obj['label']
