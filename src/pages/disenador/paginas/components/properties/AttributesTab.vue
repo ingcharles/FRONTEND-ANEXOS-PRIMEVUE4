@@ -373,6 +373,12 @@ function actualizarModoOpciones(modo: ModoOpciones): void {
   if (!campo.value) return
   const meta = { ...(campo.value.meta ?? {}) } as Record<string, unknown>
   meta.optionsMode = modo
+  
+  // Asegurar que options existe como array cuando se cambia el modo
+  if (!Array.isArray(meta.options)) {
+    meta.options = []
+  }
+  
   store.actualizarCampo(campo.value.id, { meta })
 }
 
@@ -702,7 +708,7 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
         Solo lectura
       </label>
     </div>
-    <div class="field" v-if="campo && (campo.type==='radio'||campo.type==='checkbox') && ((campo.meta as any)?.options?.length||0) > 0">
+    <div class="field" v-if="campo && (campo.type==='radio'||campo.type==='checkbox') && (Array.isArray((campo.meta as any)?.options) && ((campo.meta as any)?.options?.length||0) > 0)">
       <label class="block mb-1">Distribución de opciones</label>
       <PrimeSelectButton :model-value="obtenerLayoutGrupo()" :options="[{label:'Vertical', value:'vertical'},{label:'Horizontal', value:'horizontal'}]" option-label="label" option-value="value" @update:model-value="(v:'vertical'|'horizontal')=> actualizarLayoutGrupo(v)" />
       <small class="text-muted-color">Controla si las opciones se muestran en columna o en fila.</small>

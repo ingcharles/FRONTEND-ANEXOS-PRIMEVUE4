@@ -132,8 +132,8 @@ const requerido = computed(() => EvaluarReglasCampo(props.field, props.valores, 
       <PrimeSelect v-else-if="field.type==='select'"
         v-model="(valores as any)[field.name||'']"
         :options="(field.meta?.options as any[])||[]"
-        option-label="etiqueta"
-        option-value="valor"
+        option-label="label"
+        option-value="value"
         class="w-full"
         :disabled="field.disabled || (((field.meta as any)?.dependencia?.deshabilitarHastaValor) && !String((field.meta as any)?.dependencia?.campoPadre || '').split(',').map((s:string)=>s.trim()).filter(Boolean).every((padre: string) => valores[padre]))"
       />
