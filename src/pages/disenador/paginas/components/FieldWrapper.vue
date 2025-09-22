@@ -213,7 +213,7 @@ const AsyncPanelContainer = defineAsyncComponent(() => import('./PanelContainer.
           option-label="label"
           option-value="value"
           :model-value="valorActual"
-          :disabled="field.disabled || (Boolean((field.meta as any)?.dependencia?.deshabilitarHastaValor) && !(store.obtenerValoresPagina(store.paginaActiva.id)[(field.meta as any)?.dependencia?.campoPadre] ?? ''))"
+          :disabled="field.disabled || (Boolean((field.meta as any)?.dependencia?.deshabilitarHastaValor) && !String((field.meta as any)?.dependencia?.campoPadre || '').split(',').map((s:string)=>s.trim()).filter(Boolean).every((padre: string) => store.obtenerValoresPagina(store.paginaActiva.id)[padre]))"
         />
       </template>
       <template v-else-if="field.type==='number'">

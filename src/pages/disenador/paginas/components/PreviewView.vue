@@ -193,9 +193,32 @@ async function cargarOpcionesDependientes(hijo: FieldSchema, valorPadre: unknown
       }
       datos = actual
     }
-    const labelKey = String(api.labelKey || 'label')
-    const valueKey = String(api.valueKey || 'value')
     const arr: unknown[] = Array.isArray(datos) ? (datos as unknown[]) : []
+    
+    // Detectar estructura automáticamente si es necesario
+    let labelKey = String(api.labelKey || 'label')
+    let valueKey = String(api.valueKey || 'value')
+    
+    if (arr.length > 0 && (labelKey === 'label' || valueKey === 'value')) {
+      const primer = arr[0]
+      if (primer && typeof primer === 'object') {
+        const obj = primer as Record<string, unknown>
+        const keys = Object.keys(obj)
+        
+        // Detectar claves comunes para etiqueta
+        const labelKeys = ['etiqueta', 'label', 'texto', 'nombre', 'name', 'title']
+        const valueKeys = ['valor', 'value', 'id', 'codigo', 'code']
+        
+        const detectedLabelKey = labelKeys.find(k => keys.includes(k)) || keys[0] || 'label'
+        const detectedValueKey = valueKeys.find(k => keys.includes(k)) || keys[1] || 'value'
+        
+        if (detectedLabelKey !== labelKey || detectedValueKey !== valueKey) {
+          labelKey = detectedLabelKey
+          valueKey = detectedValueKey
+        }
+      }
+    }
+    
     const options = arr.map((it) => {
       const o = (typeof it === 'object' && it !== null) ? (it as Record<string, unknown>) : {}
       return { label: String(o[labelKey] ?? ''), value: o[valueKey] ?? null }

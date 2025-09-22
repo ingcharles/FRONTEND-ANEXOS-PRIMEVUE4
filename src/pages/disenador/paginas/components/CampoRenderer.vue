@@ -132,16 +132,16 @@ const requerido = computed(() => EvaluarReglasCampo(props.field, props.valores, 
       <PrimeSelect v-else-if="field.type==='select'"
         v-model="(valores as any)[field.name||'']"
         :options="(field.meta?.options as any[])||[]"
-        option-label="label"
-        option-value="value"
+        option-label="etiqueta"
+        option-value="valor"
         class="w-full"
-        :disabled="field.disabled || (((field.meta as any)?.dependencia?.deshabilitarHastaValor) && !valores[(field.meta as any)?.dependencia?.campoPadre || ''])"
+        :disabled="field.disabled || (((field.meta as any)?.dependencia?.deshabilitarHastaValor) && !String((field.meta as any)?.dependencia?.campoPadre || '').split(',').map((s:string)=>s.trim()).filter(Boolean).every((padre: string) => valores[padre]))"
       />
       <PrimeInputNumber v-else-if="field.type==='number'" v-model="(valores as any)[field.name||'']" class="w-full" :placeholder="field.placeholder" :min="(field.meta as any)?.min" :max="(field.meta as any)?.max" :step="(field.meta as any)?.step ?? 1" :disabled="field.disabled" :readonly="field.readonly" />
       <div v-else-if="field.type==='checkbox'">
         <template v-if="Array.isArray((field.meta as any)?.options) && ((field.meta as any)?.options?.length||0) > 0">
           <div :class="[
-            'flex', 
+            'flex',
             ((field.meta as any)?.layout==='horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')
           ]">
             <label v-for="op in ((field.meta?.options as any[])||[])" :key="String(op.value)" class="inline-flex align-items-center gap-2 flex-shrink-0">
@@ -158,7 +158,7 @@ const requerido = computed(() => EvaluarReglasCampo(props.field, props.valores, 
       </div>
       <div v-else-if="field.type==='radio'">
         <div :class="[
-          'flex', 
+          'flex',
           ((field.meta as any)?.layout==='horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')
         ]">
           <label v-for="op in ((field.meta?.options as any[])||[])" :key="String(op.value)" class="inline-flex align-items-center gap-2 flex-shrink-0">
