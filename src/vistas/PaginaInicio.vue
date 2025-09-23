@@ -45,18 +45,18 @@ const caracteristicasPrincipales = ref([
         Características Destacadas
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div 
-          v-for="caracteristica in caracteristicasPrincipales" 
+        <div
+          v-for="caracteristica in caracteristicasPrincipales"
           :key="caracteristica.titulo"
           class="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
         >
-          <div 
+          <div
             class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
             :style="{ backgroundColor: caracteristica.color + '20' }"
           >
-            <i 
-              :class="caracteristica.icono" 
-              class="text-2xl" 
+            <i
+              :class="caracteristica.icono"
+              class="text-2xl"
               :style="{ color: caracteristica.color }"
             ></i>
           </div>
@@ -78,8 +78,8 @@ const caracteristicasPrincipales = ref([
       <p class="text-lg mb-6">
         Empieza a crear formularios increíbles con nuestro diseñador intuitivo.
       </p>
-      <router-link 
-        to="/disenador" 
+      <router-link
+        to="/disenador"
         class="inline-flex items-center px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors duration-300"
       >
         <i class="pi pi-play mr-2"></i>
@@ -90,7 +90,7 @@ const caracteristicasPrincipales = ref([
 </template>
 
 <style scoped>
-.pagina-inicio {
+/* .pagina-inicio {
   min-height: 70vh;
 }
 
@@ -100,5 +100,5 @@ const caracteristicasPrincipales = ref([
 
 .hover\:shadow-lg:hover {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
+} */
 </style>

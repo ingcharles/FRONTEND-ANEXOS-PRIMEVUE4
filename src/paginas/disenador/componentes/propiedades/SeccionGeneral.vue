@@ -70,8 +70,8 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
     <h3 class="text-lg font-medium text-gray-900 mb-4">Propiedades Generales</h3>
 
     <!-- Información del componente -->
-    <PrimePanel class="mb-3" :toggleable="false">
-      <div class="flex flex-col gap-2 text-xs text-gray-600">
+    <PrimePanel class="mb-2" :toggleable="false">
+      <div class="flex flex-col gap-1 text-xs text-gray-600">
         <div>
           <span class="font-medium text-gray-700">ID:</span>
           <span class="ml-1">{{ campo.id }}</span>
@@ -84,7 +84,7 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
     </PrimePanel>
 
     <!-- Tipo de campo -->
-    <div class="grid grid-cols-12 gap-3">
+    <div class="grid grid-cols-12">
       <div class="field" v-if="campo.tipo !== 'panel'">
         <label class="text-sm font-medium text-gray-700">Tipo</label>
         <PrimeSelect
@@ -97,6 +97,18 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
         />
       </div>
 
+       <!-- Nombre -->
+      <div class="field">
+        <label class="text-sm font-medium text-gray-700">Nombre</label>
+        <PrimeInputText
+          :model-value="campo.nombre || ''"
+          @update:model-value="(v: string | undefined) => actualizarTexto('nombre', v || '')"
+          placeholder="Nombre del campo"
+          class="w-full"
+        />
+      </div>
+
+
       <!-- Etiqueta -->
       <div class="field">
         <label class="text-sm font-medium text-gray-700">Etiqueta</label>
@@ -108,16 +120,6 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
         />
       </div>
 
-      <!-- Nombre -->
-      <div class="field">
-        <label class="text-sm font-medium text-gray-700">Nombre</label>
-        <PrimeInputText
-          :model-value="campo.nombre || ''"
-          @update:model-value="(v: string | undefined) => actualizarTexto('nombre', v || '')"
-          placeholder="Nombre del campo"
-          class="w-full"
-        />
-      </div>
 
       <!-- Placeholder -->
       <div class="field" v-if="ServicioCampos.soportaPlaceholder(campo.tipo)">

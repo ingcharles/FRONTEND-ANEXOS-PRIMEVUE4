@@ -117,9 +117,9 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
   background: var(--surface-ground);
 }
 
-.field {
+/* .field {
   margin-bottom: 1rem;
-}
+} */
 
 .text-muted-color {
   color: var(--text-color-secondary);

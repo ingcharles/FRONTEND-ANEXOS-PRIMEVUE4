@@ -20,13 +20,13 @@ const enrutador = createRouter({
     {
       path: '/disenador',
       name: 'disenador',
-      component: () => import('../vistas/DisenadorHome.vue'),
-    },
-    {
-      path: '/disenador-avanzado',
-      name: 'disenador-avanzado',
       component: () => import('../vistas/VistaDisenador.vue'),
-    }
+    },
+    // {
+    //   path: '/disenador-avanzado',
+    //   name: 'disenador-avanzado',
+    //   component: () => import('../vistas/VistaDisenador.vue'),
+    // }
   ],
 })
 
