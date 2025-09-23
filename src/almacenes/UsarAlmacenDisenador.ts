@@ -245,8 +245,11 @@ export const useAlmacenDisenador = defineStore('disenador', () => {
   function cambiarPaginaActiva(nuevoIndice: number): void {
     if (ServicioPaginas.esIndiceValido(esquemaFormulario.value, nuevoIndice)) {
       indicePaginaActiva.value = nuevoIndice
-      idCampoSeleccionado.value = null // Limpiar selección al cambiar página
     }
+  }
+
+  function actualizarTituloPagina(indicePagina: number, nuevoTitulo: string): boolean {
+    return ServicioPaginas.actualizarTituloPagina(esquemaFormulario.value, indicePagina, nuevoTitulo)
   }
 
   // =================== GESTIÓN DE VALORES ===================
@@ -438,6 +441,7 @@ export const useAlmacenDisenador = defineStore('disenador', () => {
     ejecutarEliminarPagina,
     cancelarEliminarPagina,
     cambiarPaginaActiva,
+    actualizarTituloPagina,
     crearPaginaDespuesActual,
     obtenerPaginaActual: () => esquemaFormulario.value.paginas[indicePaginaActiva.value] || null,
 

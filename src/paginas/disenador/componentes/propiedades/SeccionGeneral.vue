@@ -2,6 +2,20 @@
   <div class="mb-4">
     <h3 class="text-lg font-medium text-gray-900 mb-4">Propiedades Generales</h3>
 
+    <!-- Información del componente -->
+    <PrimePanel header="Información del Componente" class="mb-3" :toggleable="false">
+      <div class="flex flex-col gap-2 text-xs text-gray-600">
+        <div>
+          <span class="font-medium text-gray-700">ID:</span>
+          <span class="ml-1">{{ campo.id }}</span>
+        </div>
+        <div>
+          <span class="font-medium text-gray-700">Tipo:</span>
+          <span class="ml-1">{{ campo.tipo }}</span>
+        </div>
+      </div>
+    </PrimePanel>
+
     <!-- Tipo de campo -->
     <div class="grid grid-cols-12 gap-3">
       <div class="field" v-if="campo.tipo !== 'panel'">
@@ -172,6 +186,7 @@ import Textarea from 'primevue/textarea'
 import InputNumber from 'primevue/inputnumber'
 import Checkbox from 'primevue/checkbox'
 import DatePicker from 'primevue/datepicker'
+import Panel from 'primevue/panel'
 
 const propiedades = defineProps<{ campo: EsquemaCampo }>()
 const almacen = useAlmacenDisenador()
