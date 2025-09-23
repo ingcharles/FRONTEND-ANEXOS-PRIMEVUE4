@@ -20,3 +20,4 @@ const emit = defineEmits<{ (e: 'confirm'): void; (e: 'cancel'): void }>()
       </template>
     </PrimeDialog>
 </template>
+

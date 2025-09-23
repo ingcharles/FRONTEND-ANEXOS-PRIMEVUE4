@@ -123,3 +123,13 @@ window.matchMedia = mm || ((query: string) => ({
   removeEventListener: vi.fn(),
   dispatchEvent: vi.fn(),
 }))
+
+// Mock de ResizeObserver requerido por algunos componentes de PrimeVue
+global.ResizeObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}))
+
+// Mock de window.alert para pruebas que lo requieran
+window.alert = vi.fn()

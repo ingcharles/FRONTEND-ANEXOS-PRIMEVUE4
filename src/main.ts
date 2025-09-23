@@ -1,7 +1,7 @@
-﻿import { createApp } from 'vue'
+import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
-import { MiPreset } from '@/styles/mi-preset'
+import { MiPreset } from '@/styles/MiPreset'
 import ToastService from 'primevue/toastservice'
 import Ripple from 'primevue/ripple'
 import Tooltip from 'primevue/tooltip'
@@ -52,7 +52,7 @@ import 'primeicons/primeicons.css'
 import 'primeflex/primeflex.css'
 
 import App from './App.vue'
-import router from './router'
+import router from './enrutador'
 
 const app = createApp(App)
 
@@ -125,7 +125,8 @@ app.mount('#app')
 // Asegurar que los cambios en el preset del tema recarguen la app (HMR no re-aplica el plugin de tema)
 if (import.meta.hot) {
   import.meta.hot.accept(['@/styles/mi-preset'], () => {
-    // Invalida el módulo para forzar un reload completo y aplicar nuevos tokens del tema
+    // Invalida el m�dulo para forzar un reload completo y aplicar nuevos tokens del tema
     import.meta.hot?.invalidate()
   })
 }
+

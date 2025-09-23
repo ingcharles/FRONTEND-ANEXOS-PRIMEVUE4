@@ -5,3 +5,4 @@ const props = withDefaults(defineProps<{ icon: string; label?: string; severity?
 <template>
   <PrimeButton :icon="props.icon" :label="props.label" :severity="props.severity" :text="props.text" />
 </template>
+

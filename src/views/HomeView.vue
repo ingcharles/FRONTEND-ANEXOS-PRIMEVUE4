@@ -9,3 +9,4 @@ const mensaje = ref('Hola, mundo!')
   </div>
 </template>
 <style scoped></style>
+

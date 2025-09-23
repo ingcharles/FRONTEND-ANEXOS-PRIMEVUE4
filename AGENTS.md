@@ -38,8 +38,7 @@ assets/
 
 ## Principios de código
 
-- Principios solidos de desarrollo
-- Aplicar buenas paracticas de desarrollo
+- Principios SOLID de desarrollo y buenas prácticas de desarrollo
 - TypeScript estricto: evita `any` implícito, usa tipos/`interface` y genéricos.
 - Composition API + `<script setup>` por defecto.
 - Componentes pequeños (<200 líneas), con `name` y `props`/`emits` tipados.
@@ -112,7 +111,7 @@ function onClick() {
 - Usa la sintaxis `setup` para mejor tipado.
 - `state` mínimo y serializable; deriva con `computed`.
 - Mutaciones solo dentro de `actions`; efectúa I/O (API) dentro de acciones.
-- `storeToRefs(store)` para exponer estado a componentes.
+- `storeToRefs(almacen)` para exponer estado a componentes.
 
 ```ts
 // src/stores/contador.ts
@@ -223,17 +222,17 @@ it('emite "clicked" al pulsar el botón', async () => {
 })
 ```
 
-### Prueba de store Pinia
+### Prueba de almacen Pinia
 
 ```ts
 // src/stores/__tests__/contador.spec.ts
 import { useContador } from '@/stores/contador'
 
 it('incrementa correctamente', () => {
-  const store = useContador()
-  store.incrementar(2)
-  expect(store.valor).toBe(2)
-  expect(store.doble).toBe(4)
+  const almacen = useContador()
+  almacen.incrementar(2)
+  expect(almacen.valor).toBe(2)
+  expect(almacen.doble).toBe(4)
 })
 ```
 
@@ -278,7 +277,7 @@ it('carga usuarios desde el servicio', async () => {
 - Valida entradas; maneja errores y tiempos de espera de red.
 - No expongas secretos en cliente.
 
-## Checklist para agentes (Cursor/IA)
+## Checklist para agentes IA
 
 - [ ] ¿El cambio respeta la estructura de carpetas y patrones?
 - [ ] ¿Tipos completos sin `any` innecesarios?

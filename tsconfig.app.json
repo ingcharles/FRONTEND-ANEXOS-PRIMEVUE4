@@ -14,7 +14,14 @@
       "@pages/*": ["src/pages/*"],
       "@views/*": ["src/views/*"],
       "@types/*": ["src/types/*"],
-      "@assets/*": ["src/assets/*"]
+      "@tipos/*": ["src/tipos/*"],
+      "@assets/*": ["src/assets/*"],
+      "@services/*": ["src/services/*"],
+      "@paginas/*": ["src/paginas/*"],
+      "@almacenes/*": ["src/almacenes/*"],
+      "@constantes/*": ["src/constantes/*"],
+      "@servicios/*": ["src/servicios/*"],
+      "@styles/*": ["src/styles/*"]
     }
   }
 }

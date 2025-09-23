@@ -41,5 +41,5 @@ npm run lint
 ## Diseñador: DnD y redimensionado por columnas
 
 - Reordenación: usamos `vuedraggable` (SortableJS) para arrastrar desde la paleta y reordenar en el lienzo y dentro de paneles. Es ideal para estructuras tipo Kanban/listas y soporta táctil.
-- Redimensionado: implementamos handles laterales en cada campo para ajustar columnas `sm/md/lg` (1..12) con snap. Se actualiza en el store y respeta el breakpoint actual.
+- Redimensionado: implementamos handles laterales en cada campo para ajustar columnas `sm/md/lg` (1..12) con snap. Se actualiza en el almacen y respeta el breakpoint actual.
 - Alternativa: si necesitas widgets libres con cambio de tamaño y posición en una cuadrícula absoluta, se puede integrar `vue-grid-layout` como complemento. Aquí priorizamos vuedraggable porque el requerimiento se centra en formularios de 12 columnas y anidación en paneles.
