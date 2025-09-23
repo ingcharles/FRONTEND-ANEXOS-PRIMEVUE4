@@ -145,12 +145,9 @@ export const useAlmacenDisenador = defineStore('disenador', () => {
       throw new Error('No hay página activa para agregar el campo')
     }
 
-    const copia = clonarProfundo(campo)
-    if (!copia.id) copia.id = generarId('campo')
-    const posicion = indice ?? paginaActual.campos.length
-    paginaActual.campos.splice(posicion, 0, copia)
-    seleccionarCampo(copia.id)
-    return copia.id
+    const idNuevo = ServicioCampos.agregarCampo(paginaActual, campo, indice)
+    seleccionarCampo(idNuevo)
+    return idNuevo
   }
 
   function moverCampo(indiceOrigen: number, indiceDestino: number): void {
