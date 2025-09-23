@@ -1,28 +1,23 @@
-<!-- Adaptador de compatibilidad: ModalConfirmar.vue -->
 <script setup lang="ts">
-// Re-exporta el componente original manteniendo compatibilidad
-import ModalConfirm from '@/components/ModalConfirm.vue'
-
-// Definir props con los mismos tipos
-interface Props {
-  visible: boolean
-  message: string
-}
-
-interface Emits {
-  (e: 'confirm'): void
-  (e: 'cancel'): void
-}
-
-defineProps<Props>()
-defineEmits<Emits>()
+const props = defineProps<{ visible: boolean; message: string }>()
+const emit = defineEmits<{ (e: 'confirm'): void; (e: 'cancel'): void }>()
 </script>
 
 <template>
-  <ModalConfirm
-    :visible="visible"
-    :message="message"
-    @confirm="$emit('confirm')"
-    @cancel="$emit('cancel')"
-  />
+
+    <PrimeDialog
+      :visible="props.visible"
+      modal
+      header="Confirmación"
+      @update:visible="emit('cancel')"
+      :style="{ width: '350px' }"
+      :breakpoints="{ '960px': '75vw', '641px': '90vw' }"
+    >
+      <p class="m-0">{{ props.message }}</p>
+      <template #footer>
+        <PrimeButton label="Cancelar" text @click="emit('cancel')" />
+        <PrimeButton label="Aceptar" severity="danger" @click="emit('confirm')" />
+      </template>
+    </PrimeDialog>
 </template>
+

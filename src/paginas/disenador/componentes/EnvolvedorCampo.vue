@@ -2,9 +2,8 @@
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import { computed, defineAsyncComponent, ref, onUnmounted } from 'vue'
-import { usarPuntoDeCorte } from '@/composables/usarPuntoDeCorte'
 import { soportaOpciones } from '@/utilidades/comunes'
-import ModalConfirm from '@/components/ModalConfirm.vue'
+import ModalConfirmar from '@/componentes/ModalConfirmar.vue'
 import Tag from 'primevue/tag'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
@@ -15,6 +14,7 @@ import InputNumber from 'primevue/inputnumber'
 import Checkbox from 'primevue/checkbox'
 import RadioButton from 'primevue/radiobutton'
 import Divider from 'primevue/divider'
+import { usarPuntoDeCorte } from '@/almacenes/usarPuntoDeCorte'
 
 const propiedades = defineProps<{ campo: EsquemaCampo; seleccionado?: boolean }>()
 const emitir = defineEmits<{ (e: 'seleccionar'): void }>()
@@ -348,7 +348,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
     />
 
     <!-- Modal de confirmación para eliminar -->
-    <ModalConfirm
+    <ModalConfirmar
       :visible="almacen.mostrarModalEliminarCampo"
       :message="almacen.mensajeConfirmacionCampo"
       @confirm="almacen.ejecutarEliminarCampo"

@@ -1,4 +1,4 @@
-import { zEsquemaFormulario } from '@/esquemas/Formulario'
+import { zEsquemaFormulario } from '@/constantes/Validacion'
 import type { EsquemaFormulario } from '@/interfaces/Formulario'
 
 /**
@@ -19,14 +19,14 @@ export class ServicioSerializacion {
   static deserializar(json: string): EsquemaFormulario {
     const datos = JSON.parse(json)
     const resultado = zEsquemaFormulario.safeParse(datos)
-    
+
     if (!resultado.success) {
       const mensajesError = resultado.error.issues
         .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
         .join('\n')
       throw new Error(`JSON inválido para EsquemaFormulario:\n${mensajesError}`)
     }
-    
+
     return resultado.data
   }
 
@@ -37,11 +37,11 @@ export class ServicioSerializacion {
     const blob = new Blob([contenido], { type: 'application/json;charset=utf-8' })
     const url = URL.createObjectURL(blob)
     const enlace = document.createElement('a')
-    
+
     enlace.href = url
     enlace.download = nombreArchivo
     enlace.click()
-    
+
     // Limpiar recursos después de la descarga
     setTimeout(() => URL.revokeObjectURL(url), 0)
   }
@@ -67,7 +67,7 @@ export class ServicioSerializacion {
     if (!pagina) {
       throw new Error('Índice de página inválido')
     }
-    
+
     return JSON.stringify(pagina, null, 2)
   }
 
@@ -88,7 +88,7 @@ export class ServicioSerializacion {
       timestamp: new Date().toISOString(),
       formulario: esquema
     }
-    
+
     return JSON.stringify(backup, null, 2)
   }
 
@@ -97,11 +97,11 @@ export class ServicioSerializacion {
    */
   static restaurarBackup(jsonBackup: string): EsquemaFormulario {
     const backup = JSON.parse(jsonBackup)
-    
+
     if (!backup.formulario) {
       throw new Error('Formato de backup inválido')
     }
-    
+
     return this.deserializar(JSON.stringify(backup.formulario))
   }
 }

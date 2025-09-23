@@ -1,4 +1,5 @@
 // Constantes relacionadas con campos
+import type { ReglaLogica } from '@/interfaces/Validacion';
 import type { TipoCampo } from '@/tipos/Campos'
 
 export const TIPOS_CAMPO_DISPONIBLES: readonly TipoCampo[] = [
@@ -60,6 +61,24 @@ export const OPCIONES_TIPO_ESPANOL: readonly { etiqueta: string; valor: TipoCamp
   { etiqueta: 'Panel', valor: 'panel' },
   { etiqueta: 'Tabla', valor: 'tabla' },
 ] as const
+
+
+export const OPERADORES_LOGICA_DISPONIBLES: readonly ReglaLogica['operador'][] = [
+  'igual',
+  'diferente',
+  'contiene',
+  'mayor-que',
+  'menor-que',
+  'personalizado',
+] as const
+
+export const ACCIONES_LOGICA_DISPONIBLES: readonly ReglaLogica['accion'][] = [
+  'mostrar',
+  'ocultar',
+  'requerir',
+  'opcional',
+] as const
+
 
 /**
  * Opciones de tipos de campo para selects con formato corto
