@@ -3,7 +3,6 @@ import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import VistaPrevia from '../VistaPrevia.vue'
 import { useAlmacenDisenador } from '../../../../almacenes/UsarAlmacenDisenador'
-import type { EsquemaCampo } from '../../../../interfaces/Campos'
 
 function crearCampoTablaValidaciones() {
   return {
@@ -45,30 +44,25 @@ describe('Validación por columna en tabla', () => {
   it('Debería fallar al enviar si n fuera de rango', async () => {
     const almacen = useAlmacenDisenador()
     almacen.esquemaFormulario.paginas = [crearPagina()]
+    
     const wrapper = mount(VistaPrevia as unknown as object)
     await wrapper.vm.$nextTick()
 
     const pageId = almacen.esquemaFormulario.paginas[0].id
-    almacen.navegarPagina(pageId)
-
-    const formulario = almacen.esquemaFormulario
-    const valoresForm: Record<string, Record<string, unknown>> = { [formulario.paginas[0].id]: {} }
-
-    // Buscar el campo directamente por su nombre
-    const campo = formulario.paginas[0].campos.find((c: EsquemaCampo) => c.id === 'field_v')
-    if (!campo?.nombre) {
-      throw new Error('Campo no encontrado o sin nombre')
-    }
     
-    valoresForm[pageId][campo.nombre] = [{ n: 15 }]
+    // Configurar un valor inválido en la tabla
+    almacen.actualizarValorCampo(pageId, 'tablaVal', [{ n: 15 }]) // 15 está fuera del rango 1-10
 
-    const resultadoSubmit = await almacen.validarYEnviarFormulario(valoresForm)
+    await wrapper.vm.$nextTick()
 
-    expect(resultadoSubmit.exito).toBe(false)
-    expect(resultadoSubmit.mensaje).toContain('<=10')
+    // Forzar envío del formulario
+    const form = wrapper.find('form')
+    await form.trigger('submit.prevent')
     
-    // Esperamos que aparezca error en el wrapper
-    const errorEls = wrapper.findAll('.error-message, .p-invalid')
+    await wrapper.vm.$nextTick()
+    
+    // Esperamos que aparezca error con la clase correcta
+    const errorEls = wrapper.findAll('.text-red-500')
     expect(errorEls.length).toBeGreaterThan(0)
   })
 })

@@ -17,7 +17,7 @@ function campoFecha(metadatos: Record<string, unknown> = {}) {
 }
 
 function paginaConFecha(meta: Record<string, unknown> = {}) {
-  return { id: 'p_date', title: 'P', fields: [campoFecha(meta)] }
+  return { id: 'p_date', titulo: 'P', campos: [campoFecha(meta)] }
 }
 
 describe('Validación de fecha (min/max)', () => {
@@ -30,31 +30,35 @@ describe('Validación de fecha (min/max)', () => {
     await wrapper.vm.$nextTick()
 
     const pageId = almacen.esquemaFormulario.paginas[0].id
-    const vals = almacen.obtenerValoresPagina(pageId) as Record<string, unknown>
 
     // 1) No valor -> error requerido
     const form = wrapper.find('form')
     await form.trigger('submit.prevent')
-    const vm = wrapper.vm as unknown as { errores: Record<string, string> }
-    expect(Object.keys(vm.errores || {}).length).toBeGreaterThan(0)
+    
+    // Buscar errores con la clase correcta en lugar de en vm.errores
+    let errorEls = wrapper.findAll('.text-red-500')
+    expect(errorEls.length).toBeGreaterThan(0)
 
     // 2) Fecha fuera de rango (menor que min)
-    vals['fecha1'] = '2025-01-05'
+    almacen.actualizarValorCampo(pageId, 'fecha1', '2025-01-05')
     await wrapper.vm.$nextTick()
     await form.trigger('submit.prevent')
-    expect(Object.keys(vm.errores || {}).length).toBeGreaterThan(0)
+    errorEls = wrapper.findAll('.text-red-500')
+    expect(errorEls.length).toBeGreaterThan(0)
 
     // 3) Fecha fuera de rango (mayor que max)
-    vals['fecha1'] = '2025-01-25'
+    almacen.actualizarValorCampo(pageId, 'fecha1', '2025-01-25')
     await wrapper.vm.$nextTick()
     await form.trigger('submit.prevent')
-    expect(Object.keys(vm.errores || {}).length).toBeGreaterThan(0)
+    errorEls = wrapper.findAll('.text-red-500')
+    expect(errorEls.length).toBeGreaterThan(0)
 
     // 4) Fecha válida dentro del rango
-    vals['fecha1'] = '2025-01-15'
+    almacen.actualizarValorCampo(pageId, 'fecha1', '2025-01-15')
     await wrapper.vm.$nextTick()
     await form.trigger('submit.prevent')
     // Debería pasar sin errores
-    expect(Object.keys(vm.errores || {}).length).toBe(0)
+    errorEls = wrapper.findAll('.text-red-500')
+    expect(errorEls.length).toBe(0)
   })
 })

@@ -44,7 +44,7 @@ describe('Carga independiente de API con estructura española', () => {
               etiqueta: 'Año',
               nombre: 'year',
               metadatos: {
-                apiUrl: 'http://localhost:3000/api/years',
+                urlApi: 'http://localhost:3000/api/years',
                 labelKey: 'etiqueta',
                 valueKey: 'valor',
                 opciones: []
@@ -112,7 +112,7 @@ describe('Carga independiente de API con estructura española', () => {
               etiqueta: 'Opciones',
               nombre: 'option',
               metadatos: {
-                apiUrl: 'http://localhost:3000/api/options',
+                urlApi: 'http://localhost:3000/api/options',
                 opciones: []
               }
             } as EsquemaCampo
@@ -163,7 +163,7 @@ describe('Carga independiente de API con estructura española', () => {
               etiqueta: 'Campo con Error',
               nombre: 'error_field',
               metadatos: {
-                apiUrl: 'http://localhost:3000/api/error',
+                urlApi: 'http://localhost:3000/api/error',
                 opciones: []
               }
             } as EsquemaCampo

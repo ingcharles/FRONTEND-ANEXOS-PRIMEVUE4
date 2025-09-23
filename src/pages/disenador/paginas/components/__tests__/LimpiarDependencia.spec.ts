@@ -17,8 +17,8 @@ function crearSelectConDependencia() {
           nombre: 'pais',
           metadatos: {
             opciones: [
-              { label: 'Colombia', value: 'CO' },
-              { label: 'México', value: 'MX' }
+              { etiqueta: 'Colombia', valor: 'CO' },
+              { etiqueta: 'México', valor: 'MX' }
             ]
           }
         },
@@ -28,9 +28,18 @@ function crearSelectConDependencia() {
           etiqueta: 'Ciudad',
           nombre: 'ciudad',
           metadatos: {
-            dependeDe: ['pais'],
-            apiUrl: '/api/ciudades',
-            parametroQuery: 'pais_id',
+            configuracionApi: {
+              url: '/api/ciudades',
+              method: 'GET',
+              labelKey: 'etiqueta',
+              valueKey: 'valor'
+            },
+            dependencia: {
+              campoPadre: 'pais',
+              paramKey: 'pais_id',
+              modoEnvio: 'query',
+              limpiarAlCambiar: true
+            },
             opciones: []
           }
         }
@@ -48,22 +57,21 @@ describe('Limpiar dependencias', () => {
 
   it('Debería limpiar el valor del campo hijo cuando cambia el padre', async () => {
     const almacen = crearSelectConDependencia()
+    const paginaId = 'p1'
 
     // Establecer valores iniciales
-    almacen.valoresPorPagina[almacen.paginaActiva.id] = {
-      pais: 'CO',
-      ciudad: 'bogota'
-    }
+    almacen.actualizarValorCampo(paginaId, 'pais', 'CO')
+    almacen.actualizarValorCampo(paginaId, 'ciudad', 'bogota')
 
-    const valoresActuales = almacen.valoresPorPagina[almacen.paginaActiva.id]
+    const valoresActuales = almacen.obtenerValoresPagina(paginaId) as Record<string, unknown>
     expect(valoresActuales.pais).toBe('CO')
     expect(valoresActuales.ciudad).toBe('bogota')
 
-    // Cambiar el valor del padre
-    almacen.actualizarValorCampo('pais', 'MX')
+    // Cambiar el valor del padre - esto debería disparar la limpieza
+    almacen.actualizarValorCampo(paginaId, 'pais', 'MX')
 
     // El hijo debería limpiarse
-    const valoresActualizados = almacen.valoresPorPagina[almacen.paginaActiva.id]
+    const valoresActualizados = almacen.obtenerValoresPagina(paginaId) as Record<string, unknown>
     expect(valoresActualizados.pais).toBe('MX')
     expect(valoresActualizados.ciudad).toBe('')
   })
@@ -83,8 +91,8 @@ describe('Limpiar dependencias', () => {
             nombre: 'pais',
             metadatos: {
               opciones: [
-                { label: 'Colombia', value: 'CO' },
-                { label: 'México', value: 'MX' }
+                { etiqueta: 'Colombia', valor: 'CO' },
+                { etiqueta: 'México', valor: 'MX' }
               ]
             }
           },
@@ -94,7 +102,18 @@ describe('Limpiar dependencias', () => {
             etiqueta: 'Estado',
             nombre: 'estado',
             metadatos: {
-              dependeDe: ['pais'],
+              configuracionApi: {
+                url: '/api/estados',
+                method: 'GET',
+                labelKey: 'etiqueta',
+                valueKey: 'valor'
+              },
+              dependencia: {
+                campoPadre: 'pais',
+                paramKey: 'pais_id',
+                modoEnvio: 'query',
+                limpiarAlCambiar: true
+              },
               opciones: []
             }
           },
@@ -104,7 +123,18 @@ describe('Limpiar dependencias', () => {
             etiqueta: 'Ciudad',
             nombre: 'ciudad',
             metadatos: {
-              dependeDe: ['pais'],
+              configuracionApi: {
+                url: '/api/ciudades',
+                method: 'GET',
+                labelKey: 'etiqueta',
+                valueKey: 'valor'
+              },
+              dependencia: {
+                campoPadre: 'pais',
+                paramKey: 'pais_id',
+                modoEnvio: 'query',
+                limpiarAlCambiar: true
+              },
               opciones: []
             }
           }
@@ -112,18 +142,18 @@ describe('Limpiar dependencias', () => {
       }
     ]
 
+    const paginaId = 'p1'
+
     // Establecer valores iniciales
-    almacen.valoresPorPagina[almacen.paginaActiva.id] = {
-      pais: 'CO',
-      estado: 'cundinamarca',
-      ciudad: 'bogota'
-    }
+    almacen.actualizarValorCampo(paginaId, 'pais', 'CO')
+    almacen.actualizarValorCampo(paginaId, 'estado', 'cundinamarca')
+    almacen.actualizarValorCampo(paginaId, 'ciudad', 'bogota')
 
     // Cambiar el padre
-    almacen.actualizarValorCampo('pais', 'MX')
+    almacen.actualizarValorCampo(paginaId, 'pais', 'MX')
 
     // Todos los dependientes deberían limpiarse
-    const valores = almacen.valoresPorPagina[almacen.paginaActiva.id]
+    const valores = almacen.obtenerValoresPagina(paginaId) as Record<string, unknown>
     expect(valores.pais).toBe('MX')
     expect(valores.estado).toBe('')
     expect(valores.ciudad).toBe('')

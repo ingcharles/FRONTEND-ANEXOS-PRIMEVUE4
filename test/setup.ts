@@ -13,6 +13,7 @@ import Panel from 'primevue/panel'
 import Divider from 'primevue/divider'
 import Tag from 'primevue/tag'
 import Tabs from 'primevue/tabs'
+import Dialog from 'primevue/dialog'
 import PanelMenu from 'primevue/panelmenu'
 import SelectButton from 'primevue/selectbutton'
 import Tooltip from 'primevue/tooltip'
@@ -49,7 +50,8 @@ config.global.components = {
   PrimePanel: Panel,
   PrimeDivider: Divider,
   PrimeTag: Tag,
-  PrimeTags: Tabs,
+  PrimeTabs: Tabs,
+  PrimeDialog: Dialog,
   PrimePanelMenu: PanelMenu,
   PrimeSelectButton: SelectButton,
   // Stubs de Tabs de PrimeVue 4 (Headless)

@@ -47,8 +47,8 @@ describe('Validación por columna en tabla', () => {
     const form = wrapper.find('form')
     await form.trigger('submit.prevent')
 
-    // Esperamos que aparezca error en 'tablaVal' (clave de campo)
-    const errorEls = wrapper.findAll('.error-message, .p-invalid')
+    // Esperamos que aparezca error con la clase correcta
+    const errorEls = wrapper.findAll('.text-red-500')
     expect(errorEls.length).toBeGreaterThan(0)
   })
 })
