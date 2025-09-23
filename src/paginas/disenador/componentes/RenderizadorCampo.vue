@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { EsquemaCampo } from '@/interfaces/Campos'
-import { evaluarReglasCampo } from '@/utilidades/logica'
+import { evaluarReglasCampo } from '@/utilidades/Logica'
 import type { RegistroDatos } from '@/tipos/Comunes'
 import type { OpcionSeleccion } from '@/interfaces/Comunes'
 
@@ -20,7 +20,7 @@ const opcionesCampo = computed<OpcionSeleccion[]>(() => {
   const meta = (campo.value?.metadatos as Record<string, unknown> | undefined) || {}
   const opsEs = meta.opciones as OpcionSeleccion[] | undefined
   if (Array.isArray(opsEs)) return opsEs
-  const opsEn = meta.options as Array<Record<string, unknown>> | undefined
+  const opsEn = meta.opciones as Array<Record<string, unknown>> | undefined
   if (Array.isArray(opsEn)) {
     return opsEn.map((o) => ({ etiqueta: String(o.label ?? ''), valor: (o.value as string | number) ?? '' }))
   }
@@ -67,7 +67,7 @@ interface ColumnaTablaExtendida extends ColumnaTablaBasica {
 
 function obtenerColumnasTabla(campo: EsquemaCampo): ColumnaTablaExtendida[] {
   const metadatos = campo.metadatos as Record<string, unknown> | undefined
-  const columnasRaw = metadatos?.columns as unknown
+  const columnasRaw = metadatos?.columnas as unknown
   return Array.isArray(columnasRaw)
     ? (columnasRaw as ColumnaTablaExtendida[]).filter(c => c && typeof c.name === 'string')
     : []
@@ -310,7 +310,7 @@ const esCampoRequerido = computed(() => {
         :placeholder="campo.marcadorPosicion"
         :min="(campo.metadatos as any)?.min"
         :max="(campo.metadatos as any)?.max"
-        :step="(campo.metadatos as any)?.step ?? 1"
+        :step="(campo.metadatos as any)?.paso ?? 1"
         :disabled="campo.deshabilitado"
         :readonly="campo.soloLectura"
       />

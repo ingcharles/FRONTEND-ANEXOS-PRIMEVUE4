@@ -9,7 +9,7 @@ import ModalConfirmar from '@/componentes/ModalConfirmar.vue'
 import { ref, computed, nextTick } from 'vue'
 import { z } from 'zod'
 import type { EsquemaCampo } from '@/interfaces/Campos'
-import { evaluarReglasCampo } from '@/utilidades/logica'
+import { evaluarReglasCampo } from '@/utilidades/Logica'
 import type { RegistroDatos } from '@/tipos/Comunes'
 
 const almacen = useAlmacenDisenador()
@@ -277,7 +277,7 @@ function enviarDesdeDisenador(): void {
             <div class="flex justify-between items-center mb-3">
               <div v-if="totalPaginas>1" class="flex items-center gap-2">
                 <PrimeButton label="Anterior" icon="pi pi-angle-left" :disabled="almacen.indicePaginaActiva===0" @click="async () => { almacen.indicePaginaActiva = Math.max(0, almacen.indicePaginaActiva-1); almacen.seleccionarCampo(null); await nextTick() }" />
-                
+
                 <!-- Título editable -->
                 <div v-if="!editandoTitulo" class="flex items-center gap-2">
                   <div class="font-semibold cursor-pointer hover:bg-gray-100 px-2 py-1 border-round" @click="iniciarEdicionTitulo">
@@ -286,30 +286,30 @@ function enviarDesdeDisenador(): void {
                   </div>
                 </div>
                 <div v-else class="flex items-center gap-2">
-                  <PrimeInputText 
+                  <PrimeInputText
                     v-model="tituloTemporal"
                     class="titulo-input w-48"
                     @keydown="manejarTeclasTitulo"
                     @blur="guardarTitulo"
                     placeholder="Título de la página"
                   />
-                  <PrimeButton 
-                    icon="pi pi-check" 
-                    severity="success" 
+                  <PrimeButton
+                    icon="pi pi-check"
+                    severity="success"
                     size="small"
                     @click="guardarTitulo"
                   />
-                  <PrimeButton 
-                    icon="pi pi-times" 
-                    severity="secondary" 
+                  <PrimeButton
+                    icon="pi pi-times"
+                    severity="secondary"
                     size="small"
                     @click="cancelarEdicionTitulo"
                   />
                 </div>
-                
+
                 <PrimeButton label="Siguiente" icon-pos="right" icon="pi pi-angle-right" :disabled="almacen.indicePaginaActiva>=almacen.esquemaFormulario.paginas.length-1" @click="async () => { almacen.indicePaginaActiva = Math.min(almacen.esquemaFormulario.paginas.length-1, almacen.indicePaginaActiva+1); almacen.seleccionarCampo(null); await nextTick() }" />
               </div>
-              
+
               <!-- Título editable para página única -->
               <div v-else class="flex items-center gap-2">
                 <div v-if="!editandoTitulo" class="flex items-center gap-2">
@@ -319,28 +319,28 @@ function enviarDesdeDisenador(): void {
                   </div>
                 </div>
                 <div v-else class="flex items-center gap-2">
-                  <PrimeInputText 
+                  <PrimeInputText
                     v-model="tituloTemporal"
                     class="titulo-input w-48"
                     @keydown="manejarTeclasTitulo"
                     @blur="guardarTitulo"
                     placeholder="Título de la página"
                   />
-                  <PrimeButton 
-                    icon="pi pi-check" 
-                    severity="success" 
+                  <PrimeButton
+                    icon="pi pi-check"
+                    severity="success"
                     size="small"
                     @click="guardarTitulo"
                   />
-                  <PrimeButton 
-                    icon="pi pi-times" 
-                    severity="secondary" 
+                  <PrimeButton
+                    icon="pi pi-times"
+                    severity="secondary"
                     size="small"
                     @click="cancelarEdicionTitulo"
                   />
                 </div>
               </div>
-              
+
               <div class="ml-auto">
                 <PrimeButton v-if="totalPaginas===1 || almacen.indicePaginaActiva>=almacen.esquemaFormulario.paginas.length-1" label="Enviar" icon="pi pi-check" @click="enviarDesdeDisenador" />
               </div>

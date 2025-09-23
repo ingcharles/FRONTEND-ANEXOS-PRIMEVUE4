@@ -12,14 +12,14 @@ export interface ConfiguracionApi {
   url: string
   method?: 'GET' | 'POST'
   dataPath?: string
-  labelKey?: string
-  valueKey?: string
+  claveEtiqueta?: string
+  claveValor?: string
   contentType?: string
   body?: string
 }
 
 type Dependencia = ConfiguracionDependencia & {
-  paramKey?: string
+  claveParametro?: string
   modoEnvio?: 'query' | 'body' | 'header' | 'path'
   limpiarAlCambiar?: boolean
 }
@@ -28,7 +28,7 @@ export interface ServicioDependencias {
   cargarOpcionesIndependientes(campo: EsquemaCampo): Promise<void>
   cargarOpcionesDependientes(hijo: EsquemaCampo, valorPadre: ValorDato | RegistroDatos): Promise<void>
   construirUrlConQuery(base: string, params: RegistroDatos): string
-  detectarEstructuraAutomatica(datos: ValorDato[], configuracion: ConfiguracionApi): { labelKey: string; valueKey: string }
+  detectarEstructuraAutomatica(datos: ValorDato[], configuracion: ConfiguracionApi): { claveEtiqueta: string; claveValor: string }
 }
 
 export class ServicioDependenciasFormulario implements ServicioDependencias {
@@ -48,11 +48,11 @@ export class ServicioDependenciasFormulario implements ServicioDependencias {
     }
   }
 
-  detectarEstructuraAutomatica(datos: ValorDato[], configuracion: ConfiguracionApi): { labelKey: string; valueKey: string } {
-    let labelKey = configuracion.labelKey || 'label'
-    let valueKey = configuracion.valueKey || 'value'
+  detectarEstructuraAutomatica(datos: ValorDato[], configuracion: ConfiguracionApi): { claveEtiqueta: string; claveValor: string } {
+    let claveEtiqueta = configuracion.claveEtiqueta || 'label'
+    let claveValor = configuracion.claveValor || 'value'
 
-    if (datos.length > 0 && (labelKey === 'label' || valueKey === 'value')) {
+    if (datos.length > 0 && (claveEtiqueta === 'label' || claveValor === 'value')) {
       const primerElemento = datos[0]
       if (primerElemento && typeof primerElemento === 'object' && !Array.isArray(primerElemento)) {
         const objeto = primerElemento as Record<string, ValorDato>
@@ -65,22 +65,22 @@ export class ServicioDependenciasFormulario implements ServicioDependencias {
         const etiquetaDetectada = clavesEtiqueta.find(clave => claves.includes(clave))
         const valorDetectado = clavesValor.find(clave => claves.includes(clave))
 
-        if (etiquetaDetectada && etiquetaDetectada !== labelKey) {
-          labelKey = etiquetaDetectada
+        if (etiquetaDetectada && etiquetaDetectada !== claveEtiqueta) {
+          claveEtiqueta = etiquetaDetectada
         }
-        if (valorDetectado && valorDetectado !== valueKey) {
-          valueKey = valorDetectado
+        if (valorDetectado && valorDetectado !== claveValor) {
+          claveValor = valorDetectado
         }
       }
     }
 
-    return { labelKey, valueKey }
+    return { claveEtiqueta, claveValor }
   }
 
   async cargarOpcionesIndependientes(campo: EsquemaCampo): Promise<void> {
     const metadatos = (campo.metadatos || {}) as MetadatosCampo
     const configuracionApi = (metadatos.configuracionApi || metadatos.configuracionApi || {}) as Record<string, ValorDato>
-    
+
     // Buscar URL en diferentes ubicaciones para compatibilidad
     const url = String((configuracionApi['url'] || metadatos.urlApi || (metadatos as Record<string, unknown>).apiUrl || ''))
 
@@ -121,29 +121,29 @@ export class ServicioDependenciasFormulario implements ServicioDependencias {
       }
 
       const arreglo: ValorDato[] = Array.isArray(datos) ? (datos as ValorDato[]) : []
-      
+
       // Buscar claves de etiqueta y valor en diferentes ubicaciones para compatibilidad
-      const labelKeyConfig = (configuracionApi['labelKey'] as string) || 
-                           (metadatos as Record<string, unknown>).labelKey as string ||
+      const claveEtiquetaConfig = (configuracionApi['claveEtiqueta'] as string) ||
+                           (metadatos as Record<string, unknown>).claveEtiqueta as string ||
                            metadatos.propiedadEtiqueta
-      const valueKeyConfig = (configuracionApi['valueKey'] as string) || 
-                           (metadatos as Record<string, unknown>).valueKey as string ||
+      const claveValorConfig = (configuracionApi['claveValor'] as string) ||
+                           (metadatos as Record<string, unknown>).claveValor as string ||
                            metadatos.propiedadValor
-      
-      const { labelKey, valueKey } = this.detectarEstructuraAutomatica(arreglo, {
+
+      const { claveEtiqueta, claveValor } = this.detectarEstructuraAutomatica(arreglo, {
         url,
         method: metodo as 'GET' | 'POST',
         dataPath: rutaDatos || undefined,
-        labelKey: labelKeyConfig || undefined,
-        valueKey: valueKeyConfig || undefined,
+        claveEtiqueta: claveEtiquetaConfig || undefined,
+        claveValor: claveValorConfig || undefined,
         contentType: tipoContenido,
         body: (configuracionApi['body'] as string) || undefined,
       })
 
       const opciones = arreglo.map((elemento) => {
         const objeto = (typeof elemento === 'object' && elemento !== null) ? (elemento as Record<string, ValorDato>) : {}
-        const etiqueta = String(objeto[labelKey] ?? '')
-        const valorRaw = objeto[valueKey]
+        const etiqueta = String(objeto[claveEtiqueta] ?? '')
+        const valorRaw = objeto[claveValor]
         const valor = typeof valorRaw === 'number' || typeof valorRaw === 'string' ? valorRaw : String(valorRaw ?? '')
         return { label: etiqueta, value: valor }
       }) as OpcionApi[]
@@ -151,13 +151,13 @@ export class ServicioDependenciasFormulario implements ServicioDependencias {
       // Actualizar las opciones del campo - usar 'opciones' para compatibilidad con interfaz española
       const metadatosHelper = (campo.metadatos ||= {}) as MetadatosCampo & Record<string, unknown>
       metadatosHelper.opciones = opciones.map(op => ({ etiqueta: op.label, valor: op.value }))
-      metadatosHelper.options = opciones
+      metadatosHelper.opciones = opciones
 
     } catch {
       // En caso de error, asegurar que siempre hay un array vacío
       const metadatosHelper = (campo.metadatos ||= {}) as MetadatosCampo & Record<string, unknown>
       metadatosHelper.opciones = []
-      metadatosHelper.options = []
+      metadatosHelper.opciones = []
     }
   }
 
@@ -170,7 +170,7 @@ export class ServicioDependenciasFormulario implements ServicioDependencias {
     if (!url) return
 
     const modo = dependencia.modoEnvio || 'query'
-    if (modo !== 'path' && !dependencia.paramKey) return
+    if (modo !== 'path' && !dependencia.claveParametro) return
 
   const metodo = String(((configuracionApi['method'] as string) || 'GET')).toUpperCase()
     const encabezados: Record<string, string> = {}
@@ -209,8 +209,8 @@ export class ServicioDependenciasFormulario implements ServicioDependencias {
     urlFinal = this.construirUrlSegunModo(url, modo, dependencia, mapaValores, nombresPadres)
 
     // Configurar headers
-    if (dependencia.modoEnvio === 'header' && dependencia.paramKey) {
-      encabezados[dependencia.paramKey] = String(valorPadre ?? '')
+    if (dependencia.modoEnvio === 'header' && dependencia.claveParametro) {
+      encabezados[dependencia.claveParametro] = String(valorPadre ?? '')
     }
 
     // Configurar body para POST
@@ -239,19 +239,19 @@ export class ServicioDependenciasFormulario implements ServicioDependencias {
         url,
         method: metodo as 'GET' | 'POST',
         dataPath: (configuracionApi['dataPath'] as string) || undefined,
-        labelKey: (configuracionApi['labelKey'] as string) || undefined,
-        valueKey: (configuracionApi['valueKey'] as string) || undefined,
+        claveEtiqueta: (configuracionApi['claveEtiqueta'] as string) || undefined,
+        claveValor: (configuracionApi['claveValor'] as string) || undefined,
         contentType: tipoContenido,
         body: (configuracionApi['body'] as string) || undefined,
       })
 
       const metadatosHelper = (hijo.metadatos ||= {}) as MetadatosCampo
-      metadatosHelper.options = opciones
+      metadatosHelper.opciones = opciones
 
     } catch {
       // En caso de error, asegurar que siempre hay un array vacío
       const metadatosHelper = (hijo.metadatos ||= {}) as MetadatosCampo
-      metadatosHelper.options = []
+      metadatosHelper.opciones = []
     }
   }
 
@@ -329,14 +329,14 @@ export class ServicioDependenciasFormulario implements ServicioDependencias {
     nombresPadres: string[]
   ): string {
     const parametros: RegistroDatos = {}
-    const claves = (dependencia.paramKey || '').split(',').map(s => s.trim()).filter(Boolean)
+    const claves = (dependencia.claveParametro || '').split(',').map(s => s.trim()).filter(Boolean)
 
     if (claves.length > 1 && claves.length === nombresPadres.length) {
       for (let i = 0; i < claves.length; i++) {
         parametros[claves[i]] = mapaValores[nombresPadres[i]]
       }
-    } else if (dependencia.paramKey && nombresPadres.length <= 1) {
-      parametros[dependencia.paramKey] = mapaValores['valor']
+    } else if (dependencia.claveParametro && nombresPadres.length <= 1) {
+      parametros[dependencia.claveParametro] = mapaValores['valor']
     } else {
       // usar nombres de padres como claves
       for (const nombre of nombresPadres) {
@@ -366,9 +366,9 @@ export class ServicioDependenciasFormulario implements ServicioDependencias {
       procesado = procesado.replace(expresionRegular, String(valor ?? ''))
     }
 
-    // Compatibilidad: también reemplazar {{paramKey}} si se definió
-    if (dependencia.paramKey) {
-      const expresionRegularParam = new RegExp(`\\{\\{${dependencia.paramKey}\\}\\}`, 'g')
+    // Compatibilidad: también reemplazar {{claveParametro}} si se definió
+    if (dependencia.claveParametro) {
+      const expresionRegularParam = new RegExp(`\\{\\{${dependencia.claveParametro}\\}\\}`, 'g')
       procesado = procesado.replace(expresionRegularParam, String(valorPadre ?? ''))
     }
 
@@ -394,12 +394,12 @@ export class ServicioDependenciasFormulario implements ServicioDependencias {
     }
 
     const arreglo: ValorDato[] = Array.isArray(datos) ? (datos as ValorDato[]) : []
-    const { labelKey, valueKey } = this.detectarEstructuraAutomatica(arreglo, configuracion)
+    const { claveEtiqueta, claveValor } = this.detectarEstructuraAutomatica(arreglo, configuracion)
 
     return arreglo.map((elemento) => {
       const objeto = (typeof elemento === 'object' && elemento !== null) ? (elemento as Record<string, ValorDato>) : {}
-      const etiqueta = String(objeto[labelKey] ?? '')
-      const valorRaw = objeto[valueKey]
+      const etiqueta = String(objeto[claveEtiqueta] ?? '')
+      const valorRaw = objeto[claveValor]
       const valor = typeof valorRaw === 'number' || typeof valorRaw === 'string' ? valorRaw : String(valorRaw ?? '')
       return { label: etiqueta, value: valor }
     })

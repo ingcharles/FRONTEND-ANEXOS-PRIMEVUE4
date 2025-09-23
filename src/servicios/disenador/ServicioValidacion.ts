@@ -30,15 +30,15 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
   construirMapaIdNombre(lista: EsquemaCampo[]): Record<string, string> {
     const mapa: Record<string, string> = {}
     const pila: Array<EsquemaCampo | null | undefined> = [...lista]
-    
+
     while (pila.length) {
       const campo = pila.shift()!
       if (!campo) continue
-      
+
       if (campo.id && campo.nombre) {
         mapa[campo.id] = campo.nombre
       }
-      
+
       if (campo.hijos?.length) {
         pila.push(...campo.hijos)
       }
@@ -96,11 +96,11 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
     const meta = campo.metadatos as Record<string, ValorDato> | undefined
     const min = typeof meta?.min === 'number' ? meta.min : undefined
     const max = typeof meta?.max === 'number' ? meta.max : undefined
-    const mensajeMin = typeof meta?.minMessage === 'string' && meta.minMessage 
-      ? meta.minMessage 
+    const mensajeMin = typeof meta?.mensajeMinimo === 'string' && meta.mensajeMinimo
+      ? meta.mensajeMinimo
       : `Debe ser >= ${min}`
-    const mensajeMax = typeof meta?.maxMessage === 'string' && meta.maxMessage 
-      ? meta.maxMessage 
+    const mensajeMax = typeof meta?.mensajeMaximo === 'string' && meta.mensajeMaximo
+      ? meta.mensajeMaximo
       : `Debe ser <= ${max}`
 
     let reglaNumero = z.number()
@@ -126,8 +126,8 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
       return undefined
     }
 
-  const fechaMin = parsearFecha(meta?.minDate as ValorDato | undefined)
-  const fechaMax = parsearFecha(meta?.maxDate as ValorDato | undefined)
+  const fechaMin = parsearFecha(meta?.fechaMinima as ValorDato | undefined)
+  const fechaMax = parsearFecha(meta?.fechaMaxima as ValorDato | undefined)
 
     if (fechaMin) {
       reglaFecha = reglaFecha.min(fechaMin, `Debe ser posterior a ${fechaMin.toISOString().slice(0, 10)}`)
@@ -159,7 +159,7 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
   const meta = campo.metadatos as Record<string, ValorDato> | undefined
   const columnasRaw = (meta?.columnas as unknown) || []
   const columnas = Array.isArray(columnasRaw) ? columnasRaw as Array<Record<string, ValorDato>> : []
-    
+
     const formaFila: Record<string, z.ZodTypeAny> = {}
 
     for (const columna of columnas) {
@@ -190,11 +190,11 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
   private crearEsquemaNumeroTabla(columna: Record<string, ValorDato>): z.ZodTypeAny {
     const min = typeof columna.min === 'number' ? columna.min : undefined
     const max = typeof columna.max === 'number' ? columna.max : undefined
-    const mensajeMin = typeof columna.minMessage === 'string' && columna.minMessage 
-      ? columna.minMessage 
+    const mensajeMin = typeof columna.mensajeMinimo === 'string' && columna.mensajeMinimo
+      ? columna.mensajeMinimo
       : (typeof min === 'number' ? `Debe ser >= ${min}` : 'Valor demasiado pequeño')
-    const mensajeMax = typeof columna.maxMessage === 'string' && columna.maxMessage 
-      ? columna.maxMessage 
+    const mensajeMax = typeof columna.mensajeMaximo === 'string' && columna.mensajeMaximo
+      ? columna.mensajeMaximo
       : (typeof max === 'number' ? `Debe ser <= ${max}` : 'Valor demasiado grande')
 
     let reglaNumero = z.number()
@@ -219,8 +219,8 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
       return undefined
     }
 
-  const fechaMin = parsearFecha(columna.minDate as ValorDato | undefined)
-  const fechaMax = parsearFecha(columna.maxDate as ValorDato | undefined)
+  const fechaMin = parsearFecha(columna.fechaMinima as ValorDato | undefined)
+  const fechaMax = parsearFecha(columna.fechaMaxima as ValorDato | undefined)
 
     if (fechaMin) {
       reglaFecha = reglaFecha.min(fechaMin, `Debe ser posterior a ${fechaMin.toISOString().slice(0, 10)}`)
@@ -246,7 +246,7 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
     if (campo.tipo === 'casilla') {
       const metaObjeto = campo.metadatos as Record<string, unknown> | undefined
       const opciones = metaObjeto?.opciones as unknown
-      
+
       if (Array.isArray(opciones) && opciones.length > 0) {
         return z.array(z.union([z.string(), z.number()])).refine(
           (arr) => Array.isArray(arr) && arr.length > 0,

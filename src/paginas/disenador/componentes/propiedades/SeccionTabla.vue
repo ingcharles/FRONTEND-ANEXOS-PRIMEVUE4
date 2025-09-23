@@ -252,7 +252,7 @@
             <div class="col-span-12 md:col-span-6">
               <label class="block mb-1">Mensaje min</label>
               <InputText
-                :model-value="String(columnaActual.minMessage || '')"
+                :model-value="String(columnaActual.mensajeMinimo || '')"
                 @update:model-value="(v: string | undefined) => actualizarColumna('minMessage', v || '')"
               />
             </div>
@@ -260,7 +260,7 @@
             <div class="col-span-12 md:col-span-6">
               <label class="block mb-1">Mensaje max</label>
               <InputText
-                :model-value="String(columnaActual.maxMessage || '')"
+                :model-value="String(columnaActual.mensajeMaximo || '')"
                 @update:model-value="(v: string | undefined) => actualizarColumna('maxMessage', v || '')"
               />
             </div>
@@ -421,7 +421,7 @@ const estiloTabla = computed((): EstiloTabla => {
 // Obtener columnas
 function obtenerColumnas(): ColumnaTabla[] {
   const meta = metadatos.value as Record<string, unknown>
-  const columnas = meta.columns
+  const columnas = meta.columnas
   return Array.isArray(columnas) ? columnas : []
 }
 
@@ -449,7 +449,7 @@ const columnaActual = computed((): ColumnaTabla | null => {
 function actualizarColumnas(columnas: ColumnaTabla[]): void {
   if (!props.campo) return
   const meta = { ...metadatos.value } as Record<string, unknown>
-  meta.columns = columnas
+  meta.columnas = columnas
   almacen.actualizarCampo(props.campo.id, { metadatos: meta })
 }
 

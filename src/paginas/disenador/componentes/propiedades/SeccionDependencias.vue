@@ -36,14 +36,14 @@
       </div>
 
       <!-- Nombre de parámetro -->
-      <div class="col-span-12 md:col-span-6" v-if="debeMostrarParamKey()">
-        <label class="block mb-1">Nombre de parámetro (paramKey)</label>
+      <div class="col-span-12 md:col-span-6" v-if="debeMostrarclaveParametro()">
+        <label class="block mb-1">Nombre de parámetro (claveParametro)</label>
         <InputText
-          :model-value="(configDependencia.paramKey as string) || ''"
-          :placeholder="obtenerPlaceholderParamKey()"
+          :model-value="(configDependencia.claveParametro as string) || ''"
+          :placeholder="obtenerPlaceholderclaveParametro()"
           class="w-full"
           @focus="asegurarDependencia"
-          @update:model-value="(v: string | undefined) => actualizarDependencia('paramKey', v || '')"
+          @update:model-value="(v: string | undefined) => actualizarDependencia('claveParametro', v || '')"
         />
       </div>
 
@@ -122,25 +122,25 @@ const configDependencia = computed((): ConfiguracionDependencia => {
 // Función recursiva para obtener todos los campos de la página, incluyendo los que están dentro de paneles
 function obtenerTodosLosCampos(campos: unknown[]): EsquemaCampo[] {
   const resultado: EsquemaCampo[] = []
-  
+
   for (const campo of campos) {
     if (!campo || typeof campo !== 'object') continue
-    
+
     const campoTipado = campo as Record<string, unknown>
     if (!campoTipado.id || typeof campoTipado.id !== 'string') continue
-    
+
     // Agregar el campo actual si no es un panel
     if (campoTipado.tipo !== 'panel') {
       resultado.push(campo as unknown as EsquemaCampo)
     }
-    
+
     // Si tiene hijos (como en el caso de paneles), obtener recursivamente sus campos
     if (campoTipado.hijos && Array.isArray(campoTipado.hijos) && campoTipado.hijos.length > 0) {
       const camposHijos = obtenerTodosLosCampos(campoTipado.hijos)
       resultado.push(...camposHijos)
     }
   }
-  
+
   return resultado
 }
 
@@ -153,7 +153,7 @@ const camposPaginaActual = computed((): CampoPagina[] => {
 
   // Obtener todos los campos recursivamente, incluyendo los que están dentro de paneles
   const todosLosCampos = obtenerTodosLosCampos(paginaActual.campos || [])
-  
+
   return todosLosCampos
     .filter((campo) => campo && campo.id && campo.id !== props.campo!.id)
     .map((campo) => ({
@@ -166,33 +166,33 @@ const camposPaginaActual = computed((): CampoPagina[] => {
 function obtenerCamposPadre(): string[] {
   const campoPadre = configDependencia.value.campoPadre
   if (!campoPadre) return []
-  
+
   if (typeof campoPadre === 'string') {
     return campoPadre.split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0)
   }
-  
+
   return []
 }
 
 function actualizarCamposPadre(campos: string[]): void {
   if (!props.campo) return
-  
-  const valorCamposPadre = Array.isArray(campos) && campos.length > 0 
-    ? campos.filter((campo: string) => campo && campo.trim().length > 0).join(',') 
+
+  const valorCamposPadre = Array.isArray(campos) && campos.length > 0
+    ? campos.filter((campo: string) => campo && campo.trim().length > 0).join(',')
     : ''
-  
+
   actualizarDependencia('campoPadre', valorCamposPadre)
 }
 
-// Verificar si debe mostrar paramKey
-function debeMostrarParamKey(): boolean {
+// Verificar si debe mostrar claveParametro
+function debeMostrarclaveParametro(): boolean {
   const modo = configDependencia.value.modoEnvio as string
   // , 'header'
   return ['query', 'path'].includes(modo || '')
 }
 
-// Placeholder para paramKey según el modo
-function obtenerPlaceholderParamKey(): string {
+// Placeholder para claveParametro según el modo
+function obtenerPlaceholderclaveParametro(): string {
   const modo = configDependencia.value.modoEnvio
   switch (modo) {
     case 'query': return 'ej: filtro, categoria'
@@ -211,7 +211,7 @@ function asegurarDependencia(): void {
     meta.dependencia = {
       modoEnvio: 'query',
       campoPadre: '',
-      paramKey: '',
+      claveParametro: '',
       limpiarAlCambiar: true,
       deshabilitarHastaValor: true
     }

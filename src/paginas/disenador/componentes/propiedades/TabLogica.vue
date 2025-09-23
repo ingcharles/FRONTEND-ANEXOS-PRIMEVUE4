@@ -6,7 +6,7 @@ import Select from 'primevue/select'
 import Textarea from 'primevue/textarea'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import type { ReglaLogica } from '@/interfaces/Validacion'
-import { generarId } from '@/utilidades/id'
+import { generarId } from '@/utilidades/GeneraId'
 
 // Tipos específicos para este componente
 interface PropiedadesTabLogica {

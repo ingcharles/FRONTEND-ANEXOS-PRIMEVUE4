@@ -6,8 +6,8 @@ import type { EsquemaFormulario } from '@/interfaces/Formulario'
 import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 import { ServicioPaginas } from '@/servicios/disenador/ServiciosPaginas'
 import { ServicioSerializacion } from '@/servicios/disenador/ServiciosSerializacion'
-import { generarId } from '@/utilidades/id'
-import { clonarProfundo } from '@/utilidades/clonar'
+import { generarId } from '@/utilidades/GeneraId'
+import { clonarProfundo } from '@/utilidades/Clonar'
 import { ServicioEsquemasFormulario } from '@/servicios/disenador/ServicioEsquemas'
 
 /**

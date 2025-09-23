@@ -1,8 +1,10 @@
 // Servicios para el manejo de campos - Principio de Responsabilidad Única
+import { TIPOS_CON_OPCIONES, TIPOS_CON_PLACEHOLDER, TIPOS_ESPANOL } from '@/constantes/Campos'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { EsquemaPagina } from '@/interfaces/Pagina'
-import { clonarProfundo, duplicarConNuevosIds } from '@/utilidades/clonar'
-import { generarId } from '@/utilidades/id'
+import type { TipoCampo } from '@/tipos/Campos'
+import { clonarProfundo, duplicarConNuevosIds } from '@/utilidades/Clonar'
+import { generarId } from '@/utilidades/GeneraId'
 
 /**
  * Servicio para operaciones CRUD de campos
@@ -226,24 +228,22 @@ export class ServicioCampos {
   /**
    * Obtener el nombre en español del tipo de campo
    */
-  static obtenerNombreTipoEspanol(tipo: string): string {
-    const mapeoTipos: Record<string, string> = {
-      'texto': 'Texto',
-      'correo': 'Correo electrónico',
-      'contrasena': 'Contraseña',
-      'area-texto': 'Área de texto',
-      'numero': 'Número',
-      'fecha': 'Fecha',
-      'hora': 'Hora',
-      'seleccion': 'Selección',
-      'radio': 'Opción múltiple',
-      'casilla': 'Casilla de verificación',
-      'etiqueta': 'Etiqueta',
-      'boton': 'Botón',
-      'divisor': 'Divisor',
-      'panel': 'Panel',
-      'tabla': 'Tabla'
-    }
-    return mapeoTipos[tipo] || tipo
+  static obtenerNombreTipoEspanol(tipo: TipoCampo): string {
+
+    return TIPOS_ESPANOL[tipo] || tipo
   }
+
+  /**
+ * Verificar si un tipo de campo soporta placeholder
+ */
+ static soportaPlaceholder(tipo: TipoCampo): boolean {
+  return TIPOS_CON_PLACEHOLDER.includes(tipo)
+}
+
+/**
+ * Verificar si un tipo de campo soporta opciones
+ */
+static soportaOpciones(tipo: TipoCampo): boolean {
+  return TIPOS_CON_OPCIONES.includes(tipo)
+}
 }

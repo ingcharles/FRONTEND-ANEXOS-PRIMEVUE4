@@ -31,12 +31,12 @@ function crearSelectConDependencia() {
             configuracionApi: {
               url: '/api/ciudades',
               method: 'GET',
-              labelKey: 'etiqueta',
-              valueKey: 'valor'
+              claveEtiqueta: 'etiqueta',
+              claveValor: 'valor'
             },
             dependencia: {
               campoPadre: 'pais',
-              paramKey: 'pais_id',
+              claveParametro: 'pais_id',
               modoEnvio: 'query',
               limpiarAlCambiar: true
             },
@@ -105,12 +105,12 @@ describe('Limpiar dependencias', () => {
               configuracionApi: {
                 url: '/api/estados',
                 method: 'GET',
-                labelKey: 'etiqueta',
-                valueKey: 'valor'
+                claveEtiqueta: 'etiqueta',
+                claveValor: 'valor'
               },
               dependencia: {
                 campoPadre: 'pais',
-                paramKey: 'pais_id',
+                claveParametro: 'pais_id',
                 modoEnvio: 'query',
                 limpiarAlCambiar: true
               },
@@ -126,12 +126,12 @@ describe('Limpiar dependencias', () => {
               configuracionApi: {
                 url: '/api/ciudades',
                 method: 'GET',
-                labelKey: 'etiqueta',
-                valueKey: 'valor'
+                claveEtiqueta: 'etiqueta',
+                claveValor: 'valor'
               },
               dependencia: {
                 campoPadre: 'pais',
-                paramKey: 'pais_id',
+                claveParametro: 'pais_id',
                 modoEnvio: 'query',
                 limpiarAlCambiar: true
               },

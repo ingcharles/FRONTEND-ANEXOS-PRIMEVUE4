@@ -9,8 +9,8 @@
         <Select
           :model-value="obtenerModoOpciones()"
           :options="opcionesFuente"
-          option-label="label"
-          option-value="value"
+          option-label="etiqueta"
+          option-value="valor"
           class="w-full"
           @update:model-value="(v: ModoOpciones) => actualizarModoOpciones(v)"
         />
@@ -100,18 +100,18 @@
         <div class="col-span-12 md:col-span-3">
           <label class="block mb-1">Clave Valor</label>
           <InputText
-            :model-value="configApi.valueKey"
+            :model-value="configApi.claveValor"
             placeholder="valor"
-            @update:model-value="(v: string | undefined) => actualizarConfigApi({ valueKey: v || '' })"
+            @update:model-value="(v: string | undefined) => actualizarConfigApi({ claveValor: v || '' })"
           />
         </div>
 
         <div class="col-span-12 md:col-span-3">
           <label class="block mb-1">Clave Etiqueta</label>
           <InputText
-            :model-value="configApi.labelKey"
+            :model-value="configApi.claveEtiqueta"
             placeholder="etiqueta"
-            @update:model-value="(v: string | undefined) => actualizarConfigApi({ labelKey: v || '' })"
+            @update:model-value="(v: string | undefined) => actualizarConfigApi({ claveEtiqueta: v || '' })"
           />
         </div>
 
@@ -236,9 +236,9 @@ import Textarea from 'primevue/textarea'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { OpcionSeleccion } from '@/interfaces/Comunes'
-import { soportaOpciones } from '@/utilidades/comunes'
 import SeccionDependencias from './SeccionDependencias.vue'
 import ModalAlerta from '@/componentes/ModalAlerta.vue'
+import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 
 type ModoOpciones = 'manual' | 'api'
 type MetodoHttp = 'GET' | 'POST'
@@ -248,8 +248,8 @@ interface ConfigApi {
   url?: string
   method?: MetodoHttp
   dataPath?: string
-  labelKey?: string
-  valueKey?: string
+  claveEtiqueta?: string
+  claveValor?: string
   contentType?: string
   body?: string
   headersJson?: string
@@ -309,8 +309,8 @@ const configApi = computed((): ConfigApi => {
     url: config.url || '',
     method: config.method || 'GET',
     dataPath: config.dataPath || '',
-    labelKey: config.labelKey || 'label',
-    valueKey: config.valueKey || 'value',
+    claveEtiqueta: config.claveEtiqueta || 'label',
+    claveValor: config.claveValor || 'value',
     contentType: config.contentType || 'application/json',
     body: config.body || '',
     headersJson: config.headersJson || ''
@@ -320,7 +320,7 @@ const configApi = computed((): ConfigApi => {
 // Verificar si el campo puede tener opciones
 function esCampoConOpciones(): boolean {
   if (!props.campo) return false
-  return soportaOpciones(props.campo.tipo)
+  return ServicioCampos.soportaOpciones(props.campo.tipo)
 }
 
 // Modo de opciones
@@ -339,7 +339,7 @@ function actualizarModoOpciones(modo: ModoOpciones): void {
   if (!Array.isArray(meta.opciones)) meta.opciones = []
   // mantener compat en inglés
   const opcionesEs = meta.opciones as OpcionSeleccion[]
-  meta.options = opcionesEs.map((o) => ({ label: o.etiqueta, value: o.valor }))
+  meta.opciones = opcionesEs.map((o) => ({ label: o.etiqueta, value: o.valor }))
 
   almacen.actualizarCampo(props.campo.id, { metadatos: meta })
 }
@@ -351,7 +351,7 @@ function obtenerOpciones(): OpcionSeleccion[] {
   const opsEs = meta.opciones
   if (Array.isArray(opsEs)) return opsEs as OpcionSeleccion[]
   // Compat: convertir de inglés si existe
-  const opsEn = meta.options
+  const opsEn = meta.opciones
   if (Array.isArray(opsEn)) {
     return (opsEn as Array<Record<string, unknown>>).map((o) => ({
       etiqueta: String(o.label ?? ''),
@@ -366,7 +366,7 @@ function actualizarOpciones(opciones: OpcionSeleccion[]): void {
   const meta = { ...metadatos.value } as Record<string, unknown>
   // Guardar en español y compat inglés
   meta.opciones = opciones
-  meta.options = opciones.map(o => ({ label: o.etiqueta, value: o.valor }))
+  meta.opciones = opciones.map(o => ({ label: o.etiqueta, value: o.valor }))
   almacen.actualizarCampo(props.campo.id, { metadatos: meta })
 }
 
@@ -438,14 +438,14 @@ function extraerPorRuta(obj: unknown, ruta: string | undefined): unknown {
   return actual
 }
 
-function detectarEstructuraApi(datos: unknown[]): { labelKey: string; valueKey: string } {
+function detectarEstructuraApi(datos: unknown[]): { claveEtiqueta: string; claveValor: string } {
   if (!Array.isArray(datos) || datos.length === 0) {
-    return { labelKey: 'label', valueKey: 'value' }
+    return { claveEtiqueta: 'label', claveValor: 'value' }
   }
 
   const primer = datos[0]
   if (typeof primer !== 'object' || primer === null) {
-    return { labelKey: 'label', valueKey: 'value' }
+    return { claveEtiqueta: 'label', claveValor: 'value' }
   }
 
   const obj = primer as Record<string, unknown>
@@ -455,10 +455,10 @@ function detectarEstructuraApi(datos: unknown[]): { labelKey: string; valueKey: 
   const clavesEtiqueta = ['etiqueta', 'label', 'texto', 'nombre', 'name', 'title']
   const clavesValor = ['valor', 'value', 'id', 'codigo', 'code']
 
-  const labelKey = clavesEtiqueta.find(k => claves.includes(k)) || claves[0] || 'label'
-  const valueKey = clavesValor.find(k => claves.includes(k)) || claves[1] || 'value'
+  const claveEtiqueta = clavesEtiqueta.find(k => claves.includes(k)) || claves[0] || 'label'
+  const claveValor = clavesValor.find(k => claves.includes(k)) || claves[1] || 'value'
 
-  return { labelKey, valueKey }
+  return { claveEtiqueta, claveValor }
 }
 
 // Función para obtener mensaje de error específico según el código HTTP
@@ -609,15 +609,15 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
     const lista = Array.isArray(array) ? array : (Array.isArray(datos) ? datos : [])
 
     // Detectar estructura automáticamente si es necesario
-    let labelKey = config.labelKey
-    let valueKey = config.valueKey
+    let claveEtiqueta = config.claveEtiqueta
+    let claveValor = config.claveValor
 
-    if (lista.length > 0 && (labelKey === 'label' || valueKey === 'value')) {
+    if (lista.length > 0 && (claveEtiqueta === 'label' || claveValor === 'value')) {
       const estructura = detectarEstructuraApi(lista)
-      if (estructura.labelKey !== labelKey || estructura.valueKey !== valueKey) {
-        labelKey = estructura.labelKey
-        valueKey = estructura.valueKey
-        actualizarConfigApi({ labelKey, valueKey })
+      if (estructura.claveEtiqueta !== claveEtiqueta || estructura.claveValor !== claveValor) {
+        claveEtiqueta = estructura.claveEtiqueta
+        claveValor = estructura.claveValor
+        actualizarConfigApi({ claveEtiqueta, claveValor })
       }
     }
 
@@ -627,8 +627,8 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
         ? (elemento as Record<string, unknown>)
         : {}
 
-      const label = labelKey ? obj[labelKey] : obj['label']
-      const value = valueKey ? obj[valueKey] : obj['value']
+      const label = claveEtiqueta ? obj[claveEtiqueta] : obj['label']
+      const value = claveValor ? obj[claveValor] : obj['value']
 
       return {
         etiqueta: String(label ?? ''),

@@ -45,8 +45,8 @@ describe('Carga independiente de API con estructura española', () => {
               nombre: 'year',
               metadatos: {
                 urlApi: 'http://localhost:3000/api/years',
-                labelKey: 'etiqueta',
-                valueKey: 'valor',
+                claveEtiqueta: 'etiqueta',
+                claveValor: 'valor',
                 opciones: []
               }
             } as EsquemaCampo
@@ -87,7 +87,7 @@ describe('Carga independiente de API con estructura española', () => {
     wrapper.unmount()
   })
 
-  it('Debería detectar automáticamente estructura española cuando no se especifica labelKey/valueKey', async () => {
+  it('Debería detectar automáticamente estructura española cuando no se especifica claveEtiqueta/claveValor', async () => {
     // Configurar mock de respuesta API con estructura española
     mockFetch.mockResolvedValueOnce({
       ok: true,
@@ -97,7 +97,7 @@ describe('Carga independiente de API con estructura española', () => {
       ]
     })
 
-    // Crear formulario sin especificar labelKey/valueKey
+    // Crear formulario sin especificar claveEtiqueta/claveValor
     const formulario = {
       id: 'form1',
       nombre: 'Test Form',

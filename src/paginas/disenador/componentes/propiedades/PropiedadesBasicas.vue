@@ -3,7 +3,7 @@
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { TipoCampo } from '@/tipos/Campos'
 import { OPCIONES_TIPO_ESPANOL } from '@/constantes/Campos'
-import { soportaPlaceholder } from '@/utilidades/comunes'
+import { soportaPlaceholder } from '@/utilidades/Comunes'
 
 interface PropiedadesBasicas {
   campo: EsquemaCampo

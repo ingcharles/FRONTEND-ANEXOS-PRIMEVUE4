@@ -72,9 +72,9 @@ function crearFormularioBasico() {function crearFormularioBasico() {
 
               method: 'GET',               method: 'GET',
 
-              labelKey: 'etiqueta',               labelKey: 'etiqueta',
+              claveEtiqueta: 'etiqueta',               claveEtiqueta: 'etiqueta',
 
-              valueKey: 'valor'               valueKey: 'valor'
+              claveValor: 'valor'               claveValor: 'valor'
 
             },             },
 
@@ -82,7 +82,7 @@ function crearFormularioBasico() {function crearFormularioBasico() {
 
               campoPadre: 'pais',               campoPadre: 'pais',
 
-              paramKey: 'country',               paramKey: 'country',
+              claveParametro: 'country',               claveParametro: 'country',
 
               modoEnvio: 'query',               modoEnvio: 'query',
 
@@ -268,7 +268,7 @@ describe('Cascada de Selects', () => {describe('Cascada de Selects', () => {
 
     const ciudadField = almacen.esquemaFormulario.paginas[0].campos[1]    const ciudadField = almacen.esquemaFormulario.paginas[0].campos[1]
 
-    expect(ciudadField.metadatos?.disabled).toBe(true)    expect(ciudadField.metadatos?.disabled).toBe(true)
+    expect(ciudadField.metadatos?.deshabilitado).toBe(true)    expect(ciudadField.metadatos?.deshabilitado).toBe(true)
 
 
 
@@ -280,7 +280,7 @@ describe('Cascada de Selects', () => {describe('Cascada de Selects', () => {
 
 
 
-    expect(ciudadField.metadatos?.disabled).toBe(false)    expect(ciudadField.metadatos?.disabled).toBe(false)
+    expect(ciudadField.metadatos?.deshabilitado).toBe(false)    expect(ciudadField.metadatos?.deshabilitado).toBe(false)
 
   })  })
 
@@ -364,9 +364,9 @@ describe('Cascada de Selects', () => {describe('Cascada de Selects', () => {
 
                 method: 'GET',                 method: 'GET',
 
-                labelKey: 'etiqueta',                 labelKey: 'etiqueta',
+                claveEtiqueta: 'etiqueta',                 claveEtiqueta: 'etiqueta',
 
-                valueKey: 'valor'                 valueKey: 'valor'
+                claveValor: 'valor'                 claveValor: 'valor'
 
               },               },
 
@@ -374,7 +374,7 @@ describe('Cascada de Selects', () => {describe('Cascada de Selects', () => {
 
                 campoPadre: 'pais,estado',                 campoPadre: 'pais,estado',
 
-                paramKey: 'pais,estado',                 paramKey: 'pais,estado',
+                claveParametro: 'pais,estado',                 claveParametro: 'pais,estado',
 
                 modoEnvio: 'query',                 modoEnvio: 'query',
 

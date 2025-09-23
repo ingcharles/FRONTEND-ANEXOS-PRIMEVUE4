@@ -2,7 +2,6 @@
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import { computed, defineAsyncComponent, ref, onUnmounted } from 'vue'
-import { soportaOpciones } from '@/utilidades/comunes'
 import ModalConfirmar from '@/componentes/ModalConfirmar.vue'
 import Tag from 'primevue/tag'
 import Button from 'primevue/button'
@@ -15,6 +14,7 @@ import Checkbox from 'primevue/checkbox'
 import RadioButton from 'primevue/radiobutton'
 import Divider from 'primevue/divider'
 import { usarPuntoDeCorte } from '@/almacenes/usarPuntoDeCorte'
+import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 
 const propiedades = defineProps<{ campo: EsquemaCampo; seleccionado?: boolean }>()
 const emitir = defineEmits<{ (e: 'seleccionar'): void }>()
@@ -47,7 +47,7 @@ const conteoHijos = computed<number>(() =>
 )
 
 const conteoOpciones = computed<number>(() => {
-  if (!soportaOpciones(propiedades.campo.tipo)) return 0
+  if (!ServicioCampos.soportaOpciones(propiedades.campo.tipo)) return 0
   const opciones = (propiedades.campo.metadatos as Record<string, unknown> | undefined)?.opciones as unknown
   return Array.isArray(opciones) ? opciones.length : 0
 })
@@ -187,7 +187,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
             <span class="font-medium">{{ `${campo.tipo || campo.etiqueta}: ${campo.id}` }}</span>
             <span class="font-medium">{{ `${punto.toUpperCase()}: ${columnaActual} Cols` }}</span>
             <span class="font-medium text-red-500" v-if="campo.tipo==='panel'">Elementos: {{ conteoHijos }}</span>
-            <span class="font-medium" v-if="soportaOpciones(campo.tipo)">Opciones: {{ conteoOpciones }}</span>
+            <span class="font-medium" v-if="ServicioCampos.soportaOpciones(campo.tipo)">Opciones: {{ conteoOpciones }}</span>
           </div>
           <!-- Columna derecha (4/12): acciones -->
           <div class="col-4 flex justify-content-end">

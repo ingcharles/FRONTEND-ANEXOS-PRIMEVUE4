@@ -2,8 +2,8 @@
 import type { EsquemaPagina } from '@/interfaces/Pagina'
 import type { EsquemaFormulario } from '@/interfaces/Formulario'
 import type { EsquemaCampo } from '@/interfaces/Campos'
-import { clonarProfundo, duplicarConNuevosIds } from '@/utilidades/clonar'
-import { generarId } from '@/utilidades/id'
+import { clonarProfundo, duplicarConNuevosIds } from '@/utilidades/Clonar'
+import { generarId } from '@/utilidades/GeneraId'
 
 /**
  * Servicio para operaciones CRUD de páginas

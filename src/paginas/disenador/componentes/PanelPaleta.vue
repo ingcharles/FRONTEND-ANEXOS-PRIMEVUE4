@@ -3,7 +3,7 @@ import draggable from 'vuedraggable'
 import { ref, computed } from 'vue'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { TipoCampo } from '@/tipos/Campos'
-import { generarId } from '@/utilidades/id'
+import { generarId } from '@/utilidades/GeneraId'
 import Button from 'primevue/button'
 import Tag from 'primevue/tag'
 

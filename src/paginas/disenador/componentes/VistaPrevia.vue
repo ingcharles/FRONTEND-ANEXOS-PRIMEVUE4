@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue'
 import type { EsquemaCampo, MetadatosCampo } from '@/interfaces/Campos'
 import type { ConfiguracionDependencia } from '@/interfaces/Comunes'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
-import { evaluarReglasCampo } from '@/utilidades/logica'
+import { evaluarReglasCampo } from '@/utilidades/Logica'
 import { ServicioDependenciasFormulario } from '@/servicios/disenador/ServicioDependencias'
 import { ServicioEsquemasFormulario } from '@/servicios/disenador/ServicioEsquemas'
 import Button from 'primevue/button'
@@ -57,7 +57,7 @@ function parsearHoraCadenaAFecha(cadena: string): Date | null {
 
 function obtenerOpciones(campo: EsquemaCampo): Array<{ label: string; value: string | number; disabled?: boolean }> {
   const metadatos = campo.metadatos as MetadatosCampo | undefined
-  const opciones = (metadatos?.opciones ?? metadatos?.options) as
+  const opciones = (metadatos?.opciones ?? metadatos?.opciones) as
     | Array<{ label: string; value: string | number; disabled?: boolean }>
     | undefined
   return Array.isArray(opciones) ? opciones : []
@@ -138,11 +138,11 @@ function reconfigurarDependencias(): void {
   const dependencia = (metadatos.dependencia || {}) as ConfiguracionDependencia
 
     // Cargar opciones independientes (sin dependencias) que usan API
-    const tieneConfiguracionApi = metadatos.modoOpciones === 'api' || 
-      metadatos.urlApi || 
+    const tieneConfiguracionApi = metadatos.modoOpciones === 'api' ||
+      metadatos.urlApi ||
       (metadatos as Record<string, unknown>).apiUrl ||
       (metadatos.configuracionApi as Record<string, unknown>)?.url
-      
+
     if (campo.nombre && tieneConfiguracionApi && !dependencia.campoPadre) {
       servicioDependencias.cargarOpcionesIndependientes(campo)
     }
@@ -174,7 +174,7 @@ function reconfigurarDependencias(): void {
         if (dependencia.deshabilitarHastaValor !== false) {
           const algunPadreVacio = padres.some(nombre => estaVacio(valores.value[nombre]))
           const metadatosHelper = (campo.metadatos ||= {}) as MetadatosCampo
-          metadatosHelper.disabled = algunPadreVacio
+          metadatosHelper.deshabilitado = algunPadreVacio
         }
 
   await servicioDependencias.cargarOpcionesDependientes(campo, (valorActual ?? null) as ValorDato | RegistroDatos)
@@ -207,7 +207,7 @@ function recolectarFirmaSchema(
         }
       : null
 
-    const opciones = (metadatos.options ?? metadatos.opciones) as
+    const opciones = (metadatos.opciones ?? metadatos.opciones) as
       | Array<{ deshabilitado?: boolean; etiqueta?: string; valor?: string | number }>
       | undefined
 
@@ -221,8 +221,8 @@ function recolectarFirmaSchema(
         }))
       : []
 
-  const minDateRaw = (metadatos.fechaMinima ?? metadatos.minDate)
-  const maxDateRaw = (metadatos.fechaMaxima ?? metadatos.maxDate)
+  const minDateRaw = (metadatos.fechaMinima ?? metadatos.fechaMinima)
+  const maxDateRaw = (metadatos.fechaMaxima ?? metadatos.fechaMaxima)
     const minDateOut: ValorDato | null =
       minDateRaw instanceof Date ? minDateRaw : (typeof minDateRaw === 'string' ? minDateRaw : null)
     const maxDateOut: ValorDato | null =
@@ -235,8 +235,8 @@ function recolectarFirmaSchema(
       required: Boolean(campo.requerido),
       grid,
       m: {
-        min: typeof (metadatos.minimo ?? metadatos.min) === 'number' ? (metadatos.minimo ?? metadatos.min) as number : null,
-        max: typeof (metadatos.maximo ?? metadatos.max) === 'number' ? (metadatos.maximo ?? metadatos.max) as number : null,
+        min: typeof (metadatos.minimo ?? metadatos.minimo) === 'number' ? (metadatos.minimo ?? metadatos.minimo) as number : null,
+        max: typeof (metadatos.maximo ?? metadatos.maximo) === 'number' ? (metadatos.maximo ?? metadatos.maximo) as number : null,
         minDate: minDateOut,
         maxDate: maxDateOut,
         options: opcionesNormalizadas,

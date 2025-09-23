@@ -39,25 +39,10 @@
 </template>
 
 <script setup lang="ts">
+import type { ModalAlerta } from '@/interfaces/Comunes';
 import { computed } from 'vue'
 
-type TipoAlerta = 'error' | 'warning' | 'info' | 'success'
-
-interface Props {
-  modelValue: boolean
-  titulo: string
-  mensaje: string
-  mensajeDetalle?: string
-  tipo?: TipoAlerta
-  ancho?: string
-  cerrable?: boolean
-  mostrarBotonCancelar?: boolean
-  textoBotonConfirmar?: string
-  textoBotonCancelar?: string
-  iconoBotonConfirmar?: string
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<ModalAlerta>(), {
   tipo: 'error',
   ancho: '450px',
   cerrable: true,

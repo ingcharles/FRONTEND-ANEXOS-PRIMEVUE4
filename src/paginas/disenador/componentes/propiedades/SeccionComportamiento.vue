@@ -109,7 +109,7 @@ import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { TipoCampo } from '@/tipos/Campos'
 import type { ReglaValidacion } from '@/interfaces/Validacion'
 import { TIPOS_CON_PLACEHOLDER } from '@/constantes/Campos'
-import { soportaOpciones } from '@/utilidades/comunes'
+import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 
 type TipoLayout = 'vertical' | 'horizontal'
 
@@ -166,7 +166,7 @@ function esSoloLectura(): boolean {
 
 function tieneOpcionesMultiples(): boolean {
   if (!props.campo) return false
-  if (!soportaOpciones(props.campo.tipo)) return false
+  if (!ServicioCampos.soportaOpciones(props.campo.tipo)) return false
 
   const opciones = (metadatos.value as Record<string, unknown>).opciones
   return Array.isArray(opciones) && opciones.length > 0

@@ -34,7 +34,7 @@ function crearPaginaConTabla() {
 }
 
 describe('Tabla en Preview', () => {
-  it('Debería inicializar filas según meta.rows cuando está vacío', async () => {
+  it('Debería inicializar filas según meta.filas cuando está vacío', async () => {
     setActivePinia(createPinia())
     const almacen = useAlmacenDisenador()
     almacen.esquemaFormulario.paginas = [crearPaginaConTabla()]

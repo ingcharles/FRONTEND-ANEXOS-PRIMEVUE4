@@ -3,7 +3,7 @@
     <h3 class="text-lg font-medium text-gray-900 mb-4">Propiedades Generales</h3>
 
     <!-- Información del componente -->
-    <PrimePanel header="Información del Componente" class="mb-3" :toggleable="false">
+    <PrimePanel class="mb-3" :toggleable="false">
       <div class="flex flex-col gap-2 text-xs text-gray-600">
         <div>
           <span class="font-medium text-gray-700">ID:</span>
@@ -53,7 +53,7 @@
       </div>
 
       <!-- Placeholder -->
-      <div class="field" v-if="soportaPlaceholder(campo.tipo)">
+      <div class="field" v-if="ServicioCampos.soportaPlaceholder(campo.tipo)">
         <label class="text-sm font-medium text-gray-700">Placeholder</label>
         <InputText
           :model-value="campo.marcadorPosicion || ''"
@@ -179,14 +179,14 @@ import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import type { EsquemaCampo, MetadatosCampo } from '@/interfaces/Campos'
 import type { TipoCampo } from '@/tipos/Campos'
 import { OPCIONES_TIPO_CORTO } from '@/constantes/Campos'
-import { soportaPlaceholder, soportaOpciones } from '@/utilidades/comunes'
+
 import InputText from 'primevue/inputtext'
 import Select from 'primevue/select'
 import Textarea from 'primevue/textarea'
 import InputNumber from 'primevue/inputnumber'
 import Checkbox from 'primevue/checkbox'
 import DatePicker from 'primevue/datepicker'
-import Panel from 'primevue/panel'
+import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 
 const propiedades = defineProps<{ campo: EsquemaCampo }>()
 const almacen = useAlmacenDisenador()
@@ -195,7 +195,7 @@ const almacen = useAlmacenDisenador()
 const metadatos = computed<MetadatosCampo>(() => propiedades.campo.metadatos ?? {})
 
 const tieneOpciones = computed(() => {
-  return soportaOpciones(propiedades.campo.tipo)
+  return ServicioCampos.soportaOpciones(propiedades.campo.tipo)
 })
 
 function actualizarTexto(clave: 'etiqueta' | 'nombre' | 'marcadorPosicion', valor: string): void {
@@ -212,14 +212,14 @@ function cambiarTipoCampo(nuevo: TipoCampo): void {
 
 function obtenerMetaPorDefecto(tipo: TipoCampo): Partial<MetadatosCampo> | undefined {
   if (tipo === 'seleccion' || tipo === 'radio') {
-    return { options: [{ label: 'Item 1', value: 'item1' }, { label: 'Item 2', value: 'item2' }] }
+    return { opciones: [{ etiqueta: 'Item 1', valor: 'item1' }, { etiqueta: 'Item 2', valor: 'item2' }] }
   }
   if (tipo === 'casilla') {
     return { valorPorDefecto: false }
   }
   if (tipo === 'tabla') {
     return {
-      columns: [
+      columnas: [
         { id: 'col1', nombre: 'col1', etiqueta: 'Columna 1', tipo: 'text' },
         { id: 'col2', nombre: 'col2', etiqueta: 'Columna 2', tipo: 'number' }
       ],

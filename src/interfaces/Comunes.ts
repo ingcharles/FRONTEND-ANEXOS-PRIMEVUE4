@@ -37,7 +37,7 @@ export interface ResultadoValidacion {
 }
 
 // Interfaces para el manejo de eventos
-import type { ValorDato } from '@/tipos/Comunes'
+import type { TipoAlerta, ValorDato } from '@/tipos/Comunes'
 export interface EventoCambioCampo {
   campoId: string
   valorAnterior: ValorDato | undefined
@@ -49,4 +49,20 @@ export interface EventoValidacion {
   campoId: string
   resultado: ResultadoValidacion
   timestamp: Date
+}
+
+
+// Modales
+export interface ModalAlerta {
+  modelValue: boolean
+  titulo: string
+  mensaje: string
+  mensajeDetalle?: string
+  tipo?: TipoAlerta
+  ancho?: string
+  cerrable?: boolean
+  mostrarBotonCancelar?: boolean
+  textoBotonConfirmar?: string
+  textoBotonCancelar?: string
+  iconoBotonConfirmar?: string
 }

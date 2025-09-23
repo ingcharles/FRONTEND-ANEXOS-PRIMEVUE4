@@ -60,7 +60,7 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
 
   obtenerColumnasTabla(campo: EsquemaCampo): ColumnaTabla[] {
     const metadatos = campo.metadatos as MetadatosCampo | undefined
-    const columnasRaw = (metadatos?.columnas ?? metadatos?.columns) as unknown
+    const columnasRaw = (metadatos?.columnas ?? metadatos?.columnas) as unknown
     return Array.isArray(columnasRaw)
       ? (columnasRaw as ColumnaTabla[]).filter(c => c && typeof c.nombre === 'string')
       : []
@@ -71,7 +71,7 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
     let filas: number | undefined = metadatos?.filas
     if (filas === undefined) {
       const metaGenerico = metadatos as unknown as { rows?: number }
-      if (typeof metaGenerico?.rows === 'number') filas = metaGenerico.rows
+      if (typeof metaGenerico?.filas === 'number') filas = metaGenerico.filas
     }
     return typeof filas === 'number' && filas > 0 ? filas : 1
   }
@@ -202,7 +202,7 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
 
   private crearEsquemaCheckbox(campo: EsquemaCampo): z.ZodTypeAny {
     const metadatos = campo.metadatos as MetadatosCampo | undefined
-    const opciones = metadatos?.options
+    const opciones = metadatos?.opciones
     const esGrupo = Array.isArray(opciones) && opciones.length > 0
 
     return esGrupo ? z.array(z.union([z.string(), z.number()])) : z.boolean()
@@ -246,8 +246,8 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
     const col = columna as ColumnaConMensajes
     const min = typeof col.min === 'number' ? col.min : undefined
     const max = typeof col.max === 'number' ? col.max : undefined
-    const mensajeMin = col.minMessage || col.mensajeMin || (typeof min === 'number' ? `Debe ser >= ${min}` : 'Valor demasiado pequeño')
-    const mensajeMax = col.maxMessage || col.mensajeMax || (typeof max === 'number' ? `Debe ser <= ${max}` : 'Valor demasiado grande')
+    const mensajeMin = col.mensajeMinimo || col.mensajeMin || (typeof min === 'number' ? `Debe ser >= ${min}` : 'Valor demasiado pequeño')
+    const mensajeMax = col.mensajeMaximo || col.mensajeMax || (typeof max === 'number' ? `Debe ser <= ${max}` : 'Valor demasiado grande')
 
     let reglaNumero = z.number()
     if (typeof min === 'number') reglaNumero = reglaNumero.min(min, mensajeMin)
@@ -281,7 +281,7 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
 
     if (campo.tipo === 'casilla') {
       const metadatos = campo.metadatos as MetadatosCampo | undefined
-      const opciones = metadatos?.options
+      const opciones = metadatos?.opciones
 
       if (Array.isArray(opciones) && opciones.length > 0) {
         return z.array(z.any()).refine(
