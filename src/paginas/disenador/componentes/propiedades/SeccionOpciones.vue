@@ -214,6 +214,15 @@
 
     <!-- Dependencias -->
     <SeccionDependencias v-if="campo" :campo="campo" />
+
+    <!-- Modal de alerta para errores de API -->
+    <ModalAlerta
+      v-model="mostrarModalAlerta"
+      :titulo="datosModalAlerta.titulo"
+      :mensaje="datosModalAlerta.mensaje"
+      :mensaje-detalle="datosModalAlerta.detalle"
+      tipo="error"
+    />
   </div>
 </template>
 
@@ -229,6 +238,7 @@ import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { OpcionSeleccion } from '@/interfaces/Comunes'
 import { soportaOpciones } from '@/utilidades/comunes'
 import SeccionDependencias from './SeccionDependencias.vue'
+import ModalAlerta from '@/componentes/ModalAlerta.vue'
 
 type ModoOpciones = 'manual' | 'api'
 type MetodoHttp = 'GET' | 'POST'
@@ -259,6 +269,14 @@ const almacen = useAlmacenDisenador()
 // Estado para carga de API
 const cargandoApi = ref(false)
 const errorApi = ref<string | null>(null)
+
+// Estado para modal de alerta
+const mostrarModalAlerta = ref(false)
+const datosModalAlerta = ref({
+  titulo: '',
+  mensaje: '',
+  detalle: ''
+})
 
 // Opciones para los selectores
 const opcionesFuente: OpcionSelector[] = [
@@ -443,6 +461,89 @@ function detectarEstructuraApi(datos: unknown[]): { labelKey: string; valueKey: 
   return { labelKey, valueKey }
 }
 
+// Función para obtener mensaje de error específico según el código HTTP
+function obtenerMensajeError(status: number, message?: string): { titulo: string; mensaje: string } {
+  switch (status) {
+    case 400:
+      return {
+        titulo: 'Solicitud incorrecta',
+        mensaje: 'La URL o los parámetros enviados son incorrectos. Verifique la configuración de la API.'
+      }
+    case 401:
+      return {
+        titulo: 'No autorizado',
+        mensaje: 'Se requiere autenticación. Verifique los headers de autorización en la configuración.'
+      }
+    case 403:
+      return {
+        titulo: 'Acceso denegado',
+        mensaje: 'No tiene permisos para acceder a este recurso. Contacte al administrador de la API.'
+      }
+    case 404:
+      return {
+        titulo: 'Recurso no encontrado',
+        mensaje: 'La URL especificada no existe. Verifique que la dirección de la API sea correcta.'
+      }
+    case 408:
+      return {
+        titulo: 'Tiempo de espera agotado',
+        mensaje: 'La API tardó demasiado en responder. Inténtelo nuevamente o contacte al administrador.'
+      }
+    case 429:
+      return {
+        titulo: 'Demasiadas solicitudes',
+        mensaje: 'Ha excedido el límite de solicitudes. Espere un momento antes de intentar nuevamente.'
+      }
+    case 500:
+      return {
+        titulo: 'Error interno del servidor',
+        mensaje: 'Hay un problema en el servidor de la API. Contacte al administrador del servicio.'
+      }
+    case 502:
+      return {
+        titulo: 'Puerta de enlace incorrecta',
+        mensaje: 'El servidor está experimentando problemas. Inténtelo más tarde.'
+      }
+    case 503:
+      return {
+        titulo: 'Servicio no disponible',
+        mensaje: 'La API está temporalmente fuera de servicio. Inténtelo más tarde.'
+      }
+    case 504:
+      return {
+        titulo: 'Tiempo de espera de puerta de enlace',
+        mensaje: 'El servidor tardó demasiado en responder. Inténtelo nuevamente.'
+      }
+    default:
+      if (status >= 400 && status < 500) {
+        return {
+          titulo: 'Error del cliente',
+          mensaje: `Error HTTP ${status}: ${message || 'Verifique la configuración de la solicitud.'}`
+        }
+      } else if (status >= 500) {
+        return {
+          titulo: 'Error del servidor',
+          mensaje: `Error HTTP ${status}: ${message || 'Hay un problema en el servidor de la API.'}`
+        }
+      } else {
+        return {
+          titulo: 'Error de conexión',
+          mensaje: message || 'No se pudo conectar con la API. Verifique su conexión a internet y la URL.'
+        }
+      }
+  }
+}
+
+// Función para mostrar modal de error
+function mostrarError(status: number, message?: string): void {
+  const { titulo, mensaje } = obtenerMensajeError(status, message)
+  datosModalAlerta.value = {
+    titulo,
+    mensaje,
+    detalle: status > 0 ? `Código de error: ${status}` : ''
+  }
+  mostrarModalAlerta.value = true
+}
 // Cargar opciones desde API
 async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<void> {
   if (!props.campo) return
@@ -451,7 +552,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
   errorApi.value = null
 
   if (!config.url) {
-    errorApi.value = 'Ingrese una URL para cargar opciones.'
+    mostrarError(0, 'Ingrese una URL para cargar opciones.')
     return
   }
 
@@ -469,7 +570,8 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
           if (typeof valor === 'string') headers[clave] = valor
         }
       } catch {
-        // Si headersJson no es JSON válido, lo ignoramos
+        mostrarError(0, 'El formato JSON de los headers es inválido.')
+        return
       }
     }
 
@@ -498,7 +600,8 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
     })
 
     if (!respuesta.ok) {
-      throw new Error('Error HTTP ' + respuesta.status)
+      mostrarError(respuesta.status, respuesta.statusText)
+      return
     }
 
     const datos = await respuesta.json()
@@ -547,7 +650,11 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
     }
 
   } catch (error: unknown) {
-    errorApi.value = error instanceof Error ? error.message : 'Error al cargar opciones'
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      mostrarError(0, 'No se pudo conectar con la API. Verifique la URL y su conexión a internet.')
+    } else {
+      mostrarError(0, error instanceof Error ? error.message : 'Error inesperado al cargar opciones')
+    }
   } finally {
     cargandoApi.value = false
   }
