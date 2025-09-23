@@ -57,8 +57,10 @@ describe('Validación de fecha (min/max)', () => {
     almacen.actualizarValorCampo(pageId, 'fecha1', '2025-01-15')
     await wrapper.vm.$nextTick()
     await form.trigger('submit.prevent')
-    // Debería pasar sin errores
+    // Debería pasar sin errores (excepto el asterisco de campo requerido)
     errorEls = wrapper.findAll('.text-red-500')
-    expect(errorEls.length).toBe(0)
+    // Filtrar solo los errores que no sean el asterisco
+    const errorMessages = errorEls.filter(el => el.text() !== '*')
+    expect(errorMessages.length).toBe(0)
   })
 })
