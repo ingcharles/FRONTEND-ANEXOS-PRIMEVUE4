@@ -69,7 +69,7 @@ const elementosPaleta: { tipo: TipoCampo; icono: string; propiedadesPorDefecto?:
           { label: 'Opción 1', value: 'opcion1' },
           { label: 'Opción 2', value: 'opcion2' },
         ],
-        optionsMode: 'manual',
+        modoOpciones: 'manual',
         modoOpciones: 'manual',
       },
     },

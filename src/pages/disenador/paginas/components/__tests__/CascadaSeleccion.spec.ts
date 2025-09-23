@@ -27,17 +27,18 @@ describe('Cascada de Selects', () => {
 
   it('Debería cargar opciones del hijo cuando cambia el padre (query)', async () => {
     const json = [ { etiqueta: 'Bogotá', valor: 'BOG' }, { etiqueta: 'Medellín', valor: 'MED' } ]
-  const mockFetch = vi.fn().mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(json) })
-  ;(globalThis as unknown as { fetch: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> }).fetch = mockFetch as (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
+    const mockFetch = vi.fn().mockResolvedValue({ ok: true, json: vi.fn().mockResolvedValue(json) })
+    ;(globalThis as unknown as { fetch: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response> }).fetch = mockFetch as (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
 
-  const almacen = crearFormulario()
-  mount(VistaPrevia, { global: { stubs: { PrimePanel: true } } })
+    const almacen = crearFormulario()
+    const wrapper = mount(VistaPrevia, { global: { stubs: { PrimePanel: true } } })
 
     // Establecer valor del padre para disparar watcher
-  const valores = almacen.obtenerValoresPagina('p1') as Record<string, unknown>
-  valores['pais'] = 'CO'
+    const valores = almacen.obtenerValoresPagina('p1') as Record<string, unknown>
+    valores['pais'] = 'CO'
+    almacen.actualizarValorCampo('p1', 'pais', 'CO')
 
-    await new Promise(r => setTimeout(r))
+    await new Promise(r => setTimeout(r, 100))
 
     // Verificar que fetch fue llamado con query param
     expect(mockFetch).toHaveBeenCalledWith('/api/opciones.json?country=CO', { method: 'GET' })

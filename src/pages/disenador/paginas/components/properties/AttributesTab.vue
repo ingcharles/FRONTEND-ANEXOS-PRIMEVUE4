@@ -35,7 +35,7 @@ const opcionesTipo: { label: string; value: TipoSimple }[] = [
 function obtenerMetaPorDefecto(tipo: TipoSimple): Record<string, unknown> | undefined {
   if (tipo === 'select' || tipo === 'radio') return { options: [{ label: 'Item 1', value: 'item1' }, { label: 'Item 2', value: 'item2' }] }
   if (tipo === 'checkbox') return { valorPorDefecto: false }
-  if (tipo === 'table') return { columns: [ { name:'col1', label:'Columna 1', type:'text' }, { name:'col2', label:'Columna 2', type:'number' } ], rows: 1, addRows: true, showSummary: true, summaryLabel: 'Total', tableStyle: { bordered: true, striped: true, hover: true, padding: 'md' } }
+  if (tipo === 'table') return { columns: [ { name:'col1', label:'Columna 1', type:'text' }, { name:'col2', label:'Columna 2', type:'number' } ], rows: 1, agregarFilas: true, mostrarResumen: true, summaryLabel: 'Total', estiloTabla: { bordered: true, striped: true, hover: true, padding: 'md' } }
   return undefined
 }
 function cambiarTipoCampo(nuevo: TipoSimple): void {
@@ -249,10 +249,10 @@ function eliminarColumna(ind: number): void {
   const cols = obtenerColumnas().filter((_, i) => i !== ind)
   actualizarColumnas(cols)
 }
-function actualizarAddRows(v: boolean): void {
+function actualizaragregarFilas(v: boolean): void {
   if (!campo.value) return
   const meta = { ...(campo.value.meta ?? {}) } as Record<string, unknown>
-  meta.addRows = v
+  meta.agregarFilas = v
   store.actualizarCampo(campo.value.id, { meta })
 }
 
@@ -365,14 +365,14 @@ type ModoOpciones = 'manual' | 'api'
 
 function obtenerModoOpciones(): ModoOpciones {
   const meta = (campo.value?.meta ?? {}) as Record<string, unknown>
-  const modo = (meta.optionsMode as ModoOpciones | undefined) || 'manual'
+  const modo = (meta.modoOpciones as ModoOpciones | undefined) || 'manual'
   return modo
 }
 
 function actualizarModoOpciones(modo: ModoOpciones): void {
   if (!campo.value) return
   const meta = { ...(campo.value.meta ?? {}) } as Record<string, unknown>
-  meta.optionsMode = modo
+  meta.modoOpciones = modo
 
   // Asegurar que options existe como array cuando se cambia el modo
   if (!Array.isArray(meta.options)) {
@@ -384,7 +384,7 @@ function actualizarModoOpciones(modo: ModoOpciones): void {
 
 function obtenerConfigApi(): ConfigApi {
   const meta = (campo.value?.meta ?? {}) as Record<string, unknown>
-  const cfg = (meta.optionsApi as ConfigApi) || {}
+  const cfg = (meta.configuracionApi as ConfigApi) || {}
   return {
     url: cfg.url || '',
     method: cfg.method || 'GET',
@@ -400,8 +400,8 @@ function obtenerConfigApi(): ConfigApi {
 function actualizarConfigApi(parcial: Partial<ConfigApi>): void {
   if (!campo.value) return
   const meta = { ...(campo.value.meta ?? {}) } as Record<string, unknown>
-  const actual = ((meta.optionsApi as ConfigApi) || {})
-  meta.optionsApi = { ...actual, ...parcial }
+  const actual = ((meta.configuracionApi as ConfigApi) || {})
+  meta.configuracionApi = { ...actual, ...parcial }
   store.actualizarCampo(campo.value.id, { meta })
 }
 
@@ -1080,7 +1080,7 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
     </template>
     <div class="mt-2">
       <label class="inline-flex items-center gap-2">
-  <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.addRows)" @update:model-value="(v:boolean)=> actualizarAddRows(v)" />
+  <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.agregarFilas)" @update:model-value="(v:boolean)=> actualizaragregarFilas(v)" />
         Permitir añadir filas
       </label>
     </div>
@@ -1098,7 +1098,7 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
       <div class="grid grid-cols-12 gap-3">
         <div class="col-span-12 md:col-span-4">
           <label class="block mb-1">Mostrar resumen</label>
-          <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.showSummary)" @update:model-value="(v:boolean)=> { const meta = { ...(campo?.meta as any) }; meta.showSummary = v; store.actualizarCampo(campo!.id, { meta }) }" />
+          <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.mostrarResumen)" @update:model-value="(v:boolean)=> { const meta = { ...(campo?.meta as any) }; meta.mostrarResumen = v; store.actualizarCampo(campo!.id, { meta }) }" />
         </div>
         <div class="col-span-12 md:col-span-8">
           <label class="block mb-1">Etiqueta resumen</label>
@@ -1111,19 +1111,19 @@ function actualizarLayoutGrupo(l: LayoutGrupo): void {
       <div class="grid grid-cols-12 gap-3">
         <div class="col-span-12 sm:col-span-3">
           <label class="block mb-1">Bordes</label>
-          <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.tableStyle?.bordered)" @update:model-value="(v:boolean)=> { const meta = { ...(campo?.meta as any), tableStyle: { ...((campo?.meta as any)?.tableStyle||{}) } }; meta.tableStyle.bordered = v; store.actualizarCampo(campo!.id, { meta }) }" />
+          <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.estiloTabla?.bordered)" @update:model-value="(v:boolean)=> { const meta = { ...(campo?.meta as any), estiloTabla: { ...((campo?.meta as any)?.estiloTabla||{}) } }; meta.estiloTabla.bordered = v; store.actualizarCampo(campo!.id, { meta }) }" />
         </div>
         <div class="col-span-12 sm:col-span-3">
           <label class="block mb-1">Zebra</label>
-          <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.tableStyle?.striped)" @update:model-value="(v:boolean)=> { const meta = { ...(campo?.meta as any), tableStyle: { ...((campo?.meta as any)?.tableStyle||{}) } }; meta.tableStyle.striped = v; store.actualizarCampo(campo!.id, { meta }) }" />
+          <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.estiloTabla?.striped)" @update:model-value="(v:boolean)=> { const meta = { ...(campo?.meta as any), estiloTabla: { ...((campo?.meta as any)?.estiloTabla||{}) } }; meta.estiloTabla.striped = v; store.actualizarCampo(campo!.id, { meta }) }" />
         </div>
         <div class="col-span-12 sm:col-span-3">
           <label class="block mb-1">Hover</label>
-          <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.tableStyle?.hover)" @update:model-value="(v:boolean)=> { const meta = { ...(campo?.meta as any), tableStyle: { ...((campo?.meta as any)?.tableStyle||{}) } }; meta.tableStyle.hover = v; store.actualizarCampo(campo!.id, { meta }) }" />
+          <PrimeCheckbox binary :model-value="Boolean((campo?.meta as any)?.estiloTabla?.hover)" @update:model-value="(v:boolean)=> { const meta = { ...(campo?.meta as any), estiloTabla: { ...((campo?.meta as any)?.estiloTabla||{}) } }; meta.estiloTabla.hover = v; store.actualizarCampo(campo!.id, { meta }) }" />
         </div>
         <div class="col-span-12 sm:col-span-3">
           <label class="block mb-1">Padding</label>
-          <PrimeSelect :model-value="(((campo?.meta as any)?.tableStyle?.padding) || 'md')" :options="['sm','md','lg']" @update:model-value="(v:string)=> { const meta = { ...(campo?.meta as any), tableStyle: { ...((campo?.meta as any)?.tableStyle||{}) } }; meta.tableStyle.padding = v; store.actualizarCampo(campo!.id, { meta }) }" />
+          <PrimeSelect :model-value="(((campo?.meta as any)?.estiloTabla?.padding) || 'md')" :options="['sm','md','lg']" @update:model-value="(v:string)=> { const meta = { ...(campo?.meta as any), estiloTabla: { ...((campo?.meta as any)?.estiloTabla||{}) } }; meta.estiloTabla.padding = v; store.actualizarCampo(campo!.id, { meta }) }" />
         </div>
       </div>
     </div>

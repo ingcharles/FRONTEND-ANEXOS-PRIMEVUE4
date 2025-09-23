@@ -80,8 +80,8 @@ describe('Carga independiente de API con estructura española', () => {
     // Verificar que las opciones se cargaron en el campo
     const campo = almacen.esquemaFormulario.paginas[0].campos.find((f: EsquemaCampo) => f.id === 'yearSelect')
     expect(campo?.metadatos?.opciones).toEqual([
-      { label: 'Año 2023', value: '2023' },
-      { label: 'Año 2024', value: '2024' }
+      { etiqueta: 'Año 2023', valor: '2023' },
+      { etiqueta: 'Año 2024', valor: '2024' }
     ])
 
     wrapper.unmount()
@@ -137,8 +137,8 @@ describe('Carga independiente de API con estructura española', () => {
     // Verificar que se detectó automáticamente la estructura española
     const campo = almacen.esquemaFormulario.paginas[0].campos.find((f: EsquemaCampo) => f.id === 'option')
     expect(campo?.metadatos?.opciones).toEqual([
-      { label: 'Opción A', value: 'a' },
-      { label: 'Opción B', value: 'b' }
+      { etiqueta: 'Opción A', valor: 'a' },
+      { etiqueta: 'Opción B', valor: 'b' }
     ])
 
     wrapper.unmount()

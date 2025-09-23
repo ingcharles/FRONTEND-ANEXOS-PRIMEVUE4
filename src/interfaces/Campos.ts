@@ -12,8 +12,6 @@ export interface MetadatosCampo {
   configuracionApi?: Record<string, ValorDato> | undefined
   // Compatibilidad con claves en inglés durante la migración
   options?: Array<{ label: string; value: string | number; disabled?: boolean }> | undefined
-  optionsMode?: 'api' | 'static' | string | undefined
-  optionsApi?: Record<string, ValorDato> | undefined
   dependencia?: ConfiguracionDependencia | undefined
   dependeDe?: string | undefined
   urlApi?: string | undefined
@@ -38,9 +36,6 @@ export interface MetadatosCampo {
   mostrarResumen?: boolean | undefined
   estiloTabla?: Record<string, ValorDato> | undefined
   // Compatibilidad en inglés
-  addRows?: boolean | undefined
-  tableStyle?: Record<string, ValorDato> | undefined
-  showSummary?: boolean | undefined
   disabled?: boolean | undefined
   deshabilitado?: boolean | undefined
   fechaMinima?: Date | string | undefined

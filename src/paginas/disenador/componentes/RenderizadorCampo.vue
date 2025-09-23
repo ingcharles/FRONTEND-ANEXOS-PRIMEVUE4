@@ -75,7 +75,7 @@ function obtenerColumnasTabla(campo: EsquemaCampo): ColumnaTablaExtendida[] {
 
 function obtenerEstiloTabla(campo: EsquemaCampo) {
   const metadatos = campo.metadatos as Record<string, unknown> | undefined
-  const estiloTabla = (metadatos?.tableStyle ?? {}) as Partial<{
+  const estiloTabla = (metadatos?.estiloTabla ?? {}) as Partial<{
     bordered?: boolean
     striped?: boolean
     hover?: boolean
@@ -460,7 +460,7 @@ const esCampoRequerido = computed(() => {
             </tbody>
 
             <!-- Pie de tabla con agregaciones -->
-            <tfoot v-if="obtenerColumnasTabla(campo).some(c => c.agg && c.agg !== 'none') || (campo.metadatos as any)?.showSummary">
+            <tfoot v-if="obtenerColumnasTabla(campo).some(c => c.agg && c.agg !== 'none') || (campo.metadatos as any)?.mostrarResumen">
               <tr>
                 <td
                   v-for="(columnaTabla, indiceColumna) in obtenerColumnasTabla(campo)"
@@ -486,7 +486,7 @@ const esCampoRequerido = computed(() => {
         </div>
 
         <!-- Botón para agregar filas -->
-        <div class="mt-2" v-if="(campo.metadatos as any)?.addRows">
+        <div class="mt-2" v-if="(campo.metadatos as any)?.agregarFilas">
           <PrimeButton
             size="small"
             icon="pi pi-plus"

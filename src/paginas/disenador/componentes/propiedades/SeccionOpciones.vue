@@ -286,7 +286,7 @@ const metadatos = computed(() => {
 // Configuración de API
 const configApi = computed((): ConfigApi => {
   const meta = metadatos.value as Record<string, unknown>
-  const config = (meta.optionsApi as ConfigApi) || {}
+  const config = (meta.configuracionApi as ConfigApi) || {}
   return {
     url: config.url || '',
     method: config.method || 'GET',
@@ -308,14 +308,14 @@ function esCampoConOpciones(): boolean {
 // Modo de opciones
 function obtenerModoOpciones(): ModoOpciones {
   const meta = metadatos.value as Record<string, unknown>
-  return (meta.modoOpciones as ModoOpciones) || (meta.optionsMode as ModoOpciones) || 'manual'
+  return (meta.modoOpciones as ModoOpciones) || (meta.modoOpciones as ModoOpciones) || 'manual'
 }
 
 function actualizarModoOpciones(modo: ModoOpciones): void {
   if (!props.campo) return
   const meta = { ...metadatos.value } as Record<string, unknown>
   meta.modoOpciones = modo
-  meta.optionsMode = modo // compat
+  meta.modoOpciones = modo // compat
 
   // Asegurar que options existe como array
   if (!Array.isArray(meta.opciones)) meta.opciones = []
@@ -378,8 +378,8 @@ function eliminarOpcion(indice: number): void {
 function actualizarConfigApi(parcial: Partial<ConfigApi>): void {
   if (!props.campo) return
   const meta = { ...metadatos.value } as Record<string, unknown>
-  const actual = (meta.optionsApi as ConfigApi) || {}
-  meta.optionsApi = { ...actual, ...parcial }
+  const actual = (meta.configuracionApi as ConfigApi) || {}
+  meta.configuracionApi = { ...actual, ...parcial }
   almacen.actualizarCampo(props.campo.id, { metadatos: meta })
 }
 

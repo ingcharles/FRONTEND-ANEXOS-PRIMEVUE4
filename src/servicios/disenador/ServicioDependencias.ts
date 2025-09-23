@@ -79,8 +79,10 @@ export class ServicioDependenciasFormulario implements ServicioDependencias {
 
   async cargarOpcionesIndependientes(campo: EsquemaCampo): Promise<void> {
     const metadatos = (campo.metadatos || {}) as MetadatosCampo
-    const configuracionApi = (metadatos.configuracionApi || metadatos.optionsApi || {}) as Record<string, ValorDato>
-    const url = String((configuracionApi['url'] || ''))
+    const configuracionApi = (metadatos.configuracionApi || metadatos.configuracionApi || {}) as Record<string, ValorDato>
+    
+    // Buscar URL en diferentes ubicaciones para compatibilidad
+    const url = String((configuracionApi['url'] || metadatos.urlApi || (metadatos as Record<string, unknown>).apiUrl || ''))
 
     if (!url) return
 
@@ -119,12 +121,21 @@ export class ServicioDependenciasFormulario implements ServicioDependencias {
       }
 
       const arreglo: ValorDato[] = Array.isArray(datos) ? (datos as ValorDato[]) : []
+      
+      // Buscar claves de etiqueta y valor en diferentes ubicaciones para compatibilidad
+      const labelKeyConfig = (configuracionApi['labelKey'] as string) || 
+                           (metadatos as Record<string, unknown>).labelKey as string ||
+                           metadatos.propiedadEtiqueta
+      const valueKeyConfig = (configuracionApi['valueKey'] as string) || 
+                           (metadatos as Record<string, unknown>).valueKey as string ||
+                           metadatos.propiedadValor
+      
       const { labelKey, valueKey } = this.detectarEstructuraAutomatica(arreglo, {
         url,
         method: metodo as 'GET' | 'POST',
         dataPath: rutaDatos || undefined,
-        labelKey: (configuracionApi['labelKey'] as string) || undefined,
-        valueKey: (configuracionApi['valueKey'] as string) || undefined,
+        labelKey: labelKeyConfig || undefined,
+        valueKey: valueKeyConfig || undefined,
         contentType: tipoContenido,
         body: (configuracionApi['body'] as string) || undefined,
       })
@@ -137,13 +148,15 @@ export class ServicioDependenciasFormulario implements ServicioDependencias {
         return { label: etiqueta, value: valor }
       }) as OpcionApi[]
 
-      // Actualizar las opciones del campo
-      const metadatosHelper = (campo.metadatos ||= {}) as MetadatosCampo
+      // Actualizar las opciones del campo - usar 'opciones' para compatibilidad con interfaz española
+      const metadatosHelper = (campo.metadatos ||= {}) as MetadatosCampo & Record<string, unknown>
+      metadatosHelper.opciones = opciones.map(op => ({ etiqueta: op.label, valor: op.value }))
       metadatosHelper.options = opciones
 
     } catch {
       // En caso de error, asegurar que siempre hay un array vacío
-      const metadatosHelper = (campo.metadatos ||= {}) as MetadatosCampo
+      const metadatosHelper = (campo.metadatos ||= {}) as MetadatosCampo & Record<string, unknown>
+      metadatosHelper.opciones = []
       metadatosHelper.options = []
     }
   }
@@ -151,7 +164,7 @@ export class ServicioDependenciasFormulario implements ServicioDependencias {
   async cargarOpcionesDependientes(hijo: EsquemaCampo, valorPadre: ValorDato | RegistroDatos): Promise<void> {
     const metadatos = (hijo.metadatos || {}) as MetadatosCampo
     const dependencia = (metadatos.dependencia || {}) as Dependencia
-    const configuracionApi = (metadatos.configuracionApi || metadatos.optionsApi || {}) as Record<string, ValorDato>
+    const configuracionApi = (metadatos.configuracionApi || metadatos.configuracionApi || {}) as Record<string, ValorDato>
     const url = String((configuracionApi['url'] || ''))
 
     if (!url) return

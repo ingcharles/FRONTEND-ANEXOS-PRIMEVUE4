@@ -67,13 +67,61 @@ export class ServicioCampos {
   }
 
   /**
+   * Obtener metadatos por defecto para un tipo de campo
+   */
+  private static obtenerMetadatosPorDefecto(tipo: string): Record<string, unknown> | undefined {
+    const metadatosPorTipo: Record<string, Record<string, unknown> | undefined> = {
+      'seleccion': { 
+        opciones: [
+          { etiqueta: 'Opción 1', valor: 'opcion-1' }, 
+          { etiqueta: 'Opción 2', valor: 'opcion-2' }
+        ] 
+      },
+      'radio': { 
+        opciones: [
+          { etiqueta: 'Opción 1', valor: 'opcion-1' }, 
+          { etiqueta: 'Opción 2', valor: 'opcion-2' }
+        ] 
+      },
+      'casilla': { valorPorDefecto: false },
+      'tabla': { 
+        columnas: [
+          { nombre: 'col1', etiqueta: 'Columna 1', tipo: 'texto' }, 
+          { nombre: 'col2', etiqueta: 'Columna 2', tipo: 'numero' }
+        ], 
+        filas: 1, 
+        permitirAgregarFilas: true, 
+        mostrarResumen: true, 
+        etiquetaResumen: 'Total',
+        estiloTabla: { 
+          conBordes: true, 
+          rayada: true, 
+          efectoHover: true, 
+          espaciado: 'md' 
+        } 
+      }
+    }
+    return metadatosPorTipo[tipo]
+  }
+
+  /**
    * Actualizar un campo en una lista (recursivo)
    */
   private static actualizarCampoEnLista(lista: EsquemaCampo[], id: string, cambios: Partial<EsquemaCampo>): boolean {
     const indice = lista.findIndex((campo) => campo.id === id)
     if (indice >= 0) {
       const campoActual = lista[indice]
-      const campoActualizado = { ...campoActual, ...clonarProfundo(cambios) } as EsquemaCampo
+      let campoActualizado = { ...campoActual, ...clonarProfundo(cambios) } as EsquemaCampo
+
+      // Si se está cambiando el tipo, aplicar metadatos por defecto
+      if ('tipo' in cambios && cambios.tipo !== campoActual.tipo) {
+        const metadatosPorDefecto = this.obtenerMetadatosPorDefecto(cambios.tipo!)
+        if (metadatosPorDefecto) {
+          const metadatosActuales = { ...(campoActual.metadatos ?? {}) }
+          const metadatosFinales = { ...metadatosActuales, ...metadatosPorDefecto }
+          campoActualizado = { ...campoActualizado, metadatos: metadatosFinales }
+        }
+      }
 
       // Solo 'panel' puede tener hijos
       if (campoActualizado.tipo !== 'panel' && 'hijos' in cambios) {

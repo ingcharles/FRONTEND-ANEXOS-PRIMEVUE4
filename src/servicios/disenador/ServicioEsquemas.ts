@@ -17,6 +17,7 @@ export interface ServicioEsquemas {
 
 export class ServicioEsquemasFormulario implements ServicioEsquemas {
   recolectarCamposConNombre(lista: EsquemaCampo[], salida: EsquemaCampo[] = []): EsquemaCampo[] {
+    if (!Array.isArray(lista)) return salida
     for (const campo of lista) {
       if (!campo) continue
       if (campo.nombre) salida.push(campo)

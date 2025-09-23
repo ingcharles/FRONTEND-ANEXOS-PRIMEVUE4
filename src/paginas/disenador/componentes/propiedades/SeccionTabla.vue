@@ -415,7 +415,7 @@ const metadatos = computed(() => {
 // Estilo de tabla
 const estiloTabla = computed((): EstiloTabla => {
   const meta = metadatos.value as Record<string, unknown>
-  return (meta.tableStyle as EstiloTabla) || {}
+  return (meta.estiloTabla as EstiloTabla) || {}
 })
 
 // Obtener columnas
@@ -536,9 +536,9 @@ function actualizarMetadato(propiedad: string, valor: unknown): void {
 function actualizarEstiloTabla(propiedad: keyof EstiloTabla, valor: unknown): void {
   if (!props.campo) return
   const meta = { ...metadatos.value } as Record<string, unknown>
-  const estiloActual = (meta.tableStyle as EstiloTabla) || {}
+  const estiloActual = (meta.estiloTabla as EstiloTabla) || {}
 
-  meta.tableStyle = { ...estiloActual, [propiedad]: valor }
+  meta.estiloTabla = { ...estiloActual, [propiedad]: valor }
   almacen.actualizarCampo(props.campo.id, { metadatos: meta })
 }
 

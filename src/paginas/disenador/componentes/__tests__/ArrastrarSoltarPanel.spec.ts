@@ -40,10 +40,13 @@ describe('ContenedorPanel - Arrastrar y Soltar', () => {
     almacen.actualizarCampo('panel1', { hijos: [...nuevaLista] })
     await nextTick()
 
+    // Obtener la referencia actualizada del almacén
+    const panelActualizado = almacen.esquemaFormulario.paginas[0].campos.find((c: EsquemaCampo) => c.id === 'panel1')!
+    
     // Verificar que el orden cambió
-    expect(panel.hijos).toHaveLength(2)
-    expect(panel.hijos![0].id).toBe('campo2')
-    expect(panel.hijos![1].id).toBe('campo1')
+    expect(panelActualizado.hijos).toHaveLength(2)
+    expect(panelActualizado.hijos![0].id).toBe('campo2')
+    expect(panelActualizado.hijos![1].id).toBe('campo1')
   })
 })
 

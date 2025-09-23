@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import VistaPrevia from '../VistaPrevia.vue'
 import { useAlmacenDisenador } from '../../../../almacenes/UsarAlmacenDisenador'
+import type { EsquemaCampo } from '../../../../interfaces/Campos'
 
 function crearCampoTablaValidaciones() {
   return {
@@ -51,15 +52,24 @@ describe('Validación por columna en tabla', () => {
     almacen.navegarPagina(pageId)
 
     const formulario = almacen.esquemaFormulario
-    const valoresForm = { [formulario.paginas[0].id]: {} }
+    const valoresForm: Record<string, Record<string, unknown>> = { [formulario.paginas[0].id]: {} }
 
-    const nameKey = almacen.mapsIdToName[pageId]['field_v']
-    valoresForm[pageId][nameKey] = [{ n: 15 }] as any
+    // Buscar el campo directamente por su nombre
+    const campo = formulario.paginas[0].campos.find((c: EsquemaCampo) => c.id === 'field_v')
+    if (!campo?.nombre) {
+      throw new Error('Campo no encontrado o sin nombre')
+    }
+    
+    valoresForm[pageId][campo.nombre] = [{ n: 15 }]
 
     const resultadoSubmit = await almacen.validarYEnviarFormulario(valoresForm)
 
     expect(resultadoSubmit.exito).toBe(false)
     expect(resultadoSubmit.mensaje).toContain('<=10')
+    
+    // Esperamos que aparezca error en el wrapper
+    const errorEls = wrapper.findAll('.error-message, .p-invalid')
+    expect(errorEls.length).toBeGreaterThan(0)
   })
 })
 

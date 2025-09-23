@@ -22,8 +22,8 @@ const errores = ref<Record<string, string>>({})
 // Computed properties principales
 const paginaActual = computed(() => almacen.esquemaFormulario.paginas[indicePagina.value])
 const totalPaginas = computed(() => almacen.esquemaFormulario.paginas.length)
-const campos = computed<EsquemaCampo[]>(() => paginaActual.value.campos)
-const valores = computed<RegistroDatos>(() => almacen.obtenerValoresPagina(paginaActual.value.id) as RegistroDatos)
+const campos = computed<EsquemaCampo[]>(() => paginaActual.value?.campos || [])
+const valores = computed<RegistroDatos>(() => almacen.obtenerValoresPagina(paginaActual.value?.id || '') as RegistroDatos)
 const mapaIdNombre = computed(() => servicioEsquemas.construirMapaIdNombre(campos.value))
 
 // Gestión de dependencias
@@ -69,6 +69,7 @@ function checkboxEsGrupo(campo: EsquemaCampo): boolean {
 
 // Función para aplicar valores por defecto
 function aplicarValoresPorDefecto(lista: EsquemaCampo[], sobrescribirSiVacio = false): void {
+  if (!Array.isArray(lista)) return
   for (const campo of lista) {
     if (!campo) continue
 
@@ -137,7 +138,12 @@ function reconfigurarDependencias(): void {
   const dependencia = (metadatos.dependencia || {}) as ConfiguracionDependencia
 
     // Cargar opciones independientes (sin dependencias) que usan API
-    if (campo.nombre && (metadatos.modoOpciones ?? metadatos.optionsMode) === 'api' && !dependencia.campoPadre) {
+    const tieneConfiguracionApi = metadatos.modoOpciones === 'api' || 
+      metadatos.urlApi || 
+      (metadatos as Record<string, unknown>).apiUrl ||
+      (metadatos.configuracionApi as Record<string, unknown>)?.url
+      
+    if (campo.nombre && tieneConfiguracionApi && !dependencia.campoPadre) {
       servicioDependencias.cargarOpcionesIndependientes(campo)
     }
 
@@ -247,6 +253,7 @@ function recolectarFirmaSchema(
 }
 
 function recolectarFirmasDefaults(lista: EsquemaCampo[], salida: Array<string> = []): Array<string> {
+  if (!Array.isArray(lista)) return salida
   for (const campo of lista) {
     if (!campo) continue
     const valorDefecto = (campo.metadatos as MetadatosCampo | undefined)?.valorPorDefecto as ValorDato | undefined
@@ -258,7 +265,8 @@ function recolectarFirmasDefaults(lista: EsquemaCampo[], salida: Array<string> =
 
 function recolectarFirmaDependencias(): string {
   const arreglo: Array<Record<string, ValorDato>> = []
-  const pila: EsquemaCampo[] = [...campos.value]
+  const camposArray = Array.isArray(campos.value) ? campos.value : []
+  const pila: EsquemaCampo[] = [...camposArray]
 
   while (pila.length) {
     const campo = pila.shift()!
@@ -395,7 +403,7 @@ function irPaginaSiguiente(): void {
       <!-- Botón Enviar de respaldo: si no hay botón en la página y es la última o única -->
       <div
         class="col-12"
-        v-if="(totalPaginas === 1 || indicePagina >= almacen.esquemaFormulario.paginas.length - 1) && !campos.some(f => f.tipo === 'boton')"
+        v-if="(totalPaginas === 1 || indicePagina >= almacen.esquemaFormulario.paginas.length - 1) && !paginaActual?.campos?.some(f => f.tipo === 'boton')"
       >
         <Button type="submit" label="Enviar" icon="pi pi-check" class="w-full" />
       </div>
