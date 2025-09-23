@@ -1,5 +1,5 @@
 // Servicios para el manejo de campos - Principio de Responsabilidad Única
-import { TIPOS_CAMPO_DE_TEXTO, TIPOS_CON_OPCIONES, TIPOS_CON_PLACEHOLDER, TIPOS_ESPANOL } from '@/constantes/Campos'
+import { TipoCampoEtiqueta, TipoCampoValor, TIPOS_CAMPO_DE_TEXTO, TIPOS_CON_OPCIONES, TIPOS_CON_PLACEHOLDER, TIPOS_OPCIONES_ESPANOL } from '@/constantes/Campos'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { EsquemaPagina } from '@/interfaces/Pagina'
 import type { TipoCampo } from '@/tipos/Campos'
@@ -228,9 +228,18 @@ export class ServicioCampos {
   /**
    * Obtener el nombre en español del tipo de campo
    */
-  static obtenerNombreTipoEspanol(tipo: TipoCampo): string {
+  // static obtenerNombreTipoEspanol(tipo: TipoCampo): string {
 
-    return TIPOS_ESPANOL[tipo] || tipo
+  //   return TIPOS_OPCIONES_ESPANOL[tipo] || tipo
+  // }
+
+    static obtenerNombreOpciones(valor: TipoCampoValor): TipoCampoEtiqueta | undefined {
+    return TIPOS_OPCIONES_ESPANOL.find(op => op.valor === valor)?.etiqueta;
+  }
+
+  // Obtener valor a partir de etiqueta
+  static obtenerValorOpciones(etiqueta: TipoCampoEtiqueta): TipoCampoValor | undefined {
+    return TIPOS_OPCIONES_ESPANOL.find(op => op.etiqueta === etiqueta)?.valor;
   }
 
   /**

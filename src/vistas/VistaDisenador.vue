@@ -99,7 +99,7 @@ function enviarDesdeDisenador(): void {
     const idToName = construirMapaIdNombre(page.campos)
     for (const f of todos) {
   let base: z.ZodTypeAny = z.any()
-      if (f.tipo === 'texto' || f.tipo === 'correo' || f.tipo === 'contrasena' || f.tipo === 'area-texto') base = z.string()
+      if (f.tipo === 'texto' || f.tipo === 'correo' || f.tipo === 'contrasena' || f.tipo === 'areaTexto') base = z.string()
       if (f.tipo === 'numero') base = z.any() // reconstruir con min/max abajo
       if (f.tipo === 'hora') base = z.any()
       if (f.tipo === 'fecha') {

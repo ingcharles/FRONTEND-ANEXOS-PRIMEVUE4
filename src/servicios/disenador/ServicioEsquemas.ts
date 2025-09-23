@@ -118,7 +118,7 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
       case 'texto':
       case 'correo':
       case 'contrasena':
-      case 'area-texto':
+      case 'areaTexto':
         return z.string()
 
       case 'numero':

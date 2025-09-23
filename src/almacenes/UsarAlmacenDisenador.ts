@@ -126,7 +126,7 @@ export const useAlmacenDisenador = defineStore('disenador', () => {
     const campo = buscarEnLista(camposPaginaActiva.value)
     if (!campo) return '¿Está seguro de eliminar este componente?'
 
-    const tipoEnEspanol = ServicioCampos.obtenerNombreTipoEspanol(campo.tipo)
+    const tipoEnEspanol = ServicioCampos.obtenerNombreOpciones(campo.tipo)
     return `¿Está seguro de eliminar el componente '${tipoEnEspanol}'?`
   })
 

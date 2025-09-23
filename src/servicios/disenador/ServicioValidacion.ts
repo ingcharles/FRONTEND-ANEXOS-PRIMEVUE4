@@ -101,7 +101,7 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
       case 'texto':
       case 'correo':
       case 'contrasena':
-      case 'area-texto':
+      case 'areaTexto':
         esquemaBase = z.string()
         break
       case 'numero':

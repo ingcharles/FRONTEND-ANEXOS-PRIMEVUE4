@@ -265,7 +265,7 @@ const esCampoRequerido = computed(() => {
 
       <!-- Área de texto -->
       <PrimeTextarea
-        v-else-if="campo.tipo === 'area-texto'"
+        v-else-if="campo.tipo === 'areaTexto'"
         v-model="(valoresCampos as any)[campo.nombre || '']"
         :placeholder="campo.marcadorPosicion"
         class="w-full"

@@ -2,7 +2,7 @@
 
 export type TipoCampo =
   | 'texto'
-  | 'area-texto'
+  | 'areaTexto'
   | 'correo'
   | 'contrasena'
   | 'numero'

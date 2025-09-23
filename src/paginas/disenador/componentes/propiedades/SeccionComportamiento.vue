@@ -153,7 +153,7 @@ function esRequerible(): boolean {
 function esDeshabilitableOEscribible(): boolean {
   if (!props.campo) return false
   const tiposPermitidos: TipoCampo[] = [
-    'texto', 'area-texto', 'correo', 'contrasena', 'seleccion',
+    'texto', 'areaTexto', 'correo', 'contrasena', 'seleccion',
     'radio', 'hora', 'fecha', 'boton', 'numero', 'casilla'
   ]
   return tiposPermitidos.includes(props.campo.tipo)

@@ -133,7 +133,7 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
   <div class="field" v-if="ServicioCampos.esCampoDeTexto(campo.tipo)">
         <label class="text-sm font-medium text-gray-700">Valor por defecto</label>
         <PrimeInputText
-          v-if="campo.tipo !== 'area-texto'"
+          v-if="campo.tipo !== 'areaTexto'"
           :model-value="metadatos.valorPorDefecto as string || ''"
           @update:model-value="actualizarValorPorDefecto"
           placeholder="Valor inicial"

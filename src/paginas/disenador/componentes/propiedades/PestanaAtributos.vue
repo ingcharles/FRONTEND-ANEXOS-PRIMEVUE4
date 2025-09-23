@@ -32,14 +32,14 @@ function manejarActualizacionTexto(clave: keyof Pick<EsquemaCampo, 'etiqueta' | 
  */
 function manejarCambioTipo(nuevoTipo: TipoCampo): void {
   if (!campoSeleccionado.value) return
-  
+
   const metadatosActuales = { ...(campoSeleccionado.value.metadatos ?? {}) }
   const metadatosPorDefecto = obtenerMetadatosPorDefecto(nuevoTipo)
   const metadatosFinales = metadatosPorDefecto ? { ...metadatosActuales, ...metadatosPorDefecto } : metadatosActuales
-  
-  almacen.actualizarCampo(campoSeleccionado.value.id, { 
-    tipo: nuevoTipo, 
-    metadatos: metadatosFinales 
+
+  almacen.actualizarCampo(campoSeleccionado.value.id, {
+    tipo: nuevoTipo,
+    metadatos: metadatosFinales
   })
 }
 
@@ -57,8 +57,8 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
 function manejarActualizacionGrid(parcial: Partial<ColumnasGrid>): void {
   if (!campoSeleccionado.value) return
   const gridActual = campoSeleccionado.value.grid ?? {}
-  almacen.actualizarCampo(campoSeleccionado.value.id, { 
-    grid: { ...gridActual, ...parcial } 
+  almacen.actualizarCampo(campoSeleccionado.value.id, {
+    grid: { ...gridActual, ...parcial }
   })
 }
 
@@ -77,38 +77,38 @@ function manejarActualizacionOpciones(opciones: OpcionSeleccion[]): void {
  */
 function obtenerMetadatosPorDefecto(tipo: TipoCampo): Record<string, unknown> | undefined {
   const metadatosPorTipo: Record<TipoCampo, Record<string, unknown> | undefined> = {
-    'seleccion': { 
+    'seleccion': {
       opciones: [
-        { etiqueta: 'Opción 1', valor: 'opcion-1' }, 
+        { etiqueta: 'Opción 1', valor: 'opcion-1' },
         { etiqueta: 'Opción 2', valor: 'opcion-2' }
-      ] 
+      ]
     },
-    'radio': { 
+    'radio': {
       opciones: [
-        { etiqueta: 'Opción 1', valor: 'opcion-1' }, 
+        { etiqueta: 'Opción 1', valor: 'opcion-1' },
         { etiqueta: 'Opción 2', valor: 'opcion-2' }
-      ] 
+      ]
     },
     'casilla': { valorPorDefecto: false },
-    'tabla': { 
+    'tabla': {
       columnas: [
-        { nombre: 'col1', etiqueta: 'Columna 1', tipo: 'texto' }, 
+        { nombre: 'col1', etiqueta: 'Columna 1', tipo: 'texto' },
         { nombre: 'col2', etiqueta: 'Columna 2', tipo: 'numero' }
-      ], 
-      filas: 1, 
-      permitirAgregarFilas: true, 
-      mostrarResumen: true, 
+      ],
+      filas: 1,
+      permitirAgregarFilas: true,
+      mostrarResumen: true,
       etiquetaResumen: 'Total',
-      estiloTabla: { 
-        conBordes: true, 
-        rayada: true, 
-        efectoHover: true, 
-        espaciado: 'md' 
-      } 
+      estiloTabla: {
+        conBordes: true,
+        rayada: true,
+        efectoHover: true,
+        espaciado: 'md'
+      }
     },
     // Tipos sin metadatos específicos
     'texto': undefined,
-    'area-texto': undefined,
+    'areaTexto': undefined,
     'correo': undefined,
     'contrasena': undefined,
     'numero': undefined,
@@ -119,7 +119,7 @@ function obtenerMetadatosPorDefecto(tipo: TipoCampo): Record<string, unknown> | 
     'divisor': undefined,
     'panel': undefined,
   }
-  
+
   return metadatosPorTipo[tipo]
 }
 
