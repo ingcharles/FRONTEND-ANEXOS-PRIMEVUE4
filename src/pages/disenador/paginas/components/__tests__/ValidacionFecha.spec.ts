@@ -34,7 +34,7 @@ describe('Validación de fecha (min/max)', () => {
     // 1) No valor -> error requerido
     const form = wrapper.find('form')
     await form.trigger('submit.prevent')
-    
+
     // Buscar errores con la clase correcta en lugar de en vm.errores
     let errorEls = wrapper.findAll('.text-red-500')
     expect(errorEls.length).toBeGreaterThan(0)

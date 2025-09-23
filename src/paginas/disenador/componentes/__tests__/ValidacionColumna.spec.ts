@@ -44,12 +44,12 @@ describe('Validación por columna en tabla', () => {
   it('Debería fallar al enviar si n fuera de rango', async () => {
     const almacen = useAlmacenDisenador()
     almacen.esquemaFormulario.paginas = [crearPagina()]
-    
+
     const wrapper = mount(VistaPrevia as unknown as object)
     await wrapper.vm.$nextTick()
 
     const pageId = almacen.esquemaFormulario.paginas[0].id
-    
+
     // Configurar un valor inválido en la tabla
     almacen.actualizarValorCampo(pageId, 'tablaVal', [{ n: 15 }]) // 15 está fuera del rango 1-10
 
@@ -58,9 +58,9 @@ describe('Validación por columna en tabla', () => {
     // Forzar envío del formulario
     const form = wrapper.find('form')
     await form.trigger('submit.prevent')
-    
+
     await wrapper.vm.$nextTick()
-    
+
     // Esperamos que aparezca error con la clase correcta
     const errorEls = wrapper.findAll('.text-red-500')
     expect(errorEls.length).toBeGreaterThan(0)
