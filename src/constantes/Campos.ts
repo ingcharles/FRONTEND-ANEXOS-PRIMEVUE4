@@ -1,10 +1,9 @@
 // Constantes relacionadas con campos
 import type { ReglaLogica } from '@/interfaces/Validacion';
-import type { TipoCampo } from '@/tipos/Campos'
 
 export enum TipoCampoValor {
   Texto = 'texto',
-  AreaTexto = 'areaTexto',
+  AreaTexto = 'area-texto',
   Correo = 'correo',
   Contrasena = 'contrasena',
   Numero = 'numero',
@@ -24,7 +23,7 @@ export enum TipoCampoValor {
 
 // export const TIPOS_CAMPO_DISPONIBLES: readonly TipoCampoValor[] = [
 //   'texto',
-//   'areaTexto',
+//   'area-texto',
 //   'correo',
 //   'contrasena',
 //   'numero',
@@ -45,7 +44,7 @@ export enum TipoCampoValor {
  */
 // export const TIPOS_OPCIONES_ESPANOL: Record<TipoCampoValor, string> = {
 //   'texto': 'Texto',
-//   'areaTexto': 'Área de texto',
+//   'area-texto': 'Área de texto',
 //   'correo': 'Correo electrónico',
 //   'contrasena': 'Contraseña',
 //   'numero': 'Número',
@@ -142,7 +141,7 @@ export const ACCIONES_LOGICA_DISPONIBLES: readonly ReglaLogica['accion'][] = [
  */
 // export const OPCIONES_TIPO_CORTO: readonly { etiqueta: string; valor: TipoCampoValor }[] = [
 //   { etiqueta: 'Texto', valor: 'texto' },
-//   { etiqueta: 'Área', valor: 'areaTexto' },
+//   { etiqueta: 'Área', valor: 'area-texto' },
 //   { etiqueta: 'Email', valor: 'correo' },
 //   { etiqueta: 'Contraseña', valor: 'contrasena' },
 //   { etiqueta: 'Número', valor: 'numero' },
@@ -158,7 +157,7 @@ export const ACCIONES_LOGICA_DISPONIBLES: readonly ReglaLogica['accion'][] = [
 //   { etiqueta: 'Tabla', valor: 'tabla' },
 // ] as const
 
-export const TIPOS_CAMPO_DE_TEXTO: readonly TipoCampo[] = [
+export const TIPOS_CAMPO_DE_TEXTO: readonly TipoCampoValor[] = [
   TipoCampoValor.Texto,
   TipoCampoValor.Correo,
   TipoCampoValor.Contrasena,
@@ -168,7 +167,7 @@ export const TIPOS_CAMPO_DE_TEXTO: readonly TipoCampo[] = [
 /**
  * Tipos de campo que soportan placeholder
  */
-export const TIPOS_CON_PLACEHOLDER: readonly TipoCampo[] = [
+export const TIPOS_CON_PLACEHOLDER: readonly TipoCampoValor[] = [
   ...TIPOS_CAMPO_DE_TEXTO,
   TipoCampoValor.Numero,
 ]
@@ -176,7 +175,7 @@ export const TIPOS_CON_PLACEHOLDER: readonly TipoCampo[] = [
 /**
  * Tipos de campo que soportan opciones (select, radio, checkbox múltiple)
  */
-export const TIPOS_CON_OPCIONES: readonly TipoCampo[] = [
+export const TIPOS_CON_OPCIONES: readonly TipoCampoValor[] = [
   TipoCampoValor.Seleccion,
   TipoCampoValor.Radio,
   TipoCampoValor.Casilla

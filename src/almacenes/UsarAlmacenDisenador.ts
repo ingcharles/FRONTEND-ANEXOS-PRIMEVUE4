@@ -7,7 +7,8 @@ import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 import { ServicioPaginas } from '@/servicios/disenador/ServiciosPaginas'
 import { ServicioSerializacion } from '@/servicios/disenador/ServiciosSerializacion'
 import { generarId } from '@/utilidades/GeneraId'
-import { clonarProfundo } from '@/utilidades/Clonar'
+// import { clonarProfundo } from '@/utilidades/Clonar'
+
 import { ServicioEsquemasFormulario } from '@/servicios/disenador/ServicioEsquemas'
 
 /**
@@ -126,7 +127,7 @@ export const useAlmacenDisenador = defineStore('disenador', () => {
     const campo = buscarEnLista(camposPaginaActiva.value)
     if (!campo) return '¿Está seguro de eliminar este componente?'
 
-    const tipoEnEspanol = ServicioCampos.obtenerNombreOpciones(campo.tipo)
+  const tipoEnEspanol = ServicioCampos.obtenerNombreOpciones(campo.tipo)
     return `¿Está seguro de eliminar el componente '${tipoEnEspanol}'?`
   })
 
@@ -177,7 +178,7 @@ export const useAlmacenDisenador = defineStore('disenador', () => {
   function ejecutarEliminarCampo(): void {
     const idCampo = idCampoAEliminar.value
     if (idCampo) {
-      const eliminado = ServicioCampos.eliminarCampo(esquemaFormulario.value.paginas, idCampo)
+  const eliminado = ServicioCampos.eliminarCampo(esquemaFormulario.value.paginas, idCampo)
       if (eliminado && idCampoSeleccionado.value === idCampo) {
         idCampoSeleccionado.value = null
       }

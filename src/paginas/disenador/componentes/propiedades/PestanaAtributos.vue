@@ -108,7 +108,7 @@ function obtenerMetadatosPorDefecto(tipo: TipoCampo): Record<string, unknown> | 
     },
     // Tipos sin metadatos específicos
     'texto': undefined,
-    'areaTexto': undefined,
+    'area-texto': undefined,
     'correo': undefined,
     'contrasena': undefined,
     'numero': undefined,

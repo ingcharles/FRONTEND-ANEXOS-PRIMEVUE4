@@ -1,5 +1,5 @@
 // Servicios para el manejo de campos - Principio de Responsabilidad Única
-import { TipoCampoEtiqueta, TipoCampoValor, TIPOS_CAMPO_DE_TEXTO, TIPOS_CON_OPCIONES, TIPOS_CON_PLACEHOLDER, TIPOS_OPCIONES_ESPANOL } from '@/constantes/Campos'
+import { TipoCampoEtiqueta, TIPOS_CAMPO_DE_TEXTO, TIPOS_CON_OPCIONES, TIPOS_CON_PLACEHOLDER, TIPOS_OPCIONES_ESPANOL } from '@/constantes/Campos'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { EsquemaPagina } from '@/interfaces/Pagina'
 import type { TipoCampo } from '@/tipos/Campos'
@@ -233,27 +233,28 @@ export class ServicioCampos {
   //   return TIPOS_OPCIONES_ESPANOL[tipo] || tipo
   // }
 
-    static obtenerNombreOpciones(valor: TipoCampoValor): TipoCampoEtiqueta | undefined {
-    return TIPOS_OPCIONES_ESPANOL.find(op => op.valor === valor)?.etiqueta;
+  /**
+   * Obtener la etiqueta en español a partir del tipo (union TipoCampo)
+   * Acepta el tipo como string union para evitar casts a TipoCampoValor.
+   */
+  static obtenerNombreOpciones(tipo: TipoCampo): TipoCampoEtiqueta | string {
+    const encontrado = TIPOS_OPCIONES_ESPANOL.find(op => op.valor === tipo)
+    return encontrado?.etiqueta ?? String(tipo)
   }
 
-  // Obtener valor a partir de etiqueta
-  static obtenerValorOpciones(etiqueta: TipoCampoEtiqueta): TipoCampoValor | undefined {
-    return TIPOS_OPCIONES_ESPANOL.find(op => op.etiqueta === etiqueta)?.valor;
-  }
 
   /**
  * Verificar si un tipo de campo soporta placeholder
  */
  static soportaPlaceholder(tipo: TipoCampo): boolean {
-  return TIPOS_CON_PLACEHOLDER.includes(tipo)
+  return (TIPOS_CON_PLACEHOLDER as readonly string[]).includes(tipo)
 }
 
 /**
  * Verificar si un tipo de campo soporta opciones
  */
 static soportaOpciones(tipo: TipoCampo): boolean {
-  return TIPOS_CON_OPCIONES.includes(tipo)
+  return (TIPOS_CON_OPCIONES as readonly string[]).includes(tipo)
 }
 
 static esCampoDeTexto(tipo: TipoCampo): boolean {

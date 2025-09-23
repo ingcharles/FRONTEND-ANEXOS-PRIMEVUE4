@@ -6,6 +6,7 @@ import type { TipoCampo } from '@/tipos/Campos'
 import { generarId } from '@/utilidades/GeneraId'
 import Button from 'primevue/button'
 import Tag from 'primevue/tag'
+import { TipoCampoEtiqueta, TipoCampoValor } from '@/constantes/Campos'
 
 interface CategoriaBase {
   clave: string
@@ -34,15 +35,15 @@ const filtro = ref('')
 
 // Elementos de la paleta organizados por categorías
 const elementosPaleta: { tipo: TipoCampo; icono: string; propiedadesPorDefecto?: Partial<EsquemaCampo>; etiqueta: string }[] = [
-  { tipo: 'texto', icono: 'pi pi-pencil', etiqueta: 'Texto' },
-  { tipo: 'correo', icono: 'pi pi-at', etiqueta: 'Email' },
-  { tipo: 'contrasena', icono: 'pi pi-lock', etiqueta: 'Password' },
-  { tipo: 'areaTexto', icono: 'pi pi-align-left', etiqueta: 'Área' },
-  { tipo: 'numero', icono: 'pi pi-hashtag', etiqueta: 'Número', propiedadesPorDefecto: { metadatos: { valorPorDefecto: 0 } } },
-  { tipo: 'hora', icono: 'pi pi-clock', etiqueta: 'Hora' },
-  { tipo: 'fecha', icono: 'pi pi-calendar', etiqueta: 'Fecha' },
+  { tipo: TipoCampoValor.Texto, icono: 'pi pi-pencil', etiqueta: TipoCampoEtiqueta.Texto },
+  { tipo: TipoCampoValor.Correo, icono: 'pi pi-at', etiqueta: TipoCampoEtiqueta.Correo },
+  { tipo: TipoCampoValor.Contrasena, icono: 'pi pi-lock', etiqueta: TipoCampoEtiqueta.Contrasena },
+  { tipo: TipoCampoValor.AreaTexto, icono: 'pi pi-align-left', etiqueta: TipoCampoEtiqueta.AreaTexto },
+  { tipo: TipoCampoValor.Numero, icono: 'pi pi-hashtag', etiqueta: TipoCampoEtiqueta.AreaTexto, propiedadesPorDefecto: { metadatos: { valorPorDefecto: 0 } } },
+  { tipo: TipoCampoValor.Hora, icono: 'pi pi-clock', etiqueta: TipoCampoEtiqueta.Hora },
+  { tipo: TipoCampoValor.Fecha, icono: 'pi pi-calendar', etiqueta: TipoCampoEtiqueta.Fecha },
   {
-    tipo: 'casilla',
+    tipo: TipoCampoValor.Casilla,
     icono: 'pi pi-check-square',
     etiqueta: 'Checkbox',
     propiedadesPorDefecto: {
@@ -56,27 +57,23 @@ const elementosPaleta: { tipo: TipoCampo; icono: string; propiedadesPorDefecto?:
     }
   },
   {
-    tipo: 'seleccion',
+    tipo: TipoCampoValor.Seleccion,
     icono: 'pi pi-list',
-    etiqueta: 'Select',
+    etiqueta: TipoCampoEtiqueta.Seleccion,
     propiedadesPorDefecto: {
       metadatos: {
         opciones: [
           { etiqueta: 'Opción 1', valor: 'opcion1' },
           { etiqueta: 'Opción 2', valor: 'opcion2' },
-        ],
-        options: [
-          { label: 'Opción 1', value: 'opcion1' },
-          { label: 'Opción 2', value: 'opcion2' },
         ],
         modoOpciones: 'manual',
       },
     },
   },
   {
-    tipo: 'radio',
+    tipo: TipoCampoValor.Radio,
     icono: 'pi pi-circle',
-    etiqueta: 'Radio',
+    etiqueta: TipoCampoEtiqueta.Radio,
     propiedadesPorDefecto: {
       metadatos: {
         opciones: [
@@ -86,14 +83,14 @@ const elementosPaleta: { tipo: TipoCampo; icono: string; propiedadesPorDefecto?:
       },
     },
   },
-  { tipo: 'etiqueta', icono: 'pi pi-info-circle', etiqueta: 'Etiqueta' },
-  { tipo: 'boton', icono: 'pi pi-check', etiqueta: 'Botón' },
-  { tipo: 'divisor', icono: 'pi pi-minus', etiqueta: 'Divisor' },
-  { tipo: 'panel', icono: 'pi pi-window-maximize', etiqueta: 'Panel', propiedadesPorDefecto: { hijos: [] } },
+  { tipo: TipoCampoValor.Etiqueta, icono: 'pi pi-info-circle', etiqueta: 'Etiqueta' },
+  { tipo: TipoCampoValor.Boton, icono: 'pi pi-check', etiqueta: 'Botón' },
+  { tipo: TipoCampoValor.Divisor, icono: 'pi pi-minus', etiqueta: 'Divisor' },
+  { tipo: TipoCampoValor.Panel, icono: 'pi pi-window-maximize', etiqueta: 'Panel', propiedadesPorDefecto: { hijos: [] } },
   {
-    tipo: 'tabla',
+    tipo: TipoCampoValor.Tabla,
     icono: 'pi pi-table',
-    etiqueta: 'Tabla',
+    etiqueta: TipoCampoEtiqueta.Tabla,
     propiedadesPorDefecto: {
       metadatos: {
         filas: 1,
@@ -121,7 +118,7 @@ const elementos = ref<CategoriaBase[]>([
       { clave: '1_0', etiqueta: 'Texto', tipo: 'texto', icono: 'pi pi-pencil' },
       { clave: '1_1', etiqueta: 'Email', tipo: 'correo', icono: 'pi pi-at' },
       { clave: '1_2', etiqueta: 'Password', tipo: 'contrasena', icono: 'pi pi-lock' },
-      { clave: '1_3', etiqueta: 'Área', tipo: 'areaTexto', icono: 'pi pi-align-left' },
+      { clave: '1_3', etiqueta: 'Área', tipo: 'area-texto', icono: 'pi pi-align-left' },
       { clave: '1_4', etiqueta: 'Número', tipo: 'numero', icono: 'pi pi-hashtag' },
       { clave: '1_5', etiqueta: 'Hora', tipo: 'hora', icono: 'pi pi-clock' },
       { clave: '1_6', etiqueta: 'Fecha', tipo: 'fecha', icono: 'pi pi-calendar' },

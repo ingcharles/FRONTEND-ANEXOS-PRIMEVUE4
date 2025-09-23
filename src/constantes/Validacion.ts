@@ -44,7 +44,7 @@ export const zEsquemaCampo: z.ZodType<EsquemaCampo> = z.lazy(() =>
     id: z.string(),
     tipo: z.enum([
       'texto',
-      'areaTexto',
+      'area-texto',
       'correo',
       'contrasena',
       'numero',

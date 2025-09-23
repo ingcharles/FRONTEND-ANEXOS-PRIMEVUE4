@@ -1,8 +1,7 @@
-// Tipos básicos para campos
-
+// Tipo como unión de literales (compatibilidad con datos/JSON)
 export type TipoCampo =
   | 'texto'
-  | 'areaTexto'
+  | 'area-texto'
   | 'correo'
   | 'contrasena'
   | 'numero'
@@ -16,4 +15,5 @@ export type TipoCampo =
   | 'tabla'
   | 'boton'
   | 'divisor'
+
 

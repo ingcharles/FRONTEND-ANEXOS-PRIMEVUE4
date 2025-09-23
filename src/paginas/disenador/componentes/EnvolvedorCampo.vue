@@ -207,7 +207,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
           :disabled="campo.deshabilitado"
         />
       </template>
-      <template v-else-if="campo.tipo==='areaTexto'">
+      <template v-else-if="campo.tipo==='area-texto'">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
         <PrimeTextarea
           :model-value="valorActualTexto"
