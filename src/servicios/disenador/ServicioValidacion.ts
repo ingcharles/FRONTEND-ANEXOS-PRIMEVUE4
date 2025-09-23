@@ -4,6 +4,7 @@ import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { EsquemaFormulario } from '@/interfaces/Formulario'
 import type { ReglaValidacion } from '@/interfaces/Validacion'
 import type { RegistroDatos, ValorDato } from '@/tipos/Comunes'
+import { TipoCampoValor } from '@/constantes/Campos'
 
 export interface ServicioValidacion {
   recolectarCamposConNombre(lista: EsquemaCampo[], salida?: EsquemaCampo[]): EsquemaCampo[]
@@ -98,26 +99,26 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
 
     // Definir esquema base según tipo de campo
     switch (campo.tipo) {
-      case 'texto':
-      case 'correo':
-      case 'contrasena':
-      case 'area-texto':
+      case TipoCampoValor.Texto:
+      case TipoCampoValor.Correo:
+      case TipoCampoValor.Contrasena:
+      case TipoCampoValor.AreaTexto:
         esquemaBase = z.string()
         break
-      case 'numero':
+      case TipoCampoValor.Numero:
         esquemaBase = this.crearEsquemaNumero(campo)
         break
-      case 'fecha':
+      case TipoCampoValor.Fecha:
         esquemaBase = this.crearEsquemaFecha(campo)
         break
-      case 'radio':
-      case 'seleccion':
+      case TipoCampoValor.Radio:
+      case TipoCampoValor.Seleccion:
         esquemaBase = z.union([z.string(), z.number()])
         break
-      case 'casilla':
+      case TipoCampoValor.Casilla:
         esquemaBase = this.crearEsquemaCheckbox(campo)
         break
-      case 'tabla':
+      case TipoCampoValor.Tabla:
         esquemaBase = this.crearEsquemaTabla(campo)
         break
       default:

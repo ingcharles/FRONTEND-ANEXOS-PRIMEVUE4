@@ -4,192 +4,167 @@ import { ref, computed } from 'vue'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { TipoCampo } from '@/tipos/Campos'
 import { generarId } from '@/utilidades/GeneraId'
-import Button from 'primevue/button'
-import Tag from 'primevue/tag'
 import { TipoCampoEtiqueta, TipoCampoValor } from '@/constantes/Campos'
-
-interface CategoriaBase {
-  clave: string
-  etiqueta: string
-  icono: string
-  elementos: (ElementoPaleta)[]
-}
-
-interface ElementoPaleta {
-  clave: string
-  etiqueta: string
-  icono: string
-  tipo: TipoCampo
-}
-
-interface ElementoMenuPaleta {
-  key: string
-  label: string
-  icon: string
-  tipo?: TipoCampo
-}
 
 // Primera categoría expandida por defecto
 const clavesExpandidas = ref<Record<string, boolean>>({ '0': true, '1': true })
 const filtro = ref('')
 
-// Elementos de la paleta organizados por categorías
-const elementosPaleta: { tipo: TipoCampo; icono: string; propiedadesPorDefecto?: Partial<EsquemaCampo>; etiqueta: string }[] = [
-  { tipo: TipoCampoValor.Texto, icono: 'pi pi-pencil', etiqueta: TipoCampoEtiqueta.Texto },
-  { tipo: TipoCampoValor.Correo, icono: 'pi pi-at', etiqueta: TipoCampoEtiqueta.Correo },
-  { tipo: TipoCampoValor.Contrasena, icono: 'pi pi-lock', etiqueta: TipoCampoEtiqueta.Contrasena },
-  { tipo: TipoCampoValor.AreaTexto, icono: 'pi pi-align-left', etiqueta: TipoCampoEtiqueta.AreaTexto },
-  { tipo: TipoCampoValor.Numero, icono: 'pi pi-hashtag', etiqueta: TipoCampoEtiqueta.AreaTexto, propiedadesPorDefecto: { metadatos: { valorPorDefecto: 0 } } },
-  { tipo: TipoCampoValor.Hora, icono: 'pi pi-clock', etiqueta: TipoCampoEtiqueta.Hora },
-  { tipo: TipoCampoValor.Fecha, icono: 'pi pi-calendar', etiqueta: TipoCampoEtiqueta.Fecha },
+// Estructura directa en formato PanelMenu de PrimeVue
+const categoriasPaleta = ref([
   {
-    tipo: TipoCampoValor.Casilla,
-    icono: 'pi pi-check-square',
-    etiqueta: 'Checkbox',
-    propiedadesPorDefecto: {
-      metadatos: {
-        valorPorDefecto: false,
-        opciones: [
-          { etiqueta: 'Opción 1', valor: 'opcion1' },
-          { etiqueta: 'Opción 2', valor: 'opcion2' },
-        ],
-      }
-    }
-  },
-  {
-    tipo: TipoCampoValor.Seleccion,
-    icono: 'pi pi-list',
-    etiqueta: TipoCampoEtiqueta.Seleccion,
-    propiedadesPorDefecto: {
-      metadatos: {
-        opciones: [
-          { etiqueta: 'Opción 1', valor: 'opcion1' },
-          { etiqueta: 'Opción 2', valor: 'opcion2' },
-        ],
-        modoOpciones: 'manual',
+    key: '0',
+    label: 'Contenedor',
+    icon: 'pi pi-window-maximize',
+    items: [
+      {
+        key: '0_0',
+        label: TipoCampoEtiqueta.Panel,
+        icon: 'pi pi-window-maximize',
+        tipo: TipoCampoValor.Panel,
+        propiedadesPorDefecto: { hijos: [] }
       },
-    },
+    ]
   },
   {
-    tipo: TipoCampoValor.Radio,
-    icono: 'pi pi-circle',
-    etiqueta: TipoCampoEtiqueta.Radio,
-    propiedadesPorDefecto: {
-      metadatos: {
-        opciones: [
-          { etiqueta: 'Opción 1', valor: 'opcion1' },
-          { etiqueta: 'Opción 2', valor: 'opcion2' },
-        ],
+    key: '1',
+    label: 'Campos de Entrada',
+    icon: 'pi pi-pencil',
+    items: [
+      { key: '1_0', label: TipoCampoEtiqueta.Texto, icon: 'pi pi-pencil', tipo: TipoCampoValor.Texto },
+      { key: '1_1', label: TipoCampoEtiqueta.Correo, icon: 'pi pi-at', tipo: TipoCampoValor.Correo },
+      { key: '1_2', label: TipoCampoEtiqueta.Contrasena, icon: 'pi pi-lock', tipo: TipoCampoValor.Contrasena },
+      { key: '1_3', label: TipoCampoEtiqueta.AreaTexto, icon: 'pi pi-align-left', tipo: TipoCampoValor.AreaTexto },
+      {
+        key: '1_4',
+        label: TipoCampoEtiqueta.Numero,
+        icon: 'pi pi-hashtag',
+        tipo: TipoCampoValor.Numero,
+        propiedadesPorDefecto: { metadatos: { valorPorDefecto: 0 } }
       },
-    },
+      { key: '1_5', label: TipoCampoEtiqueta.Hora, icon: 'pi pi-clock', tipo: TipoCampoValor.Hora },
+      { key: '1_6', label: TipoCampoEtiqueta.Fecha, icon: 'pi pi-calendar', tipo: TipoCampoValor.Fecha },
+    ]
   },
-  { tipo: TipoCampoValor.Etiqueta, icono: 'pi pi-info-circle', etiqueta: 'Etiqueta' },
-  { tipo: TipoCampoValor.Boton, icono: 'pi pi-check', etiqueta: 'Botón' },
-  { tipo: TipoCampoValor.Divisor, icono: 'pi pi-minus', etiqueta: 'Divisor' },
-  { tipo: TipoCampoValor.Panel, icono: 'pi pi-window-maximize', etiqueta: 'Panel', propiedadesPorDefecto: { hijos: [] } },
   {
-    tipo: TipoCampoValor.Tabla,
-    icono: 'pi pi-table',
-    etiqueta: TipoCampoEtiqueta.Tabla,
-    propiedadesPorDefecto: {
-      metadatos: {
-        filas: 1,
-        columnas: 2
+    key: '2',
+    label: 'Selección',
+    icon: 'pi pi-list',
+    items: [
+      {
+        key: '2_0',
+        label: TipoCampoEtiqueta.Seleccion,
+        icon: 'pi pi-list',
+        tipo: TipoCampoValor.Seleccion,
+        propiedadesPorDefecto: {
+          metadatos: {
+            opciones: [
+              { etiqueta: 'Opción 1', valor: 'opcion1' },
+              { etiqueta: 'Opción 2', valor: 'opcion2' },
+            ],
+            modoOpciones: 'manual',
+          },
+        }
       },
-    },
-  },
-]
-
-// Estructura para PanelMenu - siguiendo la estructura del código inglés
-const elementos = ref<CategoriaBase[]>([
-  {
-    clave: '0',
-    etiqueta: 'Contenedor',
-    icono: 'pi pi-window-maximize',
-    elementos: [
-      { clave: '0_0', etiqueta: 'Panel', tipo: 'panel', icono: 'pi pi-window-maximize' },
+      {
+        key: '2_1',
+        label: TipoCampoEtiqueta.Radio,
+        icon: 'pi pi-circle',
+        tipo: TipoCampoValor.Radio,
+        propiedadesPorDefecto: {
+          metadatos: {
+            opciones: [
+              { etiqueta: 'Opción 1', valor: 'opcion1' },
+              { etiqueta: 'Opción 2', valor: 'opcion2' },
+            ],
+          },
+        }
+      },
+      {
+        key: '2_2',
+        label: TipoCampoEtiqueta.Casilla,
+        icon: 'pi pi-check-square',
+        tipo: TipoCampoValor.Casilla,
+        propiedadesPorDefecto: {
+          metadatos: {
+            valorPorDefecto: false,
+            opciones: [
+              { etiqueta: 'Opción 1', valor: 'opcion1' },
+              { etiqueta: 'Opción 2', valor: 'opcion2' },
+            ],
+          }
+        }
+      },
     ]
   },
   {
-    clave: '1',
-    etiqueta: 'Campos de Entrada',
-    icono: 'pi pi-pencil',
-    elementos: [
-      { clave: '1_0', etiqueta: 'Texto', tipo: 'texto', icono: 'pi pi-pencil' },
-      { clave: '1_1', etiqueta: 'Email', tipo: 'correo', icono: 'pi pi-at' },
-      { clave: '1_2', etiqueta: 'Password', tipo: 'contrasena', icono: 'pi pi-lock' },
-      { clave: '1_3', etiqueta: 'Área', tipo: 'area-texto', icono: 'pi pi-align-left' },
-      { clave: '1_4', etiqueta: 'Número', tipo: 'numero', icono: 'pi pi-hashtag' },
-      { clave: '1_5', etiqueta: 'Hora', tipo: 'hora', icono: 'pi pi-clock' },
-      { clave: '1_6', etiqueta: 'Fecha', tipo: 'fecha', icono: 'pi pi-calendar' },
+    key: '3',
+    label: 'Datos',
+    icon: 'pi pi-database',
+    items: [
+      {
+        key: '3_0',
+        label: TipoCampoEtiqueta.Tabla,
+        icon: 'pi pi-table',
+        tipo: TipoCampoValor.Tabla,
+        propiedadesPorDefecto: {
+          metadatos: {
+            filas: 1,
+            columnas: 2
+          },
+        }
+      },
+      {
+        key: '3_1',
+        label: 'Tabla Precio/Tasa',
+        icon: 'pi pi-percentage',
+        tipo: TipoCampoValor.Tabla,
+        propiedadesPorDefecto: {
+          metadatos: {
+            filas: 1,
+            columnas: 2
+          },
+        }
+      },
     ]
   },
   {
-    clave: '2',
-    etiqueta: 'Selección',
-    icono: 'pi pi-list',
-    elementos: [
-      { clave: '2_0', etiqueta: 'Select', tipo: 'seleccion', icono: 'pi pi-list' },
-      { clave: '2_1', etiqueta: 'Radio', tipo: 'radio', icono: 'pi pi-circle' },
-      { clave: '2_2', etiqueta: 'Checkbox', tipo: 'casilla', icono: 'pi pi-check-square' },
-    ]
-  },
-   {
-    clave: '3',
-    etiqueta: 'Datos',
-    icono: 'pi pi-database',
-    elementos: [
-      { clave: '3_0', etiqueta: 'Tabla', tipo: 'tabla', icono: 'pi pi-table' },
-      { clave: '3_1', etiqueta: 'Tabla Precio/Tasa', tipo: 'tabla', icono: 'pi pi-percentage' },
-    ]
-  },
-  {
-    clave: '4',
-    etiqueta: 'Elementos UI',
-    icono: 'pi pi-window-maximize',
-    elementos: [
-      { clave: '4_0', etiqueta: 'Etiqueta', tipo: 'etiqueta', icono: 'pi pi-info-circle' },
-      { clave: '4_1', etiqueta: 'Botón', tipo: 'boton', icono: 'pi pi-check' },
-      { clave: '4_2', etiqueta: 'Divisor', tipo: 'divisor', icono: 'pi pi-minus' },
+    key: '4',
+    label: 'Elementos UI',
+    icon: 'pi pi-window-maximize',
+    items: [
+      { key: '4_0', label: 'Etiqueta', icon: 'pi pi-info-circle', tipo: TipoCampoValor.Etiqueta },
+      { key: '4_1', label: 'Botón', icon: 'pi pi-check', tipo: TipoCampoValor.Boton },
+      { key: '4_2', label: 'Divisor', icon: 'pi pi-minus', tipo: TipoCampoValor.Divisor },
     ]
   }
 ])
 
-// Crear modelo para PanelMenu usando la estructura requerida
-const modeloPanelMenu = computed(() => {
+// Computed para filtrar el modelo basado en la búsqueda
+const modeloPanelMenuFiltrado = computed(() => {
   const consulta = filtro.value.trim().toLowerCase()
-  let elementosParaProcesar = elementos.value
 
-  // Filtrar si hay búsqueda
-  if (consulta) {
-    elementosParaProcesar = elementos.value
-      .map(categoria => {
-        const filtrados = categoria.elementos.filter(elemento => elemento.etiqueta.toLowerCase().includes(consulta))
-        return { ...categoria, elementos: filtrados }
-      })
-      .filter(categoria => (categoria.elementos?.length || 0) > 0)
+  if (!consulta) {
+    return categoriasPaleta.value
   }
 
-  // Convertir a formato de PanelMenu
-  return elementosParaProcesar.map(categoria => ({
-    key: categoria.clave,
-    label: categoria.etiqueta,
-    icon: categoria.icono,
-    items: categoria.elementos.map(elemento => ({
-      key: elemento.clave,
-      label: elemento.etiqueta,
-      icon: elemento.icono,
-      tipo: elemento.tipo
+  // Filtrar categorías y sus items basado en la búsqueda
+  return categoriasPaleta.value
+    .map(categoria => ({
+      ...categoria,
+      items: categoria.items?.filter(item =>
+        item.label.toLowerCase().includes(consulta)
+      )
     }))
-  }))
+    .filter(categoria => categoria.items && categoria.items.length > 0)
 })
 
-function clonarDesdePaleta(elemento: { tipo: TipoCampo; icono: string; propiedadesPorDefecto?: Partial<EsquemaCampo>; etiqueta: string }): EsquemaCampo {
+function clonarDesdePaleta(elemento: { tipo: TipoCampo; label: string; propiedadesPorDefecto?: Record<string, unknown> }): EsquemaCampo {
   const id = generarId('field')
   return {
     id,
     tipo: elemento.tipo,
-    etiqueta: elemento.etiqueta,
+    etiqueta: elemento.label,
     nombre: `${elemento.tipo}_${id.slice(-4)}`,
     grid: { sm: 12, md: 6, lg: 6 },
     visible: true,
@@ -200,35 +175,23 @@ function clonarDesdePaleta(elemento: { tipo: TipoCampo; icono: string; propiedad
   }
 }
 
-// Función para obtener el elemento de la paleta por tipo
-function obtenerElementoPaletaPorTipo(tipo: TipoCampo): { tipo: TipoCampo; icono: string; propiedadesPorDefecto?: Partial<EsquemaCampo>; etiqueta: string } | undefined {
-  return elementosPaleta.find(elemento => elemento.tipo === tipo)
+// Función para buscar elemento en categorías
+function buscarElementoPorClave(clave: string): { tipo: TipoCampo; label: string; propiedadesPorDefecto?: Record<string, unknown> } | undefined {
+  for (const categoria of categoriasPaleta.value) {
+    const elemento = categoria.items?.find((el: { key: string }) => el.key === clave)
+    if (elemento) return elemento
+  }
+  return undefined
 }
 
-// Función para clonar desde el menú
-function clonarDesdeMenu(elementoMenu: ElementoMenuPaleta): EsquemaCampo | null {
-  if (!elementoMenu.tipo) return null
+// Función simplificada para clonar desde el menú
+function clonarDesdeMenu(elementoMenu: { key?: string; tipo?: TipoCampo }): EsquemaCampo | null {
+  if (!elementoMenu.tipo || !elementoMenu.key) return null
 
-  let elementoPaleta = obtenerElementoPaletaPorTipo(elementoMenu.tipo) ?? {
-    tipo: elementoMenu.tipo,
-    icono: elementoMenu.icon,
-    etiqueta: elementoMenu.label,
-  }
-  // preset especial para Precio/Tasa
-  if (elementoMenu.key === '3_1') {
-    elementoPaleta = {
-      tipo: 'tabla',
-      icono: 'pi pi-percentage',
-      etiqueta: 'Tabla Precio/Tasa',
-      propiedadesPorDefecto: {
-        metadatos: {
-          filas: 1,
-          columnas: 2
-        },
-      },
-    }
-  }
-  return clonarDesdePaleta(elementoPaleta)
+  const elemento = buscarElementoPorClave(elementoMenu.key)
+  if (!elemento) return null
+
+  return clonarDesdePaleta(elemento)
 }
 
 function alternarTodo(): void {
@@ -237,7 +200,7 @@ function alternarTodo(): void {
 }
 
 function expandir(): void {
-  for (const nodo of elementos.value) {
+  for (const nodo of categoriasPaleta.value) {
     expandirNodo(nodo)
   }
   clavesExpandidas.value = { ...clavesExpandidas.value }
@@ -247,9 +210,9 @@ function colapsar(): void {
   clavesExpandidas.value = {}
 }
 
-function expandirNodo(nodo: CategoriaBase): void {
-  if (nodo.elementos && nodo.elementos.length && nodo.clave) {
-    clavesExpandidas.value[nodo.clave] = true
+function expandirNodo(nodo: { key: string; items?: unknown[] }): void {
+  if (nodo.items && nodo.items.length && nodo.key) {
+    clavesExpandidas.value[nodo.key] = true
   }
 }
 
@@ -278,9 +241,9 @@ window.addEventListener('keydown', manejarAtajos)
       </h3>
 
       <div class="ml-auto flex gap-1">
-        <Button size="small" text severity="secondary" icon="pi pi-plus" class="hover:surface-hover" @click="expandir" :disabled="Object.keys(clavesExpandidas).length === modeloPanelMenu.length" v-tooltip.top="'Expandir todo'" />
-        <Button size="small" text severity="secondary" icon="pi pi-minus" class="hover:surface-hover" @click="colapsar" :disabled="!Object.keys(clavesExpandidas).length" v-tooltip.top="'Colapsar todo'" />
-        <Button size="small" text severity="secondary" icon="pi pi-refresh" class="hover:surface-hover" @click="alternarTodo" v-tooltip.top="'Alternar expansión'" />
+        <PrimeButton size="small" text severity="secondary" icon="pi pi-plus" class="hover:surface-hover" @click="expandir" :disabled="Object.keys(clavesExpandidas).length === modeloPanelMenuFiltrado.length" v-tooltip.top="'Expandir todo'" />
+        <PrimeButton size="small" text severity="secondary" icon="pi pi-minus" class="hover:surface-hover" @click="colapsar" :disabled="!Object.keys(clavesExpandidas).length" v-tooltip.top="'Colapsar todo'" />
+        <PrimeButton size="small" text severity="secondary" icon="pi pi-refresh" class="hover:surface-hover" @click="alternarTodo" v-tooltip.top="'Alternar expansión'" />
       </div>
     </div>
     <!-- Buscador -->
@@ -307,7 +270,7 @@ window.addEventListener('keydown', manejarAtajos)
       </button>
     </div>
     <!-- Contenido -->
-    <PrimePanelMenu v-model:expandedKeys="clavesExpandidas" :model="modeloPanelMenu" class="w-full text-sm custom-panel-menu">
+    <PrimePanelMenu v-model:expandedKeys="clavesExpandidas" :model="modeloPanelMenuFiltrado" class="w-full text-sm custom-panel-menu">
       <template #item="{ item }">
         <!-- Item de campo (draggable) -->
         <div v-if="item.tipo" class="flex items-center gap-2 w-full">
@@ -336,7 +299,7 @@ window.addEventListener('keydown', manejarAtajos)
           <i :class="['pi', item.icon, 'text-sky-500 dark:text-sky-400']" />
           <span class="flex-1">{{ item.label }}</span>
           <span v-if="item.items" class="pi pi-angle-down text-primary ml-auto" />
-          <Tag :value="item.items?.length || 0" severity="contrast" class="text-[10px] py-0 px-1" />
+          <PrimeTag :value="item.items?.length || 0" severity="contrast" class="text-[10px] py-0 px-1" />
         </div>
       </template>
     </PrimePanelMenu>
@@ -344,15 +307,6 @@ window.addEventListener('keydown', manejarAtajos)
 </template>
 
 <style scoped>
-.cursor-grab { cursor: grab; }
 
-/* Ajustes ligeros al PanelMenu para modernizar sin romper tema */
-:deep(.p-panelmenu-panel) {
-  background: transparent;
-  border: 0;
-}
-
-/* Suavizar transiciones */
-.custom-panel-menu :deep(a) { transition: background-color .15s ease, color .15s ease; }
 </style>
 

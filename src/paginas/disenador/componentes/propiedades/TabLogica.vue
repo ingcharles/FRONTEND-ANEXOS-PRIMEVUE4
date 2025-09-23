@@ -1,27 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import Select from 'primevue/select'
-import Textarea from 'primevue/textarea'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import type { ReglaLogica } from '@/interfaces/Validacion'
 import { generarId } from '@/utilidades/GeneraId'
+import type { OpcionAccion, OpcionOperador, PropiedadesTabLogica } from '@/interfaces/Propiedades'
 
-// Tipos específicos para este componente
-interface PropiedadesTabLogica {
-  idCampo: string
-}
-
-interface OpcionOperador {
-  etiqueta: string
-  valor: ReglaLogica['operador']
-}
-
-interface OpcionAccion {
-  etiqueta: string
-  valor: ReglaLogica['accion']
-}
 
 // Props del componente
 defineProps<PropiedadesTabLogica>()
@@ -120,7 +103,7 @@ function esOperadorPersonalizado(operador: ReglaLogica['operador']): boolean {
         <!-- Campo objetivo -->
         <div class="col-12 md:col-6 lg:col-3">
           <label class="block mb-2 text-700 font-medium">Campo</label>
-          <InputText
+          <PrimeInputText
             v-model="regla.campoCondicionId"
             class="w-full"
             placeholder="Seleccionar campo..."
@@ -130,7 +113,7 @@ function esOperadorPersonalizado(operador: ReglaLogica['operador']): boolean {
         <!-- Operador de comparación -->
         <div class="col-12 md:col-6 lg:col-3">
           <label class="block mb-2 text-700 font-medium">Operador</label>
-          <Select
+          <PrimeSelect
             v-model="regla.operador"
             :options="opcionesOperadores"
             option-label="etiqueta"
@@ -143,7 +126,7 @@ function esOperadorPersonalizado(operador: ReglaLogica['operador']): boolean {
         <!-- Valor de comparación -->
         <div class="col-12 md:col-6 lg:col-3">
           <label class="block mb-2 text-700 font-medium">Valor</label>
-          <InputText
+          <PrimeInputText
             :model-value="String(regla.valor || '')"
             @update:model-value="regla.valor = ($event || '') as string | number | boolean | Date"
             class="w-full"
@@ -154,7 +137,7 @@ function esOperadorPersonalizado(operador: ReglaLogica['operador']): boolean {
         <!-- Acción a ejecutar -->
         <div class="col-12 md:col-6 lg:col-3">
           <label class="block mb-2 text-700 font-medium">Acción</label>
-          <Select
+          <PrimeSelect
             v-model="regla.accion"
             :options="opcionesAcciones"
             option-label="etiqueta"
@@ -173,7 +156,7 @@ function esOperadorPersonalizado(operador: ReglaLogica['operador']): boolean {
         <label class="block mb-2 text-700 font-medium">
           <i class="pi pi-code mr-2"></i>Expresión personalizada
         </label>
-        <Textarea
+        <PrimeTextarea
           v-model="regla.expresion"
           rows="3"
           class="w-full"
@@ -186,7 +169,7 @@ function esOperadorPersonalizado(operador: ReglaLogica['operador']): boolean {
 
       <!-- Acciones de la regla -->
       <div class="flex justify-content-end mt-3 pt-3" style="border-top: 1px solid var(--surface-100);">
-        <Button
+        <PrimeButton
           icon="pi pi-trash"
           severity="danger"
           size="small"

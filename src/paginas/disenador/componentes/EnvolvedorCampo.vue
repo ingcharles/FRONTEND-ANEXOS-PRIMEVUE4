@@ -5,6 +5,7 @@ import { computed, defineAsyncComponent, ref, onUnmounted } from 'vue'
 import ModalConfirmar from '@/componentes/ModalConfirmar.vue'
 import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 import { usarPuntoDeCorte } from '@/almacenes/UsarPuntoDeCorte'
+import { TipoCampoValor } from '@/constantes/Campos'
 
 const propiedades = defineProps<{ campo: EsquemaCampo; seleccionado?: boolean }>()
 const emitir = defineEmits<{ (e: 'seleccionar'): void }>()
@@ -179,7 +180,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
 
     <!-- Render simple de ejemplo -->
     <div>
-      <template v-if="campo.tipo==='texto' || campo.tipo==='correo' || campo.tipo==='contrasena'">
+      <template v-if="campo.tipo===TipoCampoValor.Texto || campo.tipo===TipoCampoValor.Correo || campo.tipo===TipoCampoValor.Contrasena">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
         <PrimeInputText
           :model-value="valorActualTexto"
@@ -189,7 +190,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
           :readonly="campo.soloLectura"
         />
       </template>
-      <template v-else-if="campo.tipo==='fecha'">
+      <template v-else-if="campo.tipo===TipoCampoValor.Fecha">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
         <PrimeInputText
           class="w-full"
@@ -197,7 +198,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
           :disabled="campo.deshabilitado"
         />
       </template>
-      <template v-else-if="campo.tipo==='hora'">
+      <template v-else-if="campo.tipo===TipoCampoValor.Hora">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
         <PrimeDatePicker
           time-only
@@ -207,7 +208,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
           :disabled="campo.deshabilitado"
         />
       </template>
-      <template v-else-if="campo.tipo==='area-texto'">
+      <template v-else-if="campo.tipo===TipoCampoValor.AreaTexto">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
         <PrimeTextarea
           :model-value="valorActualTexto"
@@ -217,7 +218,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
           :readonly="campo.soloLectura"
         />
       </template>
-      <template v-else-if="campo.tipo==='seleccion'">
+      <template v-else-if="campo.tipo===TipoCampoValor.Seleccion">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
         <PrimeSelect
           class="w-full"
@@ -231,7 +232,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
           }))"
         />
       </template>
-      <template v-else-if="campo.tipo==='numero'">
+      <template v-else-if="campo.tipo===TipoCampoValor.Numero">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
         <PrimeInputNumber
           class="w-full"
@@ -241,7 +242,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
           :readonly="campo.soloLectura"
         />
       </template>
-      <template v-else-if="campo.tipo==='casilla'">
+      <template v-else-if="campo.tipo===TipoCampoValor.Casilla">
         <template v-if="Array.isArray((campo.metadatos as any)?.opciones) && ((campo.metadatos as any)?.opciones?.length||0) > 0">
           <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
           <div :class="[
@@ -261,7 +262,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
           </div>
         </template>
       </template>
-      <template v-else-if="campo.tipo==='radio'">
+      <template v-else-if="campo.tipo===TipoCampoValor.Radio">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
         <div :class="[
           'flex',
@@ -277,16 +278,16 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
           </label>
         </div>
       </template>
-      <template v-else-if="campo.tipo==='etiqueta'">
+      <template v-else-if="campo.tipo===TipoCampoValor.Etiqueta">
         <div class="text-muted-color">{{ campo.etiqueta }}</div>
       </template>
-      <template v-else-if="campo.tipo==='divisor'">
+      <template v-else-if="campo.tipo===TipoCampoValor.Divisor">
         <PrimeDivider />
       </template>
-      <template v-else-if="campo.tipo==='boton'">
+      <template v-else-if="campo.tipo===TipoCampoValor.Boton">
         <PrimeButton :label="campo.etiqueta || 'Botón'" />
       </template>
-      <template v-else-if="campo.tipo==='tabla'">
+      <template v-else-if="campo.tipo===TipoCampoValor.Tabla">
         <div class="border rounded-border p-2">
           <div class="font-semibold mb-2">Tabla</div>
           <div class="overflow-auto">

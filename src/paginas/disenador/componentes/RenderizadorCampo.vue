@@ -2,8 +2,9 @@
 import { computed } from 'vue'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import { evaluarReglasCampo } from '@/utilidades/Logica'
-import type { RegistroDatos } from '@/tipos/Comunes'
+import type { RegistroDatos, ValorDato } from '@/tipos/Comunes'
 import type { OpcionSeleccion } from '@/interfaces/Comunes'
+import { TipoCampoValor } from '@/constantes/Campos'
 
 const propiedades = defineProps<{
   campo: EsquemaCampo
@@ -126,8 +127,8 @@ function clasesFilaTabla(campo: EsquemaCampo): string[] {
   ]
 }
 
-function crearFilaVaciaCampo(columnas: ColumnaTablaBasica[]): Record<string, import('@/tipos/Comunes').ValorDato> {
-  const objetoVacio: Record<string, import('@/tipos/Comunes').ValorDato> = {}
+function crearFilaVaciaCampo(columnas: ColumnaTablaBasica[]): Record<string, ValorDato> {
+  const objetoVacio: Record<string, ValorDato> = {}
   for (const columna of columnas) {
     // Evitar undefined: usar null como valor vacío
     objetoVacio[columna.name] = null
@@ -145,7 +146,7 @@ function agregarNuevaFilaCampo(campo: EsquemaCampo): void {
   const valorActual = diccionarioValores[nombreCampo]
 
   if (Array.isArray(valorActual)) {
-    (valorActual as Array<Record<string, import('@/tipos/Comunes').ValorDato>>).push(filaNueva)
+    (valorActual as Array<Record<string, ValorDato>>).push(filaNueva)
   } else {
     diccionarioValores[nombreCampo] = [filaNueva]
   }
@@ -255,7 +256,7 @@ const esCampoRequerido = computed(() => {
 
       <!-- Campo de texto -->
       <PrimeInputText
-        v-if="campo.tipo === 'texto' || campo.tipo === 'correo' || campo.tipo === 'contrasena'"
+        v-if="campo.tipo === TipoCampoValor.Texto || campo.tipo === TipoCampoValor.Correo || campo.tipo === TipoCampoValor.Contrasena"
         v-model="(valoresCampos as any)[campo.nombre || '']"
         :placeholder="campo.marcadorPosicion"
         class="w-full"
@@ -265,7 +266,7 @@ const esCampoRequerido = computed(() => {
 
       <!-- Área de texto -->
       <PrimeTextarea
-        v-else-if="campo.tipo === 'area-texto'"
+        v-else-if="campo.tipo === TipoCampoValor.AreaTexto"
         v-model="(valoresCampos as any)[campo.nombre || '']"
         :placeholder="campo.marcadorPosicion"
         class="w-full"
@@ -275,7 +276,7 @@ const esCampoRequerido = computed(() => {
 
       <!-- Selector de tiempo -->
       <PrimeDatePicker
-        v-else-if="campo.tipo === 'hora'"
+        v-else-if="campo.tipo === TipoCampoValor.Hora"
         v-model="(valoresCampos as any)[campo.nombre || '']"
         time-only
         hour-format="24"
@@ -285,7 +286,7 @@ const esCampoRequerido = computed(() => {
 
       <!-- Selector de fecha -->
       <PrimeDatePicker
-        v-else-if="campo.tipo === 'fecha'"
+        v-else-if="campo.tipo === TipoCampoValor.Fecha"
         v-model="(valoresCampos as any)[campo.nombre || '']"
         class="w-full"
         :disabled="campo.deshabilitado"
@@ -293,7 +294,7 @@ const esCampoRequerido = computed(() => {
 
       <!-- Select/Dropdown -->
       <PrimeSelect
-        v-else-if="campo.tipo === 'seleccion'"
+        v-else-if="campo.tipo === TipoCampoValor.Seleccion"
         v-model="(valoresCampos as any)[campo.nombre || '']"
         :options="opcionesCampo"
         option-label="etiqueta"
@@ -304,7 +305,7 @@ const esCampoRequerido = computed(() => {
 
       <!-- Campo numérico -->
       <PrimeInputNumber
-        v-else-if="campo.tipo === 'numero'"
+        v-else-if="campo.tipo === TipoCampoValor.Numero"
         v-model="(valoresCampos as any)[campo.nombre || '']"
         class="w-full"
         :placeholder="campo.marcadorPosicion"
@@ -316,7 +317,7 @@ const esCampoRequerido = computed(() => {
       />
 
       <!-- Checkbox -->
-      <div v-else-if="campo.tipo === 'casilla'">
+      <div v-else-if="campo.tipo === TipoCampoValor.Casilla">
         <!-- Grupo de checkboxes -->
         <template v-if="Array.isArray(opcionesCampo) && (opcionesCampo.length || 0) > 0">
           <div :class="[

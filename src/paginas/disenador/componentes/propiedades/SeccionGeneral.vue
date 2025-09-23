@@ -6,6 +6,7 @@ import type { EsquemaCampo, MetadatosCampo } from '@/interfaces/Campos'
 import type { TipoCampo } from '@/tipos/Campos'
 import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 import { TIPOS_OPCIONES } from '@/constantes/Campos'
+import { TipoCampoValor } from '@/constantes/Campos'
 
 const propiedades = defineProps<{ campo: EsquemaCampo }>()
 const almacen = useAlmacenDisenador()
@@ -133,7 +134,7 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
   <div class="field" v-if="ServicioCampos.esCampoDeTexto(campo.tipo)">
         <label class="text-sm font-medium text-gray-700">Valor por defecto</label>
         <PrimeInputText
-          v-if="campo.tipo !== 'area-texto'"
+          v-if="campo.tipo !== TipoCampoValor.AreaTexto"
           :model-value="metadatos.valorPorDefecto as string || ''"
           @update:model-value="actualizarValorPorDefecto"
           placeholder="Valor inicial"
@@ -150,7 +151,7 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
       </div>
 
       <!-- Valor por defecto para número -->
-      <div class="field" v-if="campo.tipo === 'numero'">
+      <div class="field" v-if="campo.tipo === TipoCampoValor.Numero">
         <label class="text-sm font-medium text-gray-700">Valor por defecto</label>
         <PrimeInputNumber
           :model-value="metadatos.valorPorDefecto as number || 0"
@@ -161,7 +162,7 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
       </div>
 
       <!-- Configuración de número - Min/Max -->
-      <div class="field grid grid-cols-12 gap-3" v-if="campo.tipo === 'numero'">
+      <div class="field grid grid-cols-12 gap-3" v-if="campo.tipo === TipoCampoValor.Numero">
         <div class="col-span-6">
           <label class="text-sm font-medium text-gray-700">Mínimo</label>
           <PrimeInputNumber
@@ -183,7 +184,7 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
       </div>
 
       <!-- Step y mensajes de validación -->
-      <div class="field grid grid-cols-12 gap-3" v-if="campo.tipo === 'numero'">
+      <div class="field grid grid-cols-12 gap-3" v-if="campo.tipo === TipoCampoValor.Numero">
         <div class="col-span-4">
           <label class="text-sm font-medium text-gray-700">Paso</label>
           <PrimeInputNumber
@@ -214,7 +215,7 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
       </div>
 
       <!-- Valor por defecto para checkbox individual -->
-      <div class="field" v-if="campo.tipo === 'casilla' && !tieneOpciones">
+      <div class="field" v-if="campo.tipo === TipoCampoValor.Casilla && !tieneOpciones">
         <label class="text-sm font-medium text-gray-700 flex items-center">
           <PrimeCheckbox
             :model-value="metadatos.valorPorDefecto as boolean || false"
@@ -226,7 +227,7 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
       </div>
 
       <!-- Configuración de fecha -->
-      <div class="field" v-if="campo.tipo === 'fecha'">
+      <div class="field" v-if="campo.tipo === TipoCampoValor.Fecha">
         <label class="text-sm font-medium text-gray-700">Valor por defecto</label>
         <PrimeDatePicker
           :model-value="metadatos.valorPorDefecto as Date || null"
