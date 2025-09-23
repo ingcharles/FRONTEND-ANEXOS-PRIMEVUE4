@@ -119,16 +119,44 @@ const configDependencia = computed((): ConfiguracionDependencia => {
   return dependencia || {}
 })
 
+// Función recursiva para obtener todos los campos de la página, incluyendo los que están dentro de paneles
+function obtenerTodosLosCampos(campos: unknown[]): EsquemaCampo[] {
+  const resultado: EsquemaCampo[] = []
+  
+  for (const campo of campos) {
+    if (!campo || typeof campo !== 'object') continue
+    
+    const campoTipado = campo as Record<string, unknown>
+    if (!campoTipado.id || typeof campoTipado.id !== 'string') continue
+    
+    // Agregar el campo actual si no es un panel
+    if (campoTipado.tipo !== 'panel') {
+      resultado.push(campo as unknown as EsquemaCampo)
+    }
+    
+    // Si tiene hijos (como en el caso de paneles), obtener recursivamente sus campos
+    if (campoTipado.hijos && Array.isArray(campoTipado.hijos) && campoTipado.hijos.length > 0) {
+      const camposHijos = obtenerTodosLosCampos(campoTipado.hijos)
+      resultado.push(...camposHijos)
+    }
+  }
+  
+  return resultado
+}
+
 // Campos disponibles en la página actual
 const camposPaginaActual = computed((): CampoPagina[] => {
   if (!props.campo) return []
 
   const paginaActual = almacen.obtenerPaginaActual()
-  if (!paginaActual) return []
+  if (!paginaActual || !paginaActual.campos) return []
 
-  return paginaActual.campos
-    .filter((campo: EsquemaCampo) => campo.id !== props.campo!.id && campo.tipo !== 'panel')
-    .map((campo: EsquemaCampo) => ({
+  // Obtener todos los campos recursivamente, incluyendo los que están dentro de paneles
+  const todosLosCampos = obtenerTodosLosCampos(paginaActual.campos || [])
+  
+  return todosLosCampos
+    .filter((campo) => campo && campo.id && campo.id !== props.campo!.id)
+    .map((campo) => ({
       label: campo.etiqueta || campo.nombre || campo.id,
       value: campo.id
     }))
@@ -138,12 +166,21 @@ const camposPaginaActual = computed((): CampoPagina[] => {
 function obtenerCamposPadre(): string[] {
   const campoPadre = configDependencia.value.campoPadre
   if (!campoPadre) return []
-  return typeof campoPadre === 'string' ? campoPadre.split(',').map(s => s.trim()) : []
+  
+  if (typeof campoPadre === 'string') {
+    return campoPadre.split(',').map((s: string) => s.trim()).filter((s: string) => s.length > 0)
+  }
+  
+  return []
 }
 
 function actualizarCamposPadre(campos: string[]): void {
   if (!props.campo) return
-  const valorCamposPadre = campos.length > 0 ? campos.join(',') : ''
+  
+  const valorCamposPadre = Array.isArray(campos) && campos.length > 0 
+    ? campos.filter((campo: string) => campo && campo.trim().length > 0).join(',') 
+    : ''
+  
   actualizarDependencia('campoPadre', valorCamposPadre)
 }
 
