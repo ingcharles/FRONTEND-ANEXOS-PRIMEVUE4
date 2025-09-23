@@ -5,7 +5,7 @@ import LienzoPagina from '@/paginas/disenador/componentes/LienzoPagina.vue'
 import TabsPropiedades from '@/paginas/disenador/componentes/TabsPropiedades.vue'
 import VistaPrevia from '@/paginas/disenador/componentes/VistaPrevia.vue'
 import VistaJson from '@/paginas/disenador/componentes/VistaJson.vue'
-import ModalConfirm from '@/components/ModalConfirm.vue'
+import ModalConfirmar from '@/componentes/ModalConfirmar.vue'
 import { ref, computed, nextTick } from 'vue'
 import { z } from 'zod'
 import type { EsquemaCampo } from '@/interfaces/Campos'
@@ -257,7 +257,7 @@ function enviarDesdeDisenador(): void {
   </div>
 
   <!-- Modal de confirmación para eliminar página -->
-  <ModalConfirm
+  <ModalConfirmar
     :visible="almacen.mostrarModalEliminarPagina"
     message="¿Estás seguro de que deseas eliminar esta página? Esta acción no se puede deshacer."
     @confirm="almacen.ejecutarEliminarPagina"

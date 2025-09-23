@@ -71,34 +71,34 @@ export class ServicioCampos {
    */
   private static obtenerMetadatosPorDefecto(tipo: string): Record<string, unknown> | undefined {
     const metadatosPorTipo: Record<string, Record<string, unknown> | undefined> = {
-      'seleccion': { 
+      'seleccion': {
         opciones: [
-          { etiqueta: 'Opción 1', valor: 'opcion-1' }, 
+          { etiqueta: 'Opción 1', valor: 'opcion-1' },
           { etiqueta: 'Opción 2', valor: 'opcion-2' }
-        ] 
+        ]
       },
-      'radio': { 
+      'radio': {
         opciones: [
-          { etiqueta: 'Opción 1', valor: 'opcion-1' }, 
+          { etiqueta: 'Opción 1', valor: 'opcion-1' },
           { etiqueta: 'Opción 2', valor: 'opcion-2' }
-        ] 
+        ]
       },
       'casilla': { valorPorDefecto: false },
-      'tabla': { 
+      'tabla': {
         columnas: [
-          { nombre: 'col1', etiqueta: 'Columna 1', tipo: 'texto' }, 
+          { nombre: 'col1', etiqueta: 'Columna 1', tipo: 'texto' },
           { nombre: 'col2', etiqueta: 'Columna 2', tipo: 'numero' }
-        ], 
-        filas: 1, 
-        permitirAgregarFilas: true, 
-        mostrarResumen: true, 
+        ],
+        filas: 1,
+        permitirAgregarFilas: true,
+        mostrarResumen: true,
         etiquetaResumen: 'Total',
-        estiloTabla: { 
-          conBordes: true, 
-          rayada: true, 
-          efectoHover: true, 
-          espaciado: 'md' 
-        } 
+        estiloTabla: {
+          conBordes: true,
+          rayada: true,
+          efectoHover: true,
+          espaciado: 'md'
+        }
       }
     }
     return metadatosPorTipo[tipo]

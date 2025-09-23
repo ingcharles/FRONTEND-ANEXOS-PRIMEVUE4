@@ -1,4 +1,4 @@
-import { zEsquemaFormulario } from '@/esquemas/Formulario'
+import { zEsquemaFormulario } from '@/constantes/Formulario'
 import type { EsquemaFormulario } from '@/interfaces/Formulario'
 
 // Funciones para esquema español
