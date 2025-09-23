@@ -3,9 +3,9 @@
     <div class="font-semibold mb-2">Opciones</div>
 
     <!-- Selector de fuente de opciones -->
-    <div class="grid grid-cols-12 gap-3 mb-2">
-      <div class="col-span-12">
-        <label class="block mb-1">Fuente de opciones</label>
+    <div class="grid">
+      <div class="col-12">
+        <label class="block mb-2">Fuente de opciones</label>
         <Select
           :model-value="obtenerModoOpciones()"
           :options="opcionesFuente"
@@ -19,42 +19,42 @@
 
     <!-- Opciones manuales -->
   <template v-if="obtenerModoOpciones() === 'manual'">
-      <div class="flex justify-between items-center mb-2">
+      <div class="flex justify-content-between align-items-center mb-2">
         <span class="font-semibold">Opciones</span>
         <Button label="Agregar" size="small" icon="pi pi-plus" @click="agregarOpcion" />
       </div>
 
-      <div v-for="(opcion, indice) in obtenerOpciones()" :key="indice" class="grid grid-cols-12 gap-3 items-end mb-2">
-        <div class="col-span-12 md:col-span-5">
-          <label class="block mb-1">Etiqueta</label>
+      <div v-for="(opcion, indice) in obtenerOpciones()" :key="indice" class="grid align-items-end mb-2">
+        <div class="col-12 md:col-5">
+          <label class="block mb-2">Etiqueta</label>
           <InputText
             :model-value="String(opcion.etiqueta)"
             @update:model-value="(v: string | undefined) => actualizarOpcion(indice, 'etiqueta', v || '')"
           />
         </div>
 
-        <div class="col-span-12 md:col-span-5">
-          <label class="block mb-1">Valor</label>
+        <div class="col-12 md:col-5">
+          <label class="block mb-2">Valor</label>
           <InputText
             :model-value="String(opcion.valor ?? '')"
             @update:model-value="(v: string | undefined) => actualizarOpcion(indice, 'valor', v || '')"
           />
         </div>
 
-        <div class="col-span-12 md:col-span-2">
+        <div class="col-12 md:col-2">
           <Button icon="pi pi-trash" severity="danger" text @click="eliminarOpcion(indice)" />
         </div>
       </div>
     </template>
 
     <!-- Configuración de API -->
-    <div v-if="obtenerModoOpciones() === 'api'" class="mt-2 p-2 border-1 surface-border border-round">
+    <div v-if="obtenerModoOpciones() === 'api'" class="mt-2 p-3 border-1 surface-border border-round">
       <div class="font-semibold mb-2 text-sm">Cargar opciones por API</div>
 
-      <div class="grid grid-cols-12 gap-3">
+      <div class="grid">
         <!-- URL -->
-        <div class="col-span-12">
-          <label class="block mb-1">URL</label>
+        <div class="col-12">
+          <label class="block mb-2">URL</label>
           <InputText
             :model-value="configApi.url"
             placeholder="https://api.midominio.com/opciones"
@@ -63,8 +63,8 @@
         </div>
 
         <!-- Método y Content-Type -->
-        <div class="col-span-12 md:col-span-4">
-          <label class="block mb-1">Método</label>
+        <div class="col-12 md:col-4">
+          <label class="block mb-2">Método</label>
           <Select
             :model-value="configApi.method || 'GET'"
             :options="opcionesMetodo"
@@ -75,8 +75,8 @@
           />
         </div>
 
-        <div class="col-span-12 md:col-span-8">
-          <label class="block mb-1">Content-Type</label>
+        <div class="col-12 md:col-8">
+          <label class="block mb-2">Content-Type</label>
           <Select
             :model-value="configApi.contentType || 'application/json'"
             :options="opcionesContentType"
@@ -88,8 +88,8 @@
         </div>
 
         <!-- Configuración de claves -->
-        <div class="col-span-12 md:col-span-6">
-          <label class="block mb-1">Ruta datos (opcional)</label>
+        <div class="col-12 md:col-6">
+          <label class="block mb-2">Ruta datos (opcional)</label>
           <InputText
             :model-value="configApi.dataPath"
             placeholder="por ej.: data.items"
@@ -97,8 +97,8 @@
           />
         </div>
 
-        <div class="col-span-12 md:col-span-3">
-          <label class="block mb-1">Clave Valor</label>
+        <div class="col-12 md:col-3">
+          <label class="block mb-2">Clave Valor</label>
           <InputText
             :model-value="configApi.claveValor"
             placeholder="valor"
@@ -106,8 +106,8 @@
           />
         </div>
 
-        <div class="col-span-12 md:col-span-3">
-          <label class="block mb-1">Clave Etiqueta</label>
+        <div class="col-12 md:col-3">
+          <label class="block mb-2">Clave Etiqueta</label>
           <InputText
             :model-value="configApi.claveEtiqueta"
             placeholder="etiqueta"
@@ -116,8 +116,8 @@
         </div>
 
         <!-- Body para POST -->
-        <div class="col-span-12" v-if="(configApi.method || 'GET') === 'POST'">
-          <label class="block mb-1">Body (JSON o texto)</label>
+        <div class="col-12" v-if="(configApi.method || 'GET') === 'POST'">
+          <label class="block mb-2">Body (JSON o texto)</label>
           <Textarea
             :model-value="configApi.body"
             rows="4"
@@ -127,8 +127,8 @@
         </div>
 
         <!-- Headers -->
-        <div class="col-span-12">
-          <label class="block mb-1">Headers (JSON opcional)</label>
+        <div class="col-12">
+          <label class="block mb-2">Headers (JSON opcional)</label>
           <Textarea
             :model-value="configApi.headersJson"
             rows="3"
@@ -138,8 +138,8 @@
         </div>
 
         <!-- Estructura detectada -->
-        <div class="col-span-12" v-if="obtenerOpciones().length > 0">
-          <div class="p-2 bg-blue-50 border-1 border-blue-200 border-round">
+        <div class="col-12" v-if="obtenerOpciones().length > 0">
+          <div class="p-3 bg-blue-50 border-1 border-blue-200 border-round">
             <div class="text-sm font-medium text-blue-800 mb-1">Estructura detectada:</div>
             <div class="text-xs text-blue-700 font-mono">
               {{ JSON.stringify(obtenerOpciones()[0], null, 2) }}
@@ -152,7 +152,7 @@
       </div>
 
       <!-- Botones de carga -->
-      <div class="flex items-center gap-2 flex-wrap mt-3">
+      <div class="flex align-items-center gap-2 flex-wrap mt-3">
         <Button
           :disabled="cargandoApi"
           size="small"
@@ -171,14 +171,14 @@
         <small v-if="errorApi" class="text-red-500">{{ errorApi }}</small>
       </div>
 
-      <small class="text-muted-color block mt-2">
+      <small class="text-color-secondary block mt-2">
         Reemplazar: sustituye todas las opciones. Añadir: agrega nuevas sin duplicar por valor.
       </small>
     </div>
 
     <!-- Valor por defecto -->
     <div class="mt-3">
-      <label class="block mb-1">Valor por defecto</label>
+      <label class="block mb-2">Valor por defecto</label>
 
       <template v-if="campo?.tipo === 'casilla'">
         <MultiSelect
@@ -191,7 +191,7 @@
           display="chip"
           @update:model-value="(v: unknown[]) => actualizarValorPorDefecto(v)"
         />
-        <small class="text-muted-color">
+        <small class="text-color-secondary">
           Puedes preseleccionar varias opciones para el grupo de checkboxes.
         </small>
       </template>
@@ -206,7 +206,7 @@
           class="w-full mb-2"
           @update:model-value="actualizarValorPorDefecto"
         />
-        <small class="text-muted-color">
+        <small class="text-color-secondary">
           Selecciona qué opción quedará preseleccionada por defecto.
         </small>
       </template>

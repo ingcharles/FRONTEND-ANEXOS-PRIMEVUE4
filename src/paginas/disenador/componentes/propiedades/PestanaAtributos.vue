@@ -182,7 +182,7 @@ const mostrarConfiguracionGrid = computed(() => {
 </template>
 
 <style scoped>
-.pestana-atributos {
+/* .pestana-atributos {
   height: 100%;
   overflow-y: auto;
 }
@@ -214,5 +214,5 @@ const mostrarConfiguracionGrid = computed(() => {
   font-family: 'Courier New', monospace;
   font-size: 10px;
   line-height: 1.2;
-}
+} */
 </style>

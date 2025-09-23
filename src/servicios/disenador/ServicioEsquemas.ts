@@ -70,7 +70,7 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
     const metadatos = campo.metadatos as MetadatosCampo | undefined
     let filas: number | undefined = metadatos?.filas
     if (filas === undefined) {
-      const metaGenerico = metadatos as unknown as { rows?: number }
+      const metaGenerico = metadatos as unknown as { filas?: number }
       if (typeof metaGenerico?.filas === 'number') filas = metaGenerico.filas
     }
     return typeof filas === 'number' && filas > 0 ? filas : 1

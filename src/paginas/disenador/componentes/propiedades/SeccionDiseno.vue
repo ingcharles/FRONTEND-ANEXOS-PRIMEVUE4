@@ -1,9 +1,9 @@
 <template>
   <div class="mb-3">
     <div class="font-semibold">Diseño</div>
-  <div class="field grid grid-cols-12 gap-3">
-      <div class="col-span-12 md:col-span-4">
-        <label class="block mb-1">Cols sm</label>
+    <div class="grid">
+      <div class="col-12 md:col-4">
+        <label class="block mb-2">Cols sm</label>
         <Select
           :model-value="campo?.grid?.sm ?? 12"
           :options="[1,2,3,4,5,6,7,8,9,10,11,12]"
@@ -12,8 +12,8 @@
         />
       </div>
 
-      <div class="col-span-12 md:col-span-4">
-        <label class="block mb-1">Cols md</label>
+      <div class="col-12 md:col-4">
+        <label class="block mb-2">Cols md</label>
         <Select
           :model-value="campo?.grid?.md ?? 6"
           :options="[1,2,3,4,5,6,7,8,9,10,11,12]"
@@ -22,8 +22,8 @@
         />
       </div>
 
-      <div class="col-span-12 md:col-span-4">
-        <label class="block mb-1">Cols lg</label>
+      <div class="col-12 md:col-4">
+        <label class="block mb-2">Cols lg</label>
         <Select
           :model-value="campo?.grid?.lg ?? 6"
           :options="[1,2,3,4,5,6,7,8,9,10,11,12]"

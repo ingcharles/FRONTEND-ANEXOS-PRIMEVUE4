@@ -3,15 +3,15 @@
     <div class="font-semibold mb-2">Configuración de Tabla</div>
 
     <!-- Gestión de columnas -->
-    <div class="flex justify-between items-center mb-2">
+    <div class="flex justify-content-between align-items-center mb-2">
       <span class="font-semibold">Columnas</span>
-      <div class="flex gap-2 items-center">
+      <div class="flex gap-2 align-items-center">
         <Select
           :model-value="indiceColumna"
           :options="opcionesColumnas"
           option-label="label"
           option-value="value"
-          class="w-full md:w-64"
+          class="w-full md:w-16rem"
           @update:model-value="(v: number) => seleccionarColumna(v)"
         />
         <Button
@@ -38,24 +38,24 @@
         item-key="name"
         handle=".drag-handle"
         ghost-class="surface-100"
-        class="grid grid-cols-12 gap-2"
+        class="grid"
         @end="manejarReordenColumnas"
       >
         <template #item="{ element, index }">
-          <div class="col-span-12 md:col-span-6 flex items-center justify-between p-2 border-1 surface-border border-round">
-            <div class="flex items-center gap-2">
+          <div class="col-12 md:col-6 flex align-items-center justify-content-between p-2 border-1 surface-border border-round">
+            <div class="flex align-items-center gap-2">
               <i class="pi pi-bars drag-handle cursor-move" />
               <span class="font-medium">
                 {{ element.etiqueta || element.nombre || ('Col ' + (index + 1)) }}
               </span>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex align-items-center gap-2">
               <Tag v-if="element.tipo" :value="String(element.tipo)" severity="secondary" />
             </div>
           </div>
         </template>
       </draggable>
-      <small class="text-muted-color">
+      <small class="text-color-secondary">
         Arrastra para reordenar columnas. La configuración se mantiene para cada columna.
       </small>
     </div>
@@ -63,9 +63,9 @@
     <!-- Configuración de columna seleccionada -->
     <template v-if="columnaActual">
       <!-- Propiedades básicas -->
-      <div class="grid grid-cols-12 gap-3 items-end mb-3">
-        <div class="col-span-12 md:col-span-4">
-          <label class="block mb-1">Nombre</label>
+      <div class="grid align-items-end mb-3">
+        <div class="col-12 md:col-4">
+          <label class="block mb-2">Nombre</label>
           <InputText
             :model-value="columnaActual.nombre"
             @update:model-value="(v: string | undefined) => actualizarColumna('nombre', v || '')"
@@ -75,16 +75,16 @@
           </small>
         </div>
 
-        <div class="col-span-12 md:col-span-4">
-          <label class="block mb-1">Etiqueta</label>
+        <div class="col-12 md:col-4">
+          <label class="block mb-2">Etiqueta</label>
           <InputText
             :model-value="columnaActual.etiqueta"
             @update:model-value="(v: string | undefined) => actualizarColumna('etiqueta', v || '')"
           />
         </div>
 
-        <div class="col-span-12 md:col-span-4">
-          <label class="block mb-1">Tipo</label>
+        <div class="col-12 md:col-4">
+          <label class="block mb-2">Tipo</label>
           <Select
             :model-value="columnaActual.tipo || 'text'"
             :options="tiposColumna"
@@ -96,9 +96,9 @@
       <!-- Configuración de formato para números -->
       <div v-if="columnaActual.tipo === 'number'" class="mb-3">
         <div class="font-semibold mb-2">Formato Numérico</div>
-        <div class="grid grid-cols-12 gap-3">
-          <div class="col-span-12 md:col-span-3">
-            <label class="block mb-1">Modo</label>
+        <div class="grid">
+          <div class="col-12 md:col-3">
+            <label class="block mb-2">Modo</label>
             <Select
               :model-value="columnaActual.formatMode || 'decimal'"
               :options="opcionesModoFormato"
@@ -106,40 +106,40 @@
             />
           </div>
 
-          <div class="col-span-12 md:col-span-3" v-if="columnaActual.formatMode === 'currency'">
-            <label class="block mb-1">Moneda</label>
+          <div class="col-12 md:col-3" v-if="columnaActual.formatMode === 'currency'">
+            <label class="block mb-2">Moneda</label>
             <InputText
               :model-value="String(columnaActual.currency || 'USD')"
               @update:model-value="(v: string | undefined) => actualizarColumna('currency', v || 'USD')"
             />
           </div>
 
-          <div class="col-span-12 md:col-span-3">
-            <label class="block mb-1">Locale</label>
+          <div class="col-12 md:col-3">
+            <label class="block mb-2">Locale</label>
             <InputText
               :model-value="String(columnaActual.locale || 'es-ES')"
               @update:model-value="(v: string | undefined) => actualizarColumna('locale', v || 'es-ES')"
             />
           </div>
 
-          <div class="col-span-12 md:col-span-3">
-            <label class="block mb-1">Prefijo</label>
+          <div class="col-12 md:col-3">
+            <label class="block mb-2">Prefijo</label>
             <InputText
               :model-value="String(columnaActual.prefix || '')"
               @update:model-value="(v: string | undefined) => actualizarColumna('prefix', v || '')"
             />
           </div>
 
-          <div class="col-span-12 md:col-span-3">
-            <label class="block mb-1">Sufijo</label>
+          <div class="col-12 md:col-3">
+            <label class="block mb-2">Sufijo</label>
             <InputText
               :model-value="String(columnaActual.suffix || '')"
               @update:model-value="(v: string | undefined) => actualizarColumna('suffix', v || '')"
             />
           </div>
 
-          <div class="col-span-12 md:col-span-3">
-            <label class="block mb-1">Mín. decimales</label>
+          <div class="col-12 md:col-3">
+            <label class="block mb-2">Mín. decimales</label>
             <InputNumber
               :model-value="Number(columnaActual.minFractionDigits ?? 0)"
               :min="0"
@@ -149,8 +149,8 @@
             />
           </div>
 
-          <div class="col-span-12 md:col-span-3">
-            <label class="block mb-1">Máx. decimales</label>
+          <div class="col-12 md:col-3">
+            <label class="block mb-2">Máx. decimales</label>
             <InputNumber
               :model-value="Number(columnaActual.maxFractionDigits ?? 2)"
               :min="0"
@@ -160,8 +160,8 @@
             />
           </div>
 
-          <div class="col-span-12 md:col-span-3" v-if="columnaActual.formatMode === 'percent'">
-            <label class="block mb-1">Escala porcentaje</label>
+          <div class="col-12 md:col-3" v-if="columnaActual.formatMode === 'percent'">
+            <label class="block mb-2">Escala porcentaje</label>
             <Select
               :model-value="columnaActual.percentScale || 'whole'"
               :options="opcionesEscalaPorcentaje"
@@ -176,9 +176,9 @@
       <!-- Configuración de agregado -->
       <div class="mb-3">
         <div class="font-semibold mb-2">Agregado</div>
-        <div class="grid grid-cols-12 gap-3">
-          <div class="col-span-12 md:col-span-3">
-            <label class="block mb-1">Función</label>
+        <div class="grid">
+          <div class="col-12 md:col-3">
+            <label class="block mb-2">Función</label>
             <Select
               :model-value="columnaActual.agg || 'none'"
               :options="funcionesAgregado"
@@ -186,24 +186,24 @@
             />
           </div>
 
-          <div class="col-span-12 md:col-span-3">
-            <label class="block mb-1">Prefijo</label>
+          <div class="col-12 md:col-3">
+            <label class="block mb-2">Prefijo</label>
             <InputText
               :model-value="String(columnaActual.aggPrefix || '')"
               @update:model-value="(v: string | undefined) => actualizarColumna('aggPrefix', v || '')"
             />
           </div>
 
-          <div class="col-span-12 md:col-span-3">
-            <label class="block mb-1">Sufijo</label>
+          <div class="col-12 md:col-3">
+            <label class="block mb-2">Sufijo</label>
             <InputText
               :model-value="String(columnaActual.aggSuffix || '')"
               @update:model-value="(v: string | undefined) => actualizarColumna('aggSuffix', v || '')"
             />
           </div>
 
-          <div class="col-span-12 md:col-span-3">
-            <label class="block mb-1">Decimales</label>
+          <div class="col-12 md:col-3">
+            <label class="block mb-2">Decimales</label>
             <InputNumber
               :model-value="Number(columnaActual.decimals ?? 2)"
               :min="0"
@@ -218,9 +218,9 @@
       <!-- Validación de columna -->
       <div class="mb-3">
         <div class="font-semibold mb-2">Validación</div>
-        <div class="grid grid-cols-12 gap-3">
-          <div class="col-span-12 md:col-span-3">
-            <label class="inline-flex items-center gap-2">
+        <div class="grid">
+          <div class="col-12 md:col-3">
+            <label class="inline-flex align-items-center gap-2">
               <Checkbox
                 binary
                 :model-value="Boolean(columnaActual.requerido)"
@@ -231,8 +231,8 @@
           </div>
 
           <template v-if="columnaActual.tipo === 'number'">
-            <div class="col-span-12 md:col-span-3">
-              <label class="block mb-1">Mínimo</label>
+            <div class="col-12 md:col-3">
+              <label class="block mb-2">Mínimo</label>
               <InputNumber
                 :model-value="typeof columnaActual.min === 'number' ? columnaActual.min : null"
                 class="w-full"
@@ -240,8 +240,8 @@
               />
             </div>
 
-            <div class="col-span-12 md:col-span-3">
-              <label class="block mb-1">Máximo</label>
+            <div class="col-12 md:col-3">
+              <label class="block mb-2">Máximo</label>
               <InputNumber
                 :model-value="typeof columnaActual.max === 'number' ? columnaActual.max : null"
                 class="w-full"
@@ -249,16 +249,16 @@
               />
             </div>
 
-            <div class="col-span-12 md:col-span-6">
-              <label class="block mb-1">Mensaje min</label>
+            <div class="col-12 md:col-6">
+              <label class="block mb-2">Mensaje min</label>
               <InputText
                 :model-value="String(columnaActual.mensajeMinimo || '')"
                 @update:model-value="(v: string | undefined) => actualizarColumna('minMessage', v || '')"
               />
             </div>
 
-            <div class="col-span-12 md:col-span-6">
-              <label class="block mb-1">Mensaje max</label>
+            <div class="col-12 md:col-6">
+              <label class="block mb-2">Mensaje max</label>
               <InputText
                 :model-value="String(columnaActual.mensajeMaximo || '')"
                 @update:model-value="(v: string | undefined) => actualizarColumna('maxMessage', v || '')"
@@ -275,7 +275,7 @@
 
       <!-- Permitir añadir filas -->
       <div class="field">
-        <label class="inline-flex items-center gap-2">
+        <label class="inline-flex align-items-center gap-2">
           <Checkbox
             binary
             :model-value="Boolean(metadatos.mostrarResumen)"
@@ -286,9 +286,9 @@
       </div>
 
       <!-- Número de filas iniciales -->
-      <div class="grid grid-cols-12 gap-3 items-end">
-        <div class="col-span-12 md:col-span-4">
-          <label class="block mb-1">Filas iniciales</label>
+      <div class="grid align-items-end">
+        <div class="col-12 md:col-4">
+          <label class="block mb-2">Filas iniciales</label>
           <InputNumber
             :model-value="Number(metadatos.filas ?? 1)"
             :min="1"
@@ -297,8 +297,8 @@
           />
         </div>
 
-        <div class="col-span-12 md:col-span-8">
-          <small class="text-muted-color">
+        <div class="col-12 md:col-8">
+          <small class="text-color-secondary">
             Se aplicará al inicializar los datos o cuando estén vacíos.
           </small>
         </div>
@@ -308,9 +308,9 @@
     <!-- Estilo de tabla -->
     <div class="mb-3">
       <div class="font-semibold mb-2">Estilo de Tabla</div>
-      <div class="grid grid-cols-12 gap-3">
-        <div class="col-span-12 sm:col-span-3">
-          <label class="inline-flex items-center gap-2">
+      <div class="grid">
+        <div class="col-12 sm:col-3">
+          <label class="inline-flex align-items-center gap-2">
             <Checkbox
               binary
               :model-value="Boolean(estiloTabla.bordered)"
@@ -320,8 +320,8 @@
           </label>
         </div>
 
-        <div class="col-span-12 sm:col-span-3">
-          <label class="inline-flex items-center gap-2">
+        <div class="col-12 sm:col-3">
+          <label class="inline-flex align-items-center gap-2">
             <Checkbox
               binary
               :model-value="Boolean(estiloTabla.striped)"
@@ -331,8 +331,8 @@
           </label>
         </div>
 
-        <div class="col-span-12 sm:col-span-3">
-          <label class="inline-flex items-center gap-2">
+        <div class="col-12 sm:col-3">
+          <label class="inline-flex align-items-center gap-2">
             <Checkbox
               binary
               :model-value="Boolean(estiloTabla.hover)"
@@ -342,8 +342,8 @@
           </label>
         </div>
 
-        <div class="col-span-12 sm:col-span-3">
-          <label class="block mb-1">Padding</label>
+        <div class="col-12 sm:col-3">
+          <label class="block mb-2">Padding</label>
           <Select
             :model-value="estiloTabla.padding || 'md'"
             :options="opcionesPadding"
