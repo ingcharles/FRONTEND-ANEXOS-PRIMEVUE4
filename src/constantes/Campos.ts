@@ -44,7 +44,7 @@ export const TIPOS_ESPANOL: Record<TipoCampo, string> = {
 /**
  * Opciones de tipos de campo para selects con formato español completo
  */
-export const OPCIONES_TIPO_ESPANOL: readonly { etiqueta: string; valor: TipoCampo }[] = [
+export const TIPOS_OPCIONES: readonly { etiqueta: string; valor: TipoCampo }[] = [
   { etiqueta: 'Texto', valor: 'texto' },
   { etiqueta: 'Área de texto', valor: 'area-texto' },
   { etiqueta: 'Correo electrónico', valor: 'correo' },
@@ -83,33 +83,37 @@ export const ACCIONES_LOGICA_DISPONIBLES: readonly ReglaLogica['accion'][] = [
 /**
  * Opciones de tipos de campo para selects con formato corto
  */
-export const OPCIONES_TIPO_CORTO: readonly { etiqueta: string; valor: TipoCampo }[] = [
-  { etiqueta: 'Texto', valor: 'texto' },
-  { etiqueta: 'Área', valor: 'area-texto' },
-  { etiqueta: 'Email', valor: 'correo' },
-  { etiqueta: 'Contraseña', valor: 'contrasena' },
-  { etiqueta: 'Número', valor: 'numero' },
-  { etiqueta: 'Hora', valor: 'hora' },
-  { etiqueta: 'Fecha', valor: 'fecha' },
-  { etiqueta: 'Select', valor: 'seleccion' },
-  { etiqueta: 'Radio', valor: 'radio' },
-  { etiqueta: 'Checkbox', valor: 'casilla' },
-  { etiqueta: 'Etiqueta', valor: 'etiqueta' },
-  { etiqueta: 'Botón', valor: 'boton' },
-  { etiqueta: 'Divisor', valor: 'divisor' },
-  { etiqueta: 'Panel', valor: 'panel' },
-  { etiqueta: 'Tabla', valor: 'tabla' },
+// export const OPCIONES_TIPO_CORTO: readonly { etiqueta: string; valor: TipoCampo }[] = [
+//   { etiqueta: 'Texto', valor: 'texto' },
+//   { etiqueta: 'Área', valor: 'area-texto' },
+//   { etiqueta: 'Email', valor: 'correo' },
+//   { etiqueta: 'Contraseña', valor: 'contrasena' },
+//   { etiqueta: 'Número', valor: 'numero' },
+//   { etiqueta: 'Hora', valor: 'hora' },
+//   { etiqueta: 'Fecha', valor: 'fecha' },
+//   { etiqueta: 'Select', valor: 'seleccion' },
+//   { etiqueta: 'Radio', valor: 'radio' },
+//   { etiqueta: 'Checkbox', valor: 'casilla' },
+//   { etiqueta: 'Etiqueta', valor: 'etiqueta' },
+//   { etiqueta: 'Botón', valor: 'boton' },
+//   { etiqueta: 'Divisor', valor: 'divisor' },
+//   { etiqueta: 'Panel', valor: 'panel' },
+//   { etiqueta: 'Tabla', valor: 'tabla' },
+// ] as const
+
+export const TIPOS_CAMPO_DE_TEXTO: readonly TipoCampo[] = [
+  'texto',
+  'correo',
+  'contrasena',
+  'area-texto',
 ] as const
 
 /**
  * Tipos de campo que soportan placeholder
  */
 export const TIPOS_CON_PLACEHOLDER: readonly TipoCampo[] = [
-  'texto',
-  'area-texto',
-  'correo',
-  'contrasena',
-  'numero'
+  ...TIPOS_CAMPO_DE_TEXTO,
+  'numero',
 ] as const
 
 /**
@@ -120,3 +124,5 @@ export const TIPOS_CON_OPCIONES: readonly TipoCampo[] = [
   'radio',
   'casilla'
 ] as const
+
+

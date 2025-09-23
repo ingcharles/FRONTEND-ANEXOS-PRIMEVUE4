@@ -4,7 +4,6 @@ import { computed, nextTick } from 'vue'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import EnvolvedorCampo from './EnvolvedorCampo.vue'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
-import Panel from 'primevue/panel'
 
 const propiedades = withDefaults(defineProps<{ campo: EsquemaCampo; contraido?: boolean }>(), { contraido: false })
 const emitir = defineEmits<{ (e: 'alternar'): void }>()
@@ -46,7 +45,7 @@ function obtenerClasesColumna(elemento: EsquemaCampo): string[] {
 </script>
 
 <template>
-  <Panel
+  <PrimePanel
     :header="propiedades.campo.etiqueta || 'Panel'"
     :toggleable="true"
     :collapsed="propiedades.contraido"
@@ -82,7 +81,7 @@ function obtenerClasesColumna(elemento: EsquemaCampo): string[] {
         </div>
       </template>
     </draggable>
-  </Panel>
+  </PrimePanel>
 </template>
 
 <style scoped>

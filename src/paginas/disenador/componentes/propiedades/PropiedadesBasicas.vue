@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { TipoCampo } from '@/tipos/Campos'
-import { OPCIONES_TIPO_ESPANOL } from '@/constantes/Campos'
+import { TIPOS_OPCIONES } from '@/constantes/Campos'
 import { soportaPlaceholder } from '@/utilidades/Comunes'
 
 interface PropiedadesBasicas {
@@ -40,7 +40,7 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
       <PrimeSelect
         id="tipo-campo"
         :model-value="props.campo.tipo"
-        :options="[...OPCIONES_TIPO_ESPANOL]"
+        :options="[...TIPOS_OPCIONES]"
         option-label="etiqueta"
         option-value="valor"
         class="w-full"

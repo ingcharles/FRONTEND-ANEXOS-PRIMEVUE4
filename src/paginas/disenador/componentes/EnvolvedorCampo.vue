@@ -3,16 +3,6 @@ import type { EsquemaCampo } from '@/interfaces/Campos'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import { computed, defineAsyncComponent, ref, onUnmounted } from 'vue'
 import ModalConfirmar from '@/componentes/ModalConfirmar.vue'
-import Tag from 'primevue/tag'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import DatePicker from 'primevue/datepicker'
-import Textarea from 'primevue/textarea'
-import Select from 'primevue/select'
-import InputNumber from 'primevue/inputnumber'
-import Checkbox from 'primevue/checkbox'
-import RadioButton from 'primevue/radiobutton'
-import Divider from 'primevue/divider'
 import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 import { usarPuntoDeCorte } from '@/almacenes/UsarPuntoDeCorte'
 
@@ -169,7 +159,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
   >
     <!-- Badge informativo (superior derecha) con dos columnas: texto izquierda, acciones derecha -->
     <div v-if="seleccionado" class="info-badge">
-      <Tag class="text-xs px-1 py-1 pointer-events-auto min-w-64" severity="primary">
+      <PrimeTag class="text-xs px-1 py-1 pointer-events-auto min-w-64" severity="primary">
         <div class="grid w-full align-items-start">
           <!-- Columna izquierda (8/12): textos -->
           <div class="col-8 flex flex-column gap-1 text-[10px]">
@@ -180,18 +170,18 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
           </div>
           <!-- Columna derecha (4/12): acciones -->
           <div class="col-4 flex justify-content-end">
-            <Button icon="pi pi-copy" text rounded size="small" class="p-0" title="Duplicar" @click.stop="almacen.duplicarCampo(campo.id)" />
-            <Button icon="pi pi-trash" text rounded size="small" class="p-0" severity="danger" title="Eliminar" @click.stop="almacen.confirmarEliminarCampo(campo.id)" />
+            <PrimeButton icon="pi pi-copy" text rounded size="small" class="p-0" title="Duplicar" @click.stop="almacen.duplicarCampo(campo.id)" />
+            <PrimeButton icon="pi pi-trash" text rounded size="small" class="p-0" severity="danger" title="Eliminar" @click.stop="almacen.confirmarEliminarCampo(campo.id)" />
           </div>
         </div>
-      </Tag>
+      </PrimeTag>
     </div>
 
     <!-- Render simple de ejemplo -->
     <div>
       <template v-if="campo.tipo==='texto' || campo.tipo==='correo' || campo.tipo==='contrasena'">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
-        <InputText
+        <PrimeInputText
           :model-value="valorActualTexto"
           :placeholder="campo.marcadorPosicion"
           class="w-full"
@@ -201,7 +191,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
       </template>
       <template v-else-if="campo.tipo==='fecha'">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
-        <DatePicker
+        <PrimeInputText
           class="w-full"
           :model-value="(valorActual instanceof Date) ? valorActual : (typeof valorActual==='string' && valorActual ? new Date(valorActual) : undefined)"
           :disabled="campo.deshabilitado"
@@ -209,7 +199,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
       </template>
       <template v-else-if="campo.tipo==='hora'">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
-        <DatePicker
+        <PrimeDatePicker
           time-only
           hour-format="24"
           class="w-full"
@@ -219,7 +209,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
       </template>
       <template v-else-if="campo.tipo==='area-texto'">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
-        <Textarea
+        <PrimeTextarea
           :model-value="valorActualTexto"
           :placeholder="campo.marcadorPosicion"
           class="w-full"
@@ -229,7 +219,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
       </template>
       <template v-else-if="campo.tipo==='seleccion'">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
-        <Select
+        <PrimeSelect
           class="w-full"
           :options="(campo.metadatos?.opciones as Array<{ etiqueta: string; valor: unknown }>) || []"
           option-label="etiqueta"
@@ -243,7 +233,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
       </template>
       <template v-else-if="campo.tipo==='numero'">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
-        <InputNumber
+        <PrimeInputNumber
           class="w-full"
           :model-value="(valorActualTexto!=null && valorActualTexto!=='' && !Number.isNaN(Number(valorActualTexto))) ? Number(valorActualTexto) : undefined"
           :placeholder="campo.marcadorPosicion"
@@ -259,14 +249,14 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
             ((campo.metadatos as any)?.layout==='horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')
           ]">
             <label v-for="op in ((campo.metadatos?.opciones as any[])||[])" :key="String(op.valor)" class="inline-flex align-items-center gap-2 flex-shrink-0">
-              <Checkbox :input-id="String(op.valor)" :value="op.valor" :model-value="[]" disabled />
+              <PrimeCheckbox :input-id="String(op.valor)" :value="op.valor" :model-value="[]" disabled />
               <span>{{ op.etiqueta }}</span>
             </label>
           </div>
         </template>
         <template v-else>
           <div class="flex align-items-center gap-2">
-            <Checkbox :binary="true" :model-value="Boolean(valorActual)" :disabled="campo.deshabilitado" />
+            <PrimeCheckbox :binary="true" :model-value="Boolean(valorActual)" :disabled="campo.deshabilitado" />
             <label class="mb-0">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
           </div>
         </template>
@@ -282,7 +272,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
             :key="String(op.valor)"
             class="inline-flex align-items-center gap-2 flex-shrink-0"
           >
-            <RadioButton :input-id="String(op.valor)" :value="op.valor" :name="campo.nombre || ('radio_'+campo.id)" :model-value="valorActual" :disabled="campo.deshabilitado" />
+            <PrimeRadioButton :input-id="String(op.valor)" :value="op.valor" :name="campo.nombre || ('radio_'+campo.id)" :model-value="valorActual" :disabled="campo.deshabilitado" />
             <span>{{ op.etiqueta }}</span>
           </label>
         </div>
@@ -291,10 +281,10 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
         <div class="text-muted-color">{{ campo.etiqueta }}</div>
       </template>
       <template v-else-if="campo.tipo==='divisor'">
-        <Divider />
+        <PrimeDivider />
       </template>
       <template v-else-if="campo.tipo==='boton'">
-        <Button :label="campo.etiqueta || 'Botón'" />
+        <PrimeButton :label="campo.etiqueta || 'Botón'" />
       </template>
       <template v-else-if="campo.tipo==='tabla'">
         <div class="border rounded-border p-2">
@@ -309,8 +299,8 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
               <tbody>
                 <tr>
                   <td v-for="col in ((campo.metadatos as any)?.columnas||[])" :key="col.nombre" class="p-2">
-                    <InputText v-if="(col.tipo||'texto')==='texto'" class="w-full" disabled placeholder="Texto" />
-                    <InputNumber v-else-if="col.tipo==='numero'" class="w-full" disabled placeholder="0" />
+                    <PrimeInputText v-if="(col.tipo||'texto')==='texto'" class="w-full" disabled placeholder="Texto" />
+                    <PrimeInputNumber v-else-if="col.tipo==='numero'" class="w-full" disabled placeholder="0" />
                     <span v-else class="text-muted-color">—</span>
                   </td>
                 </tr>

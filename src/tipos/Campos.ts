@@ -16,3 +16,4 @@ export type TipoCampo =
   | 'tabla'
   | 'boton'
   | 'divisor'
+

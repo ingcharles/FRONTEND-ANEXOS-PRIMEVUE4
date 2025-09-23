@@ -1,5 +1,5 @@
 // Servicios para el manejo de campos - Principio de Responsabilidad Única
-import { TIPOS_CON_OPCIONES, TIPOS_CON_PLACEHOLDER, TIPOS_ESPANOL } from '@/constantes/Campos'
+import { TIPOS_CAMPO_DE_TEXTO, TIPOS_CON_OPCIONES, TIPOS_CON_PLACEHOLDER, TIPOS_ESPANOL } from '@/constantes/Campos'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { EsquemaPagina } from '@/interfaces/Pagina'
 import type { TipoCampo } from '@/tipos/Campos'
@@ -246,4 +246,9 @@ export class ServicioCampos {
 static soportaOpciones(tipo: TipoCampo): boolean {
   return TIPOS_CON_OPCIONES.includes(tipo)
 }
+
+static esCampoDeTexto(tipo: TipoCampo): boolean {
+  return (TIPOS_CAMPO_DE_TEXTO as readonly string[]).includes(tipo)
+}
+
 }
