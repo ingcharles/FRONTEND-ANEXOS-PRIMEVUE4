@@ -96,8 +96,8 @@ interface CampoPagina {
   label: string
   value: string
 }
-
-type ModoEnvio = 'query' | 'header' | 'path'
+// | 'header'
+type ModoEnvio = 'query' | 'path'
 
 const props = defineProps<{ campo: EsquemaCampo }>()
 const almacen = useAlmacenDisenador()
@@ -150,7 +150,8 @@ function actualizarCamposPadre(campos: string[]): void {
 // Verificar si debe mostrar paramKey
 function debeMostrarParamKey(): boolean {
   const modo = configDependencia.value.modoEnvio as string
-  return ['query', 'header', 'path'].includes(modo || '')
+  // , 'header'
+  return ['query', 'path'].includes(modo || '')
 }
 
 // Placeholder para paramKey según el modo
@@ -158,7 +159,7 @@ function obtenerPlaceholderParamKey(): string {
   const modo = configDependencia.value.modoEnvio
   switch (modo) {
     case 'query': return 'ej: filtro, categoria'
-    case 'header': return 'ej: X-Filter-Value'
+    // case 'header': return 'ej: X-Filter-Value'
     case 'path': return 'ej: {id}, {categoria}'
     default: return 'Nombre del parámetro'
   }
