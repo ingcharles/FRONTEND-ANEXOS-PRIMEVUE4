@@ -16,6 +16,53 @@ export interface ServicioValidacion {
 }
 
 export class ServicioValidacionFormulario implements ServicioValidacion {
+  // Helpers compartidos (DRY)
+  private parsearFechaComun(fecha: ValorDato | undefined): Date | undefined {
+    if (fecha instanceof Date) return isNaN(fecha.getTime()) ? undefined : fecha
+    if (typeof fecha === 'string' && fecha.trim()) {
+      const fechaParseada = new Date(fecha)
+      return isNaN(fechaParseada.getTime()) ? undefined : fechaParseada
+    }
+    return undefined
+  }
+
+  private construirReglaNumero(
+    min: number | undefined,
+    max: number | undefined,
+    mensajeMin: string | undefined,
+    mensajeMax: string | undefined
+  ): z.ZodTypeAny {
+    let regla = z.number()
+    if (typeof min === 'number') regla = regla.min(min, mensajeMin)
+    if (typeof max === 'number') regla = regla.max(max, mensajeMax)
+    return z.preprocess(
+      (valor) => (typeof valor === 'string' ? (valor.trim() === '' ? undefined : Number(valor)) : valor),
+      regla
+    )
+  }
+
+  private construirReglaFecha(
+    min: Date | undefined,
+    max: Date | undefined
+  ): z.ZodTypeAny {
+    let regla = z.date()
+    if (min) {
+      regla = regla.min(min, `Debe ser posterior a ${min.toISOString().slice(0, 10)}`)
+    }
+    if (max) {
+      regla = regla.max(max, `Debe ser anterior a ${max.toISOString().slice(0, 10)}`)
+    }
+    return z.preprocess((valor) => {
+      if (valor == null || valor === '') return undefined
+      if (valor instanceof Date) return valor
+      if (typeof valor === 'string') {
+        const fecha = new Date(valor)
+        return isNaN(fecha.getTime()) ? undefined : fecha
+      }
+      return valor
+    }, regla)
+  }
+
   recolectarCamposConNombre(lista: EsquemaCampo[], salida: EsquemaCampo[] = []): EsquemaCampo[] {
     for (const campo of lista) {
       if (!campo) continue
@@ -103,48 +150,15 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
       ? meta.mensajeMaximo
       : `Debe ser <= ${max}`
 
-    let reglaNumero = z.number()
-    if (typeof min === 'number') reglaNumero = reglaNumero.min(min, mensajeMin)
-    if (typeof max === 'number') reglaNumero = reglaNumero.max(max, mensajeMax)
-
-    return z.preprocess(
-      (valor) => typeof valor === 'string' ? (valor.trim() === '' ? undefined : Number(valor)) : valor,
-      reglaNumero
-    )
+  return this.construirReglaNumero(min, max, mensajeMin, mensajeMax)
   }
 
   private crearEsquemaFecha(campo: EsquemaCampo): z.ZodTypeAny {
     const meta = campo.metadatos as Record<string, ValorDato> | undefined
-    let reglaFecha = z.date()
+  const fechaMin = this.parsearFechaComun(meta?.fechaMinima as ValorDato | undefined)
+  const fechaMax = this.parsearFechaComun(meta?.fechaMaxima as ValorDato | undefined)
 
-  const parsearFecha = (fecha: ValorDato | undefined): Date | undefined => {
-      if (fecha instanceof Date) return isNaN(fecha.getTime()) ? undefined : fecha
-      if (typeof fecha === 'string' && fecha.trim()) {
-        const fechaParseada = new Date(fecha)
-        return isNaN(fechaParseada.getTime()) ? undefined : fechaParseada
-      }
-      return undefined
-    }
-
-  const fechaMin = parsearFecha(meta?.fechaMinima as ValorDato | undefined)
-  const fechaMax = parsearFecha(meta?.fechaMaxima as ValorDato | undefined)
-
-    if (fechaMin) {
-      reglaFecha = reglaFecha.min(fechaMin, `Debe ser posterior a ${fechaMin.toISOString().slice(0, 10)}`)
-    }
-    if (fechaMax) {
-      reglaFecha = reglaFecha.max(fechaMax, `Debe ser anterior a ${fechaMax.toISOString().slice(0, 10)}`)
-    }
-
-    return z.preprocess((valor) => {
-      if (valor == null || valor === '') return undefined
-      if (valor instanceof Date) return valor
-      if (typeof valor === 'string') {
-        const fecha = new Date(valor)
-        return isNaN(fecha.getTime()) ? undefined : fecha
-      }
-      return valor
-    }, reglaFecha).optional()
+  return this.construirReglaFecha(fechaMin, fechaMax).optional()
   }
 
   private crearEsquemaCheckbox(campo: EsquemaCampo): z.ZodTypeAny {
@@ -208,36 +222,9 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
   }
 
   private crearEsquemaFechaTabla(columna: Record<string, ValorDato>): z.ZodTypeAny {
-    let reglaFecha = z.date()
-
-    const parsearFecha = (fecha: ValorDato | undefined): Date | undefined => {
-      if (fecha instanceof Date) return isNaN(fecha.getTime()) ? undefined : fecha
-      if (typeof fecha === 'string' && fecha.trim()) {
-        const fechaParseada = new Date(fecha)
-        return isNaN(fechaParseada.getTime()) ? undefined : fechaParseada
-      }
-      return undefined
-    }
-
-  const fechaMin = parsearFecha(columna.fechaMinima as ValorDato | undefined)
-  const fechaMax = parsearFecha(columna.fechaMaxima as ValorDato | undefined)
-
-    if (fechaMin) {
-      reglaFecha = reglaFecha.min(fechaMin, `Debe ser posterior a ${fechaMin.toISOString().slice(0, 10)}`)
-    }
-    if (fechaMax) {
-      reglaFecha = reglaFecha.max(fechaMax, `Debe ser anterior a ${fechaMax.toISOString().slice(0, 10)}`)
-    }
-
-    return z.preprocess((valor) => {
-      if (valor == null || valor === '') return undefined
-      if (valor instanceof Date) return valor
-      if (typeof valor === 'string') {
-        const fecha = new Date(valor)
-        return isNaN(fecha.getTime()) ? undefined : fecha
-      }
-      return valor
-    }, reglaFecha)
+  const fechaMin = this.parsearFechaComun(columna.fechaMinima as ValorDato | undefined)
+  const fechaMax = this.parsearFechaComun(columna.fechaMaxima as ValorDato | undefined)
+  return this.construirReglaFecha(fechaMin, fechaMax)
   }
 
   private aplicarValidacionRequerido(campo: EsquemaCampo, esquemaBase: z.ZodTypeAny): z.ZodTypeAny {

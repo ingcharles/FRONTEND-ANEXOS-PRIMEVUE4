@@ -9,10 +9,13 @@ export function usarPuntoDeCorte() {
   let mmMd: MediaQueryList | null = null
   let mmLg: MediaQueryList | null = null
 
+  const Q_MD = '(min-width: 768px)'
+  const Q_LG = '(min-width: 992px)'
+  const hasMM = () => typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+
   function actualizar() {
-    const hasMM = typeof window !== 'undefined' && typeof window.matchMedia === 'function'
-    const isLg = mmLg?.matches ?? (hasMM ? window.matchMedia('(min-width: 992px)').matches : false)
-    const isMd = mmMd?.matches ?? (hasMM ? window.matchMedia('(min-width: 768px)').matches : false)
+    const isLg = mmLg?.matches ?? (hasMM() ? window.matchMedia(Q_LG).matches : false)
+    const isMd = mmMd?.matches ?? (hasMM() ? window.matchMedia(Q_MD).matches : false)
     punto.value = isLg ? 'lg' : isMd ? 'md' : 'sm'
   }
 
@@ -21,10 +24,9 @@ export function usarPuntoDeCorte() {
   }
 
   onMounted(() => {
-    const hasMM = typeof window !== 'undefined' && typeof window.matchMedia === 'function'
-    if (hasMM) {
-      mmMd = window.matchMedia('(min-width: 768px)')
-      mmLg = window.matchMedia('(min-width: 992px)')
+    if (hasMM()) {
+      mmMd = window.matchMedia(Q_MD)
+      mmLg = window.matchMedia(Q_LG)
       mmMd.addEventListener('change', onChange)
       mmLg.addEventListener('change', onChange)
     } else {

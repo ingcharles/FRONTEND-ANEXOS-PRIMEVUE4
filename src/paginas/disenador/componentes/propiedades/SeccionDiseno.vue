@@ -1,13 +1,7 @@
 <template>
   <div class="mb-3">
-    <div class="font-semibold mb-2">Diseño</div>
-    <div class="fiel# Grid responsivo
-function actualizarGrid(parcial: Partial<ColumnasGrid>): void {
-  if (!props.campo) return
-  const gridActual = props.campo.grid || { sm: 12, md: 6, lg: 6 }
-  const nuevoGrid = { ...gridActual, ...parcial }
-  almacen.actualizarCampo(props.campo.id, { grid: nuevoGrid })
-}grid-cols-12 gap-3">
+    <div class="font-semibold">Diseño</div>
+  <div class="field grid grid-cols-12 gap-3">
       <div class="col-span-12 md:col-span-4">
         <label class="block mb-1">Cols sm</label>
         <Select
@@ -62,33 +56,12 @@ function actualizarGrid(parcial: Partial<ColumnasGrid>): void {
       <small class="text-muted-color">Estilos CSS inline para el campo.</small>
     </div> -->
 
-    <!-- Configuración de ancho -->
-    <div class="field grid grid-cols-12 gap-3">
-      <div class="col-span-12 md:col-span-6">
-        <label class="block mb-1">Ancho mínimo</label>
-        <InputText
-          :model-value="obtenerAnchoMinimo()"
-          placeholder="200px"
-          @update:model-value="(v: string | undefined) => actualizarAnchoMinimo(v || '')"
-        />
-      </div>
-
-      <div class="col-span-12 md:col-span-6">
-        <label class="block mb-1">Ancho máximo</label>
-        <InputText
-          :model-value="obtenerAnchoMaximo()"
-          placeholder="400px"
-          @update:model-value="(v: string | undefined) => actualizarAnchoMaximo(v || '')"
-        />
-      </div>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 // import { computed } from 'vue'
 import Select from 'primevue/select'
-import InputText from 'primevue/inputtext'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { ColumnasGrid } from '@/interfaces/Comunes'
@@ -138,27 +111,5 @@ function actualizarGrid(parcial: Partial<ColumnasGrid>): void {
 //   meta.estilosInline = estilos
 //   almacen.actualizarCampo(props.campo.id, { metadatos: meta })
 // }
-
-// Ancho mínimo
-function obtenerAnchoMinimo(): string {
-  return props.campo?.anchoMinimo?.toString() || ''
-}
-
-function actualizarAnchoMinimo(ancho: string): void {
-  if (!props.campo) return
-  const anchoNumerico = ancho ? parseInt(ancho) : undefined
-  almacen.actualizarCampo(props.campo.id, { anchoMinimo: anchoNumerico })
-}
-
-// Ancho máximo
-function obtenerAnchoMaximo(): string {
-  return props.campo?.anchoMaximo?.toString() || ''
-}
-
-function actualizarAnchoMaximo(ancho: string): void {
-  if (!props.campo) return
-  const anchoNumerico = ancho ? parseInt(ancho) : undefined
-  almacen.actualizarCampo(props.campo.id, { anchoMaximo: anchoNumerico })
-}
 </script>
 

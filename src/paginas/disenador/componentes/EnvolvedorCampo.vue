@@ -13,8 +13,8 @@ import InputNumber from 'primevue/inputnumber'
 import Checkbox from 'primevue/checkbox'
 import RadioButton from 'primevue/radiobutton'
 import Divider from 'primevue/divider'
-import { usarPuntoDeCorte } from '@/almacenes/usarPuntoDeCorte'
 import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
+import { usarPuntoDeCorte } from '@/almacenes/UsarPuntoDeCorte'
 
 const propiedades = defineProps<{ campo: EsquemaCampo; seleccionado?: boolean }>()
 const emitir = defineEmits<{ (e: 'seleccionar'): void }>()
@@ -75,6 +75,22 @@ let inicioX = 0
 let columnasIniciales = 0
 const elementoRaiz = ref<HTMLElement | null>(null)
 
+// Helpers internos (DRY)
+function getAnchoContenedor(nodo: HTMLElement | null): number {
+  const padre = nodo?.parentElement as HTMLElement | null
+  const grilla = padre?.parentElement as HTMLElement | null
+  return grilla?.clientWidth || padre?.clientWidth || window.innerWidth || 1200
+}
+
+function actualizarColumnasDesdeDelta(deltaPx: number) {
+  const nodo = elementoRaiz.value
+  if (!nodo) return
+  const ancho = getAnchoContenedor(nodo)
+  const pxPorColumna = Math.max(40, Math.floor(ancho / 12))
+  const deltaColumnas = Math.round(deltaPx / pxPorColumna)
+  columnaActual.value = columnasIniciales + deltaColumnas
+}
+
 function iniciarRedimensionar(e: MouseEvent) {
   e.preventDefault()
   e.stopPropagation()
@@ -87,22 +103,8 @@ function iniciarRedimensionar(e: MouseEvent) {
 
 function duranteRedimensionar(e: MouseEvent) {
   if (!arrastrando.value) return
-
-  // Guard: verificar que el elemento raíz existe
-  const nodo = elementoRaiz.value
-  if (!nodo) {
-    finalizarRedimensionar() // Terminar el redimensionamiento si el elemento no existe
-    return
-  }
-
-  const deltaPx = e.clientX - inicioX
-  // Aproximar 12 columnas al ancho del contenedor padre inmediato que tiene las clases col-*
-  const padre = nodo.parentElement as HTMLElement | null
-  const grilla = padre?.parentElement as HTMLElement | null
-  const ancho = grilla?.clientWidth || padre?.clientWidth || window.innerWidth || 1200
-  const pxPorColumna = Math.max(40, Math.floor(ancho / 12))
-  const deltaColumnas = Math.round(deltaPx / pxPorColumna)
-  columnaActual.value = columnasIniciales + deltaColumnas
+  if (!elementoRaiz.value) return finalizarRedimensionar()
+  actualizarColumnasDesdeDelta(e.clientX - inicioX)
 }
 
 function finalizarRedimensionar() {
@@ -128,21 +130,8 @@ function duranteRedimensionarTactil(e: TouchEvent) {
   if (!arrastrando.value) return
   const t = e.touches[0]
   if (!t) return
-
-  // Guard: verificar que el elemento raíz existe
-  const nodo = elementoRaiz.value
-  if (!nodo) {
-    finalizarRedimensionarTactil() // Terminar el redimensionamiento si el elemento no existe
-    return
-  }
-
-  const deltaPx = t.clientX - inicioX
-  const padre = nodo.parentElement as HTMLElement | null
-  const grilla = padre?.parentElement as HTMLElement | null
-  const ancho = grilla?.clientWidth || padre?.clientWidth || window.innerWidth || 1200
-  const pxPorColumna = Math.max(40, Math.floor(ancho / 12))
-  const deltaColumnas = Math.round(deltaPx / pxPorColumna)
-  columnaActual.value = columnasIniciales + deltaColumnas
+  if (!elementoRaiz.value) return finalizarRedimensionarTactil()
+  actualizarColumnasDesdeDelta(t.clientX - inicioX)
 }
 
 function finalizarRedimensionarTactil() {
