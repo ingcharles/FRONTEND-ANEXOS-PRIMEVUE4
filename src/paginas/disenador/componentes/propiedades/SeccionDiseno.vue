@@ -1,9 +1,9 @@
 <template>
   <div class="mb-3">
-    <div class="font-semibold">Diseño</div>
+    <div class="font-semibold">Diseño Responsivo</div>
     <div class="grid">
       <div class="col-12 md:col-4">
-        <label class="block mb-2">Cols sm</label>
+        <label class="block mb-2">Pequeño (sm)</label>
         <Select
           :model-value="campo?.grid?.sm ?? 12"
           :options="[1,2,3,4,5,6,7,8,9,10,11,12]"
@@ -13,7 +13,7 @@
       </div>
 
       <div class="col-12 md:col-4">
-        <label class="block mb-2">Cols md</label>
+        <label class="block mb-2">Mediano (md)</label>
         <Select
           :model-value="campo?.grid?.md ?? 6"
           :options="[1,2,3,4,5,6,7,8,9,10,11,12]"
@@ -23,7 +23,7 @@
       </div>
 
       <div class="col-12 md:col-4">
-        <label class="block mb-2">Cols lg</label>
+        <label class="block mb-2">Grande(lg)</label>
         <Select
           :model-value="campo?.grid?.lg ?? 6"
           :options="[1,2,3,4,5,6,7,8,9,10,11,12]"

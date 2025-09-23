@@ -104,9 +104,10 @@ const almacen = useAlmacenDisenador()
 
 // Opciones para modo de envío
 const modoEnvioOpciones = [
-  { label: 'Query Parameter', value: 'query' },
+  { label: 'Path Parameter', value: 'path' },
+  { label: 'Query Parameter', value: 'query' }
   // { label: 'Header', value: 'header' },
-  { label: 'Path Parameter', value: 'path' }
+
 ]
 
 // Configuración de dependencia

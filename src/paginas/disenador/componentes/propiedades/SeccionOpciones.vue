@@ -1,230 +1,3 @@
-<template>
-  <div v-if="esCampoConOpciones()" class="mb-3">
-    <div class="font-semibold mb-2">Opciones</div>
-
-    <!-- Selector de fuente de opciones -->
-    <div class="grid">
-      <div class="col-12">
-        <label class="block mb-2">Fuente de opciones</label>
-        <Select
-          :model-value="obtenerModoOpciones()"
-          :options="opcionesFuente"
-          option-label="etiqueta"
-          option-value="valor"
-          class="w-full"
-          @update:model-value="(v: ModoOpciones) => actualizarModoOpciones(v)"
-        />
-      </div>
-    </div>
-
-    <!-- Opciones manuales -->
-  <template v-if="obtenerModoOpciones() === 'manual'">
-      <div class="flex justify-content-between align-items-center mb-2">
-        <span class="font-semibold">Opciones</span>
-        <Button label="Agregar" size="small" icon="pi pi-plus" @click="agregarOpcion" />
-      </div>
-
-      <div v-for="(opcion, indice) in obtenerOpciones()" :key="indice" class="grid align-items-end mb-2">
-        <div class="col-12 md:col-5">
-          <label class="block mb-2">Etiqueta</label>
-          <InputText
-            :model-value="String(opcion.etiqueta)"
-            @update:model-value="(v: string | undefined) => actualizarOpcion(indice, 'etiqueta', v || '')"
-          />
-        </div>
-
-        <div class="col-12 md:col-5">
-          <label class="block mb-2">Valor</label>
-          <InputText
-            :model-value="String(opcion.valor ?? '')"
-            @update:model-value="(v: string | undefined) => actualizarOpcion(indice, 'valor', v || '')"
-          />
-        </div>
-
-        <div class="col-12 md:col-2">
-          <Button icon="pi pi-trash" severity="danger" text @click="eliminarOpcion(indice)" />
-        </div>
-      </div>
-    </template>
-
-    <!-- Configuración de API -->
-    <div v-if="obtenerModoOpciones() === 'api'" class="mt-2 p-3 border-1 surface-border border-round">
-      <div class="font-semibold mb-2 text-sm">Cargar opciones por API</div>
-
-      <div class="grid">
-        <!-- URL -->
-        <div class="col-12">
-          <label class="block mb-2">URL</label>
-          <InputText
-            :model-value="configApi.url"
-            placeholder="https://api.midominio.com/opciones"
-            @update:model-value="(v: string | undefined) => actualizarConfigApi({ url: v || '' })"
-          />
-        </div>
-
-        <!-- Método y Content-Type -->
-        <div class="col-12 md:col-4">
-          <label class="block mb-2">Método</label>
-          <Select
-            :model-value="configApi.method || 'GET'"
-            :options="opcionesMetodo"
-            option-label="label"
-            option-value="value"
-            class="w-full"
-            @update:model-value="(v: MetodoHttp) => actualizarConfigApi({ method: v })"
-          />
-        </div>
-
-        <div class="col-12 md:col-8">
-          <label class="block mb-2">Content-Type</label>
-          <Select
-            :model-value="configApi.contentType || 'application/json'"
-            :options="opcionesContentType"
-            option-label="label"
-            option-value="value"
-            class="w-full"
-            @update:model-value="(v: string) => actualizarConfigApi({ contentType: v })"
-          />
-        </div>
-
-        <!-- Configuración de claves -->
-        <div class="col-12 md:col-6">
-          <label class="block mb-2">Ruta datos (opcional)</label>
-          <InputText
-            :model-value="configApi.dataPath"
-            placeholder="por ej.: data.items"
-            @update:model-value="(v: string | undefined) => actualizarConfigApi({ dataPath: v || '' })"
-          />
-        </div>
-
-        <div class="col-12 md:col-3">
-          <label class="block mb-2">Clave Valor</label>
-          <InputText
-            :model-value="configApi.claveValor"
-            placeholder="valor"
-            @update:model-value="(v: string | undefined) => actualizarConfigApi({ claveValor: v || '' })"
-          />
-        </div>
-
-        <div class="col-12 md:col-3">
-          <label class="block mb-2">Clave Etiqueta</label>
-          <InputText
-            :model-value="configApi.claveEtiqueta"
-            placeholder="etiqueta"
-            @update:model-value="(v: string | undefined) => actualizarConfigApi({ claveEtiqueta: v || '' })"
-          />
-        </div>
-
-        <!-- Body para POST -->
-        <div class="col-12" v-if="(configApi.method || 'GET') === 'POST'">
-          <label class="block mb-2">Body (JSON o texto)</label>
-          <Textarea
-            :model-value="configApi.body"
-            rows="4"
-            placeholder='{"page":1}'
-            @update:model-value="(v: string | undefined) => actualizarConfigApi({ body: v || '' })"
-          />
-        </div>
-
-        <!-- Headers -->
-        <div class="col-12">
-          <label class="block mb-2">Headers (JSON opcional)</label>
-          <Textarea
-            :model-value="configApi.headersJson"
-            rows="3"
-            placeholder='{"Authorization":"Bearer ..."}'
-            @update:model-value="(v: string | undefined) => actualizarConfigApi({ headersJson: v || '' })"
-          />
-        </div>
-
-        <!-- Estructura detectada -->
-        <div class="col-12" v-if="obtenerOpciones().length > 0">
-          <div class="p-3 bg-blue-50 border-1 border-blue-200 border-round">
-            <div class="text-sm font-medium text-blue-800 mb-1">Estructura detectada:</div>
-            <div class="text-xs text-blue-700 font-mono">
-              {{ JSON.stringify(obtenerOpciones()[0], null, 2) }}
-            </div>
-            <small class="text-blue-600 block mt-1">
-              Si tu API usa claves diferentes (como "etiqueta"/"valor"), se detectarán automáticamente al cargar desde la API.
-            </small>
-          </div>
-        </div>
-      </div>
-
-      <!-- Botones de carga -->
-      <div class="flex align-items-center gap-2 flex-wrap mt-3">
-        <Button
-          :disabled="cargandoApi"
-          size="small"
-          icon="pi pi-refresh"
-          :label="cargandoApi ? 'Cargando…' : 'Reemplazar con API'"
-          @click="cargarOpcionesDesdeApi('reemplazar')"
-        />
-        <Button
-          :disabled="cargandoApi"
-          size="small"
-          icon="pi pi-plus"
-          severity="secondary"
-          label="Añadir desde API"
-          @click="cargarOpcionesDesdeApi('agregar')"
-        />
-        <small v-if="errorApi" class="text-red-500">{{ errorApi }}</small>
-      </div>
-
-      <small class="text-color-secondary block mt-2">
-        Reemplazar: sustituye todas las opciones. Añadir: agrega nuevas sin duplicar por valor.
-      </small>
-    </div>
-
-    <!-- Valor por defecto -->
-    <div class="mt-3">
-      <label class="block mb-2">Valor por defecto</label>
-
-      <template v-if="campo?.tipo === 'casilla'">
-        <MultiSelect
-          :model-value="obtenerValorPorDefectoArray()"
-          :options="obtenerOpciones()"
-          option-label="etiqueta"
-          option-value="valor"
-          placeholder="(sin valores por defecto)"
-          class="w-full mb-2"
-          display="chip"
-          @update:model-value="(v: unknown[]) => actualizarValorPorDefecto(v)"
-        />
-        <small class="text-color-secondary">
-          Puedes preseleccionar varias opciones para el grupo de checkboxes.
-        </small>
-      </template>
-
-      <template v-else>
-        <Select
-          :model-value="obtenerValorPorDefecto()"
-          :options="obtenerOpciones()"
-          option-label="etiqueta"
-          option-value="valor"
-          placeholder="(sin valor por defecto)"
-          class="w-full mb-2"
-          @update:model-value="actualizarValorPorDefecto"
-        />
-        <small class="text-color-secondary">
-          Selecciona qué opción quedará preseleccionada por defecto.
-        </small>
-      </template>
-    </div>
-
-    <!-- Dependencias -->
-    <SeccionDependencias v-if="campo" :campo="campo" />
-
-    <!-- Modal de alerta para errores de API -->
-    <ModalAlerta
-      v-model="mostrarModalAlerta"
-      :titulo="datosModalAlerta.titulo"
-      :mensaje="datosModalAlerta.mensaje"
-      :mensaje-detalle="datosModalAlerta.detalle"
-      tipo="error"
-    />
-  </div>
-</template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
@@ -239,26 +12,10 @@ import type { OpcionSeleccion } from '@/interfaces/Comunes'
 import SeccionDependencias from './SeccionDependencias.vue'
 import ModalAlerta from '@/componentes/ModalAlerta.vue'
 import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
+import type { ConfigApi } from '@/interfaces/TabAtributos'
+import { MetodoHttp, ModoCarga, ModoOpciones } from '@/tipos/TabAtributos'
+import { opcionesFuente, opcionesMetodo, opcionesContentType } from '@/constantes/TabAtributos'
 
-type ModoOpciones = 'manual' | 'api'
-type MetodoHttp = 'GET' | 'POST'
-type ModoCarga = 'reemplazar' | 'agregar'
-
-interface ConfigApi {
-  url?: string
-  method?: MetodoHttp
-  dataPath?: string
-  claveEtiqueta?: string
-  claveValor?: string
-  contentType?: string
-  body?: string
-  headersJson?: string
-}
-
-interface OpcionSelector {
-  label: string
-  value: string
-}
 
 const props = defineProps<{
   campo: EsquemaCampo | null
@@ -278,22 +35,7 @@ const datosModalAlerta = ref({
   detalle: ''
 })
 
-// Opciones para los selectores
-const opcionesFuente: OpcionSelector[] = [
-  { label: 'Manual', value: 'manual' },
-  { label: 'API', value: 'api' }
-]
 
-const opcionesMetodo: OpcionSelector[] = [
-  { label: 'GET', value: 'GET' },
-  { label: 'POST', value: 'POST' }
-]
-
-const opcionesContentType: OpcionSelector[] = [
-  { label: 'application/json', value: 'application/json' },
-  { label: 'text/plain', value: 'text/plain' },
-  { label: 'application/x-www-form-urlencoded', value: 'application/x-www-form-urlencoded' }
-]
 
 // Metadatos tipados
 const metadatos = computed(() => {
@@ -307,7 +49,7 @@ const configApi = computed((): ConfigApi => {
   const config = (meta.configuracionApi as ConfigApi) || {}
   return {
     url: config.url || '',
-    method: config.method || 'GET',
+    method: config.method || MetodoHttp.GET,
     dataPath: config.dataPath || '',
     claveEtiqueta: config.claveEtiqueta || 'label',
     claveValor: config.claveValor || 'value',
@@ -326,20 +68,18 @@ function esCampoConOpciones(): boolean {
 // Modo de opciones
 function obtenerModoOpciones(): ModoOpciones {
   const meta = metadatos.value as Record<string, unknown>
-  return (meta.modoOpciones as ModoOpciones) || (meta.modoOpciones as ModoOpciones) || 'manual'
+  return (meta.modoOpciones as ModoOpciones) || ModoOpciones.MANUAL
 }
 
 function actualizarModoOpciones(modo: ModoOpciones): void {
   if (!props.campo) return
   const meta = { ...metadatos.value } as Record<string, unknown>
   meta.modoOpciones = modo
-  meta.modoOpciones = modo // compat
 
-  // Asegurar que options existe como array
-  if (!Array.isArray(meta.opciones)) meta.opciones = []
-  // mantener compat en inglés
-  const opcionesEs = meta.opciones as OpcionSeleccion[]
-  meta.opciones = opcionesEs.map((o) => ({ label: o.etiqueta, value: o.valor }))
+  // Asegurar que opciones existe como array
+  if (!Array.isArray(meta.opciones)) {
+    meta.opciones = []
+  }
 
   almacen.actualizarCampo(props.campo.id, { metadatos: meta })
 }
@@ -364,9 +104,10 @@ function obtenerOpciones(): OpcionSeleccion[] {
 function actualizarOpciones(opciones: OpcionSeleccion[]): void {
   if (!props.campo) return
   const meta = { ...metadatos.value } as Record<string, unknown>
-  // Guardar en español y compat inglés
+
+  // Guardar las opciones en el formato español
   meta.opciones = opciones
-  meta.opciones = opciones.map(o => ({ label: o.etiqueta, value: o.valor }))
+
   almacen.actualizarCampo(props.campo.id, { metadatos: meta })
 }
 
@@ -545,7 +286,7 @@ function mostrarError(status: number, message?: string): void {
   mostrarModalAlerta.value = true
 }
 // Cargar opciones desde API
-async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<void> {
+async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPLAZAR): Promise<void> {
   if (!props.campo) return
 
   const config = configApi.value
@@ -577,7 +318,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
 
     // Preparar body para POST
     let body: string | undefined
-    if ((config.method || 'GET') === 'POST') {
+    if ((config.method || MetodoHttp.GET) === MetodoHttp.POST) {
       if (config.contentType && config.contentType.includes('application/json')) {
         if (config.body && config.body.trim()) {
           try {
@@ -594,7 +335,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
 
     // Realizar petición
     const respuesta = await fetch(config.url, {
-      method: config.method || 'GET',
+      method: config.method || MetodoHttp.GET,
       headers,
       body
     })
@@ -637,7 +378,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
     })
 
     // Aplicar opciones según el modo
-    if (modo === 'reemplazar') {
+    if (modo === ModoCarga.REEMPLAZAR) {
       actualizarOpciones(opcionesMapeadas)
     } else {
       // Agregar sin duplicar
@@ -660,4 +401,233 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga = 'reemplazar'): Promise<v
   }
 }
 </script>
+<template>
+  <div v-if="esCampoConOpciones()" class="mb-3">
+    <div class="font-semibold mb-2">Opciones</div>
+
+    <!-- Selector de fuente de opciones -->
+    <div class="grid">
+      <div class="col-12">
+        <label class="block mb-2">Fuente de opciones</label>
+        <Select
+          :model-value="obtenerModoOpciones()"
+          :options="opcionesFuente"
+          option-label="label"
+          option-value="value"
+          class="w-full"
+          @update:model-value="(v: ModoOpciones) => actualizarModoOpciones(v)"
+        />
+      </div>
+    </div>
+
+    <!-- Opciones manuales -->
+  <template v-if="obtenerModoOpciones() === ModoOpciones.MANUAL">
+      <div class="flex justify-content-between align-items-center mb-2">
+        <span class="font-semibold">Opciones</span>
+        <Button label="Agregar" size="small" icon="pi pi-plus" @click="agregarOpcion" />
+      </div>
+
+      <div v-for="(opcion, indice) in obtenerOpciones()" :key="indice" class="grid align-items-end mb-2">
+        <div class="col-12 md:col-5">
+          <label class="block mb-2">Etiqueta</label>
+          <InputText
+            :model-value="String(opcion.etiqueta)"
+            @update:model-value="(v: string | undefined) => actualizarOpcion(indice, 'etiqueta', v || '')"
+          />
+        </div>
+
+        <div class="col-12 md:col-5">
+          <label class="block mb-2">Valor</label>
+          <InputText
+            :model-value="String(opcion.valor ?? '')"
+            @update:model-value="(v: string | undefined) => actualizarOpcion(indice, 'valor', v || '')"
+          />
+        </div>
+
+        <div class="col-12 md:col-2">
+          <Button icon="pi pi-trash" severity="danger" text @click="eliminarOpcion(indice)" />
+        </div>
+      </div>
+    </template>
+
+    <!-- Configuración de API -->
+    <div v-if="obtenerModoOpciones() === ModoOpciones.API" class="mt-2 p-3 border-1 surface-border border-round">
+      <div class="font-semibold mb-2 text-sm">Cargar opciones por API</div>
+
+      <div class="grid">
+        <!-- URL -->
+        <div class="col-12">
+          <label class="mb-2">URL</label>
+          <InputText
+            :model-value="configApi.url"
+            placeholder="https://api.midominio.com/opciones"
+            @update:model-value="(v: string | undefined) => actualizarConfigApi({ url: v || '' })"
+            class="w-full"
+            />
+        </div>
+
+        <!-- Método y Content-Type -->
+        <div class="col-12 md:col-4">
+          <label class="block mb-2">Método</label>
+          <Select
+            :model-value="configApi.method || MetodoHttp.GET"
+            :options="opcionesMetodo"
+            option-label="label"
+            option-value="value"
+            class="w-full"
+            @update:model-value="(v: MetodoHttp) => actualizarConfigApi({ method: v })"
+          />
+        </div>
+
+        <div class="col-12 md:col-8">
+          <label class="block mb-2">Content-Type</label>
+          <Select
+            :model-value="configApi.contentType || 'application/json'"
+            :options="opcionesContentType"
+            option-label="label"
+            option-value="value"
+            class="w-full"
+            @update:model-value="(v: string) => actualizarConfigApi({ contentType: v })"
+          />
+        </div>
+
+        <!-- Configuración de claves -->
+        <div class="col-12 md:col-6">
+          <label class="block mb-2">Ruta datos (opcional)</label>
+          <InputText
+            :model-value="configApi.dataPath"
+            placeholder="por ej.: data.items"
+            @update:model-value="(v: string | undefined) => actualizarConfigApi({ dataPath: v || '' })"
+          />
+        </div>
+
+        <div class="col-12 md:col-3">
+          <label class="block mb-2">Clave Valor</label>
+          <InputText
+            :model-value="configApi.claveValor"
+            placeholder="valor"
+            @update:model-value="(v: string | undefined) => actualizarConfigApi({ claveValor: v || '' })"
+          />
+        </div>
+
+        <div class="col-12 md:col-3">
+          <label class="block mb-2">Clave Etiqueta</label>
+          <InputText
+            :model-value="configApi.claveEtiqueta"
+            placeholder="etiqueta"
+            @update:model-value="(v: string | undefined) => actualizarConfigApi({ claveEtiqueta: v || '' })"
+          />
+        </div>
+
+        <!-- Body para POST -->
+        <div class="col-12" v-if="(configApi.method || MetodoHttp.GET) === MetodoHttp.POST">
+          <label class="block mb-2">Body (JSON o texto)</label>
+          <Textarea
+            :model-value="configApi.body"
+            rows="4"
+            placeholder='{"page":1}'
+            @update:model-value="(v: string | undefined) => actualizarConfigApi({ body: v || '' })"
+          />
+        </div>
+
+        <!-- Headers -->
+        <div class="col-12">
+          <label class="block mb-2">Headers (JSON opcional)</label>
+          <Textarea
+            :model-value="configApi.headersJson"
+            rows="3"
+            placeholder='{"Authorization":"Bearer ..."}'
+            @update:model-value="(v: string | undefined) => actualizarConfigApi({ headersJson: v || '' })"
+          />
+        </div>
+
+        <!-- Estructura detectada -->
+        <div class="col-12" v-if="obtenerOpciones().length > 0">
+          <div class="p-3 bg-blue-50 border-1 border-blue-200 border-round">
+            <div class="text-sm font-medium text-blue-800 mb-1">Estructura detectada:</div>
+            <div class="text-xs text-blue-700 font-mono">
+              {{ JSON.stringify(obtenerOpciones()[0], null, 2) }}
+            </div>
+            <small class="text-blue-600 block mt-1">
+              Si tu API usa claves diferentes (como "etiqueta"/"valor"), se detectarán automáticamente al cargar desde la API.
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones de carga -->
+      <div class="flex align-items-center gap-2 flex-wrap mt-3">
+        <Button
+          :disabled="cargandoApi"
+          size="small"
+          icon="pi pi-refresh"
+          :label="cargandoApi ? 'Cargando…' : 'Reemplazar con API'"
+          @click="cargarOpcionesDesdeApi(ModoCarga.REEMPLAZAR)"
+        />
+        <Button
+          :disabled="cargandoApi"
+          size="small"
+          icon="pi pi-plus"
+          severity="secondary"
+          label="Añadir desde API"
+          @click="cargarOpcionesDesdeApi(ModoCarga.AGREGAR)"
+        />
+        <small v-if="errorApi" class="text-red-500">{{ errorApi }}</small>
+      </div>
+
+      <small class="text-color-secondary block mt-2">
+        Reemplazar: sustituye todas las opciones. Añadir: agrega nuevas sin duplicar por valor.
+      </small>
+    </div>
+
+    <!-- Valor por defecto -->
+    <div class="mt-3">
+      <label class="block mb-2">Valor por defecto</label>
+
+      <template v-if="campo?.tipo === 'casilla'">
+        <MultiSelect
+          :model-value="obtenerValorPorDefectoArray()"
+          :options="obtenerOpciones()"
+          option-label="etiqueta"
+          option-value="valor"
+          placeholder="(sin valores por defecto)"
+          class="w-full mb-2"
+          display="chip"
+          @update:model-value="(v: unknown[]) => actualizarValorPorDefecto(v)"
+        />
+        <small class="text-color-secondary">
+          Puedes preseleccionar varias opciones para el grupo de checkboxes.
+        </small>
+      </template>
+
+      <template v-else>
+        <Select
+          :model-value="obtenerValorPorDefecto()"
+          :options="obtenerOpciones()"
+          option-label="etiqueta"
+          option-value="valor"
+          placeholder="(sin valor por defecto)"
+          class="w-full mb-2"
+          @update:model-value="actualizarValorPorDefecto"
+        />
+        <small class="text-color-secondary">
+          Selecciona qué opción quedará preseleccionada por defecto.
+        </small>
+      </template>
+    </div>
+
+    <!-- Dependencias -->
+    <SeccionDependencias v-if="campo" :campo="campo" />
+
+    <!-- Modal de alerta para errores de API -->
+    <ModalAlerta
+      v-model="mostrarModalAlerta"
+      :titulo="datosModalAlerta.titulo"
+      :mensaje="datosModalAlerta.mensaje"
+      :mensaje-detalle="datosModalAlerta.detalle"
+      tipo="error"
+    />
+  </div>
+</template>
+
 

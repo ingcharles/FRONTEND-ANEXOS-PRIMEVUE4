@@ -61,14 +61,14 @@
     </div>
 
     <!-- Layout para grupos de opciones -->
-    <div class="field" v-if="tieneOpcionesMultiples()">
+    <div class="field" v-if="tieneOpcionesHorizontalVertical()">
       <label class="block mb-1">Distribución de opciones</label>
       <SelectButton
         :model-value="obtenerLayoutGrupo()"
         :options="opcionesLayout"
         option-label="label"
         option-value="value"
-        @update:model-value="(v: TipoLayout) => actualizarLayoutGrupo(v)"
+        @update:model-value="(v: TipoDiseno) => actualizarLayoutGrupo(v)"
       />
       <small class="text-muted-color">Controla si las opciones se muestran en columna o en fila.</small>
     </div>
@@ -110,13 +110,9 @@ import type { TipoCampo } from '@/tipos/Campos'
 import type { ReglaValidacion } from '@/interfaces/Validacion'
 import { TIPOS_CON_PLACEHOLDER } from '@/constantes/Campos'
 import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
+import type { OpcionLayout } from '@/interfaces/TabAtributos'
+import type { TipoDiseno } from '@/tipos/Comunes'
 
-type TipoLayout = 'vertical' | 'horizontal'
-
-interface OpcionLayout {
-  label: string
-  value: TipoLayout
-}
 
 // // Interfaz temporal para compatibilidad con el almacen
 // interface ActualizacionCampo {
@@ -164,9 +160,9 @@ function esSoloLectura(): boolean {
   return TIPOS_CON_PLACEHOLDER.includes(props.campo.tipo)
 }
 
-function tieneOpcionesMultiples(): boolean {
+function tieneOpcionesHorizontalVertical(): boolean {
   if (!props.campo) return false
-  if (!ServicioCampos.soportaOpciones(props.campo.tipo)) return false
+  if (!ServicioCampos.soportaOpcionesHorizontalVertical(props.campo.tipo)) return false
 
   const opciones = (metadatos.value as Record<string, unknown>).opciones
   return Array.isArray(opciones) && opciones.length > 0
@@ -192,12 +188,12 @@ function actualizarMensajeRequerido(mensaje: string): void {
 }
 
 // Layout de grupo
-function obtenerLayoutGrupo(): TipoLayout {
+function obtenerLayoutGrupo(): TipoDiseno {
   const meta = metadatos.value as Record<string, unknown>
   return meta.layout === 'horizontal' ? 'horizontal' : 'vertical'
 }
 
-function actualizarLayoutGrupo(layout: TipoLayout): void {
+function actualizarLayoutGrupo(layout: TipoDiseno): void {
   if (!props.campo) return
   const meta = { ...metadatos.value } as Record<string, unknown>
   meta.layout = layout

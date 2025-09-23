@@ -1,5 +1,5 @@
 <template>
-  <div v-if="campo?.tipo === 'tabla'" class="mb-3">
+  <div v-if="campo?.tipo === 'tabla'">
     <div class="font-semibold mb-2">Configuración de Tabla</div>
 
     <!-- Gestión de columnas -->

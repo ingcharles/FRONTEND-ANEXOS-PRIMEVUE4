@@ -1,23 +1,7 @@
 // Constantes relacionadas con campos
+import { TipoCampoEtiqueta, TipoCampoValor } from '@/enumeraciones/Campos';
 import type { ReglaLogica } from '@/interfaces/Validacion';
 
-export enum TipoCampoValor {
-  Texto = 'texto',
-  AreaTexto = 'area-texto',
-  Correo = 'correo',
-  Contrasena = 'contrasena',
-  Numero = 'numero',
-  Hora = 'hora',
-  Fecha = 'fecha',
-  Seleccion = 'seleccion',
-  Radio = 'radio',
-  Casilla = 'casilla',
-  Etiqueta = 'etiqueta',
-  Boton = 'boton',
-  Divisor = 'divisor',
-  Panel = 'panel',
-  Tabla = 'tabla'
-}
 
 
 
@@ -61,23 +45,7 @@ export enum TipoCampoValor {
 // } as const
 
 
-export enum TipoCampoEtiqueta {
-  Texto = 'Texto',
-  AreaTexto = 'Área de texto',
-  Correo = 'Correo electrónico',
-  Contrasena = 'Contraseña',
-  Numero = 'Número',
-  Hora = 'Hora',
-  Fecha = 'Fecha',
-  Seleccion = 'Selección',
-  Radio = 'Opción múltiple',
-  Casilla = 'Casilla de verificación',
-  Etiqueta = 'Etiqueta',
-  Boton = 'Botón',
-  Divisor = 'Divisor',
-  Panel = 'Panel',
-  Tabla = 'Tabla'
-}
+
 
 export const TIPOS_OPCIONES_ESPANOL: readonly { valor: TipoCampoValor, etiqueta: TipoCampoEtiqueta }[] = [
   { etiqueta: TipoCampoEtiqueta.Texto, valor: TipoCampoValor.Texto },
@@ -177,6 +145,14 @@ export const TIPOS_CON_PLACEHOLDER: readonly TipoCampoValor[] = [
  */
 export const TIPOS_CON_OPCIONES: readonly TipoCampoValor[] = [
   TipoCampoValor.Seleccion,
+  TipoCampoValor.Radio,
+  TipoCampoValor.Casilla
+]
+
+/**
+ * Tipos de campo que soportan opciones (select, radio, checkbox múltiple)
+ */
+export const TIPOS_CON_OPCIONES_HORIZONAL_VERTICAL: readonly TipoCampoValor[] = [
   TipoCampoValor.Radio,
   TipoCampoValor.Casilla
 ]

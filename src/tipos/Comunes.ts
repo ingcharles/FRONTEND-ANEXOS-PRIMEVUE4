@@ -21,3 +21,6 @@ export type CampoRequerido<T, K extends keyof T> = T & Required<Pick<T, K>>
 
 // Tipos de modales
 export type TipoAlerta = 'error' | 'warning' | 'info' | 'success'
+
+// SeccionComportamiento.vue
+export type TipoDiseno = 'vertical' | 'horizontal'
