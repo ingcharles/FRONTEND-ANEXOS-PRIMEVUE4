@@ -4,7 +4,7 @@ import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { EsquemaFormulario } from '@/interfaces/Formulario'
 import type { ReglaValidacion } from '@/interfaces/Validacion'
 import type { RegistroDatos, ValorDato } from '@/tipos/Comunes'
-import { TipoCampoValor } from '@/constantes/Campos'
+import { TipoCampoValor } from '@/enumeraciones/Campos'
 
 export interface ServicioValidacion {
   recolectarCamposConNombre(lista: EsquemaCampo[], salida?: EsquemaCampo[]): EsquemaCampo[]

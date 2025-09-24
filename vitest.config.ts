@@ -39,6 +39,8 @@ export default defineConfig({
       '@constantes': fileURLToPath(new URL('./src/constantes', import.meta.url)),
       '@servicios': fileURLToPath(new URL('./src/servicios', import.meta.url)),
       '@services': fileURLToPath(new URL('./src/services', import.meta.url)),
+      '@interfaces': fileURLToPath(new URL('./src/interfaces', import.meta.url)),
+      '@enumeraciones': fileURLToPath(new URL('./src/enumeraciones', import.meta.url)),
       // Añade más alias según sea necesario
     }
   }

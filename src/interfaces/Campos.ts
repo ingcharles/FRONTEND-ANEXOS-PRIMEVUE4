@@ -50,3 +50,32 @@ export interface EsquemaCampo {
   hijos?: EsquemaCampo[]
   metadatos?: MetadatosCampo
 }
+
+
+
+// RenderizadorCampo.vue
+export interface ColumnaTablaBasica {
+  name: string
+  label?: string
+  type?: 'text' | 'number' | 'date'
+}
+
+export interface ColumnaTablaExtendida extends ColumnaTablaBasica {
+  formatMode?: 'decimal' | 'currency' | 'percent'
+  currency?: string
+  locale?: string
+  prefix?: string
+  suffix?: string
+  minFractionDigits?: number
+  maxFractionDigits?: number
+  percentScale?: 'whole' | 'fraction'
+  agg?: 'none' | 'sum' | 'avg' | 'count' | 'min' | 'max'
+  aggPrefix?: string
+  aggSuffix?: string
+  decimals?: number
+  required?: boolean
+  min?: number | null
+  max?: number | null
+  minMessage?: string
+  maxMessage?: string
+}

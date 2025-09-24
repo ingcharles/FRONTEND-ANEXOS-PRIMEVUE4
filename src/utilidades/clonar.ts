@@ -19,11 +19,11 @@ export function duplicarConNuevosIds(
 ): EsquemaCampo {
   const base = clonarProfundo(nodo)
   const copia: EsquemaCampo = { ...base, id: generarId() }
-  
+
   if (Array.isArray(copia.hijos)) {
     copia.hijos = copia.hijos.map((hijo) => duplicarConNuevosIds(hijo, generarId))
   }
-  
+
   return copia
 }
 

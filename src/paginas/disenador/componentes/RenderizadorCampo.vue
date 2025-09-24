@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { EsquemaCampo } from '@/interfaces/Campos'
+import type { ColumnaTablaBasica, ColumnaTablaExtendida, EsquemaCampo } from '@/interfaces/Campos'
 import { evaluarReglasCampo } from '@/utilidades/Logica'
 import type { RegistroDatos, ValorDato } from '@/tipos/Comunes'
 import type { OpcionSeleccion } from '@/interfaces/Comunes'
-import { TipoCampoValor } from '@/constantes/Campos'
+import { TipoCampoValor } from '@/enumeraciones/Campos'
 
 const propiedades = defineProps<{
   campo: EsquemaCampo
@@ -30,8 +30,8 @@ const opcionesCampo = computed<OpcionSeleccion[]>(() => {
 
 function clasesColumnaCampo(campo: EsquemaCampo): string[] {
   const pequeno = campo.grid?.sm ?? 12
-  const mediano = campo.grid?.md ?? 6
-  const grande = campo.grid?.lg ?? 6
+  const mediano = campo.grid?.md ?? 12
+  const grande = campo.grid?.lg ?? 12
   return [
     `col-${Math.min(12, Math.max(1, pequeno))}`,
     `md:col-${Math.min(12, Math.max(1, mediano))}`,
@@ -40,31 +40,7 @@ function clasesColumnaCampo(campo: EsquemaCampo): string[] {
   ]
 }
 
-interface ColumnaTablaBasica {
-  name: string
-  label?: string
-  type?: 'text' | 'number' | 'date'
-}
 
-interface ColumnaTablaExtendida extends ColumnaTablaBasica {
-  formatMode?: 'decimal' | 'currency' | 'percent'
-  currency?: string
-  locale?: string
-  prefix?: string
-  suffix?: string
-  minFractionDigits?: number
-  maxFractionDigits?: number
-  percentScale?: 'whole' | 'fraction'
-  agg?: 'none' | 'sum' | 'avg' | 'count' | 'min' | 'max'
-  aggPrefix?: string
-  aggSuffix?: string
-  decimals?: number
-  required?: boolean
-  min?: number | null
-  max?: number | null
-  minMessage?: string
-  maxMessage?: string
-}
 
 function obtenerColumnasTabla(campo: EsquemaCampo): ColumnaTablaExtendida[] {
   const metadatos = campo.metadatos as Record<string, unknown> | undefined
@@ -130,7 +106,6 @@ function clasesFilaTabla(campo: EsquemaCampo): string[] {
 function crearFilaVaciaCampo(columnas: ColumnaTablaBasica[]): Record<string, ValorDato> {
   const objetoVacio: Record<string, ValorDato> = {}
   for (const columna of columnas) {
-    // Evitar undefined: usar null como valor vacío
     objetoVacio[columna.name] = null
   }
   return objetoVacio

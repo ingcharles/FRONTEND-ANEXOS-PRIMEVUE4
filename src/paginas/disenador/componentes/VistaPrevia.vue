@@ -9,6 +9,7 @@ import { ServicioEsquemasFormulario } from '@/servicios/disenador/ServicioEsquem
 import Button from 'primevue/button'
 import RenderizadorCampo from './RenderizadorCampo.vue'
 import type { RegistroDatos, ValorDato } from '@/tipos/Comunes'
+import { TipoCampoValor } from '@/enumeraciones/Campos'
 
 // Composables y servicios
 const almacen = useAlmacenDisenador()
@@ -32,8 +33,8 @@ const registroDependencias = new Map<string, () => void>()
 // Funciones para manejo de campos
 function clasesColumna(campo: EsquemaCampo): string[] {
   const sm = campo.grid?.sm ?? 12
-  const md = campo.grid?.md ?? 6
-  const lg = campo.grid?.lg ?? 6
+  const md = campo.grid?.md ?? 12
+  const lg = campo.grid?.lg ?? 12
   return [
     `col-${Math.min(12, Math.max(1, sm))}`,
     `md:col-${Math.min(12, Math.max(1, md))}`,
@@ -78,31 +79,31 @@ function aplicarValoresPorDefecto(lista: EsquemaCampo[], sobrescribirSiVacio = f
       let valorDefecto = metadatos?.valorPorDefecto as ValorDato | undefined
 
       // Normalizar defaults por tipo
-      if (campo.tipo === 'hora' && typeof valorDefecto === 'string') {
+      if (campo.tipo === TipoCampoValor.Hora  && typeof valorDefecto === 'string') {
         valorDefecto = parsearHoraCadenaAFecha(valorDefecto)
       }
 
-      if (campo.tipo === 'numero' && typeof valorDefecto === 'string' && valorDefecto.trim() !== '') {
+      if (campo.tipo === TipoCampoValor.Numero && typeof valorDefecto === 'string' && valorDefecto.trim() !== '') {
         const numeroParseado = Number(valorDefecto)
         if (!isNaN(numeroParseado)) valorDefecto = numeroParseado
       }
 
-      if (campo.tipo === 'fecha') {
+      if (campo.tipo === TipoCampoValor.Fecha) {
         if (typeof valorDefecto === 'string' && valorDefecto.trim() !== '') {
           const fechaParseada = new Date(valorDefecto)
           if (!isNaN(fechaParseada.getTime())) valorDefecto = fechaParseada
         }
       }
 
-      if (campo.tipo === 'casilla' && typeof valorDefecto === 'string') {
+      if (campo.tipo === TipoCampoValor.Casilla && typeof valorDefecto === 'string') {
         valorDefecto = valorDefecto.toLowerCase() === 'true'
       }
 
-      if (campo.tipo === 'casilla' && checkboxEsGrupo(campo)) {
+      if (campo.tipo === TipoCampoValor.Casilla && checkboxEsGrupo(campo)) {
         if (!Array.isArray(valorDefecto)) valorDefecto = []
       }
 
-      if (campo.tipo === 'tabla') {
+      if (campo.tipo === TipoCampoValor.Tabla && Array.isArray(valorDefecto)) {
         const columnas = servicioEsquemas.obtenerColumnasTabla(campo)
         const filas = servicioEsquemas.obtenerFilasTabla(campo)
         if (!Array.isArray(valorDefecto)) {
@@ -187,7 +188,7 @@ function reconfigurarDependencias(): void {
 }
 
 // Funciones para firmas de detección de cambios
-function recolectarFirmaSchema(
+/*function recolectarFirmaSchema(
   lista: EsquemaCampo[],
   salida: Array<Record<string, ValorDato>> = []
 ): Array<Record<string, ValorDato>> {
@@ -250,7 +251,7 @@ function recolectarFirmaSchema(
     }
   }
   return salida
-}
+}*/
 
 function recolectarFirmasDefaults(lista: EsquemaCampo[], salida: Array<string> = []): Array<string> {
   if (!Array.isArray(lista)) return salida
@@ -293,14 +294,14 @@ function recolectarFirmaDependencias(): string {
 }
 
 // Computed para firmas
-const firmaSchema = computed(() => JSON.stringify(recolectarFirmaSchema(campos.value, [])))
+//const firmaSchema = computed(() => JSON.stringify(recolectarFirmaSchema(campos.value, [])))
 const firmaDependencias = computed(() => recolectarFirmaDependencias())
 const firmaDefaults = computed(() => recolectarFirmasDefaults(campos.value, []).join('|'))
 
 // Watchers para reactividad
-watch([firmaSchema, indicePagina], () => {
-  aplicarValoresPorDefecto(campos.value, false)
-}, { immediate: true })
+// watch([firmaSchema, indicePagina], () => {
+//   aplicarValoresPorDefecto(campos.value, false)
+// }, { immediate: true })
 
 watch([firmaDependencias, indicePagina], () => {
   reconfigurarDependencias()

@@ -18,8 +18,8 @@ describe('ContenedorPanel - Arrastrar y Soltar', () => {
       tipo: 'panel',
       etiqueta: 'Mi Panel',
       hijos: [
-        { id: 'campo1', tipo: 'texto', etiqueta: 'Campo 1', grid: { sm: 12, md: 6, lg: 6 } },
-        { id: 'campo2', tipo: 'texto', etiqueta: 'Campo 2', grid: { sm: 12, md: 6, lg: 6 } }
+        { id: 'campo1', tipo: 'texto', etiqueta: 'Campo 1', grid: { sm: 12, md: 12, lg: 12 } },
+        { id: 'campo2', tipo: 'texto', etiqueta: 'Campo 2', grid: { sm: 12, md: 12, lg: 12 } }
       ]
     }
 
@@ -42,7 +42,7 @@ describe('ContenedorPanel - Arrastrar y Soltar', () => {
 
     // Obtener la referencia actualizada del almacén
     const panelActualizado = almacen.esquemaFormulario.paginas[0].campos.find((c: EsquemaCampo) => c.id === 'panel1')!
-    
+
     // Verificar que el orden cambió
     expect(panelActualizado.hijos).toHaveLength(2)
     expect(panelActualizado.hijos![0].id).toBe('campo2')

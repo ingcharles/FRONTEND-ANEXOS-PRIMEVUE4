@@ -2,8 +2,8 @@
 import { TipoCampoEtiqueta, TipoCampoValor } from '@/enumeraciones/Campos';
 import type { ReglaLogica } from '@/interfaces/Validacion';
 
-
-
+// Re-exportamos las enumeraciones para compatibilidad
+export { TipoCampoEtiqueta, TipoCampoValor } from '@/enumeraciones/Campos';
 
 // export const TIPOS_CAMPO_DISPONIBLES: readonly TipoCampoValor[] = [
 //   'texto',

@@ -4,7 +4,7 @@ import { ref, computed } from 'vue'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { TipoCampo } from '@/tipos/Campos'
 import { generarId } from '@/utilidades/GeneraId'
-import { TipoCampoEtiqueta, TipoCampoValor } from '@/constantes/Campos'
+import { TipoCampoEtiqueta, TipoCampoValor } from '@/enumeraciones/Campos'
 
 // Primera categoría expandida por defecto
 const clavesExpandidas = ref<Record<string, boolean>>({ '0': true, '1': true })
@@ -161,12 +161,17 @@ const modeloPanelMenuFiltrado = computed(() => {
 
 function clonarDesdePaleta(elemento: { tipo: TipoCampo; label: string; propiedadesPorDefecto?: Record<string, unknown> }): EsquemaCampo {
   const id = generarId('field')
+    // Configuración de grid según el tipo de campo
+  const configuracionGrid = elemento.tipo === 'panel'
+    ? { sm: 12, md: 12, lg: 12 }  // Panel ocupa ancho completo
+    : { sm: 12, md: 6, lg: 6 }    // Otros campos mitad del ancho en md/lg
+
   return {
     id,
     tipo: elemento.tipo,
     etiqueta: elemento.label,
     nombre: `${elemento.tipo}_${id.slice(-4)}`,
-    grid: { sm: 12, md: 6, lg: 6 },
+    grid: configuracionGrid,
     visible: true,
     requerido: false,
     ...(elemento.propiedadesPorDefecto || {}),

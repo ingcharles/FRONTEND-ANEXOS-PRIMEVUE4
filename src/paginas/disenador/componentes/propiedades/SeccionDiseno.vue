@@ -81,7 +81,7 @@ const almacen = useAlmacenDisenador()
 // Grid responsivo
 function actualizarGrid(parcial: Partial<ColumnasGrid>): void {
   if (!props.campo) return
-  const gridActual = props.campo.grid || { sm: 12, md: 6, lg: 6 }
+  const gridActual = props.campo.grid || { sm: 12, md: 12, lg: 12 }
   const nuevoGrid = { ...gridActual, ...parcial }
   almacen.actualizarCampo(props.campo.id, { grid: nuevoGrid })
 }

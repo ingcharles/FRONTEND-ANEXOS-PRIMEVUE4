@@ -5,7 +5,7 @@ import { computed, defineAsyncComponent, ref, onUnmounted } from 'vue'
 import ModalConfirmar from '@/componentes/ModalConfirmar.vue'
 import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 import { usarPuntoDeCorte } from '@/almacenes/UsarPuntoDeCorte'
-import { TipoCampoValor } from '@/constantes/Campos'
+import { TipoCampoValor } from '@/enumeraciones/Campos'
 
 const propiedades = defineProps<{ campo: EsquemaCampo; seleccionado?: boolean }>()
 const emitir = defineEmits<{ (e: 'seleccionar'): void }>()

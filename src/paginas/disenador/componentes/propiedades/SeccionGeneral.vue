@@ -6,7 +6,7 @@ import type { EsquemaCampo, MetadatosCampo } from '@/interfaces/Campos'
 import type { TipoCampo } from '@/tipos/Campos'
 import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 import { TIPOS_OPCIONES } from '@/constantes/Campos'
-import { TipoCampoValor } from '@/constantes/Campos'
+import { TipoCampoValor } from '@/enumeraciones/Campos'
 
 const propiedades = defineProps<{ campo: EsquemaCampo }>()
 const almacen = useAlmacenDisenador()
