@@ -49,5 +49,14 @@ export default defineConfig({
       '@assets': fileURLToPath(new URL('./src/assets', import.meta.url)),
       '@views': fileURLToPath(new URL('./src/views', import.meta.url)),
     },
-  },
+  }
+  , css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `
+          @use "@/assets/css/_sri-vue-variables.scss" as *;
+        `
+      }
+    }
+  }
 })

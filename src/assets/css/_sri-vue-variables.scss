@@ -1,0 +1,163 @@
+/*!
+	* Nombre: _sri-vue-variables.scss
+	* Descripcion: Variables globales para las hojas de estilos de sistemas Vue.
+	* Dependencias: N/A
+	* Autor: Planificacion TI  - LRodriguez
+	* Copyright SRI-2023
+    */
+
+/*** colores  **/
+$color-azul-principal: #0c4597;
+$color-rojo-logo: #e2231a;
+$color-azul-fuerte: #4077ba;
+$color-azul-claro: #6598d1;
+
+$color-gris-medio: #656d78;
+$color-gris-fuerte: #434a54;
+$color-gris-tenue: #f5f7fa;
+$color-gris-claro: #e7eaee;
+$color-gris-neutro: #aab2bd;
+$color-blanco: #fff;
+$color-blanco-hueso: #fcf8e4;
+$color-blanco-piel: #f1dede;
+$color-negro: #000;
+
+$color-violeta-claro: #a390c4;
+$color-violeta-fuerte: #7b6aaf;
+$color-celeste: #daeef6;
+$color-turqueza-claro: #d3e9e4;
+$color-turqueza-fuerte: #2f836e;
+
+$color-cyan-claro: #4fc1ea;
+$color-cyan-fuerte: #1d799a;
+$color-verde-claro: #a1c96a;
+$color-verde-fuerte: #597f2e;
+
+$color-coral-claro: #f3aab6;
+$color-coral-fuerte: #d73747;
+
+$color-amarillo-claro: #fece56;
+$color-amarillo-fuerte: #976707;
+$color-naranja-claro: #ffa424;
+$color-naranja-fuerte: #c82f1b;
+
+/*** tamanio fuente ******/
+$fuente-principal: Roboto, Arial, Helvetica, sans-serif;
+$titulo-size: 32px;
+$subtitulo-size: 24px;
+$h3-size: 20px;
+$h4-size: 18px;
+$h5-size: 14px;
+
+
+$fuente-size-miga: 12px;
+$fuente-size-instruccion: 16px;
+$fuente-size-alerta: 14px;
+$fuente-size-step: 18px;
+$fuente-size-campo: 14px;
+$fuente-size-placeholder: 14px;
+$fuente-size-paginador: 14px;
+$fuente-size-tabla: 14px;
+
+/*** tamanio iconos ******/
+$icono-size-informacion: 39px;
+$icono-size-confirmacion-ventana: 137px;
+$icono-size-modal: 60px;
+$icono-size-alerta: 25px;
+$icono-size-tabla: 20px;
+$icono-size-formulario: 20px;
+
+/*** botones ******/
+$btn-principal: $color-azul-principal;
+$btn-principal-hover: HSL(215, 85%, 22%);
+$btn-principal-activo: HSL(215, 85%, 42%);
+$btn-principal-fuente-color: $color-blanco;
+
+$btn-success: $color-verde-fuerte;
+$btn-success-hover: HSL(88, 48%, 24%);
+$btn-success-activo: HSL(88, 48%, 44%);
+$btn-success-fuente-color: $color-blanco;
+
+$btn-warning: $color-naranja-claro;
+$btn-warning-hover: HSL(35, 100%, 47%);
+$btn-warning-activo: HSL(35, 100%, 67%);
+$btn-warning-fuente-color: $color-gris-fuerte;
+
+$btn-secondary: $color-blanco;
+$btn-secondary-hover: $color-gris-claro;
+$btn-secondary-activo: $color-blanco-hueso;
+$btn-secondary-fuente-color: $color-gris-fuerte;
+
+$btn-info: $color-cyan-fuerte;
+$btn-info-hover: HSL(196, 68%, 26%);
+$btn-info-activo: HSL(196, 68%, 46%);
+$btn-info-fuente-color: $color-blanco;
+
+$btn-celeste: $color-celeste;
+$btn-celeste-hover: $color-cyan-claro;
+$btn-celeste-activo: $color-turqueza-claro;
+$btn-celeste-fuente: $color-gris-fuerte;
+
+$btn-color-deshabilitado: 50%;
+$btn-size-y: 33px;
+$btn-fuente-size: 12px;
+$btn-espaciado: 10px;
+$btn-padding-x: 25px;
+
+/*** alertas ***/
+$alerta-warnig-color: $color-amarillo-claro;
+$alerta-warnig-fuente-color: $color-gris-fuerte;
+
+$alerta-info-color: $color-azul-fuerte;
+$alerta-info-fuente-color: $color-blanco;
+
+$alerta-success-color: $color-verde-fuerte;
+$alerta-success-fuente-color: $color-blanco;
+
+$alerta-error-color: $color-coral-fuerte;
+$alerta-error-fuente-color: $color-blanco;
+
+/*** espaciado vertical***/
+$y-antes-titulo: 20px;
+$y-antes-subtitulo: 10px;
+$y-antes-instruccion: 10px;
+$y-antes-alerta: 10px;
+$y-despues-seccion: 15px;
+$y-despues-campos: 10px;
+$x-entre-campos: 10px;
+
+/*** modales **/
+$modal-espaciado-y: 20px;
+$modal-size-x: 400px;
+$modal-size-x-small: 350px;
+$modal-img-size-y: 90px;
+$modal-padding: 20px;
+$modal-icono-size: $icono-size-modal;
+
+/*** componentes formularios ******/
+$padding-campo: 2px;
+$btn-size-icono: 25px;
+$check-size: 20px;
+$item-fuente-size: 12px;
+
+/*** paginas de error ***/
+$icono-pag-error-size: 133px;
+$titulo-pag-error-size: 40px;
+$fuente-pag-error-size: 14px;
+$fuente-pag-error-color: $color-coral-fuerte;
+
+/*********** bootstrap : breakpoints: dimensiones del diseño responsive****/
+$grid-breakpoints: (
+    xs: 0,
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px,
+    xxl: 1400px
+);
+
+/********** variables agregadas para diseñador************/
+
+/********** tag ************/
+
+// $fuente-size-tag: 11px;

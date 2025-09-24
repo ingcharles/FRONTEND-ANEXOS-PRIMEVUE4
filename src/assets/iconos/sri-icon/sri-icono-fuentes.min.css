@@ -1,0 +1,270 @@
+@font-face {
+    font-family: sri-icon;
+    src: url(fonts/sri-icon.eot?gliwhd);
+    src:
+        url(fonts/sri-icon.eot?gliwhd#iefix) format('embedded-opentype'),
+        url(fonts/sri-icon.ttf?gliwhd) format('truetype'),
+        url(fonts/sri-icon.woff?gliwhd) format('woff'),
+        url(fonts/sri-icon.svg?gliwhd#sri-icon) format('svg');
+    font-weight: 400;
+    font-style: normal;
+    font-display: block;
+}
+[class*=' sri-icon-'],
+[class^='sri-icon-'] {
+    font-family: sri-icon !important;
+    speak: none;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.sri-icon-editar-perfil-contribuyente:before {
+    content: '\e900';
+}
+.sri-icon-home:before {
+    content: '\e901';
+}
+.sri-icon-perfil:before {
+    content: '\e902';
+}
+.sri-icon-cerrar-sesion:before {
+    content: '\e903';
+}
+.sri-icon-advertencia:before {
+    content: '\e904';
+}
+.sri-icon-buzon:before {
+    content: '\e905';
+}
+.sri-icon-admin-usuario:before {
+    content: '\e906';
+}
+.sri-icon-accesibilidad:before {
+    content: '\e907';
+}
+.sri-icon-activar:before {
+    content: '\e908';
+}
+.sri-icon-activar-pob:before {
+    content: '\e909';
+}
+.sri-icon-actualizar:before {
+    content: '\e90a';
+}
+.sri-icon-agrupar:before {
+    content: '\e90b';
+}
+.sri-icon-alerta:before {
+    content: '\e90c';
+}
+.sri-icon-anadir:before {
+    content: '\e90d';
+}
+.sri-icon-archivar:before {
+    content: '\e90e';
+}
+.sri-icon-asignar-rol:before {
+    content: '\e90f';
+}
+.sri-icon-ayuda:before {
+    content: '\e910';
+}
+.sri-icon-buscar:before {
+    content: '\e911';
+}
+.sri-icon-busqueda-documentos:before {
+    content: '\e912';
+}
+.sri-icon-calculadora:before {
+    content: '\e913';
+}
+.sri-icon-calendario:before {
+    content: '\e914';
+}
+.sri-icon-candado:before {
+    content: '\e915';
+}
+.sri-icon-chat:before {
+    content: '\e916';
+}
+.sri-icon-configuracion:before {
+    content: '\e917';
+}
+.sri-icon-confirmacion-mail:before {
+    content: '\e918';
+}
+.sri-icon-correos:before {
+    content: '\e919';
+}
+.sri-icon-desactivar:before {
+    content: '\e91a';
+}
+.sri-icon-descargar:before {
+    content: '\e91b';
+}
+.sri-icon-detalle:before {
+    content: '\e91c';
+}
+.sri-icon-documento-acrobat:before {
+    content: '\e91d';
+}
+.sri-icon-documento-CSV:before {
+    content: '\e91e';
+}
+.sri-icon-documento-excel:before {
+    content: '\e91f';
+}
+.sri-icon-documento-JPG:before {
+    content: '\e920';
+}
+.sri-icon-documento-json-completo:before {
+    content: '\e921';
+}
+.sri-icon-documento-json-mini:before {
+    content: '\e922';
+}
+.sri-icon-documento-texto:before {
+    content: '\e923';
+}
+.sri-icon-documento-XML:before {
+    content: '\e924';
+}
+.sri-icon-documento-ZIP:before {
+    content: '\e925';
+}
+.sri-icon-editar:before {
+    content: '\e926';
+}
+.sri-icon-eliminar:before {
+    content: '\e927';
+}
+.sri-icon-enviar:before {
+    content: '\e928';
+}
+.sri-icon-error:before {
+    content: '\e929';
+}
+.sri-icon-exito:before {
+    content: '\e92a';
+}
+.sri-icon-formulario-enviado:before {
+    content: '\e92b';
+}
+.sri-icon-formulario-recibido:before {
+    content: '\e92c';
+}
+.sri-icon-generar-anexo:before {
+    content: '\e92d';
+}
+.sri-icon-guardar:before {
+    content: '\e92e';
+}
+.sri-icon-hamburguesa:before {
+    content: '\e92f';
+}
+.sri-icon-hora:before {
+    content: '\e930';
+}
+.sri-icon-informacion:before {
+    content: '\e931';
+}
+.sri-icon-informacion-pago:before {
+    content: '\e932';
+}
+.sri-icon-medios-pago:before {
+    content: '\e933';
+}
+.sri-icon-mensajes-enviados:before {
+    content: '\e934';
+}
+.sri-icon-orientacion:before {
+    content: '\e935';
+}
+.sri-icon-parametrizacion-documento:before {
+    content: '\e936';
+}
+.sri-icon-pegar:before {
+    content: '\e937';
+}
+.sri-icon-perfil-opciones:before {
+    content: '\e938';
+}
+.sri-icon-personas-naturales:before {
+    content: '\e939';
+}
+.sri-icon-procesar:before {
+    content: '\e93a';
+}
+.sri-icon-reemplazar:before {
+    content: '\e93b';
+}
+.sri-icon-registro-persona-natural:before {
+    content: '\e93c';
+}
+.sri-icon-registro-sociedad:before {
+    content: '\e93d';
+}
+.sri-icon-seleccionar:before {
+    content: '\e93e';
+}
+.sri-icon-sociedades:before {
+    content: '\e93f';
+}
+.sri-icon-subir-cargar:before {
+    content: '\e940';
+}
+.sri-icon-telefono:before {
+    content: '\e941';
+}
+.sri-icon-tiempo-espera:before {
+    content: '\e942';
+}
+.sri-icon-ubicacion:before {
+    content: '\e943';
+}
+.sri-icon-carrito:before {
+    content: '\e944';
+}
+.sri-icon-asignar-prioridad:before {
+    content: '\e945';
+}
+.sri-icon-activar_subrogacion:before {
+    content: '\e946';
+}
+.sri-icon-configuracion_firmante:before {
+    content: '\e947';
+}
+.sri-icon-visualizar:before {
+    content: '\e948';
+}
+.sri-icon-pantalla:before {
+    content: '\e949';
+}
+.sri-icon-activar-toogle:before {
+    content: '\e94a';
+}
+.sri-icon-desactivar-toogle:before {
+    content: '\e94b';
+}
+.sri-icon-request-page:before {
+    content: '\e94c';
+}
+.sri-icon-sync:before {
+    content: '\e94d';
+}
+.sri-icon-anadir-circulo:before {
+    content: '\e94e';
+}
+.sri-icon-generar:before {
+    content: '\e94f';
+}
+.sri-icon-usuario-check:before {
+    content: '\e950';
+}
+.sri-icon-advertencia_triangulo:before {
+    content: '\e951';
+}

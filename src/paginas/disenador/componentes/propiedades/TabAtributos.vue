@@ -13,7 +13,7 @@ const campo = computed(() => almacen.campoSeleccionado)
 </script>
 
 <template>
-  <div v-if="campo" class="flex flex-col gap-4">
+  <div v-if="campo" class="p-d-flex p-flex-column p-gap-4 py-2 px-2">
     <!-- Información general del campo -->
     <SeccionGeneral :campo="campo" />
 

@@ -47,10 +47,21 @@ import PrimeScrollPanel from 'primevue/scrollpanel'
 import PrimeTag from 'primevue/tag'
 
 // Styles
-import './assets/main.css' // TailwindCSS + estilos personalizados
-import 'primeicons/primeicons.css'
-import 'primeflex/primeflex.css'
+// import './assets/main.css' // TailwindCSS + estilos personalizados
 
+import '@/assets/iconos/sri-menu-icon/sri-menu-icon-fuentes.min.css'
+import '@/assets/iconos/sri-icon/sri-icono-fuentes.min.css'
+import '@/assets/iconos/sri-app-icon/sri-app-icon-fuentes.min.css'
+
+// import 'primevue/resources/themes/saga-blue/theme.css' // theme
+// import 'primevue/resources/primevue.min.css' // core CSS
+import 'primeicons/primeicons.css' // icons
+
+import '@/assets/css/sri-en-linea-cargando.min.css'
+import 'primeflex/primeflex.css'
+import '@/assets/css/_sri-vue-cabecera.scss'
+import '@/assets/css/_sri-vue-plantilla.scss' // Estilos globales personalizados
+// import './assets/_sri-vue-variables.scss' // Variables SCSS globales
 import App from './App.vue'
 import router from './enrutador'
 
@@ -66,10 +77,10 @@ app.use(PrimeVue, {
     options: {
       cssLayer: {
         name: 'primevue',
-        order: 'theme, base, primevue',
+        order: 'primevue, theme, base',
       },
       // Alinear el selector de dark mode con Tailwind (ver @custom-variant en main.css)
-      darkModeSelector: '.dark',
+      // darkModeSelector: '.dark',
     },
   },
 })

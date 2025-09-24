@@ -1,0 +1,180 @@
+@font-face {
+    font-family: sri-menu-icon;
+    src: url(fonts/sri-menu-icon.eot?yovzij);
+    src:
+        url(fonts/sri-menu-icon.eot?yovzij#iefix) format('embedded-opentype'),
+        url(fonts/sri-menu-icon.ttf?yovzij) format('truetype'),
+        url(fonts/sri-menu-icon.woff?yovzij) format('woff'),
+        url(fonts/sri-menu-icon.svg?yovzij#sri-menu-icon) format('svg');
+    font-weight: 400;
+    font-style: normal;
+    font-display: block;
+}
+[class*=' sri-menu-icon-'],
+[class^='sri-menu-icon-'] {
+    font-family: sri-menu-icon !important;
+    speak: none;
+    font-style: normal;
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.sri-menu-icon-anexos:before {
+    content: '\e900';
+}
+.sri-menu-icon-certificados:before {
+    content: '\e901';
+}
+.sri-menu-icon-certificados-judicatura:before {
+    content: '\e902';
+}
+.sri-menu-icon-claves:before {
+    content: '\e903';
+}
+.sri-menu-icon-declaraciones:before {
+    content: '\e904';
+}
+.sri-menu-icon-deudas:before {
+    content: '\e905';
+}
+.sri-menu-icon-devoluciones:before {
+    content: '\e906';
+}
+.sri-menu-icon-facturacion-electronica:before {
+    content: '\e907';
+}
+.sri-menu-icon-facturacion-fisica:before {
+    content: '\e908';
+}
+.sri-menu-icon-informe-cumplimiento-tributario:before {
+    content: '\e909';
+}
+.sri-menu-icon-instituciones-financieras:before {
+    content: '\e90a';
+}
+.sri-menu-icon-menu-hamburguesa:before {
+    content: '\e90b';
+}
+.sri-menu-icon-notas-de-credito:before {
+    content: '\e90c';
+}
+.sri-menu-icon-otros-servicios:before {
+    content: '\e90d';
+}
+.sri-menu-icon-pagos:before {
+    content: '\e90e';
+}
+.sri-menu-icon-rise:before {
+    content: '\e90f';
+}
+.sri-menu-icon-ruc:before {
+    content: '\e910';
+}
+.sri-menu-icon-sistema-venta-alcohol:before {
+    content: '\e911';
+}
+.sri-menu-icon-tramites-notificaciones:before {
+    content: '\e912';
+}
+.sri-menu-icon-vehiculos:before {
+    content: '\e913';
+}
+.sri-menu-icon-atributos:before {
+    content: '\e914';
+}
+.sri-menu-icon-avisos:before {
+    content: '\e915';
+}
+.sri-menu-icon-catastro-actualizacion:before {
+    content: '\e916';
+}
+.sri-menu-icon-catastro-administracion:before {
+    content: '\e917';
+}
+.sri-menu-icon-catastro-consulta:before {
+    content: '\e918';
+}
+.sri-menu-icon-claves-administracion:before {
+    content: '\e919';
+}
+.sri-menu-icon-claves-recuperacion:before {
+    content: '\e91a';
+}
+.sri-menu-icon-claves-reportes:before {
+    content: '\e91b';
+}
+.sri-menu-icon-estados-verificacion:before {
+    content: '\e91c';
+}
+.sri-menu-icon-informacion-confidencial:before {
+    content: '\e91d';
+}
+.sri-menu-icon-mensajes-enviados:before {
+    content: '\e91e';
+}
+.sri-menu-icon-reintegro-acreditaciones:before {
+    content: '\e91f';
+}
+.sri-menu-icon-reintegro-admin-sistema:before {
+    content: '\e920';
+}
+.sri-menu-icon-reintegro-documentos:before {
+    content: '\e921';
+}
+.sri-menu-icon-reintegro-liquidaciones:before {
+    content: '\e922';
+}
+.sri-menu-icon-reintegro-medidas-cautelares:before {
+    content: '\e923';
+}
+.sri-menu-icon-reintegro-neteo-valores:before {
+    content: '\e924';
+}
+.sri-menu-icon-reintegro-registro-informacion:before {
+    content: '\e925';
+}
+.sri-menu-icon-reintegro-reportes:before {
+    content: '\e926';
+}
+.sri-menu-icon-reintegro-reversos:before {
+    content: '\e927';
+}
+.sri-menu-icon-reintegro-saldos:before {
+    content: '\e928';
+}
+.sri-menu-icon-tramites-administracion:before {
+    content: '\e929';
+}
+.sri-menu-icon-tramites-parametrizacion:before {
+    content: '\e92a';
+}
+.sri-menu-icon-tramites-plantilla:before {
+    content: '\e92b';
+}
+.sri-menu-icon-Ver-certificados:before {
+    content: '\e92c';
+}
+.sri-menu-icon-catalogos:before {
+    content: '\e92d';
+}
+.sri-menu-icon-generacion-archivo:before {
+    content: '\e92e';
+}
+.sri-menu-icon-informacion-pago:before {
+    content: '\e92f';
+}
+.sri-menu-icon-respuesta-archivo:before {
+    content: '\e930';
+}
+.sri-menu-icon-archivos-digitales:before {
+    content: '\e931';
+}
+.sri-menu-icon-exchange-alt-solid:before {
+    content: '\e932';
+}
+.sri-menu-icon-file-archive-regular:before {
+    content: '\e933';
+}

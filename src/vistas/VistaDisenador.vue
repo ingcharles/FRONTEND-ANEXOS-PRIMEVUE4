@@ -71,8 +71,8 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
     </div>
     <div class="col-12 md:col-7">
       <div class="flex items-center justify-between mb-2">
-        <div class="flex gap-2">
-          <PrimeButton label="Añadir página" icon="pi pi-plus" @click="almacen.crearPaginaDespuesActual" />
+        <div class="flex gap-2 principal">
+          <PrimeButton label="Añadir página" icon="pi pi-plus" @click="almacen.crearPaginaDespuesActual"/>
           <PrimeButton label="Duplicar página" icon="pi pi-copy" @click="almacen.duplicarPagina(almacen.indicePaginaActiva)" />
           <PrimeButton label="Eliminar página" severity="danger" icon="pi pi-trash" @click="almacen.confirmarEliminarPagina(almacen.indicePaginaActiva)" />
         </div>

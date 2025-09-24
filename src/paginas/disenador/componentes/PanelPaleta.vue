@@ -236,81 +236,75 @@ function manejarAtajos(evento: KeyboardEvent): void {
 
 window.addEventListener('keydown', manejarAtajos)
 </script>
-
 <template>
-  <div class="w-full rounded-xl border border-surface-200/70 dark:border-surface-700/60 bg-surface-0/80 dark:bg-surface-900/70 backdrop-blur-sm shadow-sm p-3 flex flex-col gap-3">
+  <div class="p-card p-p-3">
     <!-- Header -->
-    <div class="flex items-center gap-2">
-      <h3 class="m-0 text-sm font-semibold tracking-wide text-primary flex items-center gap-2">
-        <i class="pi pi-box" /> Componentes
+    <div class="p-d-flex p-ai-center p-mb-2">
+      <h3 class="p-m-0 p-text-primary p-d-flex p-ai-center">
+        <i class="pi pi-box p-mr-2" /> Componentes
       </h3>
 
-      <div class="ml-auto flex gap-1">
-        <PrimeButton size="small" text severity="secondary" icon="pi pi-plus" class="hover:surface-hover" @click="expandir" :disabled="Object.keys(clavesExpandidas).length === modeloPanelMenuFiltrado.length" v-tooltip.top="'Expandir todo'" />
-        <PrimeButton size="small" text severity="secondary" icon="pi pi-minus" class="hover:surface-hover" @click="colapsar" :disabled="!Object.keys(clavesExpandidas).length" v-tooltip.top="'Colapsar todo'" />
-        <PrimeButton size="small" text severity="secondary" icon="pi pi-refresh" class="hover:surface-hover" @click="alternarTodo" v-tooltip.top="'Alternar expansión'" />
-      </div>
     </div>
     <!-- Buscador -->
-    <div class="relative">
-      <span class="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none text-muted-color text-xs">
+    <div class="p-inputgroup mb-3 mt-3">
+      <span class="p-inputgroup-addon">
         <i class="pi pi-search" />
       </span>
-      <input
+      <PrimeInputText
         id="buscador-paleta"
         v-model="filtro"
         type="text"
         autocomplete="off"
         placeholder="Filtrar (Ctrl+K)"
-        class="w-full pl-7 pr-6 py-2 rounded-md bg-surface-50/60 dark:bg-surface-800/70 border border-surface-300 dark:border-surface-700 text-sm focus:outline-none focus:border-primary-400 focus:ring-1 focus:ring-primary-400 transition-colors"
+        class="p-inputtext"
       />
-      <button
+      <PrimeButton
         v-if="filtro"
         @click="limpiarFiltro"
         type="button"
-        class="absolute inset-y-0 right-0 px-2 text-muted-color hover:text-primary text-xs"
+        class="p-button p-button-text"
         aria-label="Limpiar filtro"
       >
         <i class="pi pi-times" />
-      </button>
+      </PrimeButton>
+      <div class="p-ml-auto p-d-flex p-ai-center">
+        <PrimeButton size="small" text severity="secondary" icon="pi pi-plus" @click="expandir" :disabled="Object.keys(clavesExpandidas).length === modeloPanelMenuFiltrado.length" v-tooltip.top="'Expandir todo'" />
+        <PrimeButton size="small" text severity="secondary" icon="pi pi-minus" @click="colapsar" :disabled="!Object.keys(clavesExpandidas).length" v-tooltip.top="'Colapsar todo'" />
+        <PrimeButton size="small" text severity="secondary" icon="pi pi-refresh" @click="alternarTodo" v-tooltip.top="'Alternar expansión'" />
+      </div>
     </div>
     <!-- Contenido -->
-    <PrimePanelMenu v-model:expandedKeys="clavesExpandidas" :model="modeloPanelMenuFiltrado" class="w-full text-sm custom-panel-menu">
+    <PrimePanelMenu v-model:expandedKeys="clavesExpandidas" :model="modeloPanelMenuFiltrado">
       <template #item="{ item }">
         <!-- Item de campo (draggable) -->
-        <div v-if="item.tipo" class="flex items-center gap-2 w-full">
+        <div v-if="item.tipo">
           <draggable
             :list="[item]"
             item-key="key"
             :group="{ name: 'paleta', pull: 'clone', put: false }"
             :clone="() => clonarDesdeMenu(item)"
             :sort="false"
-            class="w-full"
           >
             <template #item="{ element }">
-              <div
-                class="group p-2 flex items-center gap-2 rounded-md border border-transparent hover:border-primary-300/60 dark:hover:border-primary-400/40 bg-surface-50/60 dark:bg-surface-800/60 hover:bg-primary-50/70 dark:hover:bg-primary-900/30 transition-colors cursor-grab w-full select-none"
-                :title="'Arrastrar ' + element.label"
-              >
-                <i class="pi pi-grip-vertical text-muted-color text-xs opacity-50 group-hover:opacity-90 transition-opacity" />
-                <i :class="['pi', element.icon, 'text-muted-color']" />
-                <span class="font-medium leading-none">{{ element.label }}</span>
-              </div>
+              <a v-ripple class="flex items-center pl-4 pr-2 py-2 cursor-pointer group w-full">
+                <i class="pi pi-grip-vertical p-mr-2" />
+                <i :class="['pi', element.icon, 'group-hover:text-inherit']" />
+                <span class="ml-2">{{ element.label }}</span>
+              </a>
             </template>
           </draggable>
         </div>
         <!-- Cabecera de categoría -->
-        <div v-else class="flex items-center gap-2 py-1 px-2 rounded-md font-semibold text-[12px] tracking-wide uppercase">
-          <i :class="['pi', item.icon, 'text-sky-500 dark:text-sky-400']" />
-          <span class="flex-1">{{ item.label }}</span>
-          <span v-if="item.items" class="pi pi-angle-down text-primary ml-auto" />
-          <PrimeTag :value="item.items?.length || 0" severity="contrast" class="text-[10px] py-0 px-1" />
+        <div v-else class="flex items-center px-3 pt-3 pb-2 font-semibold tracking-wide">
+          <i :class="['pi', item.icon]" />
+          <span class="ml-2 flex-1">{{ item.label }}</span>
+          <span v-if="item.items" class="pi pi-angle-down ml-auto" />
+          <PrimeTag :value="item.items?.length || 0" severity="contrast" class="ml-2 py-1 px-2 text-xs" />
         </div>
       </template>
     </PrimePanelMenu>
   </div>
 </template>
-
 <style scoped>
 
 </style>

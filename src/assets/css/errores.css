@@ -1,0 +1,76 @@
+/*! 
+		 * Nombre: errores.css 
+		 * Descripcion: Hoja de estilos de paginas de errores para servidores. 
+		 * Autor: Planificacion TI 
+		 * Copyright SRI-2019. */
+
+body {
+    color: #d73747;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    font-size: 14px;
+}
+
+h1 {
+    font-size: 40px;
+}
+p {
+    color: #fff;
+    background-color: #d73747;
+}
+.cabecera {
+    background-color: #0c4597;
+    height: 60px;
+    padding-top: 0.5rem;
+}
+.cabecera .logo img {
+    width: 8rem;
+    margin-left: 20px;
+    height: 25px;
+}
+.sri-margen-error {
+    margin-top: 10%;
+}
+.sri-imagen-error-flotar {
+    float: none;
+}
+
+.sri-imagen-centrar {
+    margin-left: auto;
+    display: block;
+    height: 133px;
+    margin-top: 50px;
+}
+.sri-margen-texto-error {
+    margin-top: 51px;
+}
+.sri-alinear-texto {
+    text-align: center;
+}
+
+@font-face {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/roboto-v15-latin-regular.eot');
+    src:
+        local('Roboto'),
+        local('Roboto-Regular'),
+        url('../fonts/roboto-v15-latin-regular.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/roboto-v15-latin-regular.woff2') format('woff2'),
+        url('../fonts/roboto-v15-latin-regular.woff') format('woff'),
+        url('../fonts/roboto-v15-latin-regular.ttf') format('truetype'),
+        url('../fonts/roboto-v15-latin-regular.svg#Roboto') format('svg');
+}
+
+@media screen and (max-width: 576px) {
+    .sri-imagen-centrar {
+        margin-right: auto;
+        margin-left: auto;
+        margin-top: 0;
+    }
+}
+@media screen and (min-width: 843px) {
+    .sri-alinear-texto {
+        text-align: left;
+    }
+}

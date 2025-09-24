@@ -1,0 +1,253 @@
+/*!
+	* Nombre: _sri-vue-cabecera.scss
+	* Descripcion: Hoja de estilos globales para la cabecera de la plantilla de sistemas Vue
+	* Dependencias: _sri-vue-variables.scss, primevue, bootstrap
+	* Autor: Planificacion TI  - LRodriguez
+	* Copyright SRI-2023
+    */
+@use "sass:map";
+
+@font-face {
+    font-family: 'Roboto';
+    font-weight: 400;
+    font-style: normal;
+    font-display: auto;
+    unicode-range: U+000-5FF;
+    src:
+        local('Roboto'),
+        url('../fonts/Roboto/Roboto-Regular.woff2') format('woff2'),
+        url('../fonts/Roboto/Roboto-Regular.woff') format('woff');
+}
+.principal .cabecera {
+    background-color: $color-azul-principal;
+    height: 60px;
+    box-shadow:
+        0 2px 10px 0 rgb(0 0 0 / 16%),
+        0 2px 5px 0 rgb(0 0 0 / 26%);
+}
+.principal .cabecera .division {
+    width: 215px;
+    border-right: 26.7137px solid $color-azul-principal;
+    border-top: 68px solid $color-blanco;
+    display: inline-block;
+    margin-top: -0.5rem;
+}
+.principal .cabecera .boton-mostrar-menu {
+    display: inline-block;
+    text-align: center;
+    position: relative;
+    bottom: 20px;
+    right: 200px;
+}
+.cabecera-fija {
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+    margin: 0;
+    padding: 0;
+}
+.principal .cabecera .cabecera-menu ul > li > a > .cabecera-icon,
+.principal .cabecera .texto ul > li a {
+    font-size: 24px;
+    color: $color-blanco;
+    text-decoration: none;
+}
+.principal .cabecera .texto ul > li a {
+    display: inline;
+}
+.principal .cabecera .cabecera-menu .spancabecera-item-name {
+    display: none;
+}
+.principal .cabecera .texto ul > li {
+    display: inline;
+    font-size: 12px;
+    color: $color-blanco;
+    text-align: right;
+}
+.principal .cabecera .cabecera-menu .area-usuario-intranet {
+    margin-right: 20px;
+    text-align: right;
+    padding-left: 5px;
+}
+button#btnSalir {
+    background-color: $color-azul-principal;
+    color: $color-blanco;
+    font-size: 22px;
+    margin-left: 5px;
+    border: none;
+}
+.principal .icon-color {
+    margin-left: 1.2rem;
+}
+.principal .cabecera .cabecera-menu span.topbar-item-nombre {
+    display: none;
+}
+.principal .cabecera a:hover,
+.principal .cabecera a:focus {
+    background-color: $btn-principal-hover;
+    border: 1px solid $btn-principal-hover;
+}
+.menu-icono-responsive {
+    background: transparent;
+    border: transparent;
+    padding-top: 30px;
+}
+button#btnMstrarMenu {
+    border: 0;
+}
+.principal .cabecera #cabecera-menu-button,
+.principal .cabecera #cabecera-menu-button:hover {
+    color: $color-blanco;
+    background-color: transparent;
+    border: 0;
+}
+.principal .cabecera svg.svg-inline--fa.fa-ellipsis-vertical {
+    display: none;
+}
+.lista-responsive {
+    display: none;
+}
+.color-icono-hamburguesa-intranet {
+    color: $color-azul-principal;
+    font-size: 25px;
+    border: solid 1px $color-azul-principal;
+    text-decoration: none;
+}
+.color-icono-hamburguesa-intranet:focus,
+.color-icono-hamburguesa-intranet:hover {
+    color: $color-coral-fuerte;
+    border: solid 1px $color-coral-fuerte;
+}
+.principal .cabecera a:hover,
+.principal .cabecera a:focus,
+.principal .cabecera a:active {
+    background-color: transparent;
+    border: 0;
+}
+.top-icono-menu {
+    padding-top: 11px;
+    text-decoration: none;
+}
+.principal .cabecera .cabecera-menu {
+    margin: 10px -5px;
+    position: absolute;
+    top: -15px;
+    right: 20px;
+    color: $color-blanco;
+}
+/*****************LOGO*************************/
+.cabecera .logo {
+    width: 8rem;
+    margin-top: -50px;
+    margin-left: 50px;
+    position: absolute;
+}
+.cabecera .logo .intranet {
+    height: 45px !important;
+}
+.principal .cabecera .nombre-aplicacion {
+    color: $color-blanco;
+    font-size: 18px;
+    position: absolute;
+    top: 25px;
+    left: 290px;
+}
+#menu-pc {
+    display: grid;
+    grid-template-columns: 250px 30px 30px;
+    padding-top: 25px;
+    align-items: baseline;
+}
+#menu-movil {
+    display: none;
+}
+@media (max-width: map.get($grid-breakpoints, lg)) {
+    #menu-pc {
+        display: none;
+    }
+    #menu-movil {
+        display: grid;
+    }
+    .principal .cabecera {
+        font-size: 10px;
+        color: $color-gris-fuerte;
+
+        svg.svg-inline--fa.fa-ellipsis-vertical {
+            display: block;
+            text-align: right;
+            padding-left: 160px;
+            font-size: 2.5rem;
+            margin-top: -20px;
+            position: absolute;
+            right: 10px;
+            color: $color-blanco;
+        }
+        .cabecera-menu .area-usuario-intranet {
+            padding: 10px 15px;
+            margin: 0;
+        }
+        span.topbar-icon.sri-icon-home {
+            font-size: 22px;
+        }
+        span.topbar-item-nombre.lista-responsive {
+            display: inherit;
+        }
+        .texto {
+            ul {
+                display: grid;
+                grid-template-rows: 1fr 1fr 1fr;
+                margin-top: 30px;
+                background-color: $color-blanco;
+                box-shadow: 5px 5px 0 2px $color-gris-claro;
+                li {
+                    color: $color-gris-fuerte;
+                    border: 1px solid $color-gris-neutro;
+                    display: inline-flex;
+                    padding-bottom: 0;
+                    border-radius: 0;
+                }
+            }
+            ul > li a {
+                color: $color-gris-fuerte;
+                display: inline-block;
+                padding: 3px 5px 3px 7px;
+                text-align: left;
+            }
+            .topbar-item-nombre {
+                color: $color-gris-fuerte;
+                position: absolute;
+                padding: 10px 40px;
+            }
+        }
+        .lista-responsive {
+            display: inherit;
+        }
+        span.topbar-item-nombre {
+            display: inherit;
+        }
+        button#btnSalir {
+            color: $color-gris-fuerte;
+            font-size: 22px;
+            background-color: transparent;
+        }
+    }
+}
+@media (max-width: map.get($grid-breakpoints, md)) {
+    .contenido-cab {
+        grid-template-columns: 100%;
+        position: relative;
+    }
+    .menu-vertical {
+        height: auto;
+    }
+    .principal {
+        .cabecera .nombre-aplicacion {
+            font-size: 16px;
+            top: 10px;
+            left: 220px;
+        }
+        svg.svg-inline--fa.fa-ellipsis-vertical {
+            padding-left: 180px;
+        }
+    }
+}

@@ -6,7 +6,7 @@
       <!-- Modo de envío -->
       <div class="col-12 md:col-6">
         <label class="block mb-2">Modo de envío</label>
-        <Select
+        <PrimeSelect
           :model-value="configDependencia.modoEnvio || 'query'"
           :options="modoEnvioOpciones"
           option-label="label"

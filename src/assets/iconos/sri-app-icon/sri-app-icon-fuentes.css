@@ -1,0 +1,247 @@
+@font-face {
+    font-family: 'sri-app-icon', Arial, Helvetica, sans-serif;
+    src: url('fonts/sri-app-icon.eot?sgfk3k');
+    src:
+        url('fonts/sri-app-icon.eot?sgfk3k#iefix') format('embedded-opentype'),
+        url('fonts/sri-app-icon.ttf?sgfk3k') format('truetype'),
+        url('fonts/sri-app-icon.woff?sgfk3k') format('woff'),
+        url('fonts/sri-app-icon.svg?sgfk3k#sri-app-icon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+[class^='sri-app-icon-'],
+[class*=' sri-app-icon-'] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'sri-app-icon', Arial, Helvetica, sans-serif !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.sri-app-icon-administracion:before {
+    content: '\e900';
+}
+.sri-app-icon-adm-tu-portal:before {
+    content: '\e901';
+}
+.sri-app-icon-alcohol:before {
+    content: '\e902';
+}
+.sri-app-icon-anexos-rig:before {
+    content: '\e903';
+}
+.sri-app-icon-archivos:before {
+    content: '\e904';
+}
+.sri-app-icon-auditoria-secuencial:before {
+    content: '\e905';
+}
+.sri-app-icon-auditoria-tributaria:before {
+    content: '\e906';
+}
+.sri-app-icon-calculo-intereses:before {
+    content: '\e907';
+}
+.sri-app-icon-cambio-claves:before {
+    content: '\e908';
+}
+.sri-app-icon-capacitaciones-externas:before {
+    content: '\e909';
+}
+.sri-app-icon-carga-indicadores-gestion:before {
+    content: '\e90a';
+}
+.sri-app-icon-catastro-tributario:before {
+    content: '\e90b';
+}
+.sri-app-icon-catastro-vehicular:before {
+    content: '\e90c';
+}
+.sri-app-icon-certificado-servicios-tributarios:before {
+    content: '\e90d';
+}
+.sri-app-icon-cgweb:before {
+    content: '\e90e';
+}
+.sri-app-icon-claves:before {
+    content: '\e90f';
+}
+.sri-app-icon-comprobantes:before {
+    content: '\e910';
+}
+.sri-app-icon-comprobantes-certificado:before {
+    content: '\e911';
+}
+.sri-app-icon-conciliacion:before {
+    content: '\e912';
+}
+.sri-app-icon-consulta-consolidada:before {
+    content: '\e913';
+}
+.sri-app-icon-consulta-declaraciones:before {
+    content: '\e914';
+}
+.sri-app-icon-consulta-declaraciones-cgd:before {
+    content: '\e915';
+}
+.sri-app-icon-consultas-tributarias:before {
+    content: '\e916';
+}
+.sri-app-icon-control-extensivos:before {
+    content: '\e917';
+}
+.sri-app-icon-control-previo-fact:before {
+    content: '\e918';
+}
+.sri-app-icon-control-vacantes:before {
+    content: '\e919';
+}
+.sri-app-icon-declaracion-contribuyentes-especiales:before {
+    content: '\e91a';
+}
+.sri-app-icon-denuncias:before {
+    content: '\e91b';
+}
+.sri-app-icon-devoluciones:before {
+    content: '\e91c';
+}
+.sri-app-icon-devoluciones-iva-internet:before {
+    content: '\e91d';
+}
+.sri-app-icon-devoluciones-iva-prioritarios:before {
+    content: '\e91e';
+}
+.sri-app-icon-devoluciones-iva-turistas:before {
+    content: '\e91f';
+}
+.sri-app-icon-devoluciones-sector-publico:before {
+    content: '\e920';
+}
+.sri-app-icon-discoverer:before {
+    content: '\e921';
+}
+.sri-app-icon-entrega-recepcion-informacion-fiscal:before {
+    content: '\e922';
+}
+.sri-app-icon-estado-tributario:before {
+    content: '\e923';
+}
+.sri-app-icon-evaluacion-desempeno-recursos-humanos:before {
+    content: '\e924';
+}
+.sri-app-icon-facturacion:before {
+    content: '\e925';
+}
+.sri-app-icon-fedatarios:before {
+    content: '\e926';
+}
+.sri-app-icon-fedatarios-fiscales:before {
+    content: '\e927';
+}
+.sri-app-icon-firma-electronica:before {
+    content: '\e928';
+}
+.sri-app-icon-gestion-cobro:before {
+    content: '\e929';
+}
+.sri-app-icon-gestion-documentos:before {
+    content: '\e92a';
+}
+.sri-app-icon-gestion-identidad:before {
+    content: '\e92b';
+}
+.sri-app-icon-gestion-informacion:before {
+    content: '\e92c';
+}
+.sri-app-icon-gestion-infracciones:before {
+    content: '\e92d';
+}
+.sri-app-icon-gestion-juicios:before {
+    content: '\e92e';
+}
+.sri-app-icon-grupos-economicos:before {
+    content: '\e92f';
+}
+.sri-app-icon-icono-generico:before {
+    content: '\e930';
+}
+.sri-app-icon-ict:before {
+    content: '\e931';
+}
+.sri-app-icon-identificacion:before {
+    content: '\e932';
+}
+.sri-app-icon-infoview:before {
+    content: '\e933';
+}
+.sri-app-icon-inteligencia-tributaria:before {
+    content: '\e934';
+}
+.sri-app-icon-mantenimiento-personas:before {
+    content: '\e935';
+}
+.sri-app-icon-manual-puestos:before {
+    content: '\e936';
+}
+.sri-app-icon-notificacion-valija:before {
+    content: '\e937';
+}
+.sri-app-icon-planificacion:before {
+    content: '\e938';
+}
+.sri-app-icon-portal-web-interno:before {
+    content: '\e939';
+}
+.sri-app-icon-recaudacion:before {
+    content: '\e93a';
+}
+.sri-app-icon-recepcion-anexos:before {
+    content: '\e93b';
+}
+.sri-app-icon-recursos-revision:before {
+    content: '\e93c';
+}
+.sri-app-icon-reporte-pentaho:before {
+    content: '\e93d';
+}
+.sri-app-icon-rig:before {
+    content: '\e93e';
+}
+.sri-app-icon-ruc-comercio-exterior:before {
+    content: '\e93f';
+}
+.sri-app-icon-sad:before {
+    content: '\e940';
+}
+.sri-app-icon-sadif:before {
+    content: '\e941';
+}
+.sri-app-icon-seleccion-personal:before {
+    content: '\e942';
+}
+.sri-app-icon-sis-gestion-talento-humano:before {
+    content: '\e943';
+}
+.sri-app-icon-solicitud-servicios:before {
+    content: '\e944';
+}
+.sri-app-icon-tramites:before {
+    content: '\e945';
+}
+.sri-app-icon-vector-fiscal:before {
+    content: '\e946';
+}
+.sri-app-icon-visor-gerencial:before {
+    content: '\e947';
+}
+.sri-app-icon-workflow:before {
+    content: '\e948';
+}
