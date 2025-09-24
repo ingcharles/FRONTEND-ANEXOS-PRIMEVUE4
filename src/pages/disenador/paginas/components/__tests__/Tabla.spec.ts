@@ -14,8 +14,8 @@ function crearCampoTabla() {
     requerido: false,
     metadatos: {
       columnas: [
-        { nombre: 'c1', etiqueta: 'C1', tipo: 'text', agg: 'count' },
-        { nombre: 'c2', etiqueta: 'C2', tipo: 'number', agg: 'sum' },
+        { nombre: 'c1', etiqueta: 'C1', tipo: 'text', agregar: 'count' },
+        { nombre: 'c2', etiqueta: 'C2', tipo: 'number', agregar: 'sum' },
       ],
       filas: 2,
       agregarFilas: true,

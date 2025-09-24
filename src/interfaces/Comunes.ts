@@ -26,7 +26,7 @@ export interface ColumnaTabla {
   tipo: string
   ancho?: number
   visible?: boolean
-  agg?: string
+  agregar?: string
   [clave: string]: unknown
 }
 

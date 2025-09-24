@@ -1,10 +1,10 @@
 import { onMounted, onUnmounted, ref } from 'vue'
-import type { PuntoDeCorte } from '@/tipos/Comunes'
+import type { TamanoDiseno } from '@/tipos/Comunes'
 
 // Detectar breakpoint actual (sm, md, lg) basado en anchos típicos de PrimeFlex
 // md: >= 768px, lg: >= 992px
 export function usarPuntoDeCorte() {
-  const punto = ref<PuntoDeCorte>('sm')
+  const punto = ref<TamanoDiseno>('sm')
 
   let mmMd: MediaQueryList | null = null
   let mmLg: MediaQueryList | null = null

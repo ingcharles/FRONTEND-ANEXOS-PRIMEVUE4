@@ -180,9 +180,9 @@
           <div class="col-12 md:col-3">
             <label class="block mb-2">Función</label>
             <Select
-              :model-value="columnaActual.agg || 'none'"
+              :model-value="columnaActual.agregar || 'none'"
               :options="funcionesAgregado"
-              @update:model-value="(v: FuncionAgregado) => actualizarColumna('agg', v)"
+              @update:model-value="(v: FuncionAgregado) => actualizarColumna('agregar', v)"
             />
           </div>
 

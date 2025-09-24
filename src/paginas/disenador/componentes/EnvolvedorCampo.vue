@@ -294,21 +294,28 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
             <table class="w-full text-sm">
               <thead>
                 <tr>
-                  <th v-for="col in ((campo.metadatos as any)?.columnas||[])" :key="col.nombre" class="text-left p-2 border-bottom-1 surface-border">{{ col.etiqueta }}</th>
+                  <th v-for="col in ((campo.metadatos as any)?.columnas||[])" :key="col.name" class="text-left p-2 border-bottom-1 surface-border">
+                    {{ col.label || col.name }}
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td v-for="col in ((campo.metadatos as any)?.columnas||[])" :key="col.nombre" class="p-2">
-                    <PrimeInputText v-if="(col.tipo||'texto')==='texto'" class="w-full" disabled placeholder="Texto" />
-                    <PrimeInputNumber v-else-if="col.tipo==='numero'" class="w-full" disabled placeholder="0" />
+                <tr v-for="(fila, indice) in Array.from({ length: Number((campo.metadatos as any)?.filas || 1) })" :key="indice">
+                  <td v-for="col in ((campo.metadatos as any)?.columnas||[])" :key="col.name" class="p-2">
+                    <PrimeInputText v-if="(col.type||'text')==='text'" class="w-full" disabled placeholder="Texto" />
+                    <PrimeInputNumber v-else-if="col.type==='number'" class="w-full" disabled placeholder="0" />
+                    <PrimeDatePicker v-else-if="col.type==='date'" class="w-full" disabled />
                     <span v-else class="text-muted-color">—</span>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <div class="text-xs text-muted-color mt-2">Configura columnas y filas en Propiedades.</div>
+          <div class="text-xs text-muted-color mt-2">
+            Filas: {{ Number((campo.metadatos as any)?.filas || 1) }} | 
+            Columnas: {{ ((campo.metadatos as any)?.columnas||[]).length }}
+            <span v-if="(campo.metadatos as any)?.agregarFilas"> | Permite agregar filas</span>
+          </div>
         </div>
       </template>
       <template v-else-if="campo.tipo==='panel'">

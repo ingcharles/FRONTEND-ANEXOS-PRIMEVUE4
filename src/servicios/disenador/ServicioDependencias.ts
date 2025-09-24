@@ -20,7 +20,7 @@ export interface ConfiguracionApi {
 
 type Dependencia = ConfiguracionDependencia & {
   claveParametro?: string
-  modoEnvio?: 'query' | 'body' | 'header' | 'path'
+  modoEnvio?: 'query' | 'path'
   limpiarAlCambiar?: boolean
 }
 

@@ -69,7 +69,7 @@ export interface ColumnaTablaExtendida extends ColumnaTablaBasica {
   minFractionDigits?: number
   maxFractionDigits?: number
   percentScale?: 'whole' | 'fraction'
-  agg?: 'none' | 'sum' | 'avg' | 'count' | 'min' | 'max'
+  agregar?: 'none' | 'sum' | 'avg' | 'count' | 'min' | 'max'
   aggPrefix?: string
   aggSuffix?: string
   decimals?: number

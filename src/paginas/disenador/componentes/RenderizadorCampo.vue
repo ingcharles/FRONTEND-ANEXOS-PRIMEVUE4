@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import type { ColumnaTablaBasica, ColumnaTablaExtendida, EsquemaCampo } from '@/interfaces/Campos'
 import { evaluarReglasCampo } from '@/utilidades/Logica'
-import type { RegistroDatos, ValorDato } from '@/tipos/Comunes'
+import type { RegistroDatos, TamanoDiseno, ValorDato } from '@/tipos/Comunes'
 import type { OpcionSeleccion } from '@/interfaces/Comunes'
 import { TipoCampoValor } from '@/enumeraciones/Campos'
 
@@ -11,6 +11,10 @@ const propiedades = defineProps<{
   valoresCampos: RegistroDatos
   mapaIdNombre: Record<string, string>
   erroresCampos?: Record<string, string>
+}>()
+
+const emit = defineEmits<{
+  (e: 'valor-cambiado', nombre: string, valor: unknown): void
 }>()
 
 // Alias seguro para usar en el template
@@ -56,10 +60,10 @@ function obtenerEstiloTabla(campo: EsquemaCampo) {
     bordered?: boolean
     striped?: boolean
     hover?: boolean
-    padding?: 'sm' | 'md' | 'lg'
+    padding?: TamanoDiseno
   }>
 
-  let tipoRelleno: 'sm' | 'md' | 'lg' = 'md'
+  let tipoRelleno: TamanoDiseno = 'md'
   if (estiloTabla.padding === 'sm' || estiloTabla.padding === 'md' || estiloTabla.padding === 'lg') {
     tipoRelleno = estiloTabla.padding
   }
@@ -117,14 +121,17 @@ function agregarNuevaFilaCampo(campo: EsquemaCampo): void {
 
   const columnasTabla = obtenerColumnasTabla(campo)
   const filaNueva = crearFilaVaciaCampo(columnasTabla)
-  const diccionarioValores = propiedades.valoresCampos as RegistroDatos
-  const valorActual = diccionarioValores[nombreCampo]
+  const valorActual = propiedades.valoresCampos[nombreCampo]
 
+  let nuevasFilas: Array<Record<string, ValorDato>>
   if (Array.isArray(valorActual)) {
-    (valorActual as Array<Record<string, ValorDato>>).push(filaNueva)
+    nuevasFilas = [...(valorActual as Array<Record<string, ValorDato>>), filaNueva]
   } else {
-    diccionarioValores[nombreCampo] = [filaNueva]
+    nuevasFilas = [filaNueva]
   }
+
+  // Emitir el cambio al componente padre
+  emit('valor-cambiado', nombreCampo, nuevasFilas)
 }
 
 function estaDeshabilitadoPorDependencia(campo: EsquemaCampo, valores: RegistroDatos): boolean {
@@ -142,13 +149,62 @@ function estaDeshabilitadoPorDependencia(campo: EsquemaCampo, valores: RegistroD
   })
 }
 
+// Funciones auxiliares para el manejo de tablas
+function obtenerFilasTabla(campo: EsquemaCampo): Record<string, unknown>[] {
+  const nombreCampo = campo.nombre || ''
+  if (!nombreCampo) return []
+
+  const valorActual = propiedades.valoresCampos[nombreCampo]
+
+  if (Array.isArray(valorActual)) {
+    return valorActual as Record<string, unknown>[]
+  }
+
+  // Si no hay valor, crear filas iniciales
+  const metadatos = campo.metadatos as Record<string, unknown> | undefined
+  const filasIniciales = Number(metadatos?.filas ?? 1)
+  const columnas = obtenerColumnasTabla(campo)
+
+  return Array.from({ length: filasIniciales }, () => crearFilaVaciaCampo(columnas))
+}
+
+function permitirAgregarFilas(campo: EsquemaCampo): boolean {
+  const metadatos = campo.metadatos as Record<string, unknown> | undefined
+  return Boolean(metadatos?.agregarFilas)
+}
+
+function tieneColumnasConAgregado(campo: EsquemaCampo): boolean {
+  const columnas = obtenerColumnasTabla(campo)
+  return columnas.some(col => col.agregar && col.agregar !== 'none')
+}
+
+function actualizarValorCeldaTabla(
+  campo: EsquemaCampo,
+  indiceFila: number,
+  nombreColumna: string,
+  valor: unknown
+): void {
+  const nombreCampo = campo.nombre || ''
+  if (!nombreCampo) return
+
+  const filasActuales = obtenerFilasTabla(campo)
+  const nuevasFilas = [...filasActuales]
+
+  if (nuevasFilas[indiceFila]) {
+    nuevasFilas[indiceFila] = { ...nuevasFilas[indiceFila], [nombreColumna]: valor }
+  }
+
+  // Emitir el cambio
+  emit('valor-cambiado', nombreCampo, nuevasFilas)
+}
+
 function formatearValorAgregado(columna: ColumnaTablaExtendida, valor: number | null): string {
   if (valor == null) return ''
 
   const decimales = typeof columna.decimals === 'number'
     ? Math.max(0, Math.min(8, columna.decimals))
     : 2
-  const cadenaNumero = (columna.agg === 'count')
+  const cadenaNumero = (columna.agregar === 'count')
     ? String(valor)
     : (Number(valor).toFixed(decimales))
   const prefijo = columna.aggPrefix ?? ''
@@ -160,7 +216,7 @@ function formatearValorAgregado(columna: ColumnaTablaExtendida, valor: number | 
 function calcularValorAgregado(columna: ColumnaTablaExtendida, filasTabla: Record<string, unknown>[]): number | null {
   const valoresColumna = filasTabla.map(fila => fila[columna.name])
 
-  if (columna.agg === 'count') {
+  if (columna.agregar === 'count') {
     return valoresColumna.filter(valor =>
       valor !== undefined &&
       valor !== null &&
@@ -176,10 +232,10 @@ function calcularValorAgregado(columna: ColumnaTablaExtendida, filasTabla: Recor
     .filter(numero => !Number.isNaN(numero)) as number[]
 
   if (numerosValidos.length === 0) {
-    return columna.agg ? 0 : null
+    return columna.agregar ? 0 : null
   }
 
-  switch (columna.agg) {
+  switch (columna.agregar) {
     case 'sum':
       return numerosValidos.reduce((acumulador, valor) => acumulador + valor, 0)
     case 'avg':
@@ -373,7 +429,7 @@ const esCampoRequerido = computed(() => {
             </thead>
             <tbody>
               <tr
-                v-for="(filaTabla, indiceFila) in (((valoresCampos as any)[campo.nombre || ''] as any[]) || [])"
+                v-for="(filaTabla, indiceFila) in obtenerFilasTabla(campo)"
                 :key="indiceFila"
                 :class="clasesFilaTabla(campo)"
               >
@@ -384,48 +440,33 @@ const esCampoRequerido = computed(() => {
                 >
                   <!-- Campo de texto en tabla -->
                   <PrimeInputText
-                    v-if="(columnaTabla.type || 'texto') === 'texto'"
-                    v-model="(valoresCampos as any)[campo.nombre || ''][indiceFila][columnaTabla.name]"
+                    v-if="(columnaTabla.type || 'text') === 'text'"
+                    :model-value="String(filaTabla[columnaTabla.name] || '')"
                     class="w-full"
                     :disabled="campo.deshabilitado"
+                    @update:model-value="(v: string) => actualizarValorCeldaTabla(campo, indiceFila, columnaTabla.name, v)"
                   />
 
                   <!-- Campo de fecha en tabla -->
                   <PrimeDatePicker
                     v-else-if="columnaTabla.type === 'date'"
-                    v-model="(valoresCampos as any)[campo.nombre || ''][indiceFila][columnaTabla.name]"
+                    :model-value="filaTabla[columnaTabla.name] instanceof Date ? filaTabla[columnaTabla.name] as Date : null"
                     class="w-full"
                     :disabled="campo.deshabilitado"
+                    @update:model-value="(v: Date | null) => actualizarValorCeldaTabla(campo, indiceFila, columnaTabla.name, v)"
                   />
 
                   <!-- Campo numérico en tabla -->
                   <template v-else-if="columnaTabla.type === 'number'">
                     <PrimeInputNumber
-                      :model-value="(columnaTabla as any).formatMode === 'percent' && (columnaTabla as any).percentScale === 'fraction'
-                        ? (((valoresCampos as any)[campo.nombre || ''][indiceFila][columnaTabla.name] ?? null) as any) * 100
-                        : ((valoresCampos as any)[campo.nombre || ''][indiceFila][columnaTabla.name])"
-                      @update:model-value="(valorNuevo: any) => {
-                        if ((columnaTabla as any).formatMode === 'percent' && (columnaTabla as any).percentScale === 'fraction') {
-                          (valoresCampos as any)[campo.nombre || ''][indiceFila][columnaTabla.name] = (typeof valorNuevo === 'number' ? valorNuevo / 100 : valorNuevo)
-                        } else {
-                          (valoresCampos as any)[campo.nombre || ''][indiceFila][columnaTabla.name] = valorNuevo
-                        }
-                      }"
+                      :model-value="Number(filaTabla[columnaTabla.name] || 0)"
                       class="w-full"
                       :disabled="campo.deshabilitado"
-                      :mode="(columnaTabla as any).formatMode === 'currency'
-                        ? 'currency'
-                        : ((columnaTabla as any).formatMode === 'percent' ? 'decimal' : 'decimal')"
-                      :currency="(columnaTabla as any).formatMode === 'currency'
-                        ? ((columnaTabla as any).currency || 'USD')
-                        : undefined"
-                      :locale="(columnaTabla as any).locale || 'es-ES'"
-                      :prefix="(columnaTabla as any).prefix || ''"
-                      :suffix="(columnaTabla as any).formatMode === 'percent'
-                        ? '%'
-                        : ((columnaTabla as any).suffix || '')"
+                      :min="(columnaTabla as any).min"
+                      :max="(columnaTabla as any).max"
                       :min-fraction-digits="(columnaTabla as any).minFractionDigits ?? 0"
                       :max-fraction-digits="(columnaTabla as any).maxFractionDigits ?? 2"
+                      @update:model-value="(v: number | null) => actualizarValorCeldaTabla(campo, indiceFila, columnaTabla.name, v || 0)"
                     />
                   </template>
 
@@ -436,7 +477,7 @@ const esCampoRequerido = computed(() => {
             </tbody>
 
             <!-- Pie de tabla con agregaciones -->
-            <tfoot v-if="obtenerColumnasTabla(campo).some(c => c.agg && c.agg !== 'none') || (campo.metadatos as any)?.mostrarResumen">
+            <tfoot v-if="tieneColumnasConAgregado(campo) || (campo.metadatos as any)?.mostrarResumen">
               <tr>
                 <td
                   v-for="(columnaTabla, indiceColumna) in obtenerColumnasTabla(campo)"
@@ -446,12 +487,12 @@ const esCampoRequerido = computed(() => {
                   <span v-if="indiceColumna === 0">
                     {{ (campo.metadatos as any)?.summaryLabel ?? 'Total' }}
                   </span>
-                  <span class="ml-2" v-if="columnaTabla.agg && columnaTabla.agg !== 'none'">
+                  <span class="ml-2" v-if="columnaTabla.agregar && columnaTabla.agregar !== 'none'">
                     {{ formatearValorAgregado(
                       columnaTabla as any,
                       calcularValorAgregado(
                         columnaTabla as any,
-                        (((valoresCampos as any)[campo.nombre || ''] as Record<string, unknown>[]) || [])
+                        obtenerFilasTabla(campo)
                       )
                     ) }}
                   </span>
@@ -462,7 +503,7 @@ const esCampoRequerido = computed(() => {
         </div>
 
         <!-- Botón para agregar filas -->
-        <div class="mt-2" v-if="(campo.metadatos as any)?.agregarFilas">
+        <div class="mt-2" v-if="permitirAgregarFilas(campo)">
           <PrimeButton
             size="small"
             icon="pi pi-plus"

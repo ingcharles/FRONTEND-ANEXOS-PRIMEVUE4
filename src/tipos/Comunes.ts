@@ -7,7 +7,7 @@ export type ValorDato = string | number | boolean | Date | null | ValorDato[] | 
 export type RegistroDatos = Record<string, ValorDato>
 // Tipos básicos comunes utilizados en todo el sistema
 
-export type PuntoDeCorte = 'sm' | 'md' | 'lg'
+export type TamanoDiseno = 'sm' | 'md' | 'lg'
 
 export type EstadoCampo = 'inicial' | 'modificado' | 'validando' | 'valido' | 'invalido'
 
