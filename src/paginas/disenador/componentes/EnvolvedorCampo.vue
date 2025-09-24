@@ -311,11 +311,14 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
               </tbody>
             </table>
           </div>
+           <div class="mt-2" v-if="(campo.metadatos as any)?.agregarFilas">
+            <PrimeButton label="Añadir fila" size="small" icon="pi pi-plus" disabled />
+          </div>
           <div class="text-xs text-muted-color mt-2">
             Filas: {{ Number((campo.metadatos as any)?.filas || 1) }} |
             Columnas: {{ ((campo.metadatos as any)?.columnas||[]).length }}
-
           </div>
+
         </div>
       </template>
       <template v-else-if="campo.tipo==='panel'">
