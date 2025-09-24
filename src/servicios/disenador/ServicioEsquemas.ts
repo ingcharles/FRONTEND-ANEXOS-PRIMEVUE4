@@ -213,7 +213,7 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
     const formaFila: Record<string, z.ZodTypeAny> = {}
 
     for (const columna of columnas) {
-      const esRequerido = Boolean(columna.required)
+      const esRequerido = Boolean(columna.requerido)
       let esquemaColumna: z.ZodTypeAny
 
       switch (columna.tipo || 'text') {

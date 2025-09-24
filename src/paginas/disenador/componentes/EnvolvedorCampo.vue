@@ -302,9 +302,9 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
               <tbody>
                 <tr v-for="(fila, indice) in Array.from({ length: Number((campo.metadatos as any)?.filas || 1) })" :key="indice">
                   <td v-for="col in ((campo.metadatos as any)?.columnas||[])" :key="col.name" class="p-2">
-                    <PrimeInputText v-if="(col.type||'text')==='text'" class="w-full" disabled placeholder="Texto" />
-                    <PrimeInputNumber v-else-if="col.type==='number'" class="w-full" disabled placeholder="0" />
-                    <PrimeDatePicker v-else-if="col.type==='date'" class="w-full" disabled />
+                    <PrimeInputText v-if="col.tipo===TipoCampoValor.Texto" class="w-full" disabled placeholder="Texto" />
+                    <PrimeInputNumber v-else-if="col.tipo===TipoCampoValor.Numero" class="w-full" disabled placeholder="0" />
+                    <PrimeDatePicker v-else-if="col.tipo===TipoCampoValor.Fecha" class="w-full" disabled />
                     <span v-else class="text-muted-color">—</span>
                   </td>
                 </tr>
@@ -312,9 +312,9 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
             </table>
           </div>
           <div class="text-xs text-muted-color mt-2">
-            Filas: {{ Number((campo.metadatos as any)?.filas || 1) }} | 
+            Filas: {{ Number((campo.metadatos as any)?.filas || 1) }} |
             Columnas: {{ ((campo.metadatos as any)?.columnas||[]).length }}
-            <span v-if="(campo.metadatos as any)?.agregarFilas"> | Permite agregar filas</span>
+
           </div>
         </div>
       </template>

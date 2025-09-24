@@ -86,7 +86,7 @@
         <div class="col-12 md:col-4">
           <label class="block mb-2">Tipo</label>
           <Select
-            :model-value="columnaActual.tipo || 'text'"
+            :model-value="columnaActual.tipo || 'texto'"
             :options="tiposColumna"
             @update:model-value="(v: TipoColumna) => actualizarColumna('tipo', v)"
           />
@@ -100,74 +100,74 @@
           <div class="col-12 md:col-3">
             <label class="block mb-2">Modo</label>
             <Select
-              :model-value="columnaActual.formatMode || 'decimal'"
+              :model-value="columnaActual.modoFormato || 'decimal'"
               :options="opcionesModoFormato"
-              @update:model-value="(v: ModoFormato) => actualizarColumna('formatMode', v)"
+              @update:model-value="(v: ModoFormato) => actualizarColumna('modoFormato', v)"
             />
           </div>
 
-          <div class="col-12 md:col-3" v-if="columnaActual.formatMode === 'currency'">
+          <div class="col-12 md:col-3" v-if="columnaActual.modoFormato === 'currency'">
             <label class="block mb-2">Moneda</label>
             <InputText
-              :model-value="String(columnaActual.currency || 'USD')"
-              @update:model-value="(v: string | undefined) => actualizarColumna('currency', v || 'USD')"
+              :model-value="String(columnaActual.moneda || 'USD')"
+              @update:model-value="(v: string | undefined) => actualizarColumna('moneda', v || 'USD')"
             />
           </div>
 
           <div class="col-12 md:col-3">
-            <label class="block mb-2">Locale</label>
+            <label class="block mb-2">Idioma</label>
             <InputText
-              :model-value="String(columnaActual.locale || 'es-ES')"
-              @update:model-value="(v: string | undefined) => actualizarColumna('locale', v || 'es-ES')"
+              :model-value="String(columnaActual.idioma || 'es-ES')"
+              @update:model-value="(v: string | undefined) => actualizarColumna('idioma', v || 'es-ES')"
             />
           </div>
 
           <div class="col-12 md:col-3">
             <label class="block mb-2">Prefijo</label>
             <InputText
-              :model-value="String(columnaActual.prefix || '')"
-              @update:model-value="(v: string | undefined) => actualizarColumna('prefix', v || '')"
+              :model-value="String(columnaActual.prefijo || '')"
+              @update:model-value="(v: string | undefined) => actualizarColumna('prefijo', v || '')"
             />
           </div>
 
           <div class="col-12 md:col-3">
             <label class="block mb-2">Sufijo</label>
             <InputText
-              :model-value="String(columnaActual.suffix || '')"
-              @update:model-value="(v: string | undefined) => actualizarColumna('suffix', v || '')"
+              :model-value="String(columnaActual.sufijo || '')"
+              @update:model-value="(v: string | undefined) => actualizarColumna('sufijo', v || '')"
             />
           </div>
 
           <div class="col-12 md:col-3">
             <label class="block mb-2">Mín. decimales</label>
             <InputNumber
-              :model-value="Number(columnaActual.minFractionDigits ?? 0)"
+              :model-value="Number(columnaActual.decimalesMinimos ?? 0)"
               :min="0"
               :max="8"
               class="w-full"
-              @update:model-value="(v: number | null) => actualizarColumna('minFractionDigits', v ?? 0)"
+              @update:model-value="(v: number | null) => actualizarColumna('decimalesMinimos', v ?? 0)"
             />
           </div>
 
           <div class="col-12 md:col-3">
             <label class="block mb-2">Máx. decimales</label>
             <InputNumber
-              :model-value="Number(columnaActual.maxFractionDigits ?? 2)"
+              :model-value="Number(columnaActual.decimalesMaximos ?? 2)"
               :min="0"
               :max="8"
               class="w-full"
-              @update:model-value="(v: number | null) => actualizarColumna('maxFractionDigits', v ?? 2)"
+              @update:model-value="(v: number | null) => actualizarColumna('decimalesMaximos', v ?? 2)"
             />
           </div>
 
-          <div class="col-12 md:col-3" v-if="columnaActual.formatMode === 'percent'">
+          <div class="col-12 md:col-3" v-if="columnaActual.modoFormato === 'percent'">
             <label class="block mb-2">Escala porcentaje</label>
             <Select
-              :model-value="columnaActual.percentScale || 'whole'"
+              :model-value="columnaActual.escalaPorcentaje || 'whole'"
               :options="opcionesEscalaPorcentaje"
               option-label="label"
               option-value="value"
-              @update:model-value="(v: EscalaPorcentaje) => actualizarColumna('percentScale', v)"
+              @update:model-value="(v: EscalaPorcentaje) => actualizarColumna('escalaPorcentaje', v)"
             />
           </div>
         </div>
@@ -189,27 +189,27 @@
           <div class="col-12 md:col-3">
             <label class="block mb-2">Prefijo</label>
             <InputText
-              :model-value="String(columnaActual.aggPrefix || '')"
-              @update:model-value="(v: string | undefined) => actualizarColumna('aggPrefix', v || '')"
+              :model-value="String(columnaActual.prefijoAgregado || '')"
+              @update:model-value="(v: string | undefined) => actualizarColumna('prefijoAgregado', v || '')"
             />
           </div>
 
           <div class="col-12 md:col-3">
             <label class="block mb-2">Sufijo</label>
             <InputText
-              :model-value="String(columnaActual.aggSuffix || '')"
-              @update:model-value="(v: string | undefined) => actualizarColumna('aggSuffix', v || '')"
+              :model-value="String(columnaActual.sufijoAgregado || '')"
+              @update:model-value="(v: string | undefined) => actualizarColumna('sufijoAgregado', v || '')"
             />
           </div>
 
           <div class="col-12 md:col-3">
             <label class="block mb-2">Decimales</label>
             <InputNumber
-              :model-value="Number(columnaActual.decimals ?? 2)"
+              :model-value="Number(columnaActual.decimales ?? 2)"
               :min="0"
               :max="8"
               class="w-full"
-              @update:model-value="(v: number | null) => actualizarColumna('decimals', v ?? 2)"
+              @update:model-value="(v: number | null) => actualizarColumna('decimales', v ?? 2)"
             />
           </div>
         </div>
@@ -234,18 +234,18 @@
             <div class="col-12 md:col-3">
               <label class="block mb-2">Mínimo</label>
               <InputNumber
-                :model-value="typeof columnaActual.min === 'number' ? columnaActual.min : null"
+                :model-value="typeof columnaActual.minimo === 'number' ? columnaActual.minimo : null"
                 class="w-full"
-                @update:model-value="(v: number | null) => actualizarColumna('min', v)"
+                @update:model-value="(v: number | null) => actualizarColumna('minimo', v)"
               />
             </div>
 
             <div class="col-12 md:col-3">
               <label class="block mb-2">Máximo</label>
               <InputNumber
-                :model-value="typeof columnaActual.max === 'number' ? columnaActual.max : null"
+                :model-value="typeof columnaActual.maximo === 'number' ? columnaActual.maximo : null"
                 class="w-full"
-                @update:model-value="(v: number | null) => actualizarColumna('max', v)"
+                @update:model-value="(v: number | null) => actualizarColumna('maximo', v)"
               />
             </div>
 
@@ -253,7 +253,7 @@
               <label class="block mb-2">Mensaje min</label>
               <InputText
                 :model-value="String(columnaActual.mensajeMinimo || '')"
-                @update:model-value="(v: string | undefined) => actualizarColumna('minMessage', v || '')"
+                @update:model-value="(v: string | undefined) => actualizarColumna('mensajeMinimo', v || '')"
               />
             </div>
 
@@ -261,7 +261,7 @@
               <label class="block mb-2">Mensaje max</label>
               <InputText
                 :model-value="String(columnaActual.mensajeMaximo || '')"
-                @update:model-value="(v: string | undefined) => actualizarColumna('maxMessage', v || '')"
+                @update:model-value="(v: string | undefined) => actualizarColumna('mensajeMaximo', v || '')"
               />
             </div>
           </template>
@@ -278,8 +278,8 @@
         <label class="inline-flex align-items-center gap-2">
           <Checkbox
             binary
-            :model-value="Boolean(metadatos.mostrarResumen)"
-            @update:model-value="(v: boolean) => actualizarMetadato('mostrarResumen', v)"
+            :model-value="Boolean(metadatos.agregarFilas)"
+            @update:model-value="(v: boolean) => actualizarMetadato('agregarFilas', v)"
           />
           Permitir añadir filas
         </label>
@@ -368,7 +368,7 @@ import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { ColumnaTabla } from '@/interfaces/Comunes'
 
-type TipoColumna = 'text' | 'number' | 'date'
+type TipoColumna = 'texto' | 'numero' | 'fecha'
 type ModoFormato = 'decimal' | 'currency' | 'percent'
 type EscalaPorcentaje = 'whole' | 'fraction'
 type FuncionAgregado = 'none' | 'sum' | 'avg' | 'count' | 'min' | 'max'
@@ -396,7 +396,7 @@ const almacen = useAlmacenDisenador()
 const indiceColumna = ref(0)
 
 // Opciones para selectores
-const tiposColumna: TipoColumna[] = ['text', 'number', 'date']
+const tiposColumna: TipoColumna[] = ['texto', 'numero', 'fecha']
 const opcionesModoFormato: ModoFormato[] = ['decimal', 'currency', 'percent']
 const funcionesAgregado: FuncionAgregado[] = ['none', 'sum', 'avg', 'count', 'min', 'max']
 const opcionesPadding: TamañoPadding[] = ['sm', 'md', 'lg']
@@ -460,10 +460,10 @@ function agregarColumna(): void {
     id: `columna${columnas.length + 1}`,
     nombre: `columna${columnas.length + 1}`,
     etiqueta: `Columna ${columnas.length + 1}`,
-    tipo: 'text',
+    tipo: 'texto',
     name: `columna${columnas.length + 1}`,
     label: `Columna ${columnas.length + 1}`,
-    type: 'text'
+    type: 'texto'
   }
 
   columnas.push(nuevaColumna)

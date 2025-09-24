@@ -57,25 +57,26 @@ export interface EsquemaCampo {
 export interface ColumnaTablaBasica {
   name: string
   label?: string
-  type?: 'text' | 'number' | 'date'
+  type?: 'texto' | 'numero' | 'fecha'
 }
 
 export interface ColumnaTablaExtendida extends ColumnaTablaBasica {
-  formatMode?: 'decimal' | 'currency' | 'percent'
-  currency?: string
-  locale?: string
-  prefix?: string
-  suffix?: string
-  minFractionDigits?: number
-  maxFractionDigits?: number
-  percentScale?: 'whole' | 'fraction'
-  agregar?: 'none' | 'sum' | 'avg' | 'count' | 'min' | 'max'
-  aggPrefix?: string
-  aggSuffix?: string
-  decimals?: number
-  required?: boolean
-  min?: number | null
-  max?: number | null
-  minMessage?: string
-  maxMessage?: string
+  modoFormato?: 'decimal' | 'currency' | 'percent'
+  moneda?: string
+  idioma?: string
+  prefijo?: string
+  sufijo?: string
+  decimalesMinimos?: number
+  decimalesMaximos?: number;
+  escalaPorcentaje?: 'whole' | 'fraction';
+  agregar?: 'none' | 'sum' | 'avg' | 'count' | 'min' | 'max';
+  prefijoAgregado?: string;
+  sufijoAgregado?: string;
+  decimales?: number;
+  requerido?: boolean;
+  minimo?: number | null;
+  maximo?: number | null;
+  mensajeMinimo?: string;
+  mensajeMaximo?: string;
+  tipo?: string;
 }

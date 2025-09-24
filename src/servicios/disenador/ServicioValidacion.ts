@@ -142,8 +142,8 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
 
   private crearEsquemaNumero(campo: EsquemaCampo): z.ZodTypeAny {
     const meta = campo.metadatos as Record<string, ValorDato> | undefined
-    const min = typeof meta?.min === 'number' ? meta.min : undefined
-    const max = typeof meta?.max === 'number' ? meta.max : undefined
+    const min = typeof meta?.minimo === 'number' ? meta.minimo : undefined
+    const max = typeof meta?.maximo === 'number' ? meta.maximo : undefined
     const mensajeMin = typeof meta?.mensajeMinimo === 'string' && meta.mensajeMinimo
       ? meta.mensajeMinimo
       : `Debe ser >= ${min}`
@@ -203,8 +203,8 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
   }
 
   private crearEsquemaNumeroTabla(columna: Record<string, ValorDato>): z.ZodTypeAny {
-    const min = typeof columna.min === 'number' ? columna.min : undefined
-    const max = typeof columna.max === 'number' ? columna.max : undefined
+    const min = typeof columna.minimo === 'number' ? columna.minimo : undefined
+    const max = typeof columna.maximo === 'number' ? columna.maximo : undefined
     const mensajeMin = typeof columna.mensajeMinimo === 'string' && columna.mensajeMinimo
       ? columna.mensajeMinimo
       : (typeof min === 'number' ? `Debe ser >= ${min}` : 'Valor demasiado pequeño')

@@ -201,14 +201,14 @@ function actualizarValorCeldaTabla(
 function formatearValorAgregado(columna: ColumnaTablaExtendida, valor: number | null): string {
   if (valor == null) return ''
 
-  const decimales = typeof columna.decimals === 'number'
-    ? Math.max(0, Math.min(8, columna.decimals))
+  const decimales = typeof columna.decimales === 'number'
+    ? Math.max(0, Math.min(8, columna.decimales))
     : 2
   const cadenaNumero = (columna.agregar === 'count')
     ? String(valor)
     : (Number(valor).toFixed(decimales))
-  const prefijo = columna.aggPrefix ?? ''
-  const sufijo = columna.aggSuffix ?? ''
+  const prefijo = columna.prefijoAgregado ?? ''
+  const sufijo = columna.sufijoAgregado ?? ''
 
   return `${prefijo}${cadenaNumero}${sufijo}`.trim()
 }
@@ -263,7 +263,7 @@ const esCampoRequerido = computed(() => {
 <template>
   <div v-if="esCampoVisible">
     <!-- Panel contenedor -->
-    <PrimePanel v-if="campo.tipo === 'panel'" :header="campo.etiqueta || 'Panel'">
+    <PrimePanel v-if="campo.tipo === TipoCampoValor.Panel" :header="campo.etiqueta || 'Panel'">
       <div class="grid">
         <template v-for="campoHijo in (campo.hijos || [])" :key="campoHijo.id">
           <div :class="clasesColumnaCampo(campoHijo)">
@@ -340,8 +340,8 @@ const esCampoRequerido = computed(() => {
         v-model="(valoresCampos as any)[campo.nombre || '']"
         class="w-full"
         :placeholder="campo.marcadorPosicion"
-        :min="(campo.metadatos as any)?.min"
-        :max="(campo.metadatos as any)?.max"
+        :min="(campo.metadatos as any)?.minimo"
+        :max="(campo.metadatos as any)?.maximo"
         :step="(campo.metadatos as any)?.paso ?? 1"
         :disabled="campo.deshabilitado"
         :readonly="campo.soloLectura"
@@ -384,7 +384,7 @@ const esCampoRequerido = computed(() => {
       </div>
 
       <!-- Radio buttons -->
-      <div v-else-if="campo.tipo === 'radio'">
+      <div v-else-if="campo.tipo === TipoCampoValor.Radio && Array.isArray(opcionesCampo) && (opcionesCampo.length || 0) > 0">
         <div :class="[
           'flex',
           ((campo.metadatos as any)?.layout === 'horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')
@@ -406,10 +406,10 @@ const esCampoRequerido = computed(() => {
       </div>
 
       <!-- Divisor -->
-      <PrimeDivider v-else-if="campo.tipo === 'divisor'" />
+      <PrimeDivider v-else-if="campo.tipo === TipoCampoValor.Divisor" />
 
       <!-- Tabla -->
-      <div v-else-if="campo.tipo === 'tabla'">
+      <div v-else-if="campo.tipo === TipoCampoValor.Tabla">
         <div class="overflow-auto">
           <table :class="clasesTablaCompleta(campo)">
             <thead>
@@ -439,33 +439,33 @@ const esCampoRequerido = computed(() => {
                   :class="clasesCeldaTabla(campo)"
                 >
                   <!-- Campo de texto en tabla -->
+
+
                   <PrimeInputText
-                    v-if="(columnaTabla.type || 'text') === 'text'"
+                    v-if="(columnaTabla.tipo ?? columnaTabla.type) === 'texto'"
                     :model-value="String(filaTabla[columnaTabla.name] || '')"
                     class="w-full"
                     :disabled="campo.deshabilitado"
                     @update:model-value="(v: string) => actualizarValorCeldaTabla(campo, indiceFila, columnaTabla.name, v)"
                   />
 
-                  <!-- Campo de fecha en tabla -->
                   <PrimeDatePicker
-                    v-else-if="columnaTabla.type === 'date'"
+                    v-else-if="(columnaTabla.tipo ?? columnaTabla.type) === 'fecha'"
                     :model-value="filaTabla[columnaTabla.name] instanceof Date ? filaTabla[columnaTabla.name] as Date : null"
                     class="w-full"
                     :disabled="campo.deshabilitado"
                     @update:model-value="(v: Date | null) => actualizarValorCeldaTabla(campo, indiceFila, columnaTabla.name, v)"
                   />
 
-                  <!-- Campo numérico en tabla -->
-                  <template v-else-if="columnaTabla.type === 'number'">
+                  <template v-else-if="(columnaTabla.tipo ?? columnaTabla.type) === 'numero'">
                     <PrimeInputNumber
                       :model-value="Number(filaTabla[columnaTabla.name] || 0)"
                       class="w-full"
                       :disabled="campo.deshabilitado"
-                      :min="(columnaTabla as any).min"
-                      :max="(columnaTabla as any).max"
-                      :min-fraction-digits="(columnaTabla as any).minFractionDigits ?? 0"
-                      :max-fraction-digits="(columnaTabla as any).maxFractionDigits ?? 2"
+                      :min="(columnaTabla as any).minimo"
+                      :max="(columnaTabla as any).maximo"
+                      :min-fraction-digits="(columnaTabla as any).decimalesMinimos ?? 0"
+                      :max-fraction-digits="(columnaTabla as any).decimalesMaximos ?? 2"
                       @update:model-value="(v: number | null) => actualizarValorCeldaTabla(campo, indiceFila, columnaTabla.name, v || 0)"
                     />
                   </template>
