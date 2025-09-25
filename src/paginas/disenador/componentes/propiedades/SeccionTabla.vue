@@ -195,7 +195,7 @@ watch(() => obtenerColumnas().length, () => {
     <h3 class="texto-sm text-color mb-2">Tabla</h3>
     <span class="negrilla">Columnas</span>
     <div class="grid">
-      <div class="col-12 md:col-12 lg:col-6 ">
+      <div class="col-12 md:col-12 lg:col-8">
         <PrimeSelect :model-value="indiceColumna" :options="opcionesColumnas" option-label="label" option-value="value"
           class="ancho-100" @update:model-value="(v: number) => seleccionarColumna(v)" />
       </div>
