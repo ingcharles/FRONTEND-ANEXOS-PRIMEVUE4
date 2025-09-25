@@ -1,5 +1,5 @@
 <template>
-  <div class="ayuda-validacion">
+  <div>
     <PrimeButton
       icon="pi pi-question-circle"
       severity="help"
@@ -8,151 +8,176 @@
       size="small"
       @click="mostrarAyuda = true"
       v-tooltip.top="'Ver ejemplos y ayuda'"
-      class="ayuda-trigger"
     />
 
-    <PrimeDialog
+    <DialogoAyuda
       v-model:visible="mostrarAyuda"
-      header="Guía de Validaciones"
-      :modal="true"
-      :closable="true"
-      :draggable="false"
-      :style="{ width: '600px' }"
-      class="ayuda-dialog"
+      titulo="Guía de Validaciones"
+      ancho="700px"
     >
-      <div class="ayuda-contenido">
-        <PrimeTabs value="0">
-          <PrimeTabList>
-            <PrimeTab value="0">Básicas</PrimeTab>
-            <PrimeTab value="1">Patrones</PrimeTab>
-            <PrimeTab value="2">Avanzadas</PrimeTab>
-          </PrimeTabList>
+      <PrimeTabs value="0">
+        <PrimeTabList>
+          <PrimeTab value="0">Básicas</PrimeTab>
+          <PrimeTab value="1">Patrones</PrimeTab>
+          <PrimeTab value="2">Avanzadas</PrimeTab>
+        </PrimeTabList>
 
-          <PrimeTabPanels>
-            <!-- Validaciones Básicas -->
-            <PrimeTabPanel value="0">
-              <div class="flex flex-column gap-4">
-                <div class="ayuda-seccion">
-                  <h4 class="text-primary mb-2">
-                    <i class="pi pi-exclamation-triangle mr-2"></i>
-                    Campo Obligatorio
-                  </h4>
-                  <p class="text-600 mb-3">Hace que el usuario deba completar el campo antes de enviar el formulario.</p>
-                  <div class="ejemplo-card">
-                    <strong>Ejemplo de mensaje:</strong>
-                    <code>"Este campo es obligatorio"</code>
+        <PrimeTabPanels>
+          <!-- Validaciones Básicas -->
+          <PrimeTabPanel value="0">
+            <div class="flex flex-column gap-4">
+              <PrimeCard v-for="validacion in validacionesBasicas" :key="validacion.tipo">
+                <template #title>
+                  <div class="flex align-items-center gap-2">
+                    <i :class="`pi ${validacion.icono} ${validacion.colorClase}`"></i>
+                    {{ validacion.titulo }}
                   </div>
-                </div>
-
-                <div class="ayuda-seccion">
-                  <h4 class="text-blue-600 mb-2">
-                    <i class="pi pi-arrow-down mr-2"></i>
-                    Longitud Mínima
-                  </h4>
-                  <p class="text-600 mb-3">Define el número mínimo de caracteres que debe tener el texto.</p>
-                  <div class="ejemplo-card">
-                    <strong>Casos comunes:</strong>
-                    <ul class="mt-2 mb-0">
-                      <li>Nombres: 2 caracteres</li>
-                      <li>Contraseñas: 8 caracteres</li>
-                      <li>Comentarios: 10 caracteres</li>
+                </template>
+                <template #content>
+                  <p class="text-600 mb-3">{{ validacion.descripcion }}</p>
+                  <PrimePanel header="Ejemplo" toggleable collapsed class="mb-3">
+                    <template #content>
+                      <div class="surface-100 border-round p-3">
+                        <strong>{{ validacion.ejemploTitulo }}:</strong>
+                        <PrimeTag :value="validacion.ejemploValor" class="ml-2" />
+                      </div>
+                    </template>
+                  </PrimePanel>
+                  <div v-if="validacion.casos" class="surface-50 border-round p-3">
+                    <strong class="text-700">Casos comunes:</strong>
+                    <ul class="mt-2 mb-0 pl-3">
+                      <li v-for="caso in validacion.casos" :key="caso" class="mb-1">{{ caso }}</li>
                     </ul>
                   </div>
-                </div>
+                </template>
+              </PrimeCard>
+            </div>
+          </PrimeTabPanel>
 
-                <div class="ayuda-seccion">
-                  <h4 class="text-orange-600 mb-2">
-                    <i class="pi pi-arrow-up mr-2"></i>
-                    Longitud Máxima
-                  </h4>
-                  <p class="text-600 mb-3">Limita el número máximo de caracteres permitidos.</p>
-                  <div class="ejemplo-card">
-                    <strong>Casos comunes:</strong>
-                    <ul class="mt-2 mb-0">
-                      <li>Títulos: 100 caracteres</li>
-                      <li>Descripciones: 500 caracteres</li>
-                      <li>Comentarios: 1000 caracteres</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </PrimeTabPanel>
+          <!-- Patrones -->
+          <PrimeTabPanel value="1">
+            <div class="flex flex-column gap-3">
+              <PrimeMessage severity="info" :closable="false">
+                <template #messageicon>
+                  <i class="pi pi-search"></i>
+                </template>
+                Expresiones regulares para validar formatos específicos. Haz clic en "Copiar" para usar el patrón.
+              </PrimeMessage>
 
-            <!-- Patrones -->
-            <PrimeTabPanel value="1">
-              <div class="flex flex-column gap-4">
-                <div class="ayuda-seccion">
-                  <h4 class="text-purple-600 mb-2">
-                    <i class="pi pi-search mr-2"></i>
-                    Patrones Comunes
-                  </h4>
-                  <p class="text-600 mb-3">Expresiones regulares para validar formatos específicos.</p>
-                </div>
-
-                <div class="patron-ejemplo" v-for="patron in patronesComunes" :key="patron.nombre">
-                  <div class="flex align-items-center justify-content-between mb-2">
-                    <strong class="text-700">{{ patron.nombre }}</strong>
-                    <PrimeButton
-                      label="Copiar"
-                      size="small"
-                      text
-                      @click="copiarPatron(patron.regex)"
-                      class="p-0"
-                    />
-                  </div>
-                  <code class="patron-codigo">{{ patron.regex }}</code>
-                  <p class="text-500 text-sm mt-1">{{ patron.descripcion }}</p>
-                  <div class="ejemplos-validos">
-                    <small class="text-600">Ejemplos válidos:</small>
-                    <div class="flex flex-wrap gap-1 mt-1">
-                      <PrimeTag
-                        v-for="ejemplo in patron.ejemplos"
-                        :key="ejemplo"
-                        :value="ejemplo"
-                        severity="success"
-                        class="text-xs"
+              <PrimeAccordion v-model:activeIndex="patronActivo" multiple>
+                <PrimeAccordionTab v-for="(patron, index) in patronesComunes" :key="patron.nombre" :header="patron.nombre">
+                  <div class="flex flex-column gap-3">
+                    <div class="flex align-items-center justify-content-between">
+                      <PrimeInputText
+                        :model-value="patron.regex"
+                        readonly
+                        class="flex-1 mr-2 font-mono text-sm"
+                      />
+                      <PrimeButton
+                        label="Copiar"
+                        icon="pi pi-copy"
+                        size="small"
+                        outlined
+                        @click="copiarPatron(patron.regex)"
                       />
                     </div>
+
+                    <p class="text-600 m-0">{{ patron.descripcion }}</p>
+
+                    <div>
+                      <strong class="text-700 text-sm">Ejemplos válidos:</strong>
+                      <div class="flex flex-wrap gap-1 mt-2">
+                        <PrimeTag
+                          v-for="ejemplo in patron.ejemplos"
+                          :key="ejemplo"
+                          :value="ejemplo"
+                          severity="success"
+                          rounded
+                        />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </PrimeTabPanel>
+                </PrimeAccordionTab>
+              </PrimeAccordion>
+            </div>
+          </PrimeTabPanel>
 
-            <!-- Avanzadas -->
-            <PrimeTabPanel value="2">
-              <div class="flex flex-column gap-4">
-                <div class="ayuda-seccion">
-                  <h4 class="text-teal-600 mb-2">
-                    <i class="pi pi-code mr-2"></i>
-                    Validaciones Personalizadas
-                  </h4>
-                  <p class="text-600 mb-3">Funciones JavaScript para lógica de validación compleja.</p>
-                </div>
+          <!-- Avanzadas -->
+          <PrimeTabPanel value="2">
+            <div class="flex flex-column gap-4">
+              <PrimeMessage severity="warn" :closable="false">
+                <template #messageicon>
+                  <i class="pi pi-code"></i>
+                </template>
+                Las funciones deben retornar <code>true</code> si el valor es válido, o <code>false</code> si no es válido.
+              </PrimeMessage>
 
-                <div class="codigo-ejemplo" v-for="ejemplo in ejemplosPersonalizados" :key="ejemplo.nombre">
-                  <h5 class="text-700 mb-2">{{ ejemplo.nombre }}</h5>
-                  <pre class="codigo-bloque"><code>{{ ejemplo.codigo }}</code></pre>
-                  <p class="text-500 text-sm mt-2">{{ ejemplo.descripcion }}</p>
-                </div>
-
-                <div class="nota-importante">
-                  <i class="pi pi-info-circle mr-2"></i>
-                  <strong>Nota:</strong> La función debe retornar <code>true</code> si el valor es válido,
-                  o <code>false</code> si no es válido.
-                </div>
-              </div>
-            </PrimeTabPanel>
-          </PrimeTabPanels>
-        </PrimeTabs>
-      </div>
-    </PrimeDialog>
+              <PrimeCard v-for="ejemplo in ejemplosPersonalizados" :key="ejemplo.nombre">
+                <template #title>
+                  <div class="flex align-items-center justify-content-between">
+                    <span>{{ ejemplo.nombre }}</span>
+                    <PrimeButton
+                      label="Copiar Código"
+                      icon="pi pi-copy"
+                      size="small"
+                      text
+                      @click="copiarCodigo(ejemplo.codigo)"
+                    />
+                  </div>
+                </template>
+                <template #content>
+                  <p class="text-600 mb-3">{{ ejemplo.descripcion }}</p>
+                  <PrimeScrollPanel style="width: 100%; height: 200px">
+                    <pre class="surface-900 text-0 p-3 border-round font-mono text-sm overflow-auto"><code>{{ ejemplo.codigo }}</code></pre>
+                  </PrimeScrollPanel>
+                </template>
+              </PrimeCard>
+            </div>
+          </PrimeTabPanel>
+        </PrimeTabPanels>
+      </PrimeTabs>
+    </DialogoAyuda>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import DialogoAyuda from '@/componentes/DialogoAyuda.vue'
 
 const mostrarAyuda = ref(false)
+const patronActivo = ref<number[]>([])
+
+const validacionesBasicas = [
+  {
+    tipo: 'requerido',
+    titulo: 'Campo Obligatorio',
+    descripcion: 'Hace que el usuario deba completar el campo antes de enviar el formulario.',
+    icono: 'pi-exclamation-triangle',
+    colorClase: 'text-red-500',
+    ejemploTitulo: 'Ejemplo de mensaje',
+    ejemploValor: 'Este campo es obligatorio'
+  },
+  {
+    tipo: 'longitud-minima',
+    titulo: 'Longitud Mínima',
+    descripcion: 'Define el número mínimo de caracteres que debe tener el texto.',
+    icono: 'pi-arrow-down',
+    colorClase: 'text-blue-500',
+    ejemploTitulo: 'Valor mínimo',
+    ejemploValor: '3',
+    casos: ['Nombres: 2 caracteres', 'Contraseñas: 8 caracteres', 'Comentarios: 10 caracteres']
+  },
+  {
+    tipo: 'longitud-maxima',
+    titulo: 'Longitud Máxima',
+    descripcion: 'Limita el número máximo de caracteres permitidos.',
+    icono: 'pi-arrow-up',
+    colorClase: 'text-orange-500',
+    ejemploTitulo: 'Valor máximo',
+    ejemploValor: '100',
+    casos: ['Títulos: 100 caracteres', 'Descripciones: 500 caracteres', 'Comentarios: 1000 caracteres']
+  }
+]
 
 const patronesComunes = [
   {
@@ -235,101 +260,11 @@ function copiarPatron(patron: string) {
     console.log('Patrón copiado al portapapeles')
   })
 }
+
+function copiarCodigo(codigo: string) {
+  navigator.clipboard.writeText(codigo).then(() => {
+    // Aquí podrías mostrar un toast de confirmación
+    console.log('Código copiado al portapapeles')
+  })
+}
 </script>
-
-<style scoped>
-.ayuda-trigger {
-  opacity: 0.7;
-  transition: opacity 0.2s ease;
-}
-
-.ayuda-trigger:hover {
-  opacity: 1;
-}
-
-.ayuda-contenido {
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
-.ayuda-seccion {
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--surface-200);
-}
-
-.ayuda-seccion:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.ejemplo-card {
-  background: var(--surface-50);
-  border: 1px solid var(--surface-200);
-  border-radius: 6px;
-  padding: 0.75rem;
-  margin-top: 0.5rem;
-}
-
-.patron-ejemplo {
-  background: var(--surface-0);
-  border: 1px solid var(--surface-200);
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-
-.patron-codigo {
-  display: block;
-  background: var(--surface-100);
-  padding: 0.5rem;
-  border-radius: 4px;
-  font-family: 'Courier New', monospace;
-  font-size: 0.875rem;
-  word-break: break-all;
-}
-
-.ejemplos-validos {
-  margin-top: 0.5rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid var(--surface-100);
-}
-
-.codigo-ejemplo {
-  background: var(--surface-50);
-  border: 1px solid var(--surface-200);
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-
-.codigo-bloque {
-  background: var(--surface-900);
-  color: var(--surface-0);
-  padding: 1rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
-  overflow-x: auto;
-  margin: 0;
-}
-
-.codigo-bloque code {
-  color: inherit;
-  background: none;
-  padding: 0;
-}
-
-.nota-importante {
-  background: var(--blue-50);
-  border: 1px solid var(--blue-200);
-  border-radius: 6px;
-  padding: 0.75rem;
-  color: var(--blue-800);
-}
-
-.nota-importante code {
-  background: var(--blue-100);
-  padding: 0.125rem 0.25rem;
-  border-radius: 3px;
-  font-size: 0.875rem;
-}
-</style>

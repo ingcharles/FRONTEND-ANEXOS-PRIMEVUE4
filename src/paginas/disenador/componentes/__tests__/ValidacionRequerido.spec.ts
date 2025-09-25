@@ -43,11 +43,14 @@ describe('Validación Requerido', () => {
       global: {
         stubs: {
           PrimeButton: true,
-          PrimeSelect: true,
           PrimeInputText: true,
-          PrimeDialog: true,
+          PrimeCard: true,
+          PrimeAvatar: true,
+          PrimeMessage: true,
           PrimeTag: true,
-          TransitionGroup: true
+          TransitionGroup: true,
+          AyudaValidacion: true,
+          DialogoAyuda: true
         }
       }
     })
@@ -130,11 +133,14 @@ describe('Validación Requerido', () => {
       global: {
         stubs: {
           PrimeButton: true,
-          PrimeSelect: true,
           PrimeInputText: true,
-          PrimeDialog: true,
+          PrimeCard: true,
+          PrimeAvatar: true,
+          PrimeMessage: true,
           PrimeTag: true,
-          TransitionGroup: true
+          TransitionGroup: true,
+          AyudaValidacion: true,
+          DialogoAyuda: true
         }
       }
     })
