@@ -1,3 +1,196 @@
+
+<script setup lang="ts">
+import { computed, ref, watch } from 'vue'
+import draggable from 'vuedraggable'
+import { TipoCampoValor } from '@/enumeraciones/Campos'
+import InputNumber from 'primevue/inputnumber'
+import Checkbox from 'primevue/checkbox'
+import Tag from 'primevue/tag'
+import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
+import type { EsquemaCampo } from '@/interfaces/Campos'
+import type { ColumnaTabla } from '@/interfaces/Comunes'
+
+type TipoColumna = 'texto' | 'numero' | 'fecha'
+type ModoFormato = 'decimal' | 'currency' | 'percent'
+type EscalaPorcentaje = 'whole' | 'fraction'
+type FuncionAgregado = 'none' | 'sum' | 'avg' | 'count' | 'min' | 'max'
+type TamañoPadding = 'sm' | 'md' | 'lg'
+
+interface EstiloTabla {
+  bordered?: boolean
+  striped?: boolean
+  hover?: boolean
+  padding?: TamañoPadding
+}
+
+interface OpcionSelector {
+  label: string
+  value: string
+}
+
+const props = defineProps<{
+  campo: EsquemaCampo | null
+}>()
+
+const almacen = useAlmacenDisenador()
+
+// Índice de columna seleccionada
+const indiceColumna = ref(0)
+
+// Opciones para selectores
+const tiposColumna: TipoColumna[] = ['texto', 'numero', 'fecha']
+const opcionesModoFormato: ModoFormato[] = ['decimal', 'currency', 'percent']
+const funcionesAgregado: FuncionAgregado[] = ['none', 'sum', 'avg', 'count', 'min', 'max']
+const opcionesPadding: TamañoPadding[] = ['sm', 'md', 'lg']
+
+const opcionesEscalaPorcentaje: OpcionSelector[] = [
+  { label: '15 = 15%', value: 'whole' },
+  { label: '0.15 = 15%', value: 'fraction' }
+]
+
+// Metadatos de la tabla
+const metadatos = computed(() => {
+  if (!props.campo) return {}
+  return props.campo.metadatos || {}
+})
+
+// Estilo de tabla
+const estiloTabla = computed((): EstiloTabla => {
+  const meta = metadatos.value as Record<string, unknown>
+  return (meta.estiloTabla as EstiloTabla) || {}
+})
+
+// Obtener columnas
+function obtenerColumnas(): ColumnaTabla[] {
+  const meta = metadatos.value as Record<string, unknown>
+  const columnas = meta.columnas
+  return Array.isArray(columnas) ? columnas : []
+}
+
+// Proxy para vuedraggable
+const columnasProxy = computed({
+  get: () => obtenerColumnas(),
+  set: (nuevasColumnas: ColumnaTabla[]) => actualizarColumnas(nuevasColumnas)
+})
+
+// Opciones para selector de columnas
+const opcionesColumnas = computed(() => {
+  return obtenerColumnas().map((columna, indice) => ({
+    label: columna.etiqueta || columna.nombre || `Col ${indice + 1}`,
+    value: indice
+  }))
+})
+
+// Columna actualmente seleccionada
+const columnaActual = computed((): ColumnaTabla | null => {
+  const columnas = obtenerColumnas()
+  return columnas[indiceColumna.value] || null
+})
+
+// Actualizar columnas
+function actualizarColumnas(columnas: ColumnaTabla[]): void {
+  if (!props.campo) return
+  const meta = { ...metadatos.value } as Record<string, unknown>
+  meta.columnas = columnas
+  almacen.actualizarCampo(props.campo.id, { metadatos: meta })
+}
+
+// Agregar nueva columna
+function agregarColumna(): void {
+  const columnas = obtenerColumnas()
+  const nuevaColumna: ColumnaTabla = {
+    id: `columna${columnas.length + 1}`,
+    nombre: `columna${columnas.length + 1}`,
+    etiqueta: `Columna ${columnas.length + 1}`,
+    tipo: 'texto',
+    name: `columna${columnas.length + 1}`,
+    label: `Columna ${columnas.length + 1}`,
+    type: 'texto'
+  }
+
+  columnas.push(nuevaColumna)
+  actualizarColumnas(columnas)
+  indiceColumna.value = columnas.length - 1
+}
+
+// Eliminar columna
+function eliminarColumna(indice: number): void {
+  const columnas = obtenerColumnas()
+  if (indice >= 0 && indice < columnas.length) {
+    columnas.splice(indice, 1)
+    actualizarColumnas(columnas)
+    asegurarIndiceValido()
+  }
+}
+
+// Seleccionar columna
+function seleccionarColumna(indice: number): void {
+  indiceColumna.value = indice
+  asegurarIndiceValido()
+}
+
+// Asegurar que el índice es válido
+function asegurarIndiceValido(): void {
+  const columnas = obtenerColumnas()
+  if (indiceColumna.value >= columnas.length) {
+    indiceColumna.value = Math.max(0, columnas.length - 1)
+  }
+}
+
+// Manejar reordenación de columnas
+function manejarReordenColumnas(): void {
+  // vuedraggable ya actualizó columnasProxy
+  asegurarIndiceValido()
+}
+
+// Actualizar propiedad de columna
+function actualizarColumna(propiedad: keyof ColumnaTabla, valor: unknown): void {
+  const columnas = [...obtenerColumnas()]
+  const indice = indiceColumna.value
+
+  if (indice >= 0 && indice < columnas.length) {
+    columnas[indice] = { ...columnas[indice], [propiedad]: valor }
+    actualizarColumnas(columnas)
+  }
+}
+
+// Verificar nombre duplicado
+function esNombreColumnaDuplicado(): boolean {
+  if (!columnaActual.value) return false
+
+  const columnas = obtenerColumnas()
+  const nombreActual = columnaActual.value.nombre
+
+  return columnas.some((columna, indice) =>
+    indice !== indiceColumna.value && columna.nombre === nombreActual
+  )
+}
+
+// Actualizar metadato de tabla
+function actualizarMetadato(propiedad: string, valor: unknown): void {
+  if (!props.campo) return
+  const meta = { ...metadatos.value } as Record<string, unknown>
+  meta[propiedad] = valor
+  almacen.actualizarCampo(props.campo.id, { metadatos: meta })
+}
+
+// Actualizar estilo de tabla
+function actualizarEstiloTabla(propiedad: keyof EstiloTabla, valor: unknown): void {
+  if (!props.campo) return
+  const meta = { ...metadatos.value } as Record<string, unknown>
+  const estiloActual = (meta.estiloTabla as EstiloTabla) || {}
+
+  meta.estiloTabla = { ...estiloActual, [propiedad]: valor }
+  almacen.actualizarCampo(props.campo.id, { metadatos: meta })
+}
+
+// Watchers
+watch(() => obtenerColumnas().length, () => {
+  asegurarIndiceValido()
+}, { immediate: true })
+</script>
+
+
 <template>
   <div v-if="campo?.tipo === TipoCampoValor.Tabla">
     <h3 class="text-sm text-color mb-2">Tabla</h3>
@@ -354,197 +547,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import draggable from 'vuedraggable'
-import Select from 'primevue/select'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import InputNumber from 'primevue/inputnumber'
-import Checkbox from 'primevue/checkbox'
-import Tag from 'primevue/tag'
-import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
-import type { EsquemaCampo } from '@/interfaces/Campos'
-import type { ColumnaTabla } from '@/interfaces/Comunes'
-
-type TipoColumna = 'texto' | 'numero' | 'fecha'
-type ModoFormato = 'decimal' | 'currency' | 'percent'
-type EscalaPorcentaje = 'whole' | 'fraction'
-type FuncionAgregado = 'none' | 'sum' | 'avg' | 'count' | 'min' | 'max'
-type TamañoPadding = 'sm' | 'md' | 'lg'
-
-interface EstiloTabla {
-  bordered?: boolean
-  striped?: boolean
-  hover?: boolean
-  padding?: TamañoPadding
-}
-
-interface OpcionSelector {
-  label: string
-  value: string
-}
-
-const props = defineProps<{
-  campo: EsquemaCampo | null
-}>()
-
-const almacen = useAlmacenDisenador()
-
-// Índice de columna seleccionada
-const indiceColumna = ref(0)
-
-// Opciones para selectores
-const tiposColumna: TipoColumna[] = ['texto', 'numero', 'fecha']
-const opcionesModoFormato: ModoFormato[] = ['decimal', 'currency', 'percent']
-const funcionesAgregado: FuncionAgregado[] = ['none', 'sum', 'avg', 'count', 'min', 'max']
-const opcionesPadding: TamañoPadding[] = ['sm', 'md', 'lg']
-
-const opcionesEscalaPorcentaje: OpcionSelector[] = [
-  { label: '15 = 15%', value: 'whole' },
-  { label: '0.15 = 15%', value: 'fraction' }
-]
-
-// Metadatos de la tabla
-const metadatos = computed(() => {
-  if (!props.campo) return {}
-  return props.campo.metadatos || {}
-})
-
-// Estilo de tabla
-const estiloTabla = computed((): EstiloTabla => {
-  const meta = metadatos.value as Record<string, unknown>
-  return (meta.estiloTabla as EstiloTabla) || {}
-})
-
-// Obtener columnas
-function obtenerColumnas(): ColumnaTabla[] {
-  const meta = metadatos.value as Record<string, unknown>
-  const columnas = meta.columnas
-  return Array.isArray(columnas) ? columnas : []
-}
-
-// Proxy para vuedraggable
-const columnasProxy = computed({
-  get: () => obtenerColumnas(),
-  set: (nuevasColumnas: ColumnaTabla[]) => actualizarColumnas(nuevasColumnas)
-})
-
-// Opciones para selector de columnas
-const opcionesColumnas = computed(() => {
-  return obtenerColumnas().map((columna, indice) => ({
-    label: columna.etiqueta || columna.nombre || `Col ${indice + 1}`,
-    value: indice
-  }))
-})
-
-// Columna actualmente seleccionada
-const columnaActual = computed((): ColumnaTabla | null => {
-  const columnas = obtenerColumnas()
-  return columnas[indiceColumna.value] || null
-})
-
-// Actualizar columnas
-function actualizarColumnas(columnas: ColumnaTabla[]): void {
-  if (!props.campo) return
-  const meta = { ...metadatos.value } as Record<string, unknown>
-  meta.columnas = columnas
-  almacen.actualizarCampo(props.campo.id, { metadatos: meta })
-}
-
-// Agregar nueva columna
-function agregarColumna(): void {
-  const columnas = obtenerColumnas()
-  const nuevaColumna: ColumnaTabla = {
-    id: `columna${columnas.length + 1}`,
-    nombre: `columna${columnas.length + 1}`,
-    etiqueta: `Columna ${columnas.length + 1}`,
-    tipo: 'texto',
-    name: `columna${columnas.length + 1}`,
-    label: `Columna ${columnas.length + 1}`,
-    type: 'texto'
-  }
-
-  columnas.push(nuevaColumna)
-  actualizarColumnas(columnas)
-  indiceColumna.value = columnas.length - 1
-}
-
-// Eliminar columna
-function eliminarColumna(indice: number): void {
-  const columnas = obtenerColumnas()
-  if (indice >= 0 && indice < columnas.length) {
-    columnas.splice(indice, 1)
-    actualizarColumnas(columnas)
-    asegurarIndiceValido()
-  }
-}
-
-// Seleccionar columna
-function seleccionarColumna(indice: number): void {
-  indiceColumna.value = indice
-  asegurarIndiceValido()
-}
-
-// Asegurar que el índice es válido
-function asegurarIndiceValido(): void {
-  const columnas = obtenerColumnas()
-  if (indiceColumna.value >= columnas.length) {
-    indiceColumna.value = Math.max(0, columnas.length - 1)
-  }
-}
-
-// Manejar reordenación de columnas
-function manejarReordenColumnas(): void {
-  // vuedraggable ya actualizó columnasProxy
-  asegurarIndiceValido()
-}
-
-// Actualizar propiedad de columna
-function actualizarColumna(propiedad: keyof ColumnaTabla, valor: unknown): void {
-  const columnas = [...obtenerColumnas()]
-  const indice = indiceColumna.value
-
-  if (indice >= 0 && indice < columnas.length) {
-    columnas[indice] = { ...columnas[indice], [propiedad]: valor }
-    actualizarColumnas(columnas)
-  }
-}
-
-// Verificar nombre duplicado
-function esNombreColumnaDuplicado(): boolean {
-  if (!columnaActual.value) return false
-
-  const columnas = obtenerColumnas()
-  const nombreActual = columnaActual.value.nombre
-
-  return columnas.some((columna, indice) =>
-    indice !== indiceColumna.value && columna.nombre === nombreActual
-  )
-}
-
-// Actualizar metadato de tabla
-function actualizarMetadato(propiedad: string, valor: unknown): void {
-  if (!props.campo) return
-  const meta = { ...metadatos.value } as Record<string, unknown>
-  meta[propiedad] = valor
-  almacen.actualizarCampo(props.campo.id, { metadatos: meta })
-}
-
-// Actualizar estilo de tabla
-function actualizarEstiloTabla(propiedad: keyof EstiloTabla, valor: unknown): void {
-  if (!props.campo) return
-  const meta = { ...metadatos.value } as Record<string, unknown>
-  const estiloActual = (meta.estiloTabla as EstiloTabla) || {}
-
-  meta.estiloTabla = { ...estiloActual, [propiedad]: valor }
-  almacen.actualizarCampo(props.campo.id, { metadatos: meta })
-}
-
-// Watchers
-watch(() => obtenerColumnas().length, () => {
-  asegurarIndiceValido()
-}, { immediate: true })
-</script>
-

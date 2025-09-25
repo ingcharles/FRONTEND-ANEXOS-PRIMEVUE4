@@ -1,5 +1,5 @@
 // Servicios para el manejo de campos - Principio de Responsabilidad Única
-import { TIPOS_CAMPO_DE_TEXTO, TIPOS_CON_OPCIONES, TIPOS_CON_OPCIONES_HORIZONAL_VERTICAL, TIPOS_CON_PLACEHOLDER, TIPOS_OPCIONES_ESPANOL } from '@/constantes/Campos'
+import { TipoCampoValor, TIPOS_CAMPO_DE_TEXTO, TIPOS_CON_OPCIONES, TIPOS_CON_OPCIONES_HORIZONAL_VERTICAL, TIPOS_CON_PLACEHOLDER, TIPOS_OPCIONES_ESPANOL } from '@/constantes/Campos'
 import type { TipoCampoEtiqueta } from '@/enumeraciones/Campos'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { EsquemaPagina } from '@/interfaces/Pagina'

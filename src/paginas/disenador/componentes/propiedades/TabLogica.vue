@@ -5,7 +5,6 @@ import type { ReglaLogica } from '@/interfaces/Validacion'
 import { generarId } from '@/utilidades/GeneraId'
 import type { OpcionAccion, OpcionOperador, PropiedadesTabLogica } from '@/interfaces/Propiedades'
 
-
 // Props del componente
 defineProps<PropiedadesTabLogica>()
 
@@ -102,7 +101,7 @@ function esOperadorPersonalizado(operador: ReglaLogica['operador']): boolean {
       <div class="grid align-items-end">
         <!-- Campo objetivo -->
         <div class="col-12 md:col-6 lg:col-3">
-          <label class="font-medium text-sm text-700 font-medium">Campo</label>
+          <label class="font-medium text-sm">Campo</label>
           <PrimeInputText
             v-model="regla.campoCondicionId"
             class="ancho-100 text-sm"
@@ -112,7 +111,7 @@ function esOperadorPersonalizado(operador: ReglaLogica['operador']): boolean {
 
         <!-- Operador de comparación -->
         <div class="col-12 md:col-6 lg:col-3">
-          <label class="font-medium text-sm text-700 font-medium">Operador</label>
+          <label class="font-medium text-sm">Operador</label>
           <PrimeSelect
             v-model="regla.operador"
             :options="opcionesOperadores"
@@ -125,7 +124,7 @@ function esOperadorPersonalizado(operador: ReglaLogica['operador']): boolean {
 
         <!-- Valor de comparación -->
         <div class="col-12 md:col-6 lg:col-3">
-          <label class="font-medium text-sm text-700 font-medium">Valor</label>
+          <label class="font-medium text-sm">Valor</label>
           <PrimeInputText
             :model-value="String(regla.valor || '')"
             @update:model-value="regla.valor = ($event || '') as string | number | boolean | Date"
@@ -136,7 +135,7 @@ function esOperadorPersonalizado(operador: ReglaLogica['operador']): boolean {
 
         <!-- Acción a ejecutar -->
         <div class="col-12 md:col-6 lg:col-3">
-          <label class="font-medium text-sm text-700 font-medium">Acción</label>
+          <label class="font-medium text-sm">Acción</label>
           <PrimeSelect
             v-model="regla.accion"
             :options="opcionesAcciones"
@@ -153,7 +152,7 @@ function esOperadorPersonalizado(operador: ReglaLogica['operador']): boolean {
         v-if="esOperadorPersonalizado(regla.operador)"
         class="mt-3 p-3 surface-50 border-round"
       >
-        <label class="font-medium text-sm text-700 font-medium">
+        <label class="font-medium text-sm">
           <i class="pi pi-code mr-2"></i>Expresión personalizada
         </label>
         <PrimeTextarea

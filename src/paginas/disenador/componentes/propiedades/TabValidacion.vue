@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import Select from 'primevue/select'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import type { ReglaValidacion } from '@/interfaces/Validacion'
 
@@ -174,8 +171,8 @@ function mostrarAyuda(tipo: ReglaValidacion['tipo']): boolean {
     >
       <div class="grid align-items-end gap-3">
         <!-- Tipo de validación -->
-        <div class="sm:col-12 md:col-12 lg:col-4">
-          <label class="font-medium text-sm text-700 font-medium">
+        <div class="col-12">
+          <label class="font-medium text-sm">
             <i class="pi pi-cog mr-2"></i>Tipo de validación
           </label>
           <PrimeSelect
@@ -189,8 +186,8 @@ function mostrarAyuda(tipo: ReglaValidacion['tipo']): boolean {
         </div>
 
         <!-- Campo de configuración -->
-        <div class="col-12 md:col-8">
-          <label class="font-medium text-sm text-700 font-medium">
+        <div class="col-12">
+          <label class="font-medium text-sm">
             <i class="pi pi-pencil mr-2"></i>
             {{ obtenerEtiquetaCampo(regla.tipo) }}
           </label>

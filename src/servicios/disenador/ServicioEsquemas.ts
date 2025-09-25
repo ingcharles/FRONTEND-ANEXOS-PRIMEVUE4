@@ -2,7 +2,7 @@
 import { z } from 'zod'
 import type { EsquemaCampo, MetadatosCampo } from '@/interfaces/Campos'
 import type { ColumnaTabla } from '@/interfaces/Comunes'
-// import { evaluarReglasCampo } from '@/utilidades/logica'
+import { TipoCampoValor } from '@/enumeraciones/Campos'
 import type { ValorDato } from '@/tipos/Comunes'
 
 export interface ServicioEsquemas {
