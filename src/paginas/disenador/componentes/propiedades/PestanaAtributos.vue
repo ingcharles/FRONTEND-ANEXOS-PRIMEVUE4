@@ -170,7 +170,7 @@ const mostrarConfiguracionGrid = computed(() => {
       <!-- Información de depuración (solo en desarrollo) -->
       <div v-if="import.meta.env.DEV" class="debug-info p-3 border-round surface-100">
         <details>
-          <summary class="cursor-pointer text-sm font-medium">
+          <summary class="cursor-pointer texto-sm ">
             <i class="pi pi-code mr-1"></i>
             Información de depuración
           </summary>

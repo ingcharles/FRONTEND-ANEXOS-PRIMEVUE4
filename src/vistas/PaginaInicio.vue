@@ -41,7 +41,7 @@ const caracteristicasPrincipales = ref([
 
     <!-- Características Principales -->
     <div class="mb-8">
-      <h2 class="text-2xl font-semibold text-center mb-6 text-gray-800">
+      <h2 class="text-2xl negrilla text-center mb-6 text-gray-800">
         Características Destacadas
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -60,7 +60,7 @@ const caracteristicasPrincipales = ref([
               :style="{ color: caracteristica.color }"
             ></i>
           </div>
-          <h3 class="text-lg font-semibold text-gray-800 mb-2">
+          <h3 class="text-lg negrilla text-gray-800 mb-2">
             {{ caracteristica.titulo }}
           </h3>
           <p class="text-gray-600">
@@ -80,7 +80,7 @@ const caracteristicasPrincipales = ref([
       </p>
       <router-link
         to="/disenador"
-        class="inline-flex items-center px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors duration-300"
+        class="inline-flex items-center px-6 py-3 bg-white text-blue-600 negrilla rounded-lg hover:bg-gray-100 transition-colors duration-300"
       >
         <i class="pi pi-play mr-2"></i>
         Ir al Diseñador

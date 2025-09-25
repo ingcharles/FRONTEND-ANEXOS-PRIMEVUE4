@@ -286,7 +286,7 @@ window.addEventListener('keydown', manejarAtajos)
             :sort="false"
           >
             <template #item="{ element }">
-              <a v-ripple class="flex items-center pl-4 pr-2 py-2 cursor-pointer group ancho-100 text-sm">
+              <a v-ripple class="flex items-center pl-4 pr-2 py-2 cursor-pointer group ancho-100 texto-sm">
                 <i class="pi pi-grip-vertical p-mr-2" />
                 <i :class="['pi', element.icon, 'group-hover:text-inherit']" />
                 <span class="ml-2">{{ element.label }}</span>
@@ -295,7 +295,7 @@ window.addEventListener('keydown', manejarAtajos)
           </draggable>
         </div>
         <!-- Cabecera de categoría -->
-        <div v-else class="flex items-center px-3 pt-3 pb-2 font-semibold tracking-wide">
+        <div v-else class="flex items-center px-3 pt-3 pb-2 negrilla tracking-wide">
           <i :class="['pi', item.icon]" />
           <span class="ml-2 flex-1">{{ item.label }}</span>
           <span v-if="item.items" class="pi pi-angle-down ml-auto" />

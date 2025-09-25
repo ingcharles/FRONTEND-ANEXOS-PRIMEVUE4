@@ -32,29 +32,29 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
 
 <template>
   <div class="propiedades-basicas p-4 border-round border-1 surface-border">
-    <h3 class="text-lg font-semibold mb-3">Propiedades básicas</h3>
+    <h3 class="text-lg negrilla mb-3">Propiedades básicas</h3>
 
     <!-- Tipo de campo -->
     <div class="field mb-3">
-      <label for="tipo-campo" class="block text-sm font-medium mb-2">Tipo de campo</label>
+      <label for="tipo-campo" class="block texto-sm  mb-2">Tipo de campo</label>
       <PrimeSelect
         id="tipo-campo"
         :model-value="props.campo.tipo"
         :options="[...TIPOS_OPCIONES]"
         option-label="etiqueta"
         option-value="valor"
-        class="ancho-100 text-sm"
+        class="ancho-100 texto-sm"
         @update:model-value="manejarCambioTipo"
       />
     </div>
 
     <!-- Etiqueta -->
     <div class="field mb-3">
-      <label for="etiqueta-campo" class="block text-sm font-medium mb-2">Etiqueta</label>
+      <label for="etiqueta-campo" class="block texto-sm  mb-2">Etiqueta</label>
       <InputText
         id="etiqueta-campo"
         :model-value="props.campo.etiqueta || ''"
-        class="ancho-100 text-sm"
+        class="ancho-100 texto-sm"
         placeholder="Etiqueta del campo"
         @input="(e) => manejarCambioTexto('etiqueta', e)"
       />
@@ -62,11 +62,11 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
 
     <!-- Nombre técnico -->
     <div class="field mb-3">
-      <label for="nombre-campo" class="block text-sm font-medium mb-2">Nombre técnico</label>
+      <label for="nombre-campo" class="block texto-sm  mb-2">Nombre técnico</label>
       <InputText
         id="nombre-campo"
         :model-value="props.campo.nombre || ''"
-        class="ancho-100 text-sm"
+        class="ancho-100 texto-sm"
         placeholder="nombre_campo"
         @input="(e) => manejarCambioTexto('nombre', e)"
       />
@@ -77,11 +77,11 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
 
     <!-- Marcador de posición -->
     <div v-if="soportaPlaceholder(props.campo.tipo)" class="field mb-3">
-      <label for="placeholder-campo" class="block text-sm font-medium mb-2">Marcador de posición</label>
+      <label for="placeholder-campo" class="block texto-sm  mb-2">Marcador de posición</label>
       <InputText
         id="placeholder-campo"
         :model-value="props.campo.marcadorPosicion || ''"
-        class="ancho-100 text-sm"
+        class="ancho-100 texto-sm"
         placeholder="Texto de ayuda para el usuario"
         @input="(e) => manejarCambioTexto('marcadorPosicion', e)"
       />

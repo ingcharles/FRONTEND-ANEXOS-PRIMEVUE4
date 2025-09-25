@@ -65,12 +65,43 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
 </script>
 
 <template>
-  <div class="p-3 grid ancho-100 text-sm" style="min-height: 70vh">
-    <div class="col-12 md:col-2">
+  <div class="p-3 grid ancho-100 texto-sm" style="min-height: 70vh">
+    <div class="col-12 md:col-3 lg:col-2">
       <PanelPaleta />
     </div>
-    <div class="col-12 md:col-8">
-      <div class="flex items-center justify-between mb-2">
+    <div class="col-12 md:col-6 lg:col-8">
+      <!-- <div class="grid mb-2"> -->
+      <!-- Columna izquierda -->
+      <!-- <div class="col-12 lg:col-8"> -->
+      <div class="grid">
+        <div class="col-12 md:col-3 lg:col-2">
+          <PrimeButton label="Añadir página" class="ancho-100" icon="pi pi-plus"
+            @click="almacen.crearPaginaDespuesActual" />
+        </div>
+        <div class="col-12 md:col-3 lg:col-2">
+          <PrimeButton label="Duplicar página" class="ancho-100" icon="pi pi-copy"
+            @click="almacen.duplicarPagina(almacen.indicePaginaActiva)" />
+        </div>
+        <div class="col-12 md:col-3 lg:col-2">
+          <PrimeButton label="Eliminar página" severity="danger" class="ancho-100" icon="pi pi-trash"
+            @click="almacen.confirmarEliminarPagina(almacen.indicePaginaActiva)" />
+        </div>
+      </div>
+      <!-- </div> -->
+
+      <!-- Columna derecha -->
+      <!-- <div class="col-4 sm:col-4">
+          <div class="p-d-flex p-ai-center p-gap-2 p-jc-end">
+            <PrimeButton label="Exportar" icon="pi pi-upload" @click="almacen.exportarJson" />
+            <label class="p-button p-component cursor-pointer">
+              <i class="pi pi-download p-mr-2" />
+              <span>Importar</span>
+              <input type="file" accept="application/json" class="hidden" @change="almacen.manejarImportarArchivo" />
+            </label>
+          </div>
+        </div> -->
+      <!-- </div> -->
+      <!-- <div class="flex items-center justify-between mb-2">
         <div class="flex gap-2 principal">
           <PrimeButton label="Añadir página" icon="pi pi-plus" @click="almacen.crearPaginaDespuesActual"/>
           <PrimeButton label="Duplicar página" icon="pi pi-copy" @click="almacen.duplicarPagina(almacen.indicePaginaActiva)" />
@@ -83,9 +114,8 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
             <span>Importar</span>
             <input type="file" accept="application/json" class="hidden" @change="(e: Event)=> { const input = e.target as HTMLInputElement; const f = input.files?.[0]; if (f) almacen.importarJson(f) }" />
           </label>
-          <!-- <PrimeToggleButton :model-value="almacen.gridSnap" on-label="Grid" off-label="Grid" @update:model-value="(v:boolean)=> (almacen.gridSnap = v)" /> -->
         </div>
-      </div>
+      </div> -->
       <PrimeTabs v-model:value="pestana" class="center-tabs">
         <div class="center-tabs-header">
           <PrimeTabList>
@@ -101,69 +131,44 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
         <PrimeTabPanels>
           <PrimeTabPanel value="disenador">
             <div class="flex justify-between items-center mb-3">
-              <div v-if="totalPaginas>1" class="flex items-center gap-2">
-                <PrimeButton label="Anterior" icon="pi pi-angle-left" :disabled="almacen.indicePaginaActiva===0" @click="async () => { almacen.indicePaginaActiva = Math.max(0, almacen.indicePaginaActiva-1); almacen.seleccionarCampo(null); await nextTick() }" />
+              <div v-if="totalPaginas > 1" class="flex items-center gap-2">
+                <PrimeButton label="Anterior" icon="pi pi-angle-left" :disabled="almacen.indicePaginaActiva === 0"
+                  @click="async () => { almacen.indicePaginaActiva = Math.max(0, almacen.indicePaginaActiva - 1); almacen.seleccionarCampo(null); await nextTick() }" />
 
                 <!-- Título editable -->
                 <div v-if="!editandoTitulo" class="flex items-center gap-2">
-                  <div class="font-semibold cursor-pointer hover:bg-gray-100 px-2 py-1 border-round" @click="iniciarEdicionTitulo">
-                    {{ paginaActual.titulo || ('Página ' + (almacen.indicePaginaActiva+1)) }}
-                    <i class="pi pi-pencil ml-2 text-gray-500 text-sm"></i>
+                  <div class="negrilla cursor-pointer hover:bg-gray-100 px-2 py-1 border-round"
+                    @click="iniciarEdicionTitulo">
+                    {{ paginaActual.titulo || ('Página ' + (almacen.indicePaginaActiva + 1)) }}
+                    <i class="pi pi-pencil ml-2 text-gray-500 texto-sm"></i>
                   </div>
                 </div>
                 <div v-else class="flex items-center gap-2">
-                  <PrimeInputText
-                    v-model="tituloTemporal"
-                    class="titulo-input w-48"
-                    @keydown="manejarTeclasTitulo"
-                    @blur="guardarTitulo"
-                    placeholder="Título de la página"
-                  />
-                  <PrimeButton
-                    icon="pi pi-check"
-                    severity="success"
-                    size="small"
-                    @click="guardarTitulo"
-                  />
-                  <PrimeButton
-                    icon="pi pi-times"
-                    severity="secondary"
-                    size="small"
-                    @click="cancelarEdicionTitulo"
-                  />
+                  <PrimeInputText v-model="tituloTemporal" class="titulo-input w-48" @keydown="manejarTeclasTitulo"
+                    @blur="guardarTitulo" placeholder="Título de la página" />
+                  <PrimeButton icon="pi pi-check" severity="success" size="small" @click="guardarTitulo" />
+                  <PrimeButton icon="pi pi-times" severity="secondary" size="small" @click="cancelarEdicionTitulo" />
                 </div>
 
-                <PrimeButton label="Siguiente" icon-pos="right" icon="pi pi-angle-right" :disabled="almacen.indicePaginaActiva>=almacen.esquemaFormulario.paginas.length-1" @click="async () => { almacen.indicePaginaActiva = Math.min(almacen.esquemaFormulario.paginas.length-1, almacen.indicePaginaActiva+1); almacen.seleccionarCampo(null); await nextTick() }" />
+                <PrimeButton label="Siguiente" icon-pos="right" icon="pi pi-angle-right"
+                  :disabled="almacen.indicePaginaActiva >= almacen.esquemaFormulario.paginas.length - 1"
+                  @click="async () => { almacen.indicePaginaActiva = Math.min(almacen.esquemaFormulario.paginas.length - 1, almacen.indicePaginaActiva + 1); almacen.seleccionarCampo(null); await nextTick() }" />
               </div>
 
               <!-- Título editable para página única -->
               <div v-else class="flex items-center gap-2">
                 <div v-if="!editandoTitulo" class="flex items-center gap-2">
-                  <div class="font-semibold cursor-pointer hover:bg-gray-100 px-2 py-1 border-round" @click="iniciarEdicionTitulo">
-                    {{ paginaActual.titulo || ('Página ' + (almacen.indicePaginaActiva+1)) }}
-                    <i class="pi pi-pencil ml-2 text-gray-500 text-sm"></i>
+                  <div class="negrilla cursor-pointer hover:bg-gray-100 px-2 py-1 border-round"
+                    @click="iniciarEdicionTitulo">
+                    {{ paginaActual.titulo || ('Página ' + (almacen.indicePaginaActiva + 1)) }}
+                    <i class="pi pi-pencil ml-2 text-gray-500 texto-sm"></i>
                   </div>
                 </div>
                 <div v-else class="flex items-center gap-2">
-                  <PrimeInputText
-                    v-model="tituloTemporal"
-                    class="titulo-input w-48"
-                    @keydown="manejarTeclasTitulo"
-                    @blur="guardarTitulo"
-                    placeholder="Título de la página"
-                  />
-                  <PrimeButton
-                    icon="pi pi-check"
-                    severity="success"
-                    size="small"
-                    @click="guardarTitulo"
-                  />
-                  <PrimeButton
-                    icon="pi pi-times"
-                    severity="secondary"
-                    size="small"
-                    @click="cancelarEdicionTitulo"
-                  />
+                  <PrimeInputText v-model="tituloTemporal" class="titulo-input w-48" @keydown="manejarTeclasTitulo"
+                    @blur="guardarTitulo" placeholder="Título de la página" />
+                  <PrimeButton icon="pi pi-check" severity="success" size="small" @click="guardarTitulo" />
+                  <PrimeButton icon="pi pi-times" severity="secondary" size="small" @click="cancelarEdicionTitulo" />
                 </div>
               </div>
 
@@ -180,17 +185,13 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
         </PrimeTabPanels>
       </PrimeTabs>
     </div>
-    <div class="col-12 md:col-2">
+    <div class="col-12 md:col-3 lg:col-2">
       <Propiedades />
     </div>
   </div>
 
   <!-- Modal de confirmación para eliminar página -->
-  <ModalConfirmar
-    :visible="almacen.mostrarModalEliminarPagina"
+  <ModalConfirmar :visible="almacen.mostrarModalEliminarPagina"
     message="¿Estás seguro de que deseas eliminar esta página? Esta acción no se puede deshacer."
-    @confirm="almacen.ejecutarEliminarPagina"
-    @cancel="almacen.cancelarEliminarPagina"
-  />
+    @confirm="almacen.ejecutarEliminarPagina" @cancel="almacen.cancelarEliminarPagina" />
 </template>
-

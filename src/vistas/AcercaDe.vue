@@ -131,8 +131,8 @@ const estadisticasProyecto = ref([
 
     <!-- Estadísticas del Proyecto -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
-      <div 
-        v-for="estadistica in estadisticasProyecto" 
+      <div
+        v-for="estadistica in estadisticasProyecto"
         :key="estadistica.etiqueta"
         class="bg-white rounded-lg shadow-md p-6 text-center border-l-4 border-blue-500"
       >
@@ -149,8 +149,8 @@ const estadisticasProyecto = ref([
         Stack Tecnológico
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div 
-          v-for="tech in tecnologias" 
+        <div
+          v-for="tech in tecnologias"
           :key="tech.nombre"
           class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 border-t-4"
           :style="{ borderTopColor: tech.color }"
@@ -158,18 +158,18 @@ const estadisticasProyecto = ref([
           <div class="flex items-center mb-4">
             <i :class="tech.icono" class="text-2xl mr-3" :style="{ color: tech.color }"></i>
             <div>
-              <h3 class="text-lg font-semibold text-gray-800">{{ tech.nombre }}</h3>
-              <span class="text-sm text-gray-500">v{{ tech.version }}</span>
+              <h3 class="text-lg negrilla text-gray-800">{{ tech.nombre }}</h3>
+              <span class="texto-sm text-gray-500">v{{ tech.version }}</span>
             </div>
           </div>
           <p class="text-gray-600 mb-4">{{ tech.descripcion }}</p>
-          <a 
-            :href="tech.url" 
-            target="_blank" 
-            class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+          <a
+            :href="tech.url"
+            target="_blank"
+            class="inline-flex items-center text-blue-600 hover:text-blue-800 "
           >
             Documentación
-            <i class="pi pi-external-link ml-1 text-sm"></i>
+            <i class="pi pi-external-link ml-1 texto-sm"></i>
           </a>
         </div>
       </div>
@@ -182,19 +182,19 @@ const estadisticasProyecto = ref([
         Características Principales
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div 
-          v-for="caracteristica in caracteristicas" 
+        <div
+          v-for="caracteristica in caracteristicas"
           :key="caracteristica.titulo"
           class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300"
         >
           <div class="flex items-center mb-4">
-            <div 
+            <div
               class="w-12 h-12 rounded-full flex items-center justify-center mr-4"
               :style="{ backgroundColor: caracteristica.color + '20' }"
             >
               <i :class="caracteristica.icono" class="text-xl" :style="{ color: caracteristica.color }"></i>
             </div>
-            <h3 class="text-lg font-semibold text-gray-800">{{ caracteristica.titulo }}</h3>
+            <h3 class="text-lg negrilla text-gray-800">{{ caracteristica.titulo }}</h3>
           </div>
           <p class="text-gray-600">{{ caracteristica.descripcion }}</p>
         </div>
@@ -211,7 +211,7 @@ const estadisticasProyecto = ref([
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <!-- Principios SOLID -->
           <div>
-            <h3 class="text-xl font-semibold mb-4 text-gray-800">
+            <h3 class="text-xl negrilla mb-4 text-gray-800">
               <i class="pi pi-shield text-blue-500 mr-2"></i>
               Principios SOLID
             </h3>
@@ -245,11 +245,11 @@ const estadisticasProyecto = ref([
 
           <!-- Estructura del Proyecto -->
           <div>
-            <h3 class="text-xl font-semibold mb-4 text-gray-800">
+            <h3 class="text-xl negrilla mb-4 text-gray-800">
               <i class="pi pi-folder text-yellow-500 mr-2"></i>
               Estructura de Carpetas
             </h3>
-            <div class="bg-gray-50 rounded-lg p-4 font-mono text-sm">
+            <div class="bg-gray-50 rounded-lg p-4 font-mono texto-sm">
               <div class="text-blue-600">src/</div>
               <div class="ml-2 text-green-600">├── vistas/ <span class="text-gray-500">(views en español)</span></div>
               <div class="ml-2 text-green-600">├── componentes/ <span class="text-gray-500">(components)</span></div>
@@ -269,7 +269,7 @@ const estadisticasProyecto = ref([
       <p class="text-gray-600">
         Desarrollado con ❤️ usando Vue.js 3, TypeScript y PrimeVue 4
       </p>
-      <p class="text-sm text-gray-500 mt-2">
+      <p class="texto-sm text-gray-500 mt-2">
         Siguiendo principios SOLID y mejores prácticas de desarrollo
       </p>
     </div>

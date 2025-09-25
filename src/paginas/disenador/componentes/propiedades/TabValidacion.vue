@@ -221,7 +221,7 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
     <div class="flex align-items-center justify-content-between mb-4">
       <div class="flex align-items-center gap-2">
         <i class="pi pi-shield text-primary text-xl"></i>
-        <h3 class="m-0 text-lg font-semibold text-700">Validaciones</h3>
+        <h3 class="m-0 text-lg negrilla text-700">Validaciones</h3>
         <AyudaValidacion />
       </div>
 
@@ -270,8 +270,8 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
                 size="large"
               />
               <div class="flex-1">
-                <h5 class="m-0 text-700 font-semibold">{{ obtenerConfigTipo(regla.tipo).titulo }}</h5>
-                <p class="m-0 text-500 text-sm">{{ obtenerConfigTipo(regla.tipo).descripcion }}</p>
+                <h5 class="m-0 text-700 negrilla">{{ obtenerConfigTipo(regla.tipo).titulo }}</h5>
+                <p class="m-0 text-500 texto-sm">{{ obtenerConfigTipo(regla.tipo).descripcion }}</p>
               </div>
               <PrimeButton
                 icon="pi pi-trash"
@@ -288,7 +288,7 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
           <template #content>
             <div class="p-3">
               <div class="field">
-                <label class="font-medium text-sm text-700 mb-2 block">
+                <label class="texto-sm text-700 mb-2 block">
                   {{ regla.tipo === 'requerido' ? 'Mensaje de error' : 'Valor de configuración' }}
                 </label>
 
@@ -306,7 +306,7 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
 
                 <!-- Ejemplos para algunos tipos -->
                 <div v-if="obtenerConfigTipo(regla.tipo).ejemplos" class="mt-3">
-                  <small class="text-600 font-medium block mb-2">Ejemplos comunes:</small>
+                  <small class="text-600  block mb-2">Ejemplos comunes:</small>
                   <div class="flex flex-wrap gap-1">
                     <PrimeTag
                       v-for="ejemplo in obtenerConfigTipo(regla.tipo).ejemplos"
@@ -322,7 +322,7 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
 
                 <!-- Campo de mensaje personalizado (para validaciones no-requerido) -->
                 <div v-if="regla.tipo !== 'requerido'" class="field mt-3">
-                  <label class="font-medium text-sm text-700 mb-2 block">
+                  <label class="texto-sm text-700 mb-2 block">
                     Mensaje de error personalizado (opcional)
                   </label>
 
@@ -369,8 +369,8 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
                   :style="{ backgroundColor: `var(--${config.color}-500)`, color: 'white' }"
                 />
                 <div class="flex-1">
-                  <h5 class="m-0 text-700 font-semibold">{{ config.titulo }}</h5>
-                  <p class="m-0 text-500 text-sm">{{ config.descripcion }}</p>
+                  <h5 class="m-0 text-700 negrilla">{{ config.titulo }}</h5>
+                  <p class="m-0 text-500 texto-sm">{{ config.descripcion }}</p>
                 </div>
                 <i class="pi pi-chevron-right text-400"></i>
               </div>

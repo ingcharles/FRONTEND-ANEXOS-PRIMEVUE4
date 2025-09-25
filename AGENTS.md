@@ -49,7 +49,7 @@ assets/
 - Accesibilidad: etiquetas ARIA, foco manejado, contraste, navegación por teclado.
 - Estilos con timewindcss/primeui y variables CSS; evita estilos inline.
 - Rutas y componentes pesados con carga diferida (code splitting).
-Variables y funciones en español
+  Variables y funciones en español
 
 ## Uso estilos u componentes
 
@@ -66,23 +66,23 @@ Variables y funciones en español
 
 ```ts
 // src/app/main.ts
-import { createApp } from 'vue'
-import App from './App.vue'
-import PrimeVue from 'primevue/config'
-import Button from 'primevue/button'
+import { createApp } from "vue";
+import App from "./App.vue";
+import PrimeVue from "primevue/config";
+import Button from "primevue/button";
 
 //import Aura from '@primevue/themes/aura'
-import 'primeicons/primeicons.css'
-import 'primeflex/primeflex.css'
+import "primeicons/primeicons.css";
+import "primeflex/primeflex.css";
 
-const app = createApp(App)
+const app = createApp(App);
 /*app.use(PrimeVue, {
  theme: {
   preset: Aura
  }
 })*/
-app.component('Button', Button)
-app.mount('#app')
+app.component("Button", Button);
+app.mount("#app");
 ```
 
 ## Patrones de componentes (SFC) con TypeScript
@@ -90,17 +90,17 @@ app.mount('#app')
 ```vue
 <!-- src/components/nombreModulo/componentes/Saludo.vue -->
 <script setup lang="ts">
-const props = defineProps<{ mensaje: string }>()
-const emit = defineEmits<{ (e: 'clicked'): void }>()
+const props = defineProps<{ mensaje: string }>();
+const emit = defineEmits<{ (e: "clicked"): void }>();
 
 function onClick() {
-  emit('clicked')
+  emit("clicked");
 }
 </script>
 
 <template>
   <div class="p-4 surface-card border-round shadow-1">
-    <p class="text-2xl font-medium m-0">{{ props.mensaje }}</p>
+    <p class="text-2xl  m-0">{{ props.mensaje }}</p>
     <PrimeButton label="Haz clic" @click="onClick" />
   </div>
 </template>
@@ -115,15 +115,17 @@ function onClick() {
 
 ```ts
 // src/stores/contador.ts
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { defineStore } from "pinia";
+import { ref, computed } from "vue";
 
-export const useContador = defineStore('contador', () => {
-  const valor = ref(0)
-  const doble = computed(() => valor.value * 2)
-  function incrementar(n = 1) { valor.value += n }
-  return { valor, doble, incrementar }
-})
+export const useContador = defineStore("contador", () => {
+  const valor = ref(0);
+  const doble = computed(() => valor.value * 2);
+  function incrementar(n = 1) {
+    valor.value += n;
+  }
+  return { valor, doble, incrementar };
+});
 ```
 
 ## Servicios y composables de datos
@@ -133,37 +135,40 @@ export const useContador = defineStore('contador', () => {
 
 ```ts
 // src/services/nombreModulo/servicios/usuario.service.ts
-export interface Usuario { id: number; nombre: string }
+export interface Usuario {
+  id: number;
+  nombre: string;
+}
 
 export async function getUsuarios(api = fetch): Promise<Usuario[]> {
-  const res = await api('/api/users')
-  if (!('ok' in res) || !(res as any).ok) throw new Error('Error de red')
-  return res.json()
+  const res = await api("/api/users");
+  if (!("ok" in res) || !(res as any).ok) throw new Error("Error de red");
+  return res.json();
 }
 
 // src/composables/useDisenador.ts
-import { ref } from 'vue'
-import type { Disenador } from '@/types/disenador'
-import { getDisenador } from '@/services/disenador/servicios/disenador.service'
+import { ref } from "vue";
+import type { Disenador } from "@/types/disenador";
+import { getDisenador } from "@/services/disenador/servicios/disenador.service";
 
 export function Disenador(api = getDisenador) {
-  const disenador = ref<Disenador[]>([])
-  const cargando = ref(false)
-  const error = ref<string | null>(null)
+  const disenador = ref<Disenador[]>([]);
+  const cargando = ref(false);
+  const error = ref<string | null>(null);
 
   async function cargar() {
-    cargando.value = true
-    error.value = null
+    cargando.value = true;
+    error.value = null;
     try {
-      disenador.value = await api()
+      disenador.value = await api();
     } catch (e: any) {
-      error.value = e?.message ?? 'Error'
+      error.value = e?.message ?? "Error";
     } finally {
-      cargando.value = false
+      cargando.value = false;
     }
   }
 
-  return { usuarios, cargando, error, cargar }
+  return { usuarios, cargando, error, cargar };
 }
 ```
 
@@ -173,84 +178,87 @@ export function Disenador(api = getDisenador) {
 
 ```ts
 // vitest.config.ts
-import { defineConfig } from 'vitest/config'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from "vitest/config";
+import vue from "@vitejs/plugin-vue";
 
 export default defineConfig({
   plugins: [vue()],
   test: {
-    environment: 'jsdom',
-    setupFiles: './test/setup.ts',
+    environment: "jsdom",
+    setupFiles: "./test/setup.ts",
     globals: true,
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'html'],
+      provider: "v8",
+      reporter: ["text", "html"],
       thresholds: { lines: 90, functions: 90, branches: 85, statements: 90 },
     },
   },
-})
+});
 ```
 
 ```ts
 // test/setup.ts
-import { config } from '@vue/test-utils'
-import PrimeVue from 'primevue/config'
-import Button from 'primevue/button'
-import { beforeEach } from 'vitest'
-import { createPinia, setActivePinia } from 'pinia'
+import { config } from "@vue/test-utils";
+import PrimeVue from "primevue/config";
+import Button from "primevue/button";
+import { beforeEach } from "vitest";
+import { createPinia, setActivePinia } from "pinia";
 
-config.global.plugins = [[PrimeVue, { ripple: false }]]
-config.global.components = { Button }
-config.global.stubs = { transition: false, 'router-link': { template: '<a><slot /></a>' } }
+config.global.plugins = [[PrimeVue, { ripple: false }]];
+config.global.components = { Button };
+config.global.stubs = {
+  transition: false,
+  "router-link": { template: "<a><slot /></a>" },
+};
 
 beforeEach(() => {
-  setActivePinia(createPinia())
-})
+  setActivePinia(createPinia());
+});
 ```
 
 ### Prueba de componente con PrimeVue
 
 ```ts
 // src/components/__tests__/Saludo.spec.ts
-import { mount } from '@vue/test-utils'
-import Saludo from '@/components/Saludo.vue'
+import { mount } from "@vue/test-utils";
+import Saludo from "@/components/Saludo.vue";
 
 it('emite "clicked" al pulsar el botón', async () => {
-  const wrapper = mount(Saludo, { props: { mensaje: 'Hola' } })
-  await wrapper.find('button').trigger('click')
-  expect(wrapper.emitted('clicked')).toBeTruthy()
-})
+  const wrapper = mount(Saludo, { props: { mensaje: "Hola" } });
+  await wrapper.find("button").trigger("click");
+  expect(wrapper.emitted("clicked")).toBeTruthy();
+});
 ```
 
 ### Prueba de almacen Pinia
 
 ```ts
 // src/stores/__tests__/contador.spec.ts
-import { useContador } from '@/stores/contador'
+import { useContador } from "@/stores/contador";
 
-it('incrementa correctamente', () => {
-  const almacen = useContador()
-  almacen.incrementar(2)
-  expect(almacen.valor).toBe(2)
-  expect(almacen.doble).toBe(4)
-})
+it("incrementa correctamente", () => {
+  const almacen = useContador();
+  almacen.incrementar(2);
+  expect(almacen.valor).toBe(2);
+  expect(almacen.doble).toBe(4);
+});
 ```
 
 ### Prueba de composable con mock
 
 ```ts
 // src/composables/__tests__/useUsuarios.spec.ts
-import { useUsuarios } from '@/composables/useUsuarios'
-import { vi } from 'vitest'
+import { useUsuarios } from "@/composables/useUsuarios";
+import { vi } from "vitest";
 
-it('carga usuarios desde el servicio', async () => {
-  const mockApi = vi.fn().mockResolvedValue([{ id: 1, nombre: 'Ada' }])
-  const { usuarios, cargando, cargar } = useUsuarios(mockApi as any)
-  const prom = cargar()
-  expect(cargando.value).toBe(true)
-  await prom
-  expect(usuarios.value).toHaveLength(1)
-})
+it("carga usuarios desde el servicio", async () => {
+  const mockApi = vi.fn().mockResolvedValue([{ id: 1, nombre: "Ada" }]);
+  const { usuarios, cargando, cargar } = useUsuarios(mockApi as any);
+  const prom = cargar();
+  expect(cargando.value).toBe(true);
+  await prom;
+  expect(usuarios.value).toHaveLength(1);
+});
 ```
 
 ### Comandos útiles
@@ -298,10 +306,12 @@ it('carga usuarios desde el servicio', async () => {
 ```vue
 <!-- src/components/usuarios/componentes/InputNombre.vue -->
 <script setup lang="ts">
-import { ref } from 'vue'
-const nombre = defineModel<string>({ local: true })
-const emit = defineEmits<{ (e: 'submit', value: string): void }>()
-function enviar() { emit('submit', nombre.value?.trim() || '') }
+import { ref } from "vue";
+const nombre = defineModel<string>({ local: true });
+const emit = defineEmits<{ (e: "submit", value: string): void }>();
+function enviar() {
+  emit("submit", nombre.value?.trim() || "");
+}
 </script>
 
 <template>
@@ -314,19 +324,19 @@ function enviar() { emit('submit', nombre.value?.trim() || '') }
 
 ```ts
 // src/tests/InputNombre.spec.ts
-import { mount } from '@vue/test-utils'
-import InputNombre from '@/components/InputNombre.vue'
-import InputText from 'primevue/inputtext'
-import PrimeVue from 'primevue/config'
+import { mount } from "@vue/test-utils";
+import InputNombre from "@/components/InputNombre.vue";
+import InputText from "primevue/inputtext";
+import PrimeVue from "primevue/config";
 
-it('Debería emitir submit con el valor', async () => {
+it("Debería emitir submit con el valor", async () => {
   const wrapper = mount(InputNombre, {
     global: { plugins: [[PrimeVue, {}]], components: { InputText } },
-  })
-  await wrapper.find('input').setValue('Grace')
-  await wrapper.find('button').trigger('click')
-  expect(wrapper.emitted('submit')?.[0][0]).toBe('Grace')
-})
+  });
+  await wrapper.find("input").setValue("Grace");
+  await wrapper.find("button").trigger("click");
+  expect(wrapper.emitted("submit")?.[0][0]).toBe("Grace");
+});
 ```
 
 ## Cómo empezar (local)

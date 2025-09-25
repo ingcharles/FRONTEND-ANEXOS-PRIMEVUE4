@@ -154,29 +154,25 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
 </script>
 
 <template>
-  <div
-    ref="elementoRaiz"
-    class="border-round p-2 surface-card border-1 relative handler-mover"
-    :class="{ 'border-primary border-2': seleccionado }"
-    role="button"
-    tabindex="0"
-    @click="seleccionar"
-  >
+  <div ref="elementoRaiz" class="border-round p-2 surface-card border-1 relative handler-mover"
+    :class="{ 'border-primary border-2': seleccionado }" role="button" tabindex="0" @click="seleccionar">
     <!-- Badge informativo (superior derecha) con dos columnas: texto izquierda, acciones derecha -->
-    <div v-if="seleccionado" class="info-badge">
-      <PrimeTag class="text-xs px-1 py-1 pointer-events-auto min-w-64" severity="primary">
-        <div class="grid ancho-100 text-sm align-items-start">
+    <div v-if="seleccionado" class="informacion-redimension">
+      <PrimeTag class="text-xs px-1 py-1 pointer-events-auto informacion-redimension-tag" severity="primary">
+        <div class="grid ancho-100 align-items-start">
           <!-- Columna izquierda (8/12): textos -->
-          <div class="col-8 flex flex-column gap-1 text-[10px]">
-            <span class="font-medium">{{ `${campo.tipo || campo.etiqueta}: ${campo.id}` }}</span>
-            <span class="font-medium">{{ `${punto.toUpperCase()}: ${columnaActual} Cols` }}</span>
-            <span class="font-medium text-red-500" v-if="campo.tipo==='panel'">Elementos: {{ conteoHijos }}</span>
-            <span class="font-medium" v-if="ServicioCampos.soportaOpciones(campo.tipo)">Opciones: {{ conteoOpciones }}</span>
+          <div class="col-8 ">
+            <!-- <span >{{ `${campo.tipo || campo.etiqueta}: ${campo.id}` }}</span> -->
+            <span class="titulo">{{ `${punto}: ${columnaActual} Columnas` }}</span>
+            <span class="color-rojo" v-if="campo.tipo === 'panel'">Elementos: {{ conteoHijos }}</span>
+            <span v-if="ServicioCampos.soportaOpciones(campo.tipo)">Opciones: {{ conteoOpciones }}</span>
           </div>
           <!-- Columna derecha (4/12): acciones -->
-          <div class="col-4 flex justify-content-end">
-            <PrimeButton icon="pi pi-copy" text rounded size="small" class="p-0" title="Duplicar" @click.stop="almacen.duplicarCampo(campo.id)" />
-            <PrimeButton icon="pi pi-trash" text rounded size="small" class="p-0" severity="danger" title="Eliminar" @click.stop="almacen.confirmarEliminarCampo(campo.id)" />
+          <div class="col-4 flex justify-content-end gap-1 pb-0">
+            <PrimeButton icon="pi pi-copy" rounded size="small" class="boton-pequenio" severity="info" title="Duplicar"
+              @click.stop="almacen.duplicarCampo(campo.id)" />
+            <PrimeButton icon="pi pi-trash" rounded size="small" class="boton-pequenio" severity="info" title="Eliminar"
+              @click.stop="almacen.confirmarEliminarCampo(campo.id)" />
           </div>
         </div>
       </PrimeTag>
@@ -184,76 +180,55 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
 
     <!-- Render simple de ejemplo -->
     <div>
-      <template v-if="campo.tipo===TipoCampoValor.Texto || campo.tipo===TipoCampoValor.Correo || campo.tipo===TipoCampoValor.Contrasena">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
-        <PrimeInputText
-          :model-value="valorActualTexto"
-          :placeholder="campo.marcadorPosicion"
-          class="ancho-100 text-sm"
-          :disabled="campo.deshabilitado"
-          :readonly="campo.soloLectura"
-        />
+      <template
+        v-if="campo.tipo === TipoCampoValor.Texto || campo.tipo === TipoCampoValor.Correo || campo.tipo === TipoCampoValor.Contrasena">
+        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
+        <PrimeInputText :model-value="valorActualTexto" :placeholder="campo.marcadorPosicion" class="ancho-100 texto-sm"
+          :disabled="campo.deshabilitado" :readonly="campo.soloLectura" />
       </template>
-      <template v-else-if="campo.tipo===TipoCampoValor.Fecha">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
-        <PrimeInputText
-          class="ancho-100 text-sm"
-          :model-value="(valorActual instanceof Date) ? valorActual : (typeof valorActual==='string' && valorActual ? new Date(valorActual) : undefined)"
-          :disabled="campo.deshabilitado"
-        />
+      <template v-else-if="campo.tipo === TipoCampoValor.Fecha">
+        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
+        <PrimeInputText class="ancho-100 texto-sm"
+          :model-value="(valorActual instanceof Date) ? valorActual : (typeof valorActual === 'string' && valorActual ? new Date(valorActual) : undefined)"
+          :disabled="campo.deshabilitado" />
       </template>
-      <template v-else-if="campo.tipo===TipoCampoValor.Hora">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
-        <PrimeDatePicker
-          time-only
-          hour-format="24"
-          class="ancho-100 text-sm"
-          :model-value="(typeof valorActual==='string' && /^([01]?\d|2[0-3]):([0-5]\d)$/.test(valorActual as any)) ? (()=>{ const [hh,mm] = String(valorActual).split(':'); const d = new Date(); d.setHours(Number(hh), Number(mm), 0, 0); return d; })() : undefined"
-          :disabled="campo.deshabilitado"
-        />
+      <template v-else-if="campo.tipo === TipoCampoValor.Hora">
+        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
+        <PrimeDatePicker time-only hour-format="24" class="ancho-100 texto-sm"
+          :model-value="(typeof valorActual === 'string' && /^([01]?\d|2[0-3]):([0-5]\d)$/.test(valorActual as any)) ? (() => { const [hh, mm] = String(valorActual).split(':'); const d = new Date(); d.setHours(Number(hh), Number(mm), 0, 0); return d; })() : undefined"
+          :disabled="campo.deshabilitado" />
       </template>
-      <template v-else-if="campo.tipo===TipoCampoValor.AreaTexto">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
-        <PrimeTextarea
-          :model-value="valorActualTexto"
-          :placeholder="campo.marcadorPosicion"
-          class="ancho-100 text-sm"
-          :disabled="campo.deshabilitado"
-          :readonly="campo.soloLectura"
-        />
+      <template v-else-if="campo.tipo === TipoCampoValor.AreaTexto">
+        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
+        <PrimeTextarea :model-value="valorActualTexto" :placeholder="campo.marcadorPosicion" class="ancho-100 texto-sm"
+          :disabled="campo.deshabilitado" :readonly="campo.soloLectura" />
       </template>
-      <template v-else-if="campo.tipo===TipoCampoValor.Seleccion">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
-        <PrimeSelect
-          class="ancho-100 text-sm"
+      <template v-else-if="campo.tipo === TipoCampoValor.Seleccion">
+        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
+        <PrimeSelect class="ancho-100 texto-sm"
           :options="(campo.metadatos?.opciones as Array<{ etiqueta: string; valor: unknown }>) || []"
-          option-label="etiqueta"
-          option-value="valor"
-          :model-value="valorActual"
-          :disabled="campo.deshabilitado || (Boolean((campo.metadatos as any)?.dependencia?.deshabilitarHastaValor) && !String((campo.metadatos as any)?.dependencia?.campoPadre || '').split(',').map((s:string)=>s.trim()).filter(Boolean).every((padre: string) => {
+          option-label="etiqueta" option-value="valor" :model-value="valorActual" :disabled="campo.deshabilitado || (Boolean((campo.metadatos as any)?.dependencia?.deshabilitarHastaValor) && !String((campo.metadatos as any)?.dependencia?.campoPadre || '').split(',').map((s: string) => s.trim()).filter(Boolean).every((padre: string) => {
             const pid = almacen.paginaActiva?.id ?? almacen.esquemaFormulario.paginas[almacen.indicePaginaActiva]?.id
             return pid ? almacen.obtenerValoresPagina(pid)[padre] : undefined
-          }))"
-        />
+          }))" />
       </template>
-      <template v-else-if="campo.tipo===TipoCampoValor.Numero">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
-        <PrimeInputNumber
-          class="ancho-100 text-sm"
-          :model-value="(valorActualTexto!=null && valorActualTexto!=='' && !Number.isNaN(Number(valorActualTexto))) ? Number(valorActualTexto) : undefined"
-          :placeholder="campo.marcadorPosicion"
-          :disabled="campo.deshabilitado"
-          :readonly="campo.soloLectura"
-        />
+      <template v-else-if="campo.tipo === TipoCampoValor.Numero">
+        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
+        <PrimeInputNumber class="ancho-100 texto-sm"
+          :model-value="(valorActualTexto != null && valorActualTexto !== '' && !Number.isNaN(Number(valorActualTexto))) ? Number(valorActualTexto) : undefined"
+          :placeholder="campo.marcadorPosicion" :disabled="campo.deshabilitado" :readonly="campo.soloLectura" />
       </template>
-      <template v-else-if="campo.tipo===TipoCampoValor.Casilla">
-        <template v-if="Array.isArray((campo.metadatos as any)?.opciones) && ((campo.metadatos as any)?.opciones?.length||0) > 0">
-          <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
+      <template v-else-if="campo.tipo === TipoCampoValor.Casilla">
+        <template
+          v-if="Array.isArray((campo.metadatos as any)?.opciones) && ((campo.metadatos as any)?.opciones?.length || 0) > 0">
+          <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo">
+              *</span></label>
           <div :class="[
             'flex',
-            ((campo.metadatos as any)?.layout==='horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')
+            ((campo.metadatos as any)?.layout === 'horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')
           ]">
-            <label v-for="op in ((campo.metadatos?.opciones as any[])||[])" :key="String(op.valor)" class="inline-flex align-items-center gap-2 flex-shrink-0">
+            <label v-for="op in ((campo.metadatos?.opciones as any[]) || [])" :key="String(op.valor)"
+              class="inline-flex align-items-center gap-2 flex-shrink-0">
               <PrimeCheckbox :input-id="String(op.valor)" :value="op.valor" :model-value="[]" disabled />
               <span>{{ op.etiqueta }}</span>
             </label>
@@ -262,70 +237,74 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
         <template v-else>
           <div class="flex align-items-center gap-2">
             <PrimeCheckbox :binary="true" :model-value="Boolean(valorActual)" :disabled="campo.deshabilitado" />
-            <label class="mb-0">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
+            <label class="mb-0">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
           </div>
         </template>
       </template>
-      <template v-else-if="campo.tipo===TipoCampoValor.Radio">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
+      <template v-else-if="campo.tipo === TipoCampoValor.Radio">
+        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
         <div :class="[
           'flex',
-          ((campo.metadatos as any)?.layout==='horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')
+          ((campo.metadatos as any)?.layout === 'horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')
         ]">
-          <label
-            v-for="op in ((campo.metadatos?.opciones as Array<{ etiqueta: string; valor: unknown }>) || [])"
-            :key="String(op.valor)"
-            class="inline-flex align-items-center gap-2 flex-shrink-0"
-          >
-            <PrimeRadioButton :input-id="String(op.valor)" :value="op.valor" :name="campo.nombre || ('radio_'+campo.id)" :model-value="valorActual" :disabled="campo.deshabilitado" />
+          <label v-for="op in ((campo.metadatos?.opciones as Array<{ etiqueta: string; valor: unknown }>) || [])"
+            :key="String(op.valor)" class="inline-flex align-items-center gap-2 flex-shrink-0">
+            <PrimeRadioButton :input-id="String(op.valor)" :value="op.valor"
+              :name="campo.nombre || ('radio_' + campo.id)" :model-value="valorActual"
+              :disabled="campo.deshabilitado" />
             <span>{{ op.etiqueta }}</span>
           </label>
         </div>
       </template>
-      <template v-else-if="campo.tipo===TipoCampoValor.Etiqueta">
+      <template v-else-if="campo.tipo === TipoCampoValor.Etiqueta">
         <div class="text-muted-color">{{ campo.etiqueta }}</div>
       </template>
-      <template v-else-if="campo.tipo===TipoCampoValor.Divisor">
-        <PrimeDivider />
+      <template v-else-if="campo.tipo === TipoCampoValor.Divisor">
+        <PrimeDivider class="my-3" />
       </template>
-      <template v-else-if="campo.tipo===TipoCampoValor.Boton">
+      <template v-else-if="campo.tipo === TipoCampoValor.Boton">
         <PrimeButton :label="campo.etiqueta || 'Botón'" />
       </template>
-      <template v-else-if="campo.tipo===TipoCampoValor.Tabla">
+      <template v-else-if="campo.tipo === TipoCampoValor.Tabla">
         <div class="border rounded-border p-2">
-          <div class="font-semibold mb-2">Tabla</div>
+          <div class="negrilla mb-2">Tabla</div>
           <div class="overflow-auto">
-            <table class="ancho-100 text-sm text-sm">
+            <table class="ancho-100 texto-sm texto-sm">
               <thead>
                 <tr>
-                  <th v-for="col in ((campo.metadatos as any)?.columnas||[])" :key="col.name" class="text-left p-2 border-bottom-1 surface-border">
+                  <th v-for="col in ((campo.metadatos as any)?.columnas || [])" :key="col.name"
+                    class="text-left p-2 border-bottom-1 surface-border">
                     {{ col.label || col.name }}
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(fila, indice) in Array.from({ length: Number((campo.metadatos as any)?.filas || 1) })" :key="indice">
-                  <td v-for="col in ((campo.metadatos as any)?.columnas||[])" :key="col.name" class="p-2">
-                    <PrimeInputText v-if="col.tipo===TipoCampoValor.Texto" class="ancho-100 text-sm" disabled placeholder="Texto" />
-                    <PrimeInputNumber v-else-if="col.tipo===TipoCampoValor.Numero" class="ancho-100 text-sm" disabled placeholder="0" />
-                    <PrimeDatePicker v-else-if="col.tipo===TipoCampoValor.Fecha" class="ancho-100 text-sm" disabled />
+                <tr v-for="(fila, indice) in Array.from({ length: Number((campo.metadatos as any)?.filas || 1) })"
+                  :key="indice">
+                  <td v-for="col in ((campo.metadatos as any)?.columnas || [])" :key="col.name" class="p-2">
+                    <PrimeInputText v-if="col.tipo === TipoCampoValor.Texto" class="ancho-100 texto-sm" disabled
+                      placeholder="Texto" />
+                    <PrimeInputNumber v-else-if="col.tipo === TipoCampoValor.Numero" class="ancho-100 texto-sm" disabled
+                      placeholder="0" />
+                    <PrimeDatePicker v-else-if="col.tipo === TipoCampoValor.Fecha" class="ancho-100 texto-sm"
+                      disabled />
                     <span v-else class="text-muted-color">—</span>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
-           <div class="mt-2" v-if="(campo.metadatos as any)?.agregarFilas">
+          <div class="mt-2" v-if="(campo.metadatos as any)?.agregarFilas">
             <PrimeButton label="Añadir fila" size="small" icon="pi pi-plus" disabled />
           </div>
           <div class="text-xs text-muted-color mt-2">
             Filas: {{ Number((campo.metadatos as any)?.filas || 1) }} |
-            Columnas: {{ ((campo.metadatos as any)?.columnas||[]).length }}
+            Columnas: {{ ((campo.metadatos as any)?.columnas || []).length }}
           </div>
 
         </div>
       </template>
-      <template v-else-if="campo.tipo==='panel'">
+      <template v-else-if="campo.tipo === 'panel'">
         <ContenedorPanelAsincrono :campo="campo" />
       </template>
       <template v-else>
@@ -333,59 +312,13 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
       </template>
     </div>
     <!-- Handle de resize a la derecha -->
-    <div
-      class="resize-handle-right"
-      title="Arrastrar para redimensionar"
-      @mousedown="iniciarRedimensionar"
-      @touchstart="iniciarRedimensionarTactil"
-      @click.stop
-    />
+    <div class="manejador-redimension-derecha" title="Arrastrar para redimensionar" @mousedown="iniciarRedimensionar"
+      @touchstart="iniciarRedimensionarTactil" @click.stop />
 
     <!-- Modal de confirmación para eliminar -->
-    <ModalConfirmar
-      :visible="almacen.mostrarModalEliminarCampo"
-      :message="almacen.mensajeConfirmacionCampo"
-      @confirm="almacen.ejecutarEliminarCampo"
-      @cancel="almacen.cancelarEliminarCampo"
-    />
+    <ModalConfirmar :visible="almacen.mostrarModalEliminarCampo" :message="almacen.mensajeConfirmacionCampo"
+      @confirm="almacen.ejecutarEliminarCampo" @cancel="almacen.cancelarEliminarCampo" />
   </div>
 </template>
 
-<style scoped>
-.info-badge {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 0.25rem;
-  display: inline-flex;
-  gap: 0.25rem;
-  align-items: center;
-  padding: 0.125rem;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.resize-handle-right {
-  position: absolute;
-  top: 0;
-  right: -6px;
-  width: 12px;
-  height: 100%;
-  cursor: col-resize;
-  display: inline-block;
-}
-
-/* Indicador visual al pasar el mouse */
-.resize-handle-right::after {
-  content: '';
-  position: absolute;
-  top: 25%;
-  bottom: 25%;
-  left: 4px;
-  width: 4px;
-  border-radius: 2px;
-  background: var(--p-primary-300);
-  opacity: 0.7;
-}
-</style>
-
+<style scoped></style>

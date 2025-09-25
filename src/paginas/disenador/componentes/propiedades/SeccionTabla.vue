@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import draggable from 'vuedraggable'
@@ -193,52 +192,44 @@ watch(() => obtenerColumnas().length, () => {
 
 <template>
   <div v-if="campo?.tipo === TipoCampoValor.Tabla">
-    <h3 class="text-sm text-color mb-2">Tabla</h3>
+    <h3 class="texto-sm text-color mb-2">Tabla</h3>
+    <span class="negrilla">Columnas</span>
+    <div class="grid">
+      <div class="col-12 md:col-12 lg:col-6 ">
+        <PrimeSelect :model-value="indiceColumna" :options="opcionesColumnas" option-label="label" option-value="value"
+          class="ancho-100" @update:model-value="(v: number) => seleccionarColumna(v)" />
+      </div>
+      <div class="col-12 md:col-12 lg:col-4 flex justify-content-end gap-1 pb-0">
+        <PrimeButton rounded size="small" class="boton-pequenio" icon="pi pi-plus" @click="agregarColumna" />
+
+
+        <PrimeButton class="boton-pequenio" icon="pi pi-trash" severity="danger"
+          :disabled="obtenerColumnas().length === 0" @click="eliminarColumna(indiceColumna)" />
+      </div>
+
+    </div>
+    <!-- <h3 class="texto-sm text-color mb-2">Tabla</h3> -->
 
     <!-- Gestión de columnas -->
-    <div class="flex justify-content-between align-items-center mb-2">
-      <span class="font-semibold">Columnas</span>
+
+    <!-- <div class="flex justify-content-between align-items-center mb-2">
+
       <div class="flex gap-2 align-items-center">
-        <PrimeSelect
-          :model-value="indiceColumna"
-          :options="opcionesColumnas"
-          option-label="label"
-          option-value="value"
-          class="ancho-100 text-sm md:w-16rem"
-          @update:model-value="(v: number) => seleccionarColumna(v)"
-        />
-        <PrimeButton
-          label="Agregar"
-          size="small"
-          icon="pi pi-plus"
-          @click="agregarColumna"
-        />
-        <PrimeButton
-          label="Eliminar"
-          size="small"
-          icon="pi pi-trash"
-          severity="danger"
-          :disabled="obtenerColumnas().length === 0"
-          @click="eliminarColumna(indiceColumna)"
-        />
+
+
       </div>
-    </div>
+    </div> -->
 
     <!-- Lista ordenable de columnas -->
     <div class="mb-2">
-      <draggable
-        :list="columnasProxy"
-        item-key="name"
-        handle=".drag-handle"
-        ghost-class="surface-100"
-        class="grid"
-        @end="manejarReordenColumnas"
-      >
+      <draggable :list="columnasProxy" item-key="name" handle=".drag-handle" ghost-class="surface-100" class="grid"
+        @end="manejarReordenColumnas">
         <template #item="{ element, index }">
-          <div class="col-12 md:col-6 flex align-items-center justify-content-between p-2 border-1 surface-border border-round">
+          <div
+            class="col-12 md:col-6 flex align-items-center justify-content-between p-2 border-1 surface-border border-round">
             <div class="flex align-items-center gap-2">
               <i class="pi pi-bars drag-handle cursor-move" />
-              <span class="font-medium">
+              <span>
                 {{ element.etiqueta || element.nombre || ('Col ' + (index + 1)) }}
               </span>
             </div>
@@ -258,204 +249,150 @@ watch(() => obtenerColumnas().length, () => {
       <!-- Propiedades básicas -->
       <div class="grid align-items-end mb-3">
         <div class="sm:col-12 md:col-12 lg:col-4">
-          <label class="font-medium text-sm">Nombre</label>
-          <PrimeInputText
-            :model-value="columnaActual.nombre"
-            @update:model-value="(v: string | undefined) => actualizarColumna('nombre', v || '')"
-          />
-          <small v-if="esNombreColumnaDuplicado()" class="text-red-500">
+          <label class="texto-sm">Nombre</label>
+          <PrimeInputText :model-value="columnaActual.nombre"
+            @update:model-value="(v: string | undefined) => actualizarColumna('nombre', v || '')" />
+          <small v-if="esNombreColumnaDuplicado()" class="color-rojo">
             El nombre ya existe en otra columna.
           </small>
         </div>
 
         <div class="sm:col-12 md:col-12 lg:col-4">
-          <label class="font-medium text-sm">Etiqueta</label>
-          <PrimeInputText
-            :model-value="columnaActual.etiqueta"
-            @update:model-value="(v: string | undefined) => actualizarColumna('etiqueta', v || '')"
-          />
+          <label class="texto-sm">Etiqueta</label>
+          <PrimeInputText :model-value="columnaActual.etiqueta"
+            @update:model-value="(v: string | undefined) => actualizarColumna('etiqueta', v || '')" />
         </div>
 
         <div class="sm:col-12 md:col-12 lg:col-4">
-          <label class="font-medium text-sm">Tipo</label>
-          <PrimeSelect
-            :model-value="columnaActual.tipo || 'texto'"
-            :options="tiposColumna"
-            @update:model-value="(v: TipoColumna) => actualizarColumna('tipo', v)"
-          />
+          <label class="texto-sm">Tipo</label>
+          <PrimeSelect :model-value="columnaActual.tipo || 'texto'" :options="tiposColumna"
+            @update:model-value="(v: TipoColumna) => actualizarColumna('tipo', v)" />
         </div>
       </div>
 
       <!-- Configuración de formato para números -->
       <div v-if="columnaActual.tipo === 'number'" class="mb-3">
-        <div class="font-semibold mb-2">Formato Numérico</div>
+        <div class="negrilla mb-2">Formato Numérico</div>
         <div class="grid">
           <div class="col-12 md:col-3">
-            <label class="font-medium text-sm">Modo</label>
-            <PrimeSelect
-              :model-value="columnaActual.modoFormato || 'decimal'"
-              :options="opcionesModoFormato"
-              @update:model-value="(v: ModoFormato) => actualizarColumna('modoFormato', v)"
-            />
+            <label class="texto-sm">Modo</label>
+            <PrimeSelect :model-value="columnaActual.modoFormato || 'decimal'" :options="opcionesModoFormato"
+              @update:model-value="(v: ModoFormato) => actualizarColumna('modoFormato', v)" />
           </div>
 
           <div class="col-12 md:col-3" v-if="columnaActual.modoFormato === 'currency'">
-            <label class="font-medium text-sm">Moneda</label>
-            <PrimeInputText
-              :model-value="String(columnaActual.moneda || 'USD')"
-              @update:model-value="(v: string | undefined) => actualizarColumna('moneda', v || 'USD')"
-            />
+            <label class="texto-sm">Moneda</label>
+            <PrimeInputText :model-value="String(columnaActual.moneda || 'USD')"
+              @update:model-value="(v: string | undefined) => actualizarColumna('moneda', v || 'USD')" />
           </div>
 
           <div class="col-12 md:col-3">
-            <label class="font-medium text-sm">Idioma</label>
-            <PrimeInputText
-              :model-value="String(columnaActual.idioma || 'es-ES')"
-              @update:model-value="(v: string | undefined) => actualizarColumna('idioma', v || 'es-ES')"
-            />
+            <label class="texto-sm">Idioma</label>
+            <PrimeInputText :model-value="String(columnaActual.idioma || 'es-ES')"
+              @update:model-value="(v: string | undefined) => actualizarColumna('idioma', v || 'es-ES')" />
           </div>
 
           <div class="col-12 md:col-3">
-            <label class="font-medium text-sm">Prefijo</label>
-            <PrimeInputText
-              :model-value="String(columnaActual.prefijo || '')"
-              @update:model-value="(v: string | undefined) => actualizarColumna('prefijo', v || '')"
-            />
+            <label class="texto-sm">Prefijo</label>
+            <PrimeInputText :model-value="String(columnaActual.prefijo || '')"
+              @update:model-value="(v: string | undefined) => actualizarColumna('prefijo', v || '')" />
           </div>
 
           <div class="col-12 md:col-3">
-            <label class="font-medium text-sm">Sufijo</label>
-            <PrimeInputText
-              :model-value="String(columnaActual.sufijo || '')"
-              @update:model-value="(v: string | undefined) => actualizarColumna('sufijo', v || '')"
-            />
+            <label class="texto-sm">Sufijo</label>
+            <PrimeInputText :model-value="String(columnaActual.sufijo || '')"
+              @update:model-value="(v: string | undefined) => actualizarColumna('sufijo', v || '')" />
           </div>
 
           <div class="col-12 md:col-3">
-            <label class="font-medium text-sm">Mín. decimales</label>
-            <InputNumber
-              :model-value="Number(columnaActual.decimalesMinimos ?? 0)"
-              :min="0"
-              :max="8"
-              class="ancho-100 text-sm"
-              @update:model-value="(v: number | null) => actualizarColumna('decimalesMinimos', v ?? 0)"
-            />
+            <label class="texto-sm">Mín. decimales</label>
+            <InputNumber :model-value="Number(columnaActual.decimalesMinimos ?? 0)" :min="0" :max="8"
+              class="ancho-100 texto-sm"
+              @update:model-value="(v: number | null) => actualizarColumna('decimalesMinimos', v ?? 0)" />
           </div>
 
           <div class="col-12 md:col-3">
-            <label class="font-medium text-sm">Máx. decimales</label>
-            <InputNumber
-              :model-value="Number(columnaActual.decimalesMaximos ?? 2)"
-              :min="0"
-              :max="8"
-              class="ancho-100 text-sm"
-              @update:model-value="(v: number | null) => actualizarColumna('decimalesMaximos', v ?? 2)"
-            />
+            <label class="texto-sm">Máx. decimales</label>
+            <InputNumber :model-value="Number(columnaActual.decimalesMaximos ?? 2)" :min="0" :max="8"
+              class="ancho-100 texto-sm"
+              @update:model-value="(v: number | null) => actualizarColumna('decimalesMaximos', v ?? 2)" />
           </div>
 
           <div class="col-12 md:col-3" v-if="columnaActual.modoFormato === 'percent'">
-            <label class="font-medium text-sm">Escala porcentaje</label>
-            <PrimeSelect
-              :model-value="columnaActual.escalaPorcentaje || 'whole'"
-              :options="opcionesEscalaPorcentaje"
-              option-label="label"
-              option-value="value"
-              @update:model-value="(v: EscalaPorcentaje) => actualizarColumna('escalaPorcentaje', v)"
-            />
+            <label class="texto-sm">Escala porcentaje</label>
+            <PrimeSelect :model-value="columnaActual.escalaPorcentaje || 'whole'" :options="opcionesEscalaPorcentaje"
+              option-label="label" option-value="value"
+              @update:model-value="(v: EscalaPorcentaje) => actualizarColumna('escalaPorcentaje', v)" />
           </div>
         </div>
       </div>
 
       <!-- Configuración de agregado -->
       <div class="mb-3">
-        <div class="font-semibold mb-2">Agregado</div>
+        <div class="negrilla mb-2">Agregado</div>
         <div class="grid">
           <div class="col-12 md:col-3">
-            <label class="font-medium text-sm">Función</label>
-            <PrimeSelect
-              :model-value="columnaActual.agregar || 'none'"
-              :options="funcionesAgregado"
-              @update:model-value="(v: FuncionAgregado) => actualizarColumna('agregar', v)"
-            />
+            <label class="texto-sm">Función</label>
+            <PrimeSelect :model-value="columnaActual.agregar || 'none'" :options="funcionesAgregado"
+              @update:model-value="(v: FuncionAgregado) => actualizarColumna('agregar', v)" />
           </div>
 
           <div class="col-12 md:col-3">
-            <label class="font-medium text-sm">Prefijo</label>
-            <PrimeInputText
-              :model-value="String(columnaActual.prefijoAgregado || '')"
-              @update:model-value="(v: string | undefined) => actualizarColumna('prefijoAgregado', v || '')"
-            />
+            <label class="texto-sm">Prefijo</label>
+            <PrimeInputText :model-value="String(columnaActual.prefijoAgregado || '')"
+              @update:model-value="(v: string | undefined) => actualizarColumna('prefijoAgregado', v || '')" />
           </div>
 
           <div class="col-12 md:col-3">
-            <label class="font-medium text-sm">Sufijo</label>
-            <PrimeInputText
-              :model-value="String(columnaActual.sufijoAgregado || '')"
-              @update:model-value="(v: string | undefined) => actualizarColumna('sufijoAgregado', v || '')"
-            />
+            <label class="texto-sm">Sufijo</label>
+            <PrimeInputText :model-value="String(columnaActual.sufijoAgregado || '')"
+              @update:model-value="(v: string | undefined) => actualizarColumna('sufijoAgregado', v || '')" />
           </div>
 
           <div class="col-12 md:col-3">
-            <label class="font-medium text-sm">Decimales</label>
-            <InputNumber
-              :model-value="Number(columnaActual.decimales ?? 2)"
-              :min="0"
-              :max="8"
-              class="ancho-100 text-sm"
-              @update:model-value="(v: number | null) => actualizarColumna('decimales', v ?? 2)"
-            />
+            <label class="texto-sm">Decimales</label>
+            <InputNumber :model-value="Number(columnaActual.decimales ?? 2)" :min="0" :max="8"
+              class="ancho-100 texto-sm"
+              @update:model-value="(v: number | null) => actualizarColumna('decimales', v ?? 2)" />
           </div>
         </div>
       </div>
 
       <!-- Validación de columna -->
       <div class="mb-3">
-        <div class="font-semibold mb-2">Validación</div>
+        <div class="negrilla mb-2">Validación</div>
         <div class="grid">
           <div class="col-12 md:col-3">
             <label class="inline-flex align-items-center gap-2">
-              <Checkbox
-                binary
-                :model-value="Boolean(columnaActual.requerido)"
-                @update:model-value="(v: boolean) => actualizarColumna('requerido', v)"
-              />
+              <Checkbox binary :model-value="Boolean(columnaActual.requerido)"
+                @update:model-value="(v: boolean) => actualizarColumna('requerido', v)" />
               Requerido
             </label>
           </div>
 
           <template v-if="columnaActual.tipo === 'number'">
             <div class="col-12 md:col-3">
-              <label class="font-medium text-sm">Mínimo</label>
-              <InputNumber
-                :model-value="typeof columnaActual.minimo === 'number' ? columnaActual.minimo : null"
-                class="ancho-100 text-sm"
-                @update:model-value="(v: number | null) => actualizarColumna('minimo', v)"
-              />
+              <label class="texto-sm">Mínimo</label>
+              <InputNumber :model-value="typeof columnaActual.minimo === 'number' ? columnaActual.minimo : null"
+                class="ancho-100 texto-sm" @update:model-value="(v: number | null) => actualizarColumna('minimo', v)" />
             </div>
 
             <div class="col-12 md:col-3">
-              <label class="font-medium text-sm">Máximo</label>
-              <InputNumber
-                :model-value="typeof columnaActual.maximo === 'number' ? columnaActual.maximo : null"
-                class="ancho-100 text-sm"
-                @update:model-value="(v: number | null) => actualizarColumna('maximo', v)"
-              />
+              <label class="texto-sm">Máximo</label>
+              <InputNumber :model-value="typeof columnaActual.maximo === 'number' ? columnaActual.maximo : null"
+                class="ancho-100 texto-sm" @update:model-value="(v: number | null) => actualizarColumna('maximo', v)" />
             </div>
 
             <div class="col-12 md:col-6">
-              <label class="font-medium text-sm">Mensaje min</label>
-              <PrimeInputText
-                :model-value="String(columnaActual.mensajeMinimo || '')"
-                @update:model-value="(v: string | undefined) => actualizarColumna('mensajeMinimo', v || '')"
-              />
+              <label class="texto-sm">Mensaje min</label>
+              <PrimeInputText :model-value="String(columnaActual.mensajeMinimo || '')"
+                @update:model-value="(v: string | undefined) => actualizarColumna('mensajeMinimo', v || '')" />
             </div>
 
             <div class="col-12 md:col-6">
-              <label class="font-medium text-sm">Mensaje max</label>
-              <PrimeInputText
-                :model-value="String(columnaActual.mensajeMaximo || '')"
-                @update:model-value="(v: string | undefined) => actualizarColumna('mensajeMaximo', v || '')"
-              />
+              <label class="texto-sm">Mensaje max</label>
+              <PrimeInputText :model-value="String(columnaActual.mensajeMaximo || '')"
+                @update:model-value="(v: string | undefined) => actualizarColumna('mensajeMaximo', v || '')" />
             </div>
           </template>
         </div>
@@ -464,16 +401,13 @@ watch(() => obtenerColumnas().length, () => {
 
     <!-- Configuración general de tabla -->
     <div class="mb-3">
-      <div class="font-semibold mb-2">Configuración General</div>
+      <div class="negrilla mb-2">Configuración General</div>
 
       <!-- Permitir añadir filas -->
       <div class="field">
         <label class="inline-flex align-items-center gap-2">
-          <Checkbox
-            binary
-            :model-value="Boolean(metadatos.agregarFilas)"
-            @update:model-value="(v: boolean) => actualizarMetadato('agregarFilas', v)"
-          />
+          <Checkbox binary :model-value="Boolean(metadatos.agregarFilas)"
+            @update:model-value="(v: boolean) => actualizarMetadato('agregarFilas', v)" />
           Permitir añadir filas
         </label>
       </div>
@@ -481,13 +415,9 @@ watch(() => obtenerColumnas().length, () => {
       <!-- Número de filas iniciales -->
       <div class="grid align-items-end">
         <div class="sm:col-12 md:col-12 lg:col-4">
-          <label class="font-medium text-sm">Filas iniciales</label>
-          <InputNumber
-            :model-value="Number(metadatos.filas ?? 1)"
-            :min="1"
-            class="ancho-100 text-sm"
-            @update:model-value="(v: number | null) => actualizarMetadato('filas', Math.max(1, v ?? 1))"
-          />
+          <label class="texto-sm">Filas iniciales</label>
+          <InputNumber :model-value="Number(metadatos.filas ?? 1)" :min="1" class="ancho-100 texto-sm"
+            @update:model-value="(v: number | null) => actualizarMetadato('filas', Math.max(1, v ?? 1))" />
         </div>
 
         <div class="col-12 md:col-8">
@@ -500,48 +430,36 @@ watch(() => obtenerColumnas().length, () => {
 
     <!-- Estilo de tabla -->
     <div class="mb-3">
-      <div class="font-semibold mb-2">Estilo de Tabla</div>
+      <div class="negrilla mb-2">Estilo de Tabla</div>
       <div class="grid">
         <div class="col-12 sm:col-3">
           <label class="inline-flex align-items-center gap-2">
-            <Checkbox
-              binary
-              :model-value="Boolean(estiloTabla.bordered)"
-              @update:model-value="(v: boolean) => actualizarEstiloTabla('bordered', v)"
-            />
+            <Checkbox binary :model-value="Boolean(estiloTabla.bordered)"
+              @update:model-value="(v: boolean) => actualizarEstiloTabla('bordered', v)" />
             Bordes
           </label>
         </div>
 
         <div class="col-12 sm:col-3">
           <label class="inline-flex align-items-center gap-2">
-            <Checkbox
-              binary
-              :model-value="Boolean(estiloTabla.striped)"
-              @update:model-value="(v: boolean) => actualizarEstiloTabla('striped', v)"
-            />
+            <Checkbox binary :model-value="Boolean(estiloTabla.striped)"
+              @update:model-value="(v: boolean) => actualizarEstiloTabla('striped', v)" />
             Zebra
           </label>
         </div>
 
         <div class="col-12 sm:col-3">
           <label class="inline-flex align-items-center gap-2">
-            <Checkbox
-              binary
-              :model-value="Boolean(estiloTabla.hover)"
-              @update:model-value="(v: boolean) => actualizarEstiloTabla('hover', v)"
-            />
+            <Checkbox binary :model-value="Boolean(estiloTabla.hover)"
+              @update:model-value="(v: boolean) => actualizarEstiloTabla('hover', v)" />
             Hover
           </label>
         </div>
 
         <div class="col-12 sm:col-3">
-          <label class="font-medium text-sm">Padding</label>
-          <PrimeSelect
-            :model-value="estiloTabla.padding || 'md'"
-            :options="opcionesPadding"
-            @update:model-value="(v: TamañoPadding) => actualizarEstiloTabla('padding', v)"
-          />
+          <label class="texto-sm">Padding</label>
+          <PrimeSelect :model-value="estiloTabla.padding || 'md'" :options="opcionesPadding"
+            @update:model-value="(v: TamañoPadding) => actualizarEstiloTabla('padding', v)" />
         </div>
       </div>
     </div>

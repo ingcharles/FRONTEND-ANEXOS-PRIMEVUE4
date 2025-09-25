@@ -41,26 +41,26 @@ const caracteristicasPrincipales = ref([
 
     <!-- Características Principales -->
     <div class="mb-8">
-      <h2 class="text-2xl font-semibold text-center mb-6 text-gray-800">
+      <h2 class="text-2xl negrilla text-center mb-6 text-gray-800">
         Características Destacadas
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div 
-          v-for="caracteristica in caracteristicasPrincipales" 
+        <div
+          v-for="caracteristica in caracteristicasPrincipales"
           :key="caracteristica.titulo"
           class="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
         >
-          <div 
+          <div
             class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
             :style="{ backgroundColor: caracteristica.color + '20' }"
           >
-            <i 
-              :class="caracteristica.icono" 
-              class="text-2xl" 
+            <i
+              :class="caracteristica.icono"
+              class="text-2xl"
               :style="{ color: caracteristica.color }"
             ></i>
           </div>
-          <h3 class="text-lg font-semibold text-gray-800 mb-2">
+          <h3 class="text-lg negrilla text-gray-800 mb-2">
             {{ caracteristica.titulo }}
           </h3>
           <p class="text-gray-600">
@@ -78,9 +78,9 @@ const caracteristicasPrincipales = ref([
       <p class="text-lg mb-6">
         Empieza a crear formularios increíbles con nuestro diseñador intuitivo.
       </p>
-      <router-link 
-        to="/disenador" 
-        class="inline-flex items-center px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors duration-300"
+      <router-link
+        to="/disenador"
+        class="inline-flex items-center px-6 py-3 bg-white text-blue-600 negrilla rounded-lg hover:bg-gray-100 transition-colors duration-300"
       >
         <i class="pi pi-play mr-2"></i>
         Ir al Diseñador

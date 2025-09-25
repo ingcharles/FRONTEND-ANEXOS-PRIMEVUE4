@@ -71,7 +71,7 @@
                       <PrimeInputText
                         :model-value="patron.regex"
                         readonly
-                        class="flex-1 mr-2 font-mono text-sm"
+                        class="flex-1 mr-2 font-mono texto-sm"
                       />
                       <PrimeButton
                         label="Copiar"
@@ -85,7 +85,7 @@
                     <p class="text-600 m-0">{{ patron.descripcion }}</p>
 
                     <div>
-                      <strong class="text-700 text-sm">Ejemplos válidos:</strong>
+                      <strong class="text-700 texto-sm">Ejemplos válidos:</strong>
                       <div class="flex flex-wrap gap-1 mt-2">
                         <PrimeTag
                           v-for="ejemplo in patron.ejemplos"
@@ -128,7 +128,7 @@
                 <template #content>
                   <p class="text-600 mb-3">{{ ejemplo.descripcion }}</p>
                   <PrimeScrollPanel style="width: 100%; height: 200px">
-                    <pre class="surface-900 text-0 p-3 border-round font-mono text-sm overflow-auto"><code>{{ ejemplo.codigo }}</code></pre>
+                    <pre class="surface-900 text-0 p-3 border-round font-mono texto-sm overflow-auto"><code>{{ ejemplo.codigo }}</code></pre>
                   </PrimeScrollPanel>
                 </template>
               </PrimeCard>
@@ -153,7 +153,7 @@ const validacionesBasicas = [
     titulo: 'Campo Obligatorio',
     descripcion: 'Hace que el usuario deba completar el campo antes de enviar el formulario.',
     icono: 'pi-exclamation-triangle',
-    colorClase: 'text-red-500',
+    colorClase: 'color-rojo',
     ejemploTitulo: 'Ejemplo de mensaje',
     ejemploValor: 'Este campo es obligatorio'
   },

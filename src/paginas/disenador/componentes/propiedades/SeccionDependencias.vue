@@ -1,17 +1,17 @@
 <template>
   <div class="mt-3 p-3 border-1 surface-border border-round">
-    <div class="font-semibold mb-2 text-sm">Dependencias</div>
+    <div class="negrilla mb-2 texto-sm">Dependencias</div>
 
     <div class="grid">
       <!-- Modo de envío -->
       <div class="col-12 md:col-6">
-        <label class="font-medium text-sm">Modo de envío</label>
+        <label class="texto-sm">Modo de envío</label>
         <PrimeSelect
           :model-value="configDependencia.modoEnvio || 'query'"
           :options="modoEnvioOpciones"
           option-label="label"
           option-value="value"
-          class="ancho-100 text-sm"
+          class="ancho-100 texto-sm"
           @focus="asegurarDependencia"
           @update:model-value="(v: ModoEnvio) => actualizarDependencia('modoEnvio', v)"
         />
@@ -19,14 +19,14 @@
 
       <!-- Campo padre -->
       <div class="col-12 md:col-6">
-        <label class="font-medium text-sm">Campo padre (depende de)</label>
+        <label class="texto-sm">Campo padre (depende de)</label>
         <PrimeMultiSelect
           :model-value="obtenerCamposPadre()"
           :options="camposPaginaActual"
           option-label="label"
           option-value="value"
           placeholder="Seleccionar campo(s)"
-          class="ancho-100 text-sm"
+          class="ancho-100 texto-sm"
           @focus="asegurarDependencia"
           @update:model-value="actualizarCamposPadre"
         />
@@ -37,11 +37,11 @@
 
       <!-- Nombre de parámetro -->
       <div class="col-12 md:col-6" v-if="debeMostrarclaveParametro()">
-        <label class="font-medium text-sm">Nombre de parámetro (claveParametro)</label>
+        <label class="texto-sm">Nombre de parámetro (claveParametro)</label>
         <PrimeInputText
           :model-value="(configDependencia.claveParametro as string) || ''"
           :placeholder="obtenerPlaceholderclaveParametro()"
-          class="ancho-100 text-sm"
+          class="ancho-100 texto-sm"
           @focus="asegurarDependencia"
           @update:model-value="(v: string | undefined) => actualizarDependencia('claveParametro', v || '')"
         />
@@ -54,7 +54,7 @@
           :model-value="configDependencia.limpiarAlCambiar !== false"
           @update:model-value="(v: boolean) => actualizarDependencia('limpiarAlCambiar', v)"
         />
-        <label class="text-sm">Limpiar al cambiar</label>
+        <label class="texto-sm">Limpiar al cambiar</label>
       </div>
 
       <div class="sm:col-12 md:col-12 lg:col-4 flex align-items-center gap-2">
@@ -63,7 +63,7 @@
           :model-value="configDependencia.deshabilitarHastaValor !== false"
           @update:model-value="(v: boolean) => actualizarDependencia('deshabilitarHastaValor', v)"
         />
-        <label class="text-sm">Deshabilitar hasta que padre tenga valor</label>
+        <label class="texto-sm">Deshabilitar hasta que padre tenga valor</label>
       </div>
 
       <!-- Botón de limpiar -->

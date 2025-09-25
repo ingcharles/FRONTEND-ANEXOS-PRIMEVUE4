@@ -97,7 +97,7 @@ describe('Validación Requerido', () => {
     })
 
     // Verificar que se muestra el asterisco rojo
-    const asterisco = wrapper.find('.text-red-500')
+    const asterisco = wrapper.find('.color-rojo')
     expect(asterisco.exists()).toBe(true)
     expect(asterisco.text()).toContain('*')
   })

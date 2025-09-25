@@ -297,11 +297,24 @@ export const useAlmacenDisenador = defineStore('disenador', () => {
     ServicioSerializacion.descargarArchivo(nombreArchivo, contenido)
   }
 
+ // Métodos de gestión de archivos
+  function manejarExportarArchivo(): void {
+    exportarJson();
+  }
+
   async function importarJson(archivo: File): Promise<void> {
     const texto = await archivo.text()
     deserializar(texto)
   }
 
+  // Métodos de gestión de archivos
+  function manejarImportarArchivo(evento: Event): void {
+    const input = evento.target as HTMLInputElement
+    const archivo = input.files?.[0]
+    if (archivo) {
+      importarJson(archivo)
+    }
+  }
   // =================== GESTIÓN DE PORTAPAPELES ===================
   // function copiarCampo(id: string): void {
   //   const campo = ServicioCampos.buscarCampoPorId(esquemaFormulario.value.paginas, id)
@@ -455,8 +468,9 @@ export const useAlmacenDisenador = defineStore('disenador', () => {
     serializar,
     deserializar,
     exportarJson,
+    manejarExportarArchivo,
     importarJson,
-
+    manejarImportarArchivo,
     // Portapapeles
     // copiarCampo,
     // pegarCampo,

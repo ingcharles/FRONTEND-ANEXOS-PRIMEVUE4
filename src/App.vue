@@ -7,7 +7,7 @@
 		<header class="p-3 border-bottom surface-card">
 			<div class="flex align-items-center gap-3">
 				<i class="pi pi-sitemap text-primary text-2xl" aria-hidden="true" />
-				<h1 class="m-0 text-xl font-semibold">Diseñador de Formularios</h1>
+				<h1 class="m-0 text-xl negrilla">Diseñador de Formularios</h1>
 				<router-link class="ml-auto" to="/">Inicio</router-link>
 				<!-- <router-link to="/disenador">Diseñador</router-link> -->
 				<router-link to="/about">Acerca de</router-link>

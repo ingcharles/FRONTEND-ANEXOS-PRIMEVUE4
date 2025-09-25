@@ -399,18 +399,18 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
 </script>
 <template>
   <div v-if="esCampoConOpciones()" class="mb-3">
-    <h3 class="text-sm text-color mb-2">Opciones</h3>
+    <h3 class="texto-sm text-color mb-2">Opciones</h3>
 
     <!-- Selector de fuente de opciones -->
     <div class="grid">
       <div class="col-12">
-        <label class="font-medium text-sm">Fuente de opciones</label>
+        <label class="texto-sm">Fuente de opciones</label>
         <PrimeSelect
           :model-value="obtenerModoOpciones()"
           :options="opcionesFuente"
           option-label="label"
           option-value="value"
-          class="ancho-100 text-sm"
+          class="ancho-100 texto-sm"
           @update:model-value="(v: ModoOpciones) => actualizarModoOpciones(v)"
         />
       </div>
@@ -419,26 +419,26 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
     <!-- Opciones manuales -->
   <template v-if="obtenerModoOpciones() === ModoOpciones.MANUAL">
       <div class="flex justify-content-between align-items-center mb-2">
-        <label class="font-medium text-sm">Opciones</label>
+        <label class="texto-sm">Opciones</label>
         <PrimeButton label="Agregar" size="small" icon="pi pi-plus" @click="agregarOpcion" />
       </div>
 
       <div v-for="(opcion, indice) in obtenerOpciones()" :key="indice" class="grid align-items-end mb-2">
         <div class="sm:col-12 md:col-12 lg:col-4">
-          <label class="font-medium text-sm">Etiqueta</label>
+          <label class="texto-sm">Etiqueta</label>
           <PrimeInputText
             :model-value="String(opcion.etiqueta)"
             @update:model-value="(v: string | undefined) => actualizarOpcion(indice, 'etiqueta', v || '')"
-            class="ancho-100 text-sm"
+            class="ancho-100 texto-sm"
           />
         </div>
 
         <div class="sm:col-12 md:col-12 lg:col-4">
-          <label class="font-medium text-sm">Valor</label>
+          <label class="texto-sm">Valor</label>
           <PrimeInputText
             :model-value="String(opcion.valor ?? '')"
             @update:model-value="(v: string | undefined) => actualizarOpcion(indice, 'valor', v || '')"
-            class="ancho-100 text-sm"
+            class="ancho-100 texto-sm"
           />
         </div>
 
@@ -450,7 +450,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
 
     <!-- Configuración de API -->
     <div v-if="obtenerModoOpciones() === ModoOpciones.API" class="mt-2 p-3 border-1 surface-border border-round">
-      <div class="font-semibold mb-2 text-sm">Cargar opciones por API</div>
+      <div class="negrilla mb-2 texto-sm">Cargar opciones por API</div>
 
       <div class="grid">
         <!-- URL -->
@@ -460,38 +460,38 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
             :model-value="configApi.url"
             placeholder="https://api.midominio.com/opciones"
             @update:model-value="(v: string | undefined) => actualizarConfigApi({ url: v || '' })"
-            class="ancho-100 text-sm"
+            class="ancho-100 texto-sm"
             />
         </div>
 
         <!-- Método y Content-Type -->
         <div class="sm:col-12 md:col-12 lg:col-4">
-          <label class="font-medium text-sm">Método</label>
+          <label class="texto-sm">Método</label>
           <PrimeSelect
             :model-value="configApi.method || MetodoHttp.GET"
             :options="opcionesMetodo"
             option-label="label"
             option-value="value"
-            class="ancho-100 text-sm"
+            class="ancho-100 texto-sm"
             @update:model-value="(v: MetodoHttp) => actualizarConfigApi({ method: v })"
           />
         </div>
 
         <div class="col-12 md:col-8">
-          <label class="font-medium text-sm">Content-Type</label>
+          <label class="texto-sm">Content-Type</label>
           <PrimeSelect
             :model-value="configApi.contentType || 'application/json'"
             :options="opcionesContentType"
             option-label="label"
             option-value="value"
-            class="ancho-100 text-sm"
+            class="ancho-100 texto-sm"
             @update:model-value="(v: string) => actualizarConfigApi({ contentType: v })"
           />
         </div>
 
         <!-- Configuración de claves -->
         <div class="col-12 md:col-6">
-          <label class="font-medium text-sm">Ruta datos (opcional)</label>
+          <label class="texto-sm">Ruta datos (opcional)</label>
           <PrimeInputText
             :model-value="configApi.dataPath"
             placeholder="por ej.: data.items"
@@ -500,7 +500,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
         </div>
 
         <div class="col-12 md:col-3">
-          <label class="font-medium text-sm">Clave Valor</label>
+          <label class="texto-sm">Clave Valor</label>
           <PrimeInputText
             :model-value="configApi.claveValor"
             placeholder="valor"
@@ -509,7 +509,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
         </div>
 
         <div class="col-12 md:col-3">
-          <label class="font-medium text-sm">Clave Etiqueta</label>
+          <label class="texto-sm">Clave Etiqueta</label>
           <PrimeInputText
             :model-value="configApi.claveEtiqueta"
             placeholder="etiqueta"
@@ -519,7 +519,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
 
         <!-- Body para POST -->
         <div class="col-12" v-if="(configApi.method || MetodoHttp.GET) === MetodoHttp.POST">
-          <label class="font-medium text-sm">Body (JSON o texto)</label>
+          <label class="texto-sm">Body (JSON o texto)</label>
           <PrimeTextarea
             :model-value="configApi.body"
             rows="4"
@@ -530,7 +530,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
 
         <!-- Headers -->
         <div class="col-12">
-          <label class="font-medium text-sm">Headers (JSON opcional)</label>
+          <label class="texto-sm">Headers (JSON opcional)</label>
           <PrimeTextarea
             :model-value="configApi.headersJson"
             rows="3"
@@ -542,7 +542,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
         <!-- Estructura detectada -->
         <div class="col-12" v-if="obtenerOpciones().length > 0">
           <div class="p-3 bg-blue-50 border-1 border-blue-200 border-round">
-            <div class="text-sm font-medium text-blue-800 mb-1">Estructura detectada:</div>
+            <div class="texto-sm  text-blue-800 mb-1">Estructura detectada:</div>
             <div class="text-xs text-blue-700 font-mono">
               {{ JSON.stringify(obtenerOpciones()[0], null, 2) }}
             </div>
@@ -570,7 +570,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
           label="Añadir desde API"
           @click="cargarOpcionesDesdeApi(ModoCarga.AGREGAR)"
         />
-        <small v-if="errorApi" class="text-red-500">{{ errorApi }}</small>
+        <small v-if="errorApi" class="color-rojo">{{ errorApi }}</small>
       </div>
 
       <small class="text-color-secondary block mt-2">
@@ -580,7 +580,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
 
     <!-- Valor por defecto -->
     <div class="mt-3">
-      <label class="font-medium text-sm">Valor por defecto</label>
+      <label class="texto-sm">Valor por defecto</label>
 
       <template v-if="campo?.tipo === TipoCampoValor.Casilla">
         <PrimeMultiSelect
@@ -589,7 +589,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
           option-label="etiqueta"
           option-value="valor"
           placeholder="(sin valores por defecto)"
-          class="ancho-100 text-sm mb-2"
+          class="ancho-100 texto-sm mb-2"
           display="chip"
           @update:model-value="(v: unknown[]) => actualizarValorPorDefecto(v)"
         />
@@ -605,7 +605,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
           option-label="etiqueta"
           option-value="valor"
           placeholder="(sin valor por defecto)"
-          class="ancho-100 text-sm mb-2"
+          class="ancho-100 texto-sm mb-2"
           @update:model-value="actualizarValorPorDefecto"
         />
         <small class="text-color-secondary">

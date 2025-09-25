@@ -46,13 +46,14 @@ function obtenerClasesColumna(elemento: EsquemaCampo): string[] {
 
 <template>
   <PrimePanel
+    class="p-2"
     :header="propiedades.campo.etiqueta || 'Panel'"
     :toggleable="true"
     :collapsed="propiedades.contraido"
     @toggle="emitir('alternar')"
   >
     <draggable
-      class="grid ancho-100 text-sm"
+      class="grid ancho-100 texto-sm"
       v-model="lista"
       item-key="id"
       :group="{ name: 'paleta', pull: true, put: true }"

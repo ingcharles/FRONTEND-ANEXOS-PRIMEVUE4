@@ -36,21 +36,21 @@ describe('Validación de fecha (min/max)', () => {
     await form.trigger('submit.prevent')
 
     // Buscar errores con la clase correcta en lugar de en vm.errores
-    let errorEls = wrapper.findAll('.text-red-500')
+    let errorEls = wrapper.findAll('.color-rojo')
     expect(errorEls.length).toBeGreaterThan(0)
 
     // 2) Fecha fuera de rango (menor que min)
     almacen.actualizarValorCampo(pageId, 'fecha1', '2025-01-05')
     await wrapper.vm.$nextTick()
     await form.trigger('submit.prevent')
-    errorEls = wrapper.findAll('.text-red-500')
+    errorEls = wrapper.findAll('.color-rojo')
     expect(errorEls.length).toBeGreaterThan(0)
 
     // 3) Fecha fuera de rango (mayor que max)
     almacen.actualizarValorCampo(pageId, 'fecha1', '2025-01-25')
     await wrapper.vm.$nextTick()
     await form.trigger('submit.prevent')
-    errorEls = wrapper.findAll('.text-red-500')
+    errorEls = wrapper.findAll('.color-rojo')
     expect(errorEls.length).toBeGreaterThan(0)
 
     // 4) Fecha válida dentro del rango
@@ -58,7 +58,7 @@ describe('Validación de fecha (min/max)', () => {
     await wrapper.vm.$nextTick()
     await form.trigger('submit.prevent')
     // Debería pasar sin errores (excepto el asterisco de campo requerido)
-    errorEls = wrapper.findAll('.text-red-500')
+    errorEls = wrapper.findAll('.color-rojo')
     // Filtrar solo los errores que no sean el asterisco
     const errorMessages = errorEls.filter(el => el.text() !== '*')
     expect(errorMessages.length).toBe(0)

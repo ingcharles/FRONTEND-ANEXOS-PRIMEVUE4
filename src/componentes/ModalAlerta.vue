@@ -67,7 +67,7 @@ const visible = computed({
 // Función para obtener la clase del icono según el tipo
 function obtenerClaseIcono(): string {
   const iconos = {
-    error: 'pi pi-exclamation-triangle text-red-500',
+    error: 'pi pi-exclamation-triangle color-rojo',
     warning: 'pi pi-exclamation-triangle text-orange-500',
     info: 'pi pi-info-circle text-blue-500',
     success: 'pi pi-check-circle text-green-500'

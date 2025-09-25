@@ -97,7 +97,7 @@ describe('ModalAlerta', () => {
   it('Debería aplicar la clase de icono correcta según el tipo', async () => {
     const tipos = ['error', 'warning', 'info', 'success'] as const
     const iconosEsperados = [
-      'pi-exclamation-triangle text-red-500',
+      'pi-exclamation-triangle color-rojo',
       'pi-exclamation-triangle text-orange-500',
       'pi-info-circle text-blue-500',
       'pi-check-circle text-green-500'

@@ -1,10 +1,10 @@
 <template>
   <div class="mb-2 mt-2" >
-    <h3 class="text-sm text-color mb-2">Comportamiento</h3>
+    <h3 class="texto-sm text-color mb-2">Comportamiento</h3>
 
     <!-- Visibilidad -->
     <div class="mb-2">
-      <label class="font-medium text-sm">
+      <label class="texto-sm">
         <Checkbox
           binary
           :model-value="!!campo?.visible"
@@ -16,7 +16,7 @@
 
     <!-- Requerido -->
     <!-- <div class="mb-2" v-if="esRequerible()">
-      <label class="font-medium text-sm">
+      <label class="texto-sm">
         <Checkbox
           binary
           :model-value="!!campo?.requerido"
@@ -38,7 +38,7 @@
 
     <!-- Deshabilitado -->
     <div class="mb-2" v-if="esDeshabilitableOEscribible()">
-      <label class="font-medium text-sm">
+      <label class="texto-sm">
         <Checkbox
           binary
           :model-value="!!campo?.deshabilitado"
@@ -50,7 +50,7 @@
 
     <!-- Solo lectura -->
     <div class="mb-2" v-if="esSoloLectura()">
-      <label class="font-medium text-sm">
+      <label class="texto-sm">
         <Checkbox
           binary
           :model-value="!!campo?.soloLectura"
@@ -97,18 +97,16 @@
       <small class="text-muted-color">Configuración de visibilidad condicional.</small>
     </div> -->
   </div>
-  <PrimeDivider />
+  <PrimeDivider class="my-3" />
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import Checkbox from 'primevue/checkbox'
-import InputText from 'primevue/inputtext'
 import SelectButton from 'primevue/selectbutton'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { TipoCampo } from '@/tipos/Campos'
-import type { ReglaValidacion } from '@/interfaces/Validacion'
 import { TIPOS_CON_PLACEHOLDER } from '@/constantes/Campos'
 import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 import type { OpcionLayout } from '@/interfaces/TabAtributos'

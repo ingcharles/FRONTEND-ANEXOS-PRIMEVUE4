@@ -65,18 +65,18 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
 </script>
 <template>
   <div class="mb-2 mt-2">
-    <h3 class="text-sm text-color mb-2">Generales</h3>
+    <h3 class="texto-sm text-color mb-2">Generales</h3>
 
     <!-- Información del componente -->
     <!-- <PrimePanel header="Información del componente" class="mb-2" :toggleable="false">
       <div class="d-flex flex-column ga1 text-secondary">
         <div>
           <label class="">ID:</label>
-          <label class="ml-1 font-medium text-sm">{{ campo.id }}</label>
+          <label class="ml-1  texto-sm">{{ campo.id }}</label>
         </div>
         <div>
           <label class="">Tipo:</label>
-          <label class="ml-1 font-medium text-sm">{{ campo.tipo }}</label>
+          <label class="ml-1  texto-sm">{{ campo.tipo }}</label>
         </div>
       </div>
     </PrimePanel> -->
@@ -85,66 +85,68 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
     <div class="fluid">
       <!-- Tipo de campo -->
       <div class="mb-2" >
-        <label class="text-sm">Id: </label>
-         <label class="ml-1 text-sm">{{ campo.id }}</label>
+        <span class="texto-sm negrilla">Id: </span>
+        <span class="ml-1 texto-sm negrilla">{{ campo.id }}</span>
       </div>
 
 
       <!-- Tipo de campo -->
       <div class="mb-2" v-if="campo.tipo !== TipoCampoValor.Panel">
-        <label class="font-medium text-sm">Tipo</label>
+        <label for="tipoCampo" class="texto-sm">Tipo</label>
         <PrimeSelect
+          id="tipoCampo"
           :model-value="campo.tipo"
           @update:model-value="cambiarTipoCampo"
           :options="[...TIPOS_OPCIONES]"
           option-label="etiqueta"
           option-value="valor"
-          class="ancho-100 text-sm"
+          class="ancho-100 texto-sm"
         />
       </div>
 
       <!-- Nombre -->
       <div class="mb-2">
-        <label class="font-medium text-sm">Nombre</label>
+        <label for="nombreCampo" class="texto-sm">Nombre</label>
         <PrimeInputText
+          id="nombreCampo"
           :model-value="campo.nombre || ''"
           @update:model-value="(v: string | undefined) => actualizarTexto('nombre', v || '')"
           placeholder="Nombre del campo"
-          class="ancho-100 text-sm"
+          class="ancho-100 texto-sm"
         />
       </div>
 
       <!-- Etiqueta -->
       <div class="mb-2">
-        <label class="font-medium text-sm">Etiqueta</label>
+        <label class="texto-sm">Etiqueta</label>
         <PrimeInputText
           :model-value="campo.etiqueta || ''"
           @update:model-value="(v: string | undefined) => actualizarTexto('etiqueta', v || '')"
           placeholder="Etiqueta del campo"
-          class="ancho-100 text-sm"
+          class="ancho-100 texto-sm"
         />
       </div>
 
       <!-- Placeholder -->
       <div class="mb-2" v-if="ServicioCampos.soportaPlaceholder(campo.tipo)">
-        <label class="font-medium text-sm">Placeholder</label>
+        <label class="texto-sm">Placeholder</label>
         <PrimeInputText
           :model-value="campo.marcadorPosicion || ''"
           @update:model-value="(v: string | undefined) => actualizarTexto('marcadorPosicion', v || '')"
           placeholder="Texto de placeholder"
-          class="ancho-100 text-sm"
+          class="ancho-100 texto-sm"
         />
       </div>
 
       <!-- Valor por defecto para texto -->
       <div class="mb-2" v-if="ServicioCampos.esCampoDeTexto(campo.tipo)">
-        <label class="font-medium text-sm">Valor por defecto</label>
+        <label class="texto-sm">Valor por defecto</label>
         <PrimeInputText
           v-if="campo.tipo !== TipoCampoValor.AreaTexto"
           :model-value="metadatos.valorPorDefecto as string || ''"
           @update:model-value="actualizarValorPorDefecto"
           placeholder="Valor inicial"
-          class="ancho-100 text-sm"
+          class="ancho-100 texto-sm"
         />
         <PrimeTextarea
           v-else
@@ -157,7 +159,7 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
 
       <!-- Valor por defecto para número -->
       <div class="mb-2" v-if="campo.tipo === TipoCampoValor.Numero">
-        <label class="font-medium text-sm">Valor por defecto</label>
+        <label class="texto-sm">Valor por defecto</label>
         <PrimeInputNumber
           :model-value="metadatos.valorPorDefecto as number || 0"
           @update:model-value="actualizarValorPorDefecto"
@@ -167,7 +169,7 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
 
       <!-- Configuración de número - Min/Max -->
       <div class="mb-2" v-if="campo.tipo === TipoCampoValor.Numero">
-        <label class="font-medium text-sm">Mínimo</label>
+        <label class="texto-sm">Mínimo</label>
         <PrimeInputNumber
           :model-value="metadatos.minimo"
           @update:model-value="(v: number) => actualizarMetaNumero({ min: v })"
@@ -176,7 +178,7 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
       </div>
 
       <div class="mb-2" v-if="campo.tipo === TipoCampoValor.Numero">
-        <label class="font-medium text-sm">Máximo</label>
+        <label class="texto-sm">Máximo</label>
         <PrimeInputNumber
           :model-value="metadatos.maximo"
           @update:model-value="(v: number) => actualizarMetaNumero({ max: v })"
@@ -186,7 +188,7 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
 
       <!-- Paso -->
       <div class="mb-2" v-if="campo.tipo === TipoCampoValor.Numero">
-        <label class="font-medium text-sm">Paso</label>
+        <label class="texto-sm">Paso</label>
         <PrimeInputNumber
           :model-value="(metadatos.paso) ?? 1"
           @update:model-value="(v: number) => actualizarMetaNumero({ step: v })"
@@ -196,7 +198,7 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
 
       <!-- Mensaje Min -->
       <div class="mb-2" v-if="campo.tipo === TipoCampoValor.Numero">
-        <label class="font-medium text-sm">Mensaje Min</label>
+        <label class="texto-sm">Mensaje Min</label>
         <PrimeInputText
           :model-value="(metadatos.mensajeMinimo as string) || ''"
           @update:model-value="(v: string | undefined) => actualizarMetaNumero({ minMessage: v || '' })"
@@ -206,7 +208,7 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
 
       <!-- Mensaje Max -->
       <div class="mb-2" v-if="campo.tipo === TipoCampoValor.Numero">
-        <label class="font-medium text-sm">Mensaje Max</label>
+        <label class="texto-sm">Mensaje Max</label>
         <PrimeInputText
           :model-value="(metadatos.mensajeMaximo as string) || ''"
           @update:model-value="(v: string | undefined) => actualizarMetaNumero({ maxMessage: v || '' })"
@@ -216,7 +218,7 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
 
       <!-- Valor por defecto para checkbox individual -->
       <div class="mb-2" v-if="campo.tipo === TipoCampoValor.Casilla && !tieneOpciones">
-        <label class="d-flex ai-center font-medium text-sm">
+        <label class="d-flex ai-center  texto-sm">
           <PrimeCheckbox
             :model-value="metadatos.valorPorDefecto as boolean || false"
             @update:model-value="actualizarValorPorDefecto"
@@ -228,7 +230,7 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
 
       <!-- Configuración de fecha -->
       <div class="mb-2" v-if="campo.tipo === TipoCampoValor.Fecha">
-        <label class="font-medium text-sm">Valor por defecto</label>
+        <label class="texto-sm">Valor por defecto</label>
         <PrimeDatePicker
           :model-value="metadatos.valorPorDefecto as Date || null"
           @update:model-value="actualizarValorPorDefecto"
@@ -237,5 +239,5 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
       </div>
     </div>
   </div>
-      <PrimeDivider />
+      <PrimeDivider class="my-3" />
 </template>

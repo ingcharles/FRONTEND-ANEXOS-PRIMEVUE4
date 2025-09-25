@@ -62,7 +62,7 @@ describe('Validación por columna en tabla', () => {
     await wrapper.vm.$nextTick()
 
     // Esperamos que aparezca error con la clase correcta
-    const errorEls = wrapper.findAll('.text-red-500')
+    const errorEls = wrapper.findAll('.color-rojo')
     expect(errorEls.length).toBeGreaterThan(0)
   })
 })

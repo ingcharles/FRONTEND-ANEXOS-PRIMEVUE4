@@ -6,10 +6,10 @@ import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import { evaluarReglasCampo } from '@/utilidades/Logica'
 import { ServicioDependenciasFormulario } from '@/servicios/disenador/ServicioDependencias'
 import { ServicioEsquemasFormulario } from '@/servicios/disenador/ServicioEsquemas'
-import Button from 'primevue/button'
 import RenderizadorCampo from './RenderizadorCampo.vue'
 import type { RegistroDatos, ValorDato } from '@/tipos/Comunes'
 import { TipoCampoValor } from '@/enumeraciones/Campos'
+import { ModoOpciones } from '@/tipos/TabAtributos'
 
 // Composables y servicios
 const almacen = useAlmacenDisenador()
@@ -64,66 +64,93 @@ function obtenerOpciones(campo: EsquemaCampo): Array<{ label: string; value: str
   return Array.isArray(opciones) ? opciones : []
 }
 
-function checkboxEsGrupo(campo: EsquemaCampo): boolean {
-  return obtenerOpciones(campo).length > 0
+
+function aplicarValoresPorDefecto(lista: EsquemaCampo[], sobrescribirSiVacio = false): void {
+  if (!Array.isArray(lista)) return;
+  for (const campo of lista) {
+    if (!campo) continue;
+    if (campo.nombre) {
+      const valorDefecto = obtenerValorDefectoNormalizado(campo);
+      aplicarValorSiCorresponde(campo, valorDefecto, sobrescribirSiVacio);
+    }
+    if (campo.hijos?.length) {
+      aplicarValoresPorDefecto(campo.hijos, sobrescribirSiVacio);
+    }
+  }
 }
 
-// Función para aplicar valores por defecto
-function aplicarValoresPorDefecto(lista: EsquemaCampo[], sobrescribirSiVacio = false): void {
-  if (!Array.isArray(lista)) return
-  for (const campo of lista) {
-    if (!campo) continue
+function obtenerValorDefectoNormalizado(campo: EsquemaCampo): ValorDato | undefined {
+  const metadatos = campo.metadatos as MetadatosCampo | undefined;
+  const valorDefecto = metadatos?.valorPorDefecto as ValorDato | undefined;
 
-    if (campo.nombre) {
-      const metadatos = campo.metadatos as MetadatosCampo | undefined
-      let valorDefecto = metadatos?.valorPorDefecto as ValorDato | undefined
+  switch (campo.tipo) {
+    case TipoCampoValor.Hora:
+      return typeof valorDefecto === 'string' ? parsearHoraCadenaAFecha(valorDefecto) : valorDefecto;
+    case TipoCampoValor.Numero:
+      return normalizarNumero(valorDefecto);
+    case TipoCampoValor.Fecha:
+      return normalizarFecha(valorDefecto);
+    case TipoCampoValor.Casilla:
+      return normalizarCasilla(campo, valorDefecto);
+    case TipoCampoValor.Tabla:
+      return normalizarTabla(campo, valorDefecto);
+    default:
+      return valorDefecto;
+  }
+}
 
-      // Normalizar defaults por tipo
-      if (campo.tipo === TipoCampoValor.Hora  && typeof valorDefecto === 'string') {
-        valorDefecto = parsearHoraCadenaAFecha(valorDefecto)
-      }
+function normalizarNumero(valor: ValorDato | undefined): number | undefined {
+  if (typeof valor === 'string' && valor.trim() !== '') {
+    const numero = Number(valor);
+    return isNaN(numero) ? undefined : numero;
+  }
+  return valor as number | undefined;
+}
 
-      if (campo.tipo === TipoCampoValor.Numero && typeof valorDefecto === 'string' && valorDefecto.trim() !== '') {
-        const numeroParseado = Number(valorDefecto)
-        if (!isNaN(numeroParseado)) valorDefecto = numeroParseado
-      }
+function normalizarFecha(valor: ValorDato | undefined): Date | undefined {
+  if (typeof valor === 'string' && valor.trim() !== '') {
+    const fecha = new Date(valor);
+    return isNaN(fecha.getTime()) ? undefined : fecha;
+  }
+  return valor as Date | undefined;
+}
 
-      if (campo.tipo === TipoCampoValor.Fecha) {
-        if (typeof valorDefecto === 'string' && valorDefecto.trim() !== '') {
-          const fechaParseada = new Date(valorDefecto)
-          if (!isNaN(fechaParseada.getTime())) valorDefecto = fechaParseada
-        }
-      }
+function normalizarCasilla(campo: EsquemaCampo, valor: ValorDato | undefined): ValorDato {
+  if (obtenerOpciones(campo).length > 0) {
+    return Array.isArray(valor) ? valor : [];
+  }
+  if (typeof valor === 'string') {
+    return valor.toLowerCase() === 'true';
+  }
+  if (typeof valor === 'boolean') {
+    return valor;
+  }
+  // Si no hay valor, retorna false por defecto para casilla simple
+  return false;
+}
 
-      if (campo.tipo === TipoCampoValor.Casilla && typeof valorDefecto === 'string') {
-        valorDefecto = valorDefecto.toLowerCase() === 'true'
-      }
+function normalizarTabla(campo: EsquemaCampo, valor: ValorDato | undefined): ValorDato {
+  if (Array.isArray(valor)) return valor;
+  const columnas = servicioEsquemas.obtenerColumnasTabla(campo);
+  const filas = servicioEsquemas.obtenerFilasTabla(campo);
+  return Array.from({ length: filas }, () => servicioEsquemas.crearFilaVacia(columnas));
+}
 
-      if (campo.tipo === TipoCampoValor.Casilla && checkboxEsGrupo(campo)) {
-        if (!Array.isArray(valorDefecto)) valorDefecto = []
-      }
+function aplicarValorSiCorresponde(
+  campo: EsquemaCampo,
+  valorDefecto: ValorDato | undefined,
+  sobrescribirSiVacio: boolean
+): void {
+  if (!campo.nombre) return; // <-- Asegura que nombre existe
 
-      if (campo.tipo === TipoCampoValor.Tabla && Array.isArray(valorDefecto)) {
-        const columnas = servicioEsquemas.obtenerColumnasTabla(campo)
-        const filas = servicioEsquemas.obtenerFilasTabla(campo)
-        if (!Array.isArray(valorDefecto)) {
-          valorDefecto = Array.from({ length: filas }, () => servicioEsquemas.crearFilaVacia(columnas))
-        }
-      }
+  const estado = evaluarReglasCampo(campo, valores.value, mapaIdNombre.value);
+  if (valorDefecto === undefined || !estado.visible) return;
 
-    // Respetar visibilidad
-    const estado = evaluarReglasCampo(campo, valores.value, mapaIdNombre.value)
-      if (valorDefecto !== undefined && estado.visible) {
-        const valorActual = valores.value[campo.nombre]
-        if (sobrescribirSiVacio ? esVacio(valorActual) : valorActual === undefined) {
-          almacen.actualizarValorCampo(paginaActual.value.id, campo.nombre, valorDefecto)
-        }
-      }
-    }
+  const valorActual = valores.value[campo.nombre];
+  const debeSobrescribir = sobrescribirSiVacio ? esVacio(valorActual) : valorActual === undefined;
 
-    if (campo.hijos?.length) {
-      aplicarValoresPorDefecto(campo.hijos, sobrescribirSiVacio)
-    }
+  if (debeSobrescribir) {
+    almacen.actualizarValorCampo(paginaActual.value.id, campo.nombre, valorDefecto);
   }
 }
 
@@ -139,7 +166,7 @@ function reconfigurarDependencias(): void {
   const dependencia = (metadatos.dependencia || {}) as ConfiguracionDependencia
 
     // Cargar opciones independientes (sin dependencias) que usan API
-    const tieneConfiguracionApi = metadatos.modoOpciones === 'api' ||
+    const tieneConfiguracionApi = metadatos.modoOpciones === ModoOpciones.API ||
       metadatos.urlApi ||
       (metadatos as Record<string, unknown>).apiUrl ||
       (metadatos.configuracionApi as Record<string, unknown>)?.url
@@ -186,72 +213,6 @@ function reconfigurarDependencias(): void {
     registroDependencias.set(campo.id, detener)
   }
 }
-
-// Funciones para firmas de detección de cambios
-/*function recolectarFirmaSchema(
-  lista: EsquemaCampo[],
-  salida: Array<Record<string, ValorDato>> = []
-): Array<Record<string, ValorDato>> {
-  if (!lista || !Array.isArray(lista)) {
-    return salida
-  }
-
-  for (const campo of lista) {
-    if (!campo) continue
-
-    const metadatos = (campo.metadatos || {}) as MetadatosCampo
-    const grid = campo.grid
-      ? {
-          sm: typeof campo.grid.sm === 'number' ? campo.grid.sm : null,
-          md: typeof campo.grid.md === 'number' ? campo.grid.md : null,
-          lg: typeof campo.grid.lg === 'number' ? campo.grid.lg : null,
-        }
-      : null
-
-    const opciones = (metadatos.opciones ?? metadatos.opciones) as
-      | Array<{ deshabilitado?: boolean; etiqueta?: string; valor?: string | number }>
-      | undefined
-
-  const opcionesNormalizadas: Array<Record<string, ValorDato>> = Array.isArray(opciones)
-      ? opciones.map(o => ({
-          etiqueta: String(o.etiqueta ?? ''),
-          valor: (typeof o.valor === 'string' || typeof o.valor === 'number')
-              ? o.valor
-              : '',
-          deshabilitado: typeof o.deshabilitado === 'boolean' ? o.deshabilitado : null,
-        }))
-      : []
-
-  const minDateRaw = (metadatos.fechaMinima ?? metadatos.fechaMinima)
-  const maxDateRaw = (metadatos.fechaMaxima ?? metadatos.fechaMaxima)
-    const minDateOut: ValorDato | null =
-      minDateRaw instanceof Date ? minDateRaw : (typeof minDateRaw === 'string' ? minDateRaw : null)
-    const maxDateOut: ValorDato | null =
-      maxDateRaw instanceof Date ? maxDateRaw : (typeof maxDateRaw === 'string' ? maxDateRaw : null)
-
-    salida.push({
-      id: campo.id,
-      type: campo.tipo,
-      name: campo.nombre || '',
-      required: Boolean(campo.requerido),
-      grid,
-      m: {
-        min: typeof (metadatos.minimo ?? metadatos.minimo) === 'number' ? (metadatos.minimo ?? metadatos.minimo) as number : null,
-        max: typeof (metadatos.maximo ?? metadatos.maximo) === 'number' ? (metadatos.maximo ?? metadatos.maximo) as number : null,
-        minDate: minDateOut,
-        maxDate: maxDateOut,
-        options: opcionesNormalizadas,
-        valorPorDefecto: (metadatos?.valorPorDefecto ?? null) as ValorDato | null,
-      },
-      v: (campo.validaciones || []).map(v => ({ t: v.tipo, val: (v.valor ?? null) as ValorDato | null })),
-    })
-
-    if (campo.hijos?.length) {
-      recolectarFirmaSchema(campo.hijos, salida)
-    }
-  }
-  return salida
-}*/
 
 function recolectarFirmasDefaults(lista: EsquemaCampo[], salida: Array<string> = []): Array<string> {
   if (!Array.isArray(lista)) return salida
@@ -315,7 +276,6 @@ watch(firmaDefaults, () => {
 function enviar(): void {
   errores.value = {}
 
-  // Validar TODO el formulario: iterar todas las páginas y sus campos
   const erroresGlobales: Record<string, string> = {}
   const valoresGlobales: RegistroDatos = {}
 
@@ -368,7 +328,7 @@ function irPaginaSiguiente(): void {
         :disabled="indicePagina === 0"
         @click="irPaginaAnterior"
       />
-      <div class="font-semibold">
+      <div class="negrilla">
         {{ paginaActual.titulo || ('Página ' + (indicePagina + 1)) }}
       </div>
       <PrimeButton
@@ -382,7 +342,7 @@ function irPaginaSiguiente(): void {
 
     <!-- Título de página única -->
     <div class="mb-2" v-else>
-      <div class="font-semibold">
+      <div class="negrilla">
         {{ paginaActual.titulo || ('Página ' + (indicePagina + 1)) }}
       </div>
     </div>
@@ -396,8 +356,8 @@ function irPaginaSiguiente(): void {
             :valores-campos="valores"
             :errores-campos="errores"
             :mapa-id-nombre="mapaIdNombre"
-            @valor-cambiado="(nombre: string, valor: ValorDato) => almacen.actualizarValorCampo(paginaActual.id, nombre, valor)"
-          />
+            @valor-cambiado="(nombre: string, valor: unknown) => almacen.actualizarValorCampo(paginaActual.id, nombre, valor as ValorDato)"
+/>
         </div>
       </template>
 
@@ -406,7 +366,7 @@ function irPaginaSiguiente(): void {
         class="col-12"
         v-if="(totalPaginas === 1 || indicePagina >= almacen.esquemaFormulario.paginas.length - 1) && !paginaActual?.campos?.some(f => f.tipo === 'boton')"
       >
-        <PrimeButton type="submit" label="Enviar" icon="pi pi-check" class="ancho-100 text-sm" />
+        <PrimeButton type="submit" label="Enviar" icon="pi pi-check" class="ancho-100 texto-sm" />
       </div>
     </form>
   </div>
