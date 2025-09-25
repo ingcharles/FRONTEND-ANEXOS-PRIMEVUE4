@@ -6,6 +6,7 @@ import SeccionDiseno from './SeccionDiseno.vue'
 import SeccionComportamiento from './SeccionComportamiento.vue'
 import SeccionOpciones from './SeccionOpciones.vue'
 import SeccionTabla from './SeccionTabla.vue'
+import { TipoCampoValor } from '@/enumeraciones/Campos'
 
 defineProps<{ idCampo: string }>()
 const almacen = useAlmacenDisenador()
@@ -28,13 +29,13 @@ const campo = computed(() => almacen.campoSeleccionado)
 
     <!-- Opciones para select/radio/checkbox -->
     <SeccionOpciones
-      v-if="campo.tipo === 'seleccion' || campo.tipo === 'radio' || campo.tipo === 'casilla'"
+      v-if="campo.tipo === TipoCampoValor.Seleccion || campo.tipo === TipoCampoValor.Radio || campo.tipo === TipoCampoValor.Casilla"
       :campo="campo"
     />
 
     <!-- Configuración de tabla -->
     <SeccionTabla
-      v-if="campo.tipo === 'tabla'"
+      v-if="campo.tipo === TipoCampoValor.Tabla"
       :campo="campo"
     />
   </div>

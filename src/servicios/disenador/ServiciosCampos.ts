@@ -132,7 +132,7 @@ export class ServicioCampos {
       }
 
       // Asegurar que panel tenga array de hijos
-      if (campoActualizado.tipo === 'panel' && !Array.isArray(campoActualizado.hijos)) {
+      if (campoActualizado.tipo === TipoCampoValor.Panel && !Array.isArray(campoActualizado.hijos)) {
         campoActualizado.hijos = Array.isArray(campoActual.hijos) ? campoActual.hijos : []
       }
 

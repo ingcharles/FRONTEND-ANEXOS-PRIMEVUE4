@@ -279,7 +279,7 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
   private aplicarValidacionRequerido(campo: EsquemaCampo, esquemaBase: z.ZodTypeAny): z.ZodTypeAny {
     const mensajeRequerido = campo.validaciones?.find(v => v.tipo === 'requerido')?.mensaje || 'Requerido'
 
-    if (campo.tipo === 'casilla') {
+    if (campo.tipo === TipoCampoValor.Casilla) {
       const metadatos = campo.metadatos as MetadatosCampo | undefined
       const opciones = metadatos?.opciones
 

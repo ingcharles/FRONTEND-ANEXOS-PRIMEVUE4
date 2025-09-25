@@ -34,7 +34,7 @@ const columnaActual = computed<number>({
 })
 
 const conteoHijos = computed<number>(() =>
-  propiedades.campo.tipo === 'panel' ? (propiedades.campo.hijos?.length ?? 0) : 0
+  propiedades.campo.tipo === TipoCampoValor.Panel ? (propiedades.campo.hijos?.length ?? 0) : 0
 )
 
 const conteoOpciones = computed<number>(() => {

@@ -231,7 +231,7 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
   private aplicarValidacionRequerido(campo: EsquemaCampo, esquemaBase: z.ZodTypeAny): z.ZodTypeAny {
   const mensajeRequerido = campo.validaciones?.find((v: ReglaValidacion) => v.tipo === 'requerido')?.mensaje || 'Requerido'
 
-    if (campo.tipo === 'casilla') {
+    if (campo.tipo === TipoCampoValor.Casilla) {
       const metaObjeto = campo.metadatos as Record<string, unknown> | undefined
       const opciones = metaObjeto?.opciones as unknown
 

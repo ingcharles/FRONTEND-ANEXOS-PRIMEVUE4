@@ -10,6 +10,7 @@ import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 import type { ConfigApi } from '@/interfaces/TabAtributos'
 import { MetodoHttp, ModoCarga, ModoOpciones } from '@/tipos/TabAtributos'
 import { opcionesFuente, opcionesMetodo, opcionesContentType } from '@/constantes/TabAtributos'
+import { TipoCampoValor } from '@/enumeraciones/Campos'
 
 
 const props = defineProps<{
@@ -581,7 +582,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
     <div class="mt-3">
       <label class="font-medium text-sm">Valor por defecto</label>
 
-      <template v-if="campo?.tipo === 'casilla'">
+      <template v-if="campo?.tipo === TipoCampoValor.Casilla">
         <PrimeMultiSelect
           :model-value="obtenerValorPorDefectoArray()"
           :options="obtenerOpciones()"

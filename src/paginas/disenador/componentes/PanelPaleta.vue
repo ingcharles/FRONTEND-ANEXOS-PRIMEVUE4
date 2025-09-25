@@ -133,9 +133,9 @@ const categoriasPaleta = ref([
     label: 'Elementos UI',
     icon: 'pi pi-window-maximize',
     items: [
-      { key: '4_0', label: 'Etiqueta', icon: 'pi pi-info-circle', tipo: TipoCampoValor.Etiqueta },
-      { key: '4_1', label: 'Botón', icon: 'pi pi-check', tipo: TipoCampoValor.Boton },
-      { key: '4_2', label: 'Divisor', icon: 'pi pi-minus', tipo: TipoCampoValor.Divisor },
+      { key: '4_0', label: TipoCampoEtiqueta.Etiqueta, icon: 'pi pi-info-circle', tipo: TipoCampoValor.Etiqueta },
+      { key: '4_1', label: TipoCampoEtiqueta.Boton, icon: 'pi pi-check', tipo: TipoCampoValor.Boton },
+      { key: '4_2', label: TipoCampoEtiqueta.Divisor, icon: 'pi pi-minus', tipo: TipoCampoValor.Divisor },
     ]
   }
 ])
@@ -160,9 +160,9 @@ const modeloPanelMenuFiltrado = computed(() => {
 })
 
 function clonarDesdePaleta(elemento: { tipo: TipoCampo; label: string; propiedadesPorDefecto?: Record<string, unknown> }): EsquemaCampo {
-  const id = generarId('field')
+  const id = generarId('campo')
     // Configuración de grid según el tipo de campo
-  const configuracionGrid = elemento.tipo === 'panel'
+  const configuracionGrid = elemento.tipo === TipoCampoValor.Panel
     ? { sm: 12, md: 12, lg: 12 }  // Panel ocupa ancho completo
     : { sm: 12, md: 6, lg: 6 }    // Otros campos mitad del ancho en md/lg
 
@@ -176,7 +176,7 @@ function clonarDesdePaleta(elemento: { tipo: TipoCampo; label: string; propiedad
     requerido: false,
     ...(elemento.propiedadesPorDefecto || {}),
     // Solo el tipo panel lleva hijos; para otros, forzamos hijos undefined
-    ...(elemento.tipo === 'panel' ? {} : { hijos: undefined }),
+    ...(elemento.tipo === TipoCampoValor.Panel ? {} : { hijos: undefined }),
   }
 }
 

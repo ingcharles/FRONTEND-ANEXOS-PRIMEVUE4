@@ -1,6 +1,6 @@
 <template>
-  <div v-if="campo?.tipo === 'tabla'">
-    <div class="font-semibold mb-2">Configuración de Tabla</div>
+  <div v-if="campo?.tipo === TipoCampoValor.Tabla">
+    <h3 class="text-sm text-color mb-2">Tabla</h3>
 
     <!-- Gestión de columnas -->
     <div class="flex justify-content-between align-items-center mb-2">
