@@ -22,7 +22,7 @@ watch(() => seleccionado.value?.id, () => {
 </script>
 
 <template>
-  <Panel header="Propiedades">
+  <Panel header="Propiedades" class="text-lg text-color mb-4 px-2 py-2">
     <div v-if="!seleccionado">Selecciona un elemento para ver propiedades</div>
     <template v-else>
       <Tabs v-model:value="tabActivo">

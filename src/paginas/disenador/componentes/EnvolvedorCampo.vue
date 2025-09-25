@@ -161,7 +161,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
     <!-- Badge informativo (superior derecha) con dos columnas: texto izquierda, acciones derecha -->
     <div v-if="seleccionado" class="info-badge">
       <PrimeTag class="text-xs px-1 py-1 pointer-events-auto min-w-64" severity="primary">
-        <div class="grid w-full align-items-start">
+        <div class="grid ancho-100 text-sm align-items-start">
           <!-- Columna izquierda (8/12): textos -->
           <div class="col-8 flex flex-column gap-1 text-[10px]">
             <span class="font-medium">{{ `${campo.tipo || campo.etiqueta}: ${campo.id}` }}</span>
@@ -185,7 +185,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
         <PrimeInputText
           :model-value="valorActualTexto"
           :placeholder="campo.marcadorPosicion"
-          class="w-full"
+          class="ancho-100 text-sm"
           :disabled="campo.deshabilitado"
           :readonly="campo.soloLectura"
         />
@@ -193,7 +193,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
       <template v-else-if="campo.tipo===TipoCampoValor.Fecha">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
         <PrimeInputText
-          class="w-full"
+          class="ancho-100 text-sm"
           :model-value="(valorActual instanceof Date) ? valorActual : (typeof valorActual==='string' && valorActual ? new Date(valorActual) : undefined)"
           :disabled="campo.deshabilitado"
         />
@@ -203,7 +203,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
         <PrimeDatePicker
           time-only
           hour-format="24"
-          class="w-full"
+          class="ancho-100 text-sm"
           :model-value="(typeof valorActual==='string' && /^([01]?\d|2[0-3]):([0-5]\d)$/.test(valorActual as any)) ? (()=>{ const [hh,mm] = String(valorActual).split(':'); const d = new Date(); d.setHours(Number(hh), Number(mm), 0, 0); return d; })() : undefined"
           :disabled="campo.deshabilitado"
         />
@@ -213,7 +213,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
         <PrimeTextarea
           :model-value="valorActualTexto"
           :placeholder="campo.marcadorPosicion"
-          class="w-full"
+          class="ancho-100 text-sm"
           :disabled="campo.deshabilitado"
           :readonly="campo.soloLectura"
         />
@@ -221,7 +221,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
       <template v-else-if="campo.tipo===TipoCampoValor.Seleccion">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
         <PrimeSelect
-          class="w-full"
+          class="ancho-100 text-sm"
           :options="(campo.metadatos?.opciones as Array<{ etiqueta: string; valor: unknown }>) || []"
           option-label="etiqueta"
           option-value="valor"
@@ -235,7 +235,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
       <template v-else-if="campo.tipo===TipoCampoValor.Numero">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
         <PrimeInputNumber
-          class="w-full"
+          class="ancho-100 text-sm"
           :model-value="(valorActualTexto!=null && valorActualTexto!=='' && !Number.isNaN(Number(valorActualTexto))) ? Number(valorActualTexto) : undefined"
           :placeholder="campo.marcadorPosicion"
           :disabled="campo.deshabilitado"
@@ -291,7 +291,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
         <div class="border rounded-border p-2">
           <div class="font-semibold mb-2">Tabla</div>
           <div class="overflow-auto">
-            <table class="w-full text-sm">
+            <table class="ancho-100 text-sm text-sm">
               <thead>
                 <tr>
                   <th v-for="col in ((campo.metadatos as any)?.columnas||[])" :key="col.name" class="text-left p-2 border-bottom-1 surface-border">
@@ -302,9 +302,9 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
               <tbody>
                 <tr v-for="(fila, indice) in Array.from({ length: Number((campo.metadatos as any)?.filas || 1) })" :key="indice">
                   <td v-for="col in ((campo.metadatos as any)?.columnas||[])" :key="col.name" class="p-2">
-                    <PrimeInputText v-if="col.tipo===TipoCampoValor.Texto" class="w-full" disabled placeholder="Texto" />
-                    <PrimeInputNumber v-else-if="col.tipo===TipoCampoValor.Numero" class="w-full" disabled placeholder="0" />
-                    <PrimeDatePicker v-else-if="col.tipo===TipoCampoValor.Fecha" class="w-full" disabled />
+                    <PrimeInputText v-if="col.tipo===TipoCampoValor.Texto" class="ancho-100 text-sm" disabled placeholder="Texto" />
+                    <PrimeInputNumber v-else-if="col.tipo===TipoCampoValor.Numero" class="ancho-100 text-sm" disabled placeholder="0" />
+                    <PrimeDatePicker v-else-if="col.tipo===TipoCampoValor.Fecha" class="ancho-100 text-sm" disabled />
                     <span v-else class="text-muted-color">—</span>
                   </td>
                 </tr>

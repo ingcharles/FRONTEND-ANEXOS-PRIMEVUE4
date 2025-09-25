@@ -105,7 +105,7 @@ function mostrarAyuda(tipo: ReglaValidacion['tipo']): boolean {
       </div>
 
       <div class="flex flex-wrap gap-2">
-        <Button
+        <PrimeButton
           label="Requerido"
           icon="pi pi-exclamation-triangle"
           size="small"
@@ -114,7 +114,7 @@ function mostrarAyuda(tipo: ReglaValidacion['tipo']): boolean {
           @click="agregarValidacion('requerido')"
           class="shadow-1"
         />
-        <Button
+        <PrimeButton
           label="Longitud mín."
           icon="pi pi-arrow-down"
           size="small"
@@ -123,7 +123,7 @@ function mostrarAyuda(tipo: ReglaValidacion['tipo']): boolean {
           @click="agregarValidacion('longitud-minima')"
           class="shadow-1"
         />
-        <Button
+        <PrimeButton
           label="Longitud máx."
           icon="pi pi-arrow-up"
           size="small"
@@ -132,7 +132,7 @@ function mostrarAyuda(tipo: ReglaValidacion['tipo']): boolean {
           @click="agregarValidacion('longitud-maxima')"
           class="shadow-1"
         />
-        <Button
+        <PrimeButton
           label="Patrón"
           icon="pi pi-search"
           size="small"
@@ -141,7 +141,7 @@ function mostrarAyuda(tipo: ReglaValidacion['tipo']): boolean {
           @click="agregarValidacion('patron')"
           class="shadow-1"
         />
-        <Button
+        <PrimeButton
           label="Personalizado"
           icon="pi pi-code"
           size="small"
@@ -174,30 +174,30 @@ function mostrarAyuda(tipo: ReglaValidacion['tipo']): boolean {
     >
       <div class="grid align-items-end gap-3">
         <!-- Tipo de validación -->
-        <div class="col-12 md:col-4">
-          <label class="block mb-2 text-700 font-medium">
+        <div class="sm:col-12 md:col-12 lg:col-4">
+          <label class="font-medium text-sm text-700 font-medium">
             <i class="pi pi-cog mr-2"></i>Tipo de validación
           </label>
-          <Select
+          <PrimeSelect
             v-model="regla.tipo"
             :options="tiposValidacion"
             option-label="etiqueta"
             option-value="valor"
-            class="w-full"
+            class="ancho-100 text-sm"
             placeholder="Seleccionar tipo..."
           />
         </div>
 
         <!-- Campo de configuración -->
         <div class="col-12 md:col-8">
-          <label class="block mb-2 text-700 font-medium">
+          <label class="font-medium text-sm text-700 font-medium">
             <i class="pi pi-pencil mr-2"></i>
             {{ obtenerEtiquetaCampo(regla.tipo) }}
           </label>
-          <InputText
+          <PrimeInputText
             :model-value="String((regla as any).valor || '')"
             @update:model-value="(regla as any).valor = $event"
-            class="w-full"
+            class="ancho-100 text-sm"
             :placeholder="obtenerPlaceholderCampo(regla.tipo)"
           />
 
@@ -213,7 +213,7 @@ function mostrarAyuda(tipo: ReglaValidacion['tipo']): boolean {
 
       <!-- Acciones de la validación -->
       <div class="flex justify-content-end mt-3 pt-3" style="border-top: 1px solid var(--surface-100);">
-        <Button
+        <PrimeButton
           icon="pi pi-trash"
           severity="danger"
           size="small"

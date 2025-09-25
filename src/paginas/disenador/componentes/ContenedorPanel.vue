@@ -52,7 +52,7 @@ function obtenerClasesColumna(elemento: EsquemaCampo): string[] {
     @toggle="emitir('alternar')"
   >
     <draggable
-      class="grid w-full"
+      class="grid ancho-100 text-sm"
       v-model="lista"
       item-key="id"
       :group="{ name: 'paleta', pull: true, put: true }"

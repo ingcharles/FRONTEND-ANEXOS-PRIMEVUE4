@@ -14,14 +14,17 @@ const campo = computed(() => almacen.campoSeleccionado)
 
 <template>
   <div v-if="campo" class="p-d-flex p-flex-column p-gap-4 py-2 px-2">
+
     <!-- Información general del campo -->
     <SeccionGeneral :campo="campo" />
+
+    <!-- Comportamiento (required, visible, disabled) -->
+    <SeccionComportamiento :campo="campo" />
+
 
     <!-- Diseño y grid -->
     <SeccionDiseno :campo="campo" />
 
-    <!-- Comportamiento (required, visible, disabled) -->
-    <SeccionComportamiento :campo="campo" />
 
     <!-- Opciones para select/radio/checkbox -->
     <SeccionOpciones

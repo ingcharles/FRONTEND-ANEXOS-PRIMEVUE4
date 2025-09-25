@@ -286,7 +286,7 @@ window.addEventListener('keydown', manejarAtajos)
             :sort="false"
           >
             <template #item="{ element }">
-              <a v-ripple class="flex items-center pl-4 pr-2 py-2 cursor-pointer group w-full">
+              <a v-ripple class="flex items-center pl-4 pr-2 py-2 cursor-pointer group ancho-100 text-sm">
                 <i class="pi pi-grip-vertical p-mr-2" />
                 <i :class="['pi', element.icon, 'group-hover:text-inherit']" />
                 <span class="ml-2">{{ element.label }}</span>

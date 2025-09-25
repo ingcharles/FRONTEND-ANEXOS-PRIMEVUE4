@@ -43,7 +43,7 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
         :options="[...TIPOS_OPCIONES]"
         option-label="etiqueta"
         option-value="valor"
-        class="w-full"
+        class="ancho-100 text-sm"
         @update:model-value="manejarCambioTipo"
       />
     </div>
@@ -54,7 +54,7 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
       <InputText
         id="etiqueta-campo"
         :model-value="props.campo.etiqueta || ''"
-        class="w-full"
+        class="ancho-100 text-sm"
         placeholder="Etiqueta del campo"
         @input="(e) => manejarCambioTexto('etiqueta', e)"
       />
@@ -66,7 +66,7 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
       <InputText
         id="nombre-campo"
         :model-value="props.campo.nombre || ''"
-        class="w-full"
+        class="ancho-100 text-sm"
         placeholder="nombre_campo"
         @input="(e) => manejarCambioTexto('nombre', e)"
       />
@@ -81,7 +81,7 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
       <InputText
         id="placeholder-campo"
         :model-value="props.campo.marcadorPosicion || ''"
-        class="w-full"
+        class="ancho-100 text-sm"
         placeholder="Texto de ayuda para el usuario"
         @input="(e) => manejarCambioTexto('marcadorPosicion', e)"
       />

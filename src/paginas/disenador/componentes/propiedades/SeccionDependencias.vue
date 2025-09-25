@@ -5,13 +5,13 @@
     <div class="grid">
       <!-- Modo de envío -->
       <div class="col-12 md:col-6">
-        <label class="block mb-2">Modo de envío</label>
+        <label class="font-medium text-sm">Modo de envío</label>
         <PrimeSelect
           :model-value="configDependencia.modoEnvio || 'query'"
           :options="modoEnvioOpciones"
           option-label="label"
           option-value="value"
-          class="w-full"
+          class="ancho-100 text-sm"
           @focus="asegurarDependencia"
           @update:model-value="(v: ModoEnvio) => actualizarDependencia('modoEnvio', v)"
         />
@@ -19,14 +19,14 @@
 
       <!-- Campo padre -->
       <div class="col-12 md:col-6">
-        <label class="block mb-2">Campo padre (depende de)</label>
-        <MultiSelect
+        <label class="font-medium text-sm">Campo padre (depende de)</label>
+        <PrimeMultiSelect
           :model-value="obtenerCamposPadre()"
           :options="camposPaginaActual"
           option-label="label"
           option-value="value"
           placeholder="Seleccionar campo(s)"
-          class="w-full"
+          class="ancho-100 text-sm"
           @focus="asegurarDependencia"
           @update:model-value="actualizarCamposPadre"
         />
@@ -37,18 +37,18 @@
 
       <!-- Nombre de parámetro -->
       <div class="col-12 md:col-6" v-if="debeMostrarclaveParametro()">
-        <label class="block mb-2">Nombre de parámetro (claveParametro)</label>
-        <InputText
+        <label class="font-medium text-sm">Nombre de parámetro (claveParametro)</label>
+        <PrimeInputText
           :model-value="(configDependencia.claveParametro as string) || ''"
           :placeholder="obtenerPlaceholderclaveParametro()"
-          class="w-full"
+          class="ancho-100 text-sm"
           @focus="asegurarDependencia"
           @update:model-value="(v: string | undefined) => actualizarDependencia('claveParametro', v || '')"
         />
       </div>
 
       <!-- Opciones de comportamiento -->
-      <div class="col-12 md:col-4 flex align-items-center gap-2">
+      <div class="sm:col-12 md:col-12 lg:col-4 flex align-items-center gap-2">
         <Checkbox
           binary
           :model-value="configDependencia.limpiarAlCambiar !== false"
@@ -57,7 +57,7 @@
         <label class="text-sm">Limpiar al cambiar</label>
       </div>
 
-      <div class="col-12 md:col-4 flex align-items-center gap-2">
+      <div class="sm:col-12 md:col-12 lg:col-4 flex align-items-center gap-2">
         <Checkbox
           binary
           :model-value="configDependencia.deshabilitarHastaValor !== false"
@@ -67,8 +67,8 @@
       </div>
 
       <!-- Botón de limpiar -->
-      <div class="col-12 md:col-4">
-        <Button
+      <div class="sm:col-12 md:col-12 lg:col-4">
+        <PrimeButton
           size="small"
           severity="secondary"
           outlined

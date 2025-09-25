@@ -362,7 +362,7 @@ function irPaginaSiguiente(): void {
   <div class="p-3">
     <!-- Navegación entre páginas -->
     <div class="flex justify-between items-center mb-3" v-if="totalPaginas > 1">
-      <Button
+      <PrimeButton
         label="Anterior"
         icon="pi pi-angle-left"
         :disabled="indicePagina === 0"
@@ -371,7 +371,7 @@ function irPaginaSiguiente(): void {
       <div class="font-semibold">
         {{ paginaActual.titulo || ('Página ' + (indicePagina + 1)) }}
       </div>
-      <Button
+      <PrimeButton
         label="Siguiente"
         icon-pos="right"
         icon="pi pi-angle-right"
@@ -406,7 +406,7 @@ function irPaginaSiguiente(): void {
         class="col-12"
         v-if="(totalPaginas === 1 || indicePagina >= almacen.esquemaFormulario.paginas.length - 1) && !paginaActual?.campos?.some(f => f.tipo === 'boton')"
       >
-        <Button type="submit" label="Enviar" icon="pi pi-check" class="w-full" />
+        <PrimeButton type="submit" label="Enviar" icon="pi pi-check" class="ancho-100 text-sm" />
       </div>
     </form>
   </div>

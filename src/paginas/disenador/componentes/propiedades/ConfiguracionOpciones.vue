@@ -89,7 +89,7 @@ function generarOpcionesPorDefecto(): void {
   <div v-if="tieneOpciones" class="configuracion-opciones p-4 border-round border-1 surface-border">
     <div class="flex justify-content-between align-items-center mb-3">
       <h4 class="text-base font-semibold m-0">Opciones de selección</h4>
-      <Button
+      <PrimeButton
         v-if="opcionesActuales.length === 0"
         label="Generar opciones"
         icon="pi pi-plus"
@@ -113,24 +113,24 @@ function generarOpcionesPorDefecto(): void {
 
             <div class="flex-1 grid">
               <div class="col-6">
-                <InputText
+                <PrimeInputText
                   :model-value="opcion.etiqueta"
                   placeholder="Etiqueta"
-                  class="w-full"
+                  class="ancho-100 text-sm"
                   @update:model-value="(valor) => valor && actualizarOpcion(index, 'etiqueta', valor)"
                 />
               </div>
               <div class="col-6">
-                <InputText
+                <PrimeInputText
                   :model-value="opcion.valor.toString()"
                   placeholder="Valor"
-                  class="w-full"
+                  class="ancho-100 text-sm"
                   @update:model-value="(valor) => valor && actualizarOpcion(index, 'valor', valor)"
                 />
               </div>
             </div>
 
-            <Button
+            <PrimeButton
               icon="pi pi-trash"
               size="small"
               text
@@ -146,27 +146,27 @@ function generarOpcionesPorDefecto(): void {
     <div class="agregar-opcion border-top-1 surface-border pt-3">
       <div class="grid">
         <div class="col-5">
-          <InputText
+          <PrimeInputText
             v-model="nuevaOpcion.etiqueta"
             placeholder="Etiqueta de la opción"
-            class="w-full"
+            class="ancho-100 text-sm"
             @keydown.enter="agregarOpcion"
           />
         </div>
         <div class="col-5">
-          <InputText
+          <PrimeInputText
             v-model="nuevaOpcion.valor"
             placeholder="Valor técnico"
-            class="w-full"
+            class="ancho-100 text-sm"
             @keydown.enter="agregarOpcion"
           />
         </div>
         <div class="col-2">
-          <Button
+          <PrimeButton
             icon="pi pi-plus"
             label="Agregar"
             size="small"
-            class="w-full"
+            class="ancho-100 text-sm"
             :disabled="!nuevaOpcion.etiqueta.trim() || !nuevaOpcion.valor.toString().trim()"
             @click="agregarOpcion"
           />

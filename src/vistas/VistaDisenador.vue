@@ -2,7 +2,7 @@
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import PanelPaleta from '@/paginas/disenador/componentes/PanelPaleta.vue'
 import LienzoPagina from '@/paginas/disenador/componentes/LienzoPagina.vue'
-import TabsPropiedades from '@/paginas/disenador/componentes/TabsPropiedades.vue'
+import Propiedades from '@/paginas/disenador/componentes/Propiedades.vue'
 import VistaPrevia from '@/paginas/disenador/componentes/VistaPrevia.vue'
 import VistaJson from '@/paginas/disenador/componentes/VistaJson.vue'
 import ModalConfirmar from '@/componentes/ModalConfirmar.vue'
@@ -65,11 +65,11 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
 </script>
 
 <template>
-  <div class="p-3 grid w-full" style="min-height: 70vh">
+  <div class="p-3 grid ancho-100 text-sm" style="min-height: 70vh">
     <div class="col-12 md:col-2">
       <PanelPaleta />
     </div>
-    <div class="col-12 md:col-7">
+    <div class="col-12 md:col-8">
       <div class="flex items-center justify-between mb-2">
         <div class="flex gap-2 principal">
           <PrimeButton label="Añadir página" icon="pi pi-plus" @click="almacen.crearPaginaDespuesActual"/>
@@ -180,8 +180,8 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
         </PrimeTabPanels>
       </PrimeTabs>
     </div>
-    <div class="col-12 md:col-3">
-      <TabsPropiedades />
+    <div class="col-12 md:col-2">
+      <Propiedades />
     </div>
   </div>
 

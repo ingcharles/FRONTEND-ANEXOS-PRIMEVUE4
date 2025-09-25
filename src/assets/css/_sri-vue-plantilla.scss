@@ -881,6 +881,7 @@ input.p-dropdown-label:active {
 .p-dropdown:not(.p-disabled):hover {
     border: solid 1px $color-gris-neutro;
 }
+
 /********** Tooltip *************/
 [tooltip] {
     position: relative;
@@ -1613,9 +1614,95 @@ button.p-button.p-component.p-button-icon-only.p-button-rounded.p-button-seconda
     border: none;
 }
 
-
+.ancho-100 {
+  width: 100% !important;
+}
 
 /********** estilos agregados para diseñador************/
+
+/************** combos select*************/
+.p-select.p-component.p-inputwrapper {
+    width: 200px;
+}
+span.p-select-trigger-icon.pi.pi-chevron-down {
+    margin-top: -2px;
+    color: $color-gris-neutro;
+}
+.p-select .p-select-option.p-placeholder {
+    color: $color-gris-fuerte;
+}
+
+.p-select:not(.p-disabled).p-focus {
+    border: solid 2px $color-gris-neutro;
+    box-shadow: none;
+}
+.p-select:not(.p-disabled):hover {
+    border: solid 1px $color-gris-neutro;
+}
+
+.p-select {
+    border-radius: 0;
+
+    .p-select-trigger:hover {
+        background-color: $color-celeste;
+        border-left: solid 1px $color-gris-claro;
+    }
+}
+
+
+.p-paginator-bottom .p-select.p-component.p-inputwrapper {
+    width: 50px;
+    height: auto;
+    border-top: none;
+
+}
+
+.p-paginator-bottom .p-select-trigger {
+    background-color: #0c4597 !important;
+    text-decoration-color: #FFF;
+}
+
+.p-paginator-bottom svg.p-icon.p-select-trigger-icon {
+    color: #fff;
+}
+
+.p-paginator-bottom span.p-select-option.p-inputtext {
+    width: 30px;
+    display: flex;
+    color: white !important;
+    font-family: 'Roboto';
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 20px 10px 5px;
+    background-color: #0c4597;
+ }
+
+.p-paginator-bottom .p-select.p-component.p-inputwrapper {
+    width: 50px;
+    height: auto;
+    border-top: none;
+
+}
+
+.p-paginator-bottom .p-select-trigger {
+    background-color: #0c4597 !important;
+    text-decoration-color: #FFF;
+}
+
+.p-paginator-bottom svg.p-icon.p-select-trigger-icon {
+    color: #fff;
+}
+
+.p-paginator-bottom span.p-select-option.p-inputtext {
+    width: 30px;
+    display: flex;
+    color: white !important;
+    font-family: 'Roboto';
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 20px 10px 5px;
+    background-color: #0c4597;
+ }
 
 /********** tag ************/
 // .p-tag-size-small{

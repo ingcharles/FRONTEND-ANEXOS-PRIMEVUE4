@@ -84,7 +84,7 @@ function claseRellenoCelda(campo: EsquemaCampo): string {
 function clasesTablaCompleta(campo: EsquemaCampo): string[] {
   const estilo = obtenerEstiloTabla(campo)
   return [
-    'w-full',
+    'ancho-100 text-sm',
     'text-sm',
     estilo.conBordes ? 'border-1 surface-border' : ''
   ]
@@ -290,7 +290,7 @@ const esCampoRequerido = computed(() => {
         v-if="campo.tipo === TipoCampoValor.Texto || campo.tipo === TipoCampoValor.Correo || campo.tipo === TipoCampoValor.Contrasena"
         v-model="(valoresCampos as any)[campo.nombre || '']"
         :placeholder="campo.marcadorPosicion"
-        class="w-full"
+        class="ancho-100 text-sm"
         :disabled="campo.deshabilitado"
         :readonly="campo.soloLectura"
       />
@@ -300,7 +300,7 @@ const esCampoRequerido = computed(() => {
         v-else-if="campo.tipo === TipoCampoValor.AreaTexto"
         v-model="(valoresCampos as any)[campo.nombre || '']"
         :placeholder="campo.marcadorPosicion"
-        class="w-full"
+        class="ancho-100 text-sm"
         :disabled="campo.deshabilitado"
         :readonly="campo.soloLectura"
       />
@@ -311,7 +311,7 @@ const esCampoRequerido = computed(() => {
         v-model="(valoresCampos as any)[campo.nombre || '']"
         time-only
         hour-format="24"
-        class="w-full"
+        class="ancho-100 text-sm"
         :disabled="campo.deshabilitado"
       />
 
@@ -319,7 +319,7 @@ const esCampoRequerido = computed(() => {
       <PrimeDatePicker
         v-else-if="campo.tipo === TipoCampoValor.Fecha"
         v-model="(valoresCampos as any)[campo.nombre || '']"
-        class="w-full"
+        class="ancho-100 text-sm"
         :disabled="campo.deshabilitado"
       />
 
@@ -330,7 +330,7 @@ const esCampoRequerido = computed(() => {
         :options="opcionesCampo"
         option-label="etiqueta"
         option-value="valor"
-        class="w-full"
+        class="ancho-100 text-sm"
         :disabled="campo.deshabilitado || estaDeshabilitadoPorDependencia(campo, valoresCampos as any)"
       />
 
@@ -338,7 +338,7 @@ const esCampoRequerido = computed(() => {
       <PrimeInputNumber
         v-else-if="campo.tipo === TipoCampoValor.Numero"
         v-model="(valoresCampos as any)[campo.nombre || '']"
-        class="w-full"
+        class="ancho-100 text-sm"
         :placeholder="campo.marcadorPosicion"
         :min="(campo.metadatos as any)?.minimo"
         :max="(campo.metadatos as any)?.maximo"
@@ -444,7 +444,7 @@ const esCampoRequerido = computed(() => {
                   <PrimeInputText
                     v-if="(columnaTabla.tipo ?? columnaTabla.type) === 'texto'"
                     :model-value="String(filaTabla[columnaTabla.name] || '')"
-                    class="w-full"
+                    class="ancho-100 text-sm"
                     :disabled="campo.deshabilitado"
                     @update:model-value="(v: string) => actualizarValorCeldaTabla(campo, indiceFila, columnaTabla.name, v)"
                   />
@@ -452,7 +452,7 @@ const esCampoRequerido = computed(() => {
                   <PrimeDatePicker
                     v-else-if="(columnaTabla.tipo ?? columnaTabla.type) === 'fecha'"
                     :model-value="filaTabla[columnaTabla.name] instanceof Date ? filaTabla[columnaTabla.name] as Date : null"
-                    class="w-full"
+                    class="ancho-100 text-sm"
                     :disabled="campo.deshabilitado"
                     @update:model-value="(v: Date | null) => actualizarValorCeldaTabla(campo, indiceFila, columnaTabla.name, v)"
                   />
@@ -460,7 +460,7 @@ const esCampoRequerido = computed(() => {
                   <template v-else-if="(columnaTabla.tipo ?? columnaTabla.type) === 'numero'">
                     <PrimeInputNumber
                       :model-value="Number(filaTabla[columnaTabla.name] || 0)"
-                      class="w-full"
+                      class="ancho-100 text-sm"
                       :disabled="campo.deshabilitado"
                       :min="(columnaTabla as any).minimo"
                       :max="(columnaTabla as any).maximo"

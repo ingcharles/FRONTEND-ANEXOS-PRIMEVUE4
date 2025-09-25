@@ -26,7 +26,7 @@ function exportarFormulario(): void {
 <template>
   <div class="p-3">
     <div class="flex gap-2 mb-2">
-      <Button
+      <PrimeButton
         label="Exportar"
         icon="pi pi-upload"
         @click="exportarFormulario"

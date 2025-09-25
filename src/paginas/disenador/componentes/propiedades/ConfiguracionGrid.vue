@@ -39,7 +39,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
     tercio: { sm: 12, md: 6, lg: 4 },
     cuarto: { sm: 12, md: 6, lg: 3 }
   }
-  
+
   emit('actualizarGrid', presets[preset])
 }
 </script>
@@ -48,7 +48,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
   <div class="configuracion-grid p-4 border-round border-1 surface-border">
     <div class="flex justify-content-between align-items-center mb-3">
       <h4 class="text-base font-semibold m-0">Diseño responsivo</h4>
-      <Button
+      <PrimeButton
         label="Restablecer"
         icon="pi pi-refresh"
         size="small"
@@ -61,25 +61,25 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
     <div class="presets-grid mb-4">
       <h5 class="text-sm font-medium mb-2">Presets comunes</h5>
       <div class="flex gap-2 flex-wrap">
-        <Button
+        <PrimeButton
           label="Completo"
           size="small"
           outlined
           @click="aplicarPreset('completo')"
         />
-        <Button
+        <PrimeButton
           label="Mitad"
           size="small"
           outlined
           @click="aplicarPreset('mitad')"
         />
-        <Button
+        <PrimeButton
           label="Tercio"
           size="small"
           outlined
           @click="aplicarPreset('tercio')"
         />
-        <Button
+        <PrimeButton
           label="Cuarto"
           size="small"
           outlined
@@ -91,7 +91,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
     <!-- Configuración por breakpoint -->
     <div class="breakpoints-config">
       <h5 class="text-sm font-medium mb-3">Configuración por dispositivo</h5>
-      
+
       <!-- Móvil (sm) -->
       <div class="breakpoint-config mb-3">
         <div class="flex align-items-center justify-content-between mb-2">
@@ -107,7 +107,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
           option-label="etiqueta"
           option-value="valor"
           placeholder="Auto"
-          class="w-full"
+          class="ancho-100 text-sm"
           @update:model-value="(valor: number | undefined) => actualizarBreakpoint('sm', valor)"
         />
       </div>
@@ -127,7 +127,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
           option-label="etiqueta"
           option-value="valor"
           placeholder="Auto"
-          class="w-full"
+          class="ancho-100 text-sm"
           @update:model-value="(valor: number | undefined) => actualizarBreakpoint('md', valor)"
         />
       </div>
@@ -147,7 +147,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
           option-label="etiqueta"
           option-value="valor"
           placeholder="Auto"
-          class="w-full"
+          class="ancho-100 text-sm"
           @update:model-value="(valor: number | undefined) => actualizarBreakpoint('lg', valor)"
         />
       </div>
@@ -168,8 +168,8 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
       </div>
       <div class="grid-info mt-2">
         <small class="text-muted-color">
-          El campo ocupará 
-          {{ gridActual.lg || gridActual.md || gridActual.sm || 12 }} 
+          El campo ocupará
+          {{ gridActual.lg || gridActual.md || gridActual.sm || 12 }}
           de 12 columnas disponibles
         </small>
       </div>

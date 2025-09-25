@@ -1,33 +1,33 @@
 <template>
-  <div class="mb-3">
-    <div class="font-semibold">Diseño Responsivo</div>
+  <div class="mb-2 mt-2" >
+    <h3 class="text-sm text-color mb-2">Ancho dispositivo</h3>
     <div class="grid">
-      <div class="col-12 md:col-4">
-        <label class="block mb-2">Pequeño (sm)</label>
-        <Select
+      <div class="sm:col-12 md:col-12 lg:col-4">
+        <label class="font-medium text-sm">Pequeño</label>
+        <PrimeSelect
           :model-value="campo?.grid?.sm ?? 12"
           :options="[1,2,3,4,5,6,7,8,9,10,11,12]"
-          class="w-full"
+          class="text-sm ancho-100"
           @update:model-value="(v: number | null) => actualizarGrid({ sm: Number(v ?? 12) })"
         />
       </div>
 
-      <div class="col-12 md:col-4">
-        <label class="block mb-2">Mediano (md)</label>
-        <Select
+      <div class="sm:col-12 md:col-12 lg:col-4">
+        <label class="font-medium text-sm">Mediano</label>
+        <PrimeSelect
           :model-value="campo?.grid?.md ?? 6"
           :options="[1,2,3,4,5,6,7,8,9,10,11,12]"
-          class="w-full"
+          class="ancho-100 text-sm"
           @update:model-value="(v: number | null) => actualizarGrid({ md: Number(v ?? 6) })"
         />
       </div>
 
-      <div class="col-12 md:col-4">
-        <label class="block mb-2">Grande(lg)</label>
-        <Select
+      <div class="sm:col-12 md:col-12 lg:col-4">
+        <label class="font-medium text-sm">Grande</label>
+        <PrimeSelect
           :model-value="campo?.grid?.lg ?? 6"
           :options="[1,2,3,4,5,6,7,8,9,10,11,12]"
-          class="w-full"
+          class="ancho-100 text-sm"
           @update:model-value="(v: number | null) => actualizarGrid({ lg: Number(v ?? 6) })"
         />
       </div>
@@ -36,7 +36,7 @@
     <!-- Clases CSS personalizadas -->
     <!-- <div class="field">
       <label class="block mb-1">Clases CSS</label>
-      <InputText
+      <PrimeInputText
         :model-value="obtenerClasesPersonalizadas()"
         placeholder="p-2 text-center border-round"
         @update:model-value="(v: string | undefined) => actualizarClasesPersonalizadas(v || '')"
@@ -47,7 +47,7 @@
     <!-- Estilos inline -->
     <!-- <div class="field">
       <label class="block mb-1">Estilos CSS</label>
-      <Textarea
+      <PrimeTextarea
         :model-value="obtenerEstilosInline()"
         rows="3"
         placeholder="color: #333; font-weight: bold;"
@@ -57,6 +57,7 @@
     </div> -->
 
   </div>
+      <PrimeDivider />
 </template>
 
 <script setup lang="ts">

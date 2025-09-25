@@ -1,10 +1,10 @@
 <template>
-  <div class="mb-3">
-    <div class="font-semibold mb-2">Comportamiento</div>
+  <div class="mb-2 mt-2" >
+    <h3 class="text-sm text-color mb-2">Comportamiento</h3>
 
     <!-- Visibilidad -->
-    <div class="field">
-      <label class="inline-flex items-center gap-2">
+    <div class="mb-2">
+      <label class="font-medium text-sm">
         <Checkbox
           binary
           :model-value="!!campo?.visible"
@@ -15,8 +15,8 @@
     </div>
 
     <!-- Requerido -->
-    <div class="field" v-if="esRequerible()">
-      <label class="inline-flex items-center gap-2">
+    <!-- <div class="mb-2" v-if="esRequerible()">
+      <label class="font-medium text-sm">
         <Checkbox
           binary
           :model-value="!!campo?.requerido"
@@ -24,21 +24,21 @@
         />
         Requerido
       </label>
-    </div>
+    </div> -->
 
     <!-- Mensaje de requerido -->
-    <div v-if="campo?.requerido" class="field">
+    <!-- <div v-if="campo?.requerido" class="mb-2">
       <label class="block mb-1">Mensaje de requerido</label>
-      <InputText
+      <PrimeInputText
         :model-value="obtenerMensajeRequerido()"
         @update:model-value="(v: string | undefined) => actualizarMensajeRequerido(v || '')"
       />
       <small class="text-muted-color">Se mostrará en la vista previa cuando el campo sea obligatorio.</small>
-    </div>
+    </div> -->
 
     <!-- Deshabilitado -->
-    <div class="field" v-if="esDeshabilitableOEscribible()">
-      <label class="inline-flex items-center gap-2">
+    <div class="mb-2" v-if="esDeshabilitableOEscribible()">
+      <label class="font-medium text-sm">
         <Checkbox
           binary
           :model-value="!!campo?.deshabilitado"
@@ -49,8 +49,8 @@
     </div>
 
     <!-- Solo lectura -->
-    <div class="field" v-if="esSoloLectura()">
-      <label class="inline-flex items-center gap-2">
+    <div class="mb-2" v-if="esSoloLectura()">
+      <label class="font-medium text-sm">
         <Checkbox
           binary
           :model-value="!!campo?.soloLectura"
@@ -61,7 +61,7 @@
     </div>
 
     <!-- Layout para grupos de opciones -->
-    <div class="field" v-if="tieneOpcionesHorizontalVertical()">
+    <div class="mb-2" v-if="tieneOpcionesHorizontalVertical()">
       <label class="block mb-1">Distribución de opciones</label>
       <SelectButton
         :model-value="obtenerLayoutGrupo()"
@@ -74,9 +74,9 @@
     </div>
 
     <!-- Eventos personalizados -->
-    <!-- <div class="field">
+    <!-- <div class="mb-2">
       <label class="block mb-1">Eventos personalizados</label>
-      <Textarea
+      <PrimeTextarea
         :model-value="obtenerEventosPersonalizados()"
         rows="4"
         placeholder="{ onClick: 'miFuncion', onBlur: 'otraFuncion' }"
@@ -86,9 +86,9 @@
     </div> -->
 
     <!-- Dependencias condicionales -->
-    <!-- <div class="field">
+    <!-- <div class="mb-2">
       <label class="block mb-1">Dependencias</label>
-      <Textarea
+      <PrimeTextarea
         :model-value="obtenerDependencias()"
         rows="3"
         placeholder="Configuración de dependencias del campo"
@@ -97,6 +97,7 @@
       <small class="text-muted-color">Configuración de visibilidad condicional.</small>
     </div> -->
   </div>
+  <PrimeDivider />
 </template>
 
 <script setup lang="ts">
@@ -140,11 +141,11 @@ const metadatos = computed(() => {
 })
 
 // Verificaciones de tipo de campo
-function esRequerible(): boolean {
-  if (!props.campo) return false
-  const tiposNoRequeribles: TipoCampo[] = ['divisor', 'etiqueta', 'panel', 'boton']
-  return !tiposNoRequeribles.includes(props.campo.tipo)
-}
+// function esRequerible(): boolean {
+//   if (!props.campo) return false
+//   const tiposNoRequeribles: TipoCampo[] = ['divisor', 'etiqueta', 'panel', 'boton']
+//   return !tiposNoRequeribles.includes(props.campo.tipo)
+// }
 
 function esDeshabilitableOEscribible(): boolean {
   if (!props.campo) return false
@@ -175,17 +176,17 @@ function actualizarPropiedad(propiedad: keyof EsquemaCampo, valor: unknown): voi
 }
 
 // Mensaje de requerido
-function obtenerMensajeRequerido(): string {
-  const validaciones = props.campo?.validaciones || []
-  const validacionRequerido = validaciones.find((v: ReglaValidacion) => v.tipo === 'requerido')
-  return validacionRequerido?.mensaje || ''
-}
+// function obtenerMensajeRequerido(): string {
+//   const validaciones = props.campo?.validaciones || []
+//   const validacionRequerido = validaciones.find((v: ReglaValidacion) => v.tipo === 'requerido')
+//   return validacionRequerido?.mensaje || ''
+// }
 
-function actualizarMensajeRequerido(mensaje: string): void {
-  if (!props.campo) return
-  // TODO: Actualizar cuando el almacen esté en español
-  console.log('Actualizando mensaje requerido:', mensaje)
-}
+// function actualizarMensajeRequerido(mensaje: string): void {
+//   if (!props.campo) return
+//   // TODO: Actualizar cuando el almacen esté en español
+//   console.log('Actualizando mensaje requerido:', mensaje)
+// }
 
 // Layout de grupo
 function obtenerLayoutGrupo(): TipoDiseno {

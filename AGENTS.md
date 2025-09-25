@@ -101,7 +101,7 @@ function onClick() {
 <template>
   <div class="p-4 surface-card border-round shadow-1">
     <p class="text-2xl font-medium m-0">{{ props.mensaje }}</p>
-    <Button label="Haz clic" @click="onClick" />
+    <PrimeButton label="Haz clic" @click="onClick" />
   </div>
 </template>
 ```
@@ -306,8 +306,8 @@ function enviar() { emit('submit', nombre.value?.trim() || '') }
 
 <template>
   <div class="flex gap-2 align-items-center">
-    <InputText v-model="nombre" placeholder="Tu nombre" class="w-12rem" />
-    <Button label="Enviar" icon="pi pi-check" @click="enviar" />
+    <PrimeInputText v-model="nombre" placeholder="Tu nombre" class="w-12rem" />
+    <PrimeButton label="Enviar" icon="pi pi-check" @click="enviar" />
   </div>
 </template>
 ```
