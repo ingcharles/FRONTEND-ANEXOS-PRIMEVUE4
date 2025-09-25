@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import type { ReglaValidacion } from '@/interfaces/Validacion'
 
@@ -31,6 +31,16 @@ const reglasValidacion = computed<ReglaValidacion[]>({
   },
 })
 
+// Sincronizar la propiedad requerido cuando cambia el campo seleccionado
+watch(campoSeleccionado, (nuevoCampo) => {
+  if (nuevoCampo) {
+    const tieneValidacionRequerido = nuevoCampo.validaciones?.some(v => v.tipo === 'requerido') ?? false
+    if (tieneValidacionRequerido !== nuevoCampo.requerido) {
+      almacen.actualizarCampo(nuevoCampo.id, { requerido: tieneValidacionRequerido })
+    }
+  }
+}, { immediate: true })
+
 // Opciones de tipos de validación
 const tiposValidacion: OpcionTipoValidacion[] = [
   { etiqueta: 'Campo requerido', valor: 'requerido' },
@@ -48,10 +58,25 @@ function crearNuevaValidacion(tipo: ReglaValidacion['tipo']): ReglaValidacion {
 function agregarValidacion(tipo: ReglaValidacion['tipo']): void {
   const nuevaValidacion = crearNuevaValidacion(tipo)
   reglasValidacion.value = [...reglasValidacion.value, nuevaValidacion]
+
+  // Si es validación requerido, actualizar la propiedad requerido del campo
+  if (tipo === 'requerido' && campoSeleccionado.value) {
+    almacen.actualizarCampo(campoSeleccionado.value.id, { requerido: true })
+  }
 }
 
 function eliminarValidacion(indice: number): void {
+  const validacionEliminada = reglasValidacion.value[indice]
   reglasValidacion.value = reglasValidacion.value.filter((_, i) => i !== indice)
+
+  // Si se elimina la validación requerido, actualizar la propiedad requerido del campo
+  if (validacionEliminada?.tipo === 'requerido' && campoSeleccionado.value) {
+    // Verificar si hay otras validaciones requerido
+    const tieneOtroRequerido = reglasValidacion.value.some(v => v.tipo === 'requerido')
+    if (!tieneOtroRequerido) {
+      almacen.actualizarCampo(campoSeleccionado.value.id, { requerido: false })
+    }
+  }
 }
 
 function obtenerEtiquetaCampo(tipo: ReglaValidacion['tipo']): string {
@@ -110,6 +135,7 @@ function mostrarAyuda(tipo: ReglaValidacion['tipo']): boolean {
           outlined
           @click="agregarValidacion('requerido')"
           class="shadow-1"
+          data-testid="btn-requerido"
         />
         <PrimeButton
           label="Longitud mín."
@@ -200,10 +226,10 @@ function mostrarAyuda(tipo: ReglaValidacion['tipo']): boolean {
 
           <!-- Texto de ayuda condicional -->
           <small
-            v-if="mostrarAyuda(regla.tipo)"
+            v-if="mostrarAyuda(regla.tipo) || regla.tipo === 'requerido'"
             class="text-500 block mt-1"
           >
-            {{ obtenerTextoAyuda(regla.tipo) }}
+            {{ regla.tipo === 'requerido' ? 'Mensaje que se mostrará cuando el campo esté vacío' : obtenerTextoAyuda(regla.tipo) }}
           </small>
         </div>
       </div>

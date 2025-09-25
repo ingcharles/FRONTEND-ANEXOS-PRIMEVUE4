@@ -516,7 +516,7 @@ const esCampoRequerido = computed(() => {
       <!-- Mensaje de error -->
       <div
         v-if="campo.nombre && erroresCampos && erroresCampos[campo.nombre]"
-        class="text-red-500 mt-1"
+        class="text-red-500 text-sm mt-1"
       >
         {{ erroresCampos[campo.nombre] }}
       </div>

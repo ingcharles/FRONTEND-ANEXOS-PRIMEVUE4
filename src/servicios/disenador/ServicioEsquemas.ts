@@ -102,6 +102,9 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
         esquemaBase = esquemaBase.optional()
       } else if (esRequerido) {
         esquemaBase = this.aplicarValidacionRequerido(campo, esquemaBase)
+      } else {
+        // Para campos no requeridos, hacerlos opcionales
+        esquemaBase = esquemaBase.optional()
       }
 
       // Aplicar validaciones adicionales
@@ -119,7 +122,10 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
       case 'correo':
       case 'contrasena':
       case 'area-texto':
-        return z.string()
+        return z.preprocess(
+          (valor) => valor === undefined || valor === null ? '' : String(valor),
+          z.string()
+        )
 
       case 'numero':
         return this.crearEsquemaNumero(campo)
@@ -132,7 +138,10 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
 
       case 'radio':
       case 'seleccion':
-        return z.union([z.string(), z.number()])
+        return z.preprocess(
+          (valor) => valor === undefined || valor === null ? '' : valor,
+          z.union([z.string(), z.number()])
+        )
 
       case 'casilla':
         return this.crearEsquemaCheckbox(campo)
@@ -277,7 +286,8 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
   }
 
   private aplicarValidacionRequerido(campo: EsquemaCampo, esquemaBase: z.ZodTypeAny): z.ZodTypeAny {
-    const mensajeRequerido = campo.validaciones?.find(v => v.tipo === 'requerido')?.mensaje || 'Requerido'
+    const validacionRequerido = campo.validaciones?.find(v => v.tipo === 'requerido')
+    const mensajeRequerido = validacionRequerido?.valor as string || validacionRequerido?.mensaje || 'Este campo es obligatorio'
 
     if (campo.tipo === TipoCampoValor.Casilla) {
       const metadatos = campo.metadatos as MetadatosCampo | undefined
@@ -307,8 +317,13 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
       )
     }
 
+    // Para campos de texto, radio, selección, etc.
     return esquemaBase.refine(
-      (valor: unknown) => typeof valor === 'string' ? valor.trim().length > 0 : valor != null,
+      (valor: unknown) => {
+        if (valor === null || valor === undefined) return false
+        if (typeof valor === 'string') return valor.trim().length > 0
+        return valor != null
+      },
       mensajeRequerido
     )
   }

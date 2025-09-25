@@ -103,7 +103,10 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
       case TipoCampoValor.Correo:
       case TipoCampoValor.Contrasena:
       case TipoCampoValor.AreaTexto:
-        esquemaBase = z.string()
+        esquemaBase = z.preprocess(
+          (valor) => valor === undefined || valor === null ? '' : String(valor),
+          z.string()
+        )
         break
       case TipoCampoValor.Numero:
         esquemaBase = this.crearEsquemaNumero(campo)
@@ -113,7 +116,10 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
         break
       case TipoCampoValor.Radio:
       case TipoCampoValor.Seleccion:
-        esquemaBase = z.union([z.string(), z.number()])
+        esquemaBase = z.preprocess(
+          (valor) => valor === undefined || valor === null ? '' : valor,
+          z.union([z.string(), z.number()])
+        )
         break
       case TipoCampoValor.Casilla:
         esquemaBase = this.crearEsquemaCheckbox(campo)
@@ -137,7 +143,8 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
       return this.aplicarValidacionRequerido(campo, esquemaBase)
     }
 
-    return esquemaBase
+    // Para campos no requeridos, hacerlos opcionales
+    return esquemaBase.optional()
   }
 
   private crearEsquemaNumero(campo: EsquemaCampo): z.ZodTypeAny {
@@ -229,7 +236,8 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
   }
 
   private aplicarValidacionRequerido(campo: EsquemaCampo, esquemaBase: z.ZodTypeAny): z.ZodTypeAny {
-  const mensajeRequerido = campo.validaciones?.find((v: ReglaValidacion) => v.tipo === 'requerido')?.mensaje || 'Requerido'
+    const validacionRequerido = campo.validaciones?.find((v: ReglaValidacion) => v.tipo === 'requerido')
+    const mensajeRequerido = validacionRequerido?.valor as string || validacionRequerido?.mensaje || 'Este campo es obligatorio'
 
     if (campo.tipo === TipoCampoValor.Casilla) {
       const metaObjeto = campo.metadatos as Record<string, unknown> | undefined
@@ -245,15 +253,20 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
       }
     }
 
-    if (campo.tipo === 'fecha') {
+    if (campo.tipo === TipoCampoValor.Fecha) {
       return esquemaBase.refine(
         (valor: unknown) => valor instanceof Date,
         mensajeRequerido
       )
     }
 
+    // Para campos de texto, número, etc.
     return esquemaBase.refine(
-      (valor: unknown) => typeof valor === 'string' ? valor.trim().length > 0 : valor != null,
+      (valor: unknown) => {
+        if (valor === null || valor === undefined) return false
+        if (typeof valor === 'string') return valor.trim().length > 0
+        return valor != null
+      },
       mensajeRequerido
     )
   }

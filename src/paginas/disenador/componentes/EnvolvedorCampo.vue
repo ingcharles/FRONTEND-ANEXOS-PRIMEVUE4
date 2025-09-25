@@ -61,6 +61,10 @@ const valorActualTexto = computed<string | undefined>(() => {
   return v == null ? undefined : String(v)
 })
 
+const esCampoRequerido = computed<boolean>(() => {
+  return propiedades.campo.requerido || propiedades.campo.validaciones?.some(v => v.tipo === 'requerido') || false
+})
+
 const arrastrando = ref(false)
 let inicioX = 0
 let columnasIniciales = 0
@@ -181,7 +185,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
     <!-- Render simple de ejemplo -->
     <div>
       <template v-if="campo.tipo===TipoCampoValor.Texto || campo.tipo===TipoCampoValor.Correo || campo.tipo===TipoCampoValor.Contrasena">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
+        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
         <PrimeInputText
           :model-value="valorActualTexto"
           :placeholder="campo.marcadorPosicion"
@@ -191,7 +195,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
         />
       </template>
       <template v-else-if="campo.tipo===TipoCampoValor.Fecha">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
+        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
         <PrimeInputText
           class="ancho-100 text-sm"
           :model-value="(valorActual instanceof Date) ? valorActual : (typeof valorActual==='string' && valorActual ? new Date(valorActual) : undefined)"
@@ -199,7 +203,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
         />
       </template>
       <template v-else-if="campo.tipo===TipoCampoValor.Hora">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
+        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
         <PrimeDatePicker
           time-only
           hour-format="24"
@@ -209,7 +213,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
         />
       </template>
       <template v-else-if="campo.tipo===TipoCampoValor.AreaTexto">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
+        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
         <PrimeTextarea
           :model-value="valorActualTexto"
           :placeholder="campo.marcadorPosicion"
@@ -219,7 +223,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
         />
       </template>
       <template v-else-if="campo.tipo===TipoCampoValor.Seleccion">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
+        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
         <PrimeSelect
           class="ancho-100 text-sm"
           :options="(campo.metadatos?.opciones as Array<{ etiqueta: string; valor: unknown }>) || []"
@@ -233,7 +237,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
         />
       </template>
       <template v-else-if="campo.tipo===TipoCampoValor.Numero">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
+        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
         <PrimeInputNumber
           class="ancho-100 text-sm"
           :model-value="(valorActualTexto!=null && valorActualTexto!=='' && !Number.isNaN(Number(valorActualTexto))) ? Number(valorActualTexto) : undefined"
@@ -244,7 +248,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
       </template>
       <template v-else-if="campo.tipo===TipoCampoValor.Casilla">
         <template v-if="Array.isArray((campo.metadatos as any)?.opciones) && ((campo.metadatos as any)?.opciones?.length||0) > 0">
-          <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
+          <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
           <div :class="[
             'flex',
             ((campo.metadatos as any)?.layout==='horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')
@@ -258,12 +262,12 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
         <template v-else>
           <div class="flex align-items-center gap-2">
             <PrimeCheckbox :binary="true" :model-value="Boolean(valorActual)" :disabled="campo.deshabilitado" />
-            <label class="mb-0">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
+            <label class="mb-0">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
           </div>
         </template>
       </template>
       <template v-else-if="campo.tipo===TipoCampoValor.Radio">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="campo.requerido" class="text-red-500"> *</span></label>
+        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="text-red-500"> *</span></label>
         <div :class="[
           'flex',
           ((campo.metadatos as any)?.layout==='horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')
