@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { ServicioEsquemasFormulario } from '../ServicioEsquemas'
 import type { EsquemaCampo } from '@/interfaces/Campos'
-import type { EsquemaFormulario } from '@/interfaces/Formulario'
 import { TipoCampoValor } from '@/enumeraciones/Campos'
 
 describe('Validación con Mensajes Personalizados', () => {
