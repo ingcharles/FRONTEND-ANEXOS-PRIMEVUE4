@@ -37,8 +37,16 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
     if (typeof min === 'number') regla = regla.min(min, mensajeMin)
     if (typeof max === 'number') regla = regla.max(max, mensajeMax)
     return z.preprocess(
-      (valor) => (typeof valor === 'string' ? (valor.trim() === '' ? undefined : Number(valor)) : valor),
-      regla
+      (valor) => {
+        if (valor === undefined || valor === null) return undefined
+        if (typeof valor === 'string') {
+          if (valor.trim() === '') return undefined
+          const numero = Number(valor)
+          return isNaN(numero) ? undefined : numero
+        }
+        return typeof valor === 'number' ? valor : undefined
+      },
+      regla.optional()
     )
   }
 
@@ -260,7 +268,23 @@ export class ServicioValidacionFormulario implements ServicioValidacion {
       )
     }
 
-    // Para campos de texto, número, etc.
+    if (campo.tipo === TipoCampoValor.Numero) {
+      return esquemaBase.refine(
+        (valor: unknown) => {
+          if (valor === null || valor === undefined) return false
+          if (typeof valor === 'string') {
+            const trimmed = valor.trim()
+            if (trimmed === '') return false
+            const numero = Number(trimmed)
+            return !isNaN(numero)
+          }
+          return typeof valor === 'number' && !isNaN(valor)
+        },
+        mensajeRequerido
+      )
+    }
+
+    // Para campos de texto, radio, selección, etc.
     return esquemaBase.refine(
       (valor: unknown) => {
         if (valor === null || valor === undefined) return false

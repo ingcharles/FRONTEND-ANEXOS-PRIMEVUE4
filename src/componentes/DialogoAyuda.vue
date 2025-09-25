@@ -1,6 +1,6 @@
 <template>
   <PrimeDialog
-    v-model:visible="visible"
+    :visible="visible"
     :header="titulo"
     :modal="true"
     :closable="true"

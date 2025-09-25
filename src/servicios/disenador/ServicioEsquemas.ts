@@ -170,9 +170,17 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
     if (typeof max === 'number') reglaNumero = reglaNumero.max(max, mensajeMax)
 
     return z.preprocess(
-      (valor) => typeof valor === 'string' ? (valor.trim() === '' ? undefined : Number(valor)) : valor,
-      reglaNumero
-    ).optional()
+      (valor) => {
+        if (valor === undefined || valor === null) return undefined
+        if (typeof valor === 'string') {
+          if (valor.trim() === '') return undefined
+          const numero = Number(valor)
+          return isNaN(numero) ? undefined : numero
+        }
+        return typeof valor === 'number' ? valor : undefined
+      },
+      reglaNumero.optional()
+    )
   }
 
   private crearEsquemaFecha(campo: EsquemaCampo): z.ZodTypeAny {
@@ -312,7 +320,16 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
 
     if (campo.tipo === 'numero') {
       return esquemaBase.refine(
-        (valor: unknown) => valor != null,
+        (valor: unknown) => {
+          if (valor === null || valor === undefined) return false
+          if (typeof valor === 'string') {
+            const trimmed = valor.trim()
+            if (trimmed === '') return false
+            const numero = Number(trimmed)
+            return !isNaN(numero)
+          }
+          return typeof valor === 'number' && !isNaN(valor)
+        },
         mensajeRequerido
       )
     }
