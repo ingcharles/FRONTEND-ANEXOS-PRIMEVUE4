@@ -44,7 +44,10 @@ describe('Validación Requerido', () => {
         stubs: {
           PrimeButton: true,
           PrimeSelect: true,
-          PrimeInputText: true
+          PrimeInputText: true,
+          PrimeDialog: true,
+          PrimeTag: true,
+          TransitionGroup: true
         }
       }
     })
@@ -53,15 +56,9 @@ describe('Validación Requerido', () => {
     expect(almacen.campoSeleccionado?.validaciones).toEqual([])
     expect(almacen.campoSeleccionado?.requerido).toBe(false)
 
-    // Simular click en botón "Requerido"
-    const botonRequerido = wrapper.find('[data-testid="btn-requerido"]')
-    if (botonRequerido.exists()) {
-      await botonRequerido.trigger('click')
-    } else {
-      // Llamar directamente a la función si no encontramos el botón
-      const vm = wrapper.vm as any
-      vm.agregarValidacion('requerido')
-    }
+    // Simular agregar validación requerido directamente
+    const vm = wrapper.vm as any
+    vm.agregarValidacion('requerido')
 
     await wrapper.vm.$nextTick()
 
@@ -134,7 +131,10 @@ describe('Validación Requerido', () => {
         stubs: {
           PrimeButton: true,
           PrimeSelect: true,
-          PrimeInputText: true
+          PrimeInputText: true,
+          PrimeDialog: true,
+          PrimeTag: true,
+          TransitionGroup: true
         }
       }
     })

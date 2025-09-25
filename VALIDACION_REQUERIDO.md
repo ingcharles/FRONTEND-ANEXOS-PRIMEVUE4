@@ -39,6 +39,12 @@ Se ha implementado la funcionalidad para que cuando se añade una validación "r
 ### `ServicioValidacion.ts`
 - Modificado para usar el mensaje personalizado de la validación "requerido"
 - Mejorado el manejo del mensaje por defecto
+- Añadido preprocessing para manejar valores undefined/null correctamente
+
+### `ServicioEsquemas.ts`
+- Corregido el manejo de valores undefined/null en campos de texto
+- Actualizado para usar mensajes personalizados de validación requerido
+- Mejorado el preprocessing de valores para evitar errores de tipo
 
 ### `RenderizadorCampo.vue`
 - Mejorado el estilo del mensaje de error (añadido text-sm)
@@ -48,6 +54,9 @@ Se han añadido pruebas unitarias que verifican:
 - Que se añade correctamente la validación y se sincroniza la propiedad requerido
 - Que se muestra el asterisco rojo en el diseñador
 - Que se elimina correctamente la validación y se actualiza la propiedad
+- Que los servicios de validación manejan correctamente valores undefined/null
+- Que se muestran los mensajes personalizados de error
+- Que los campos opcionales permiten valores vacíos
 
 ## Uso
 
@@ -70,3 +79,9 @@ Se han añadido pruebas unitarias que verifican:
 - La funcionalidad es compatible con todos los tipos de campo existentes
 - Mantiene compatibilidad con campos que ya tenían `requerido: true` configurado manualmente
 - No afecta el comportamiento de otras validaciones
+- Corregido el manejo de valores undefined/null que causaba errores en la vista previa
+
+## Correcciones Realizadas
+- **Problema**: Al presionar "enviar" con campos vacíos aparecía "Invalid input: expected string, received undefined"
+- **Solución**: Añadido preprocessing en ambos servicios de validación para convertir undefined/null a string vacío antes de aplicar validaciones
+- **Resultado**: Ahora se muestra correctamente el mensaje personalizado de validación requerido
