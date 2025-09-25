@@ -78,7 +78,7 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
 
   crearFilaVacia(columnas: ColumnaTabla[]): Record<string, ValorDato> {
     const objeto: Record<string, ValorDato> = {}
-  for (const columna of columnas) {
+    for (const columna of columnas) {
       objeto[columna.nombre] = null
     }
     return objeto
@@ -87,7 +87,7 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
   crearEsquemaValidacion(campos: EsquemaCampo[]): z.ZodObject<Record<string, z.ZodTypeAny>> {
     const forma: Record<string, z.ZodTypeAny> = {}
     const todosCampos = this.recolectarCamposConNombre(campos, [])
-  // const mapaIdNombre = this.construirMapaIdNombre(campos)
+    // const mapaIdNombre = this.construirMapaIdNombre(campos)
 
     for (const campo of todosCampos) {
       if (!campo.nombre) continue
@@ -100,15 +100,17 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
 
       if (!esVisible) {
         esquemaBase = esquemaBase.optional()
-      } else if (esRequerido) {
-        esquemaBase = this.aplicarValidacionRequerido(campo, esquemaBase)
       } else {
-        // Para campos no requeridos, hacerlos opcionales
-        esquemaBase = esquemaBase.optional()
-      }
+        // Aplicar validaciones personalizadas ANTES de hacer opcional
+        esquemaBase = this.aplicarValidacionesPersonalizadas(campo, esquemaBase)
 
-      // Aplicar validaciones adicionales
-      esquemaBase = this.aplicarValidacionesPersonalizadas(campo, esquemaBase)
+        if (esRequerido) {
+          esquemaBase = this.aplicarValidacionRequerido(campo, esquemaBase)
+        } else {
+          // Para campos no requeridos, hacerlos opcionales DESPUÉS de aplicar validaciones
+          esquemaBase = esquemaBase.optional()
+        }
+      }
 
       forma[campo.nombre] = esquemaBase
     }
@@ -157,7 +159,7 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
   private crearEsquemaNumero(campo: EsquemaCampo): z.ZodTypeAny {
     const metadatos = campo.metadatos as MetadatosCampo | undefined
     const min = typeof metadatos?.minimo === 'number' ? metadatos?.minimo : undefined
-    const max = typeof metadatos?.maximo === 'number' ? metadatos?.maximo: undefined
+    const max = typeof metadatos?.maximo === 'number' ? metadatos?.maximo : undefined
     const mensajeMin = typeof (metadatos?.mensajeMinimo) === 'string' && metadatos?.mensajeMinimo
       ? metadatos?.mensajeMinimo
       : `Debe ser >= ${min}`
@@ -351,38 +353,111 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
     let esquemaConValidaciones = esquemaBase
 
     for (const validacion of campo.validaciones!) {
+      // Saltar la validación 'requerido' ya que se maneja por separado
+      if (validacion.tipo === 'requerido') continue
+
+      const mensajeError = validacion.mensaje || this.obtenerMensajePorDefecto(validacion.tipo, validacion.valor)
+
       switch (validacion.tipo) {
         case 'longitud-minima':
-          if (typeof validacion.valor === 'number') {
-            esquemaConValidaciones = esquemaConValidaciones.refine(
-              (valor: unknown) => typeof valor === 'string' ? valor.length >= (validacion.valor as number) : true,
-              validacion.mensaje || `Debe tener al menos ${validacion.valor} caracteres`
-            )
-          }
+          // Solo aplicar a campos de texto, no a campos numéricos
+          if (campo.tipo === 'numero') break
+
+          esquemaConValidaciones = esquemaConValidaciones.refine(
+            (valor: unknown) => typeof valor === 'string' ? valor.length >= (validacion.valor as number) : true,
+            mensajeError
+          )
           break
 
         case 'longitud-maxima':
-          if (typeof validacion.valor === 'number') {
-            esquemaConValidaciones = esquemaConValidaciones.refine(
-              (valor: unknown) => typeof valor === 'string' ? valor.length <= (validacion.valor as number) : true,
-              validacion.mensaje || `No debe superar ${validacion.valor} caracteres`
-            )
-          }
+          // Solo aplicar a campos de texto, no a campos numéricos
+          if (campo.tipo === 'numero') break
+
+          esquemaConValidaciones = esquemaConValidaciones.refine(
+            (valor: unknown) => typeof valor === 'string' ? valor.length <= (validacion.valor as number) : true,
+            mensajeError
+          )
+          break
+
+        case 'valor-minimo':
+          // Solo aplicar a campos numéricos
+          if (campo.tipo !== 'numero') break
+
+          esquemaConValidaciones = esquemaConValidaciones.refine(
+            (valor: unknown) => typeof valor === 'number' ? valor >= (validacion.valor as number) : true,
+            mensajeError
+          )
+          break
+
+        case 'valor-maximo':
+          // Solo aplicar a campos numéricos
+          if (campo.tipo !== 'numero') break
+
+          esquemaConValidaciones = esquemaConValidaciones.refine(
+            (valor: unknown) => typeof valor === 'number' ? valor <= (validacion.valor as number) : true,
+            mensajeError
+          )
           break
 
         case 'patron':
           if (typeof validacion.valor === 'string') {
-            const patron = new RegExp(validacion.valor)
-            esquemaConValidaciones = esquemaConValidaciones.refine(
-              (valor: unknown) => typeof valor === 'string' ? patron.test(valor) : true,
-              validacion.mensaje || 'Formato inválido'
-            )
+            try {
+              const patron = new RegExp(validacion.valor)
+              esquemaConValidaciones = esquemaConValidaciones.refine(
+                (valor: unknown) => {
+                  if (typeof valor === 'string') return patron.test(valor)
+                  return true // No aplicar a tipos no string
+                },
+                mensajeError
+              )
+            } catch (error) {
+              console.warn('Patrón RegEx inválido:', validacion.valor)
+            }
+          }
+          break
+
+        case 'personalizada':
+          if (typeof validacion.valor === 'string') {
+            try {
+              const fn = new Function('valor', `return (${validacion.valor})`) as (valor: unknown) => boolean
+              esquemaConValidaciones = esquemaConValidaciones.refine(
+                (valor: unknown) => {
+                  try {
+                    return !!fn(valor)
+                  } catch {
+                    return false
+                  }
+                },
+                mensajeError
+              )
+            } catch (error) {
+              console.warn('Función de validación personalizada inválida:', validacion.valor)
+            }
           }
           break
       }
     }
 
     return esquemaConValidaciones
+  }
+
+  private obtenerMensajePorDefecto(tipo: string, valor?: unknown): string {
+    switch (tipo) {
+      case 'longitud-minima':
+        return `Debe tener al menos ${valor} caracteres`
+      case 'longitud-maxima':
+        return `No debe superar ${valor} caracteres`
+      case 'valor-minimo':
+        return `Debe ser mayor o igual a ${valor}`
+      case 'valor-maximo':
+        return `Debe ser menor o igual a ${valor}`
+      case 'patron':
+        return 'El formato no es válido'
+      case 'personalizada':
+        return 'El valor no es válido'
+      default:
+        return 'Valor inválido'
+    }
   }
 }
 

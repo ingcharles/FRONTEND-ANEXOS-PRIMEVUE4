@@ -77,6 +77,28 @@ const tiposValidacionConfig: TipoValidacionConfig[] = [
     ejemplos: ['50 caracteres', '100 caracteres', '255 caracteres']
   },
   {
+    tipo: 'valor-minimo',
+    titulo: 'Valor Mínimo',
+    descripcion: 'Valor numérico mínimo permitido',
+    icono: 'pi-sort-numeric-down',
+    color: 'cyan',
+    placeholder: '0',
+    inputType: 'number',
+    ayuda: 'El número ingresado debe ser mayor o igual a este valor',
+    ejemplos: ['0', '1', '100']
+  },
+  {
+    tipo: 'valor-maximo',
+    titulo: 'Valor Máximo',
+    descripcion: 'Valor numérico máximo permitido',
+    icono: 'pi-sort-numeric-up',
+    color: 'indigo',
+    placeholder: '1000',
+    inputType: 'number',
+    ayuda: 'El número ingresado debe ser menor o igual a este valor',
+    ejemplos: ['100', '1000', '9999']
+  },
+  {
     tipo: 'patron',
     titulo: 'Formato Específico',
     descripcion: 'El texto debe seguir un patrón específico',
@@ -97,15 +119,28 @@ const tiposValidacionConfig: TipoValidacionConfig[] = [
   }
 ]
 
-// Computed para tipos disponibles (excluyendo los ya agregados)
+// Computed para tipos disponibles (excluyendo los ya agregados y filtrando por tipo de campo)
 const tiposDisponibles = computed(() => {
   const tiposExistentes = reglasValidacion.value.map(r => r.tipo)
+  const tipoCampo = campoSeleccionado.value?.tipo
+
   return tiposValidacionConfig.filter(config => {
     // Permitir múltiples validaciones del mismo tipo excepto 'requerido'
     if (config.tipo === 'requerido') {
       return !tiposExistentes.includes('requerido')
     }
-    return true
+
+    // Filtrar validaciones según el tipo de campo
+    if (tipoCampo === 'numero') {
+      // Para campos numéricos: solo valor-minimo, valor-maximo, requerido y personalizada
+      return ['requerido', 'valor-minimo', 'valor-maximo', 'personalizada'].includes(config.tipo)
+    } else if (tipoCampo === 'texto' || tipoCampo === 'correo' || tipoCampo === 'area-texto') {
+      // Para campos de texto: longitud-minima, longitud-maxima, patron, requerido y personalizada
+      return ['requerido', 'longitud-minima', 'longitud-maxima', 'patron', 'personalizada'].includes(config.tipo)
+    } else {
+      // Para otros tipos de campo: solo requerido y personalizada
+      return ['requerido', 'personalizada'].includes(config.tipo)
+    }
   })
 })
 
@@ -152,6 +187,31 @@ function actualizarValorValidacion(indice: number, valor: string): void {
   const reglas = [...reglasValidacion.value]
   reglas[indice] = { ...reglas[indice], valor }
   reglasValidacion.value = reglas
+}
+
+function actualizarMensajeValidacion(indice: number, mensaje: string): void {
+  const reglas = [...reglasValidacion.value]
+  reglas[indice] = { ...reglas[indice], mensaje }
+  reglasValidacion.value = reglas
+}
+
+function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown): string {
+  switch (tipo) {
+    case 'longitud-minima':
+      return `Debe tener al menos ${valor} caracteres`
+    case 'longitud-maxima':
+      return `No debe superar ${valor} caracteres`
+    case 'valor-minimo':
+      return `Debe ser mayor o igual a ${valor}`
+    case 'valor-maximo':
+      return `Debe ser menor o igual a ${valor}`
+    case 'patron':
+      return 'El formato no es válido'
+    case 'personalizada':
+      return 'El valor no es válido'
+    default:
+      return 'Valor inválido'
+  }
 }
 </script>
 
@@ -229,7 +289,7 @@ function actualizarValorValidacion(indice: number, valor: string): void {
             <div class="p-3">
               <div class="field">
                 <label class="font-medium text-sm text-700 mb-2 block">
-                  {{ regla.tipo === 'requerido' ? 'Mensaje de error personalizado' : 'Configuración' }}
+                  {{ regla.tipo === 'requerido' ? 'Mensaje de error' : 'Valor de configuración' }}
                 </label>
 
                 <PrimeInputText
@@ -258,6 +318,24 @@ function actualizarValorValidacion(indice: number, valor: string): void {
                       v-tooltip.top="`Clic para usar: ${ejemplo.split(' ')[0]}`"
                     />
                   </div>
+                </div>
+
+                <!-- Campo de mensaje personalizado (para validaciones no-requerido) -->
+                <div v-if="regla.tipo !== 'requerido'" class="field mt-3">
+                  <label class="font-medium text-sm text-700 mb-2 block">
+                    Mensaje de error personalizado (opcional)
+                  </label>
+
+                  <PrimeInputText
+                    :model-value="String(regla.mensaje || '')"
+                    @update:model-value="actualizarMensajeValidacion(indice, $event)"
+                    :placeholder="obtenerMensajePorDefecto(regla.tipo, regla.valor)"
+                    class="w-full"
+                  />
+
+                  <small class="text-500 block mt-1">
+                    Si no especificas un mensaje, se usará: "{{ obtenerMensajePorDefecto(regla.tipo, regla.valor) }}"
+                  </small>
                 </div>
               </div>
             </div>
@@ -305,23 +383,6 @@ function actualizarValorValidacion(indice: number, valor: string): void {
 </template>
 
 <style scoped>
-/* Animaciones para las transiciones */
-.validacion-enter-active,
-.validacion-leave-active {
-  transition: all 0.3s ease;
-}
 
-.validacion-enter-from {
-  opacity: 0;
-  transform: translateY(-10px) scale(0.95);
-}
 
-.validacion-leave-to {
-  opacity: 0;
-  transform: translateY(10px) scale(0.95);
-}
-
-.validacion-move {
-  transition: transform 0.3s ease;
-}
 </style>

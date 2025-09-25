@@ -1,7 +1,7 @@
 // Interfaces para validación y lógica de campos
 
 export interface ReglaValidacion {
-  tipo: 'requerido' | 'longitud-minima' | 'longitud-maxima' | 'patron' | 'personalizada'
+  tipo: 'requerido' | 'longitud-minima' | 'longitud-maxima' | 'valor-minimo' | 'valor-maximo' | 'patron' | 'personalizada'
   valor?: string | number | boolean | Date
   mensaje?: string
 }
