@@ -34,7 +34,7 @@ const caracteristicasPrincipales = ref([
         <i class="pi pi-home text-blue-500 mr-3"></i>
         {{ mensajeBienvenida }}
       </h1>
-      <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+      <p class=" text-gray-600 max-w-2xl mx-auto">
         {{ descripcionAplicacion }}
       </p>
     </div>
@@ -45,22 +45,13 @@ const caracteristicasPrincipales = ref([
         Características Destacadas
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div
-          v-for="caracteristica in caracteristicasPrincipales"
-          :key="caracteristica.titulo"
-          class="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow duration-300"
-        >
-          <div
-            class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
-            :style="{ backgroundColor: caracteristica.color + '20' }"
-          >
-            <i
-              :class="caracteristica.icono"
-              class="text-2xl"
-              :style="{ color: caracteristica.color }"
-            ></i>
+        <div v-for="caracteristica in caracteristicasPrincipales" :key="caracteristica.titulo"
+          class="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow duration-300">
+          <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+            :style="{ backgroundColor: caracteristica.color + '20' }">
+            <i :class="caracteristica.icono" class="text-2xl" :style="{ color: caracteristica.color }"></i>
           </div>
-          <h3 class="text-lg negrilla text-gray-800 mb-2">
+          <h3 class=" negrilla text-gray-800 mb-2">
             {{ caracteristica.titulo }}
           </h3>
           <p class="text-gray-600">
@@ -75,13 +66,11 @@ const caracteristicasPrincipales = ref([
       <h2 class="text-2xl font-bold mb-4">
         ¿Listo para comenzar?
       </h2>
-      <p class="text-lg mb-6">
+      <p class=" mb-6">
         Empieza a crear formularios increíbles con nuestro diseñador intuitivo.
       </p>
-      <router-link
-        to="/disenador"
-        class="inline-flex items-center px-6 py-3 bg-white text-blue-600 negrilla rounded-lg hover:bg-gray-100 transition-colors duration-300"
-      >
+      <router-link to="/disenador"
+        class="inline-flex items-center px-6 py-3 bg-white text-blue-600 negrilla rounded-lg hover:bg-gray-100 transition-colors duration-300">
         <i class="pi pi-play mr-2"></i>
         Ir al Diseñador
       </router-link>

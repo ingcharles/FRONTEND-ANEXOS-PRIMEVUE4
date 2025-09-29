@@ -161,7 +161,7 @@ const modeloPanelMenuFiltrado = computed(() => {
 
 function clonarDesdePaleta(elemento: { tipo: TipoCampo; label: string; propiedadesPorDefecto?: Record<string, unknown> }): EsquemaCampo {
   const id = generarId('campo')
-    // Configuración de grid según el tipo de campo
+  // Configuración de grid según el tipo de campo
   const configuracionGrid = elemento.tipo === TipoCampoValor.Panel
     ? { sm: 12, md: 12, lg: 12 }  // Panel ocupa ancho completo
     : { sm: 12, md: 6, lg: 6 }    // Otros campos mitad del ancho en md/lg
@@ -240,7 +240,7 @@ window.addEventListener('keydown', manejarAtajos)
   <div class="p-card p-p-3">
     <!-- Header -->
     <div class="p-d-flex p-ai-center p-mb-2">
-      <h3 class="p-m-0 p-text-primary p-d-flex p-ai-center">
+      <h3 class="p-m-0 p-d-flex p-ai-center">
         <i class="pi pi-box p-mr-2" /> Componentes
       </h3>
 
@@ -250,27 +250,20 @@ window.addEventListener('keydown', manejarAtajos)
       <span class="p-inputgroup-addon">
         <i class="pi pi-search" />
       </span>
-      <PrimeInputText
-        id="buscador-paleta"
-        v-model="filtro"
-        type="text"
-        autocomplete="off"
-        placeholder="Filtrar (Ctrl+K)"
-        class="p-inputtext"
-      />
-      <PrimeButton
-        v-if="filtro"
-        @click="limpiarFiltro"
-        type="button"
-        class="p-button p-button-text"
-        aria-label="Limpiar filtro"
-      >
+      <PrimeInputText id="buscador-paleta" v-model="filtro" type="text" autocomplete="off"
+        placeholder="Filtrar (Ctrl+K)" class="p-inputtext" />
+      <PrimeButton v-if="filtro" @click="limpiarFiltro" type="button" class="p-button p-button-text"
+        aria-label="Limpiar filtro">
         <i class="pi pi-times" />
       </PrimeButton>
       <div class="p-ml-auto p-d-flex p-ai-center">
-        <PrimeButton size="small" text severity="secondary" icon="pi pi-plus" @click="expandir" :disabled="Object.keys(clavesExpandidas).length === modeloPanelMenuFiltrado.length" v-tooltip.top="'Expandir todo'" />
-        <PrimeButton size="small" text severity="secondary" icon="pi pi-minus" @click="colapsar" :disabled="!Object.keys(clavesExpandidas).length" v-tooltip.top="'Colapsar todo'" />
-        <PrimeButton size="small" text severity="secondary" icon="pi pi-refresh" @click="alternarTodo" v-tooltip.top="'Alternar expansión'" />
+        <PrimeButton size="small" text severity="secondary" icon="pi pi-plus" @click="expandir"
+          :disabled="Object.keys(clavesExpandidas).length === modeloPanelMenuFiltrado.length"
+          v-tooltip.top="'Expandir todo'" />
+        <PrimeButton size="small" text severity="secondary" icon="pi pi-minus" @click="colapsar"
+          :disabled="!Object.keys(clavesExpandidas).length" v-tooltip.top="'Colapsar todo'" />
+        <PrimeButton size="small" text severity="secondary" icon="pi pi-refresh" @click="alternarTodo"
+          v-tooltip.top="'Alternar expansión'" />
       </div>
     </div>
     <!-- Contenido -->
@@ -278,13 +271,8 @@ window.addEventListener('keydown', manejarAtajos)
       <template #item="{ item }">
         <!-- Item de campo (draggable) -->
         <div v-if="item.tipo">
-          <draggable
-            :list="[item]"
-            item-key="key"
-            :group="{ name: 'paleta', pull: 'clone', put: false }"
-            :clone="() => clonarDesdeMenu(item)"
-            :sort="false"
-          >
+          <draggable :list="[item]" item-key="key" :group="{ name: 'paleta', pull: 'clone', put: false }"
+            :clone="() => clonarDesdeMenu(item)" :sort="false">
             <template #item="{ element }">
               <a v-ripple class="flex items-center pl-4 pr-2 py-2 cursor-pointer group ancho-100 texto-sm">
                 <i class="pi pi-grip-vertical p-mr-2" />
@@ -305,7 +293,4 @@ window.addEventListener('keydown', manejarAtajos)
     </PrimePanelMenu>
   </div>
 </template>
-<style scoped>
-
-</style>
-
+<style scoped></style>

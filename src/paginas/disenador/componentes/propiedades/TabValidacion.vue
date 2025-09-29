@@ -220,8 +220,8 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
     <!-- Header con botón para agregar -->
     <div class="flex align-items-center justify-content-between mb-4">
       <div class="flex align-items-center gap-2">
-        <i class="pi pi-shield text-primary text-xl"></i>
-        <h3 class="m-0 text-lg negrilla ">Validaciones</h3>
+        <i class="pi pi-shield"></i>
+        <h3 class="m-0 negrilla ">Validaciones</h3>
         <AyudaValidacion />
       </div>
 
@@ -234,8 +234,8 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
       <template #content>
         <div class="p-4">
           <i class="pi pi-shield-check text-6xl text-300 mb-4 block"></i>
-          <h4 class=" mb-2">Sin validaciones configuradas</h4>
-          <p class=" mb-4 line-height-3">
+          <h4 class="mb-2">Sin validaciones configuradas</h4>
+          <p class="mb-4 line-height-3">
             Las validaciones ayudan a garantizar que los usuarios ingresen datos correctos y completos en este campo.
           </p>
           <PrimeButton v-if="tiposDisponibles.length > 0" label="Agregar Primera Validación" icon="pi pi-plus"
@@ -249,7 +249,7 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
       <TransitionGroup name="validacion" tag="div" class="flex flex-column gap-3">
         <PrimeCard v-for="(regla, indice) in reglasValidacion" :key="`${regla.tipo}-${indice}`">
           <template #header>
-            <div class="flex align-items-center gap-3 p-3">
+            <div class="flex align-items-center gap-3 p-2">
               <PrimeAvatar :icon="`pi ${obtenerConfigTipo(regla.tipo).icono}`"
                 :style="{ backgroundColor: `var(--${obtenerConfigTipo(regla.tipo).color}-500)`, color: 'white' }"
                 size="large" />
@@ -263,7 +263,7 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
           </template>
 
           <template #content>
-            <div class="p-3">
+            <div class="p-2">
               <div class="field">
                 <label class="texto-sm mb-2">
                   {{ regla.tipo === 'requerido' ? 'Mensaje de error' : 'Valor de configuración' }}
@@ -322,7 +322,7 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
             class="cursor-pointer transition-all transition-duration-200 hover:shadow-3"
             @click="agregarValidacion(config.tipo)">
             <template #content>
-              <div class="flex align-items-center gap-3 p-3">
+              <div class="flex align-items-center gap-3 p-2">
                 <PrimeAvatar :icon="`pi ${config.icono}`"
                   :style="{ backgroundColor: `var(--${config.color}-500)`, color: 'white' }" />
                 <div class="flex-1">

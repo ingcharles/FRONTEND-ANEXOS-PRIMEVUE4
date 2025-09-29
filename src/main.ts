@@ -45,6 +45,10 @@ import PrimeToggleButton from 'primevue/togglebutton'
 import PrimeSelectButton from 'primevue/selectbutton'
 import PrimeScrollPanel from 'primevue/scrollpanel'
 import PrimeTag from 'primevue/tag'
+import PrimeAccordion from 'primevue/accordion'
+import PrimeAccordionTab from 'primevue/accordiontab'
+import PrimeMessage from 'primevue/message'
+import PrimeAvatar from 'primevue/avatar'
 
 // Styles
 // import './assets/main.css' // TailwindCSS + estilos personalizados
@@ -58,7 +62,7 @@ import '@/assets/iconos/sri-app-icon/sri-app-icon-fuentes.min.css'
 import 'primeicons/primeicons.css' // icons
 
 import '@/assets/css/sri-en-linea-cargando.min.css'
-import 'primeflex/primeflex.css'
+// import 'primeflex/primeflex.css'
 import '@/assets/css/_sri-vue-cabecera.scss'
 import '@/assets/css/_sri-vue-plantilla.scss' // Estilos globales personalizados
 // import './assets/_sri-vue-variables.scss' // Variables SCSS globales
@@ -130,6 +134,10 @@ app.component('PrimeToggleButton', PrimeToggleButton)
 app.component('PrimeSelectButton', PrimeSelectButton)
 app.component('PrimeScrollPanel', PrimeScrollPanel)
 app.component('PrimeTag', PrimeTag)
+app.component('PrimeAccordion', PrimeAccordion)
+app.component('PrimeAccordionTab', PrimeAccordionTab)
+app.component('PrimeAvatar', PrimeAvatar)
+app.component('PrimeMessage', PrimeMessage)
 
 app.mount('#app')
 

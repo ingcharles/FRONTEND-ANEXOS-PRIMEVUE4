@@ -131,11 +131,8 @@ const estadisticasProyecto = ref([
 
     <!-- Estadísticas del Proyecto -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
-      <div
-        v-for="estadistica in estadisticasProyecto"
-        :key="estadistica.etiqueta"
-        class="bg-white rounded-lg shadow-md p-6 text-center border-l-4 border-blue-500"
-      >
+      <div v-for="estadistica in estadisticasProyecto" :key="estadistica.etiqueta"
+        class="bg-white rounded-lg shadow-md p-6 text-center border-l-4 border-blue-500">
         <i :class="estadistica.icono" class="text-3xl text-blue-500 mb-3"></i>
         <div class="text-2xl font-bold text-gray-800">{{ estadistica.valor }}</div>
         <div class="text-gray-600">{{ estadistica.etiqueta }}</div>
@@ -149,25 +146,18 @@ const estadisticasProyecto = ref([
         Stack Tecnológico
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div
-          v-for="tech in tecnologias"
-          :key="tech.nombre"
+        <div v-for="tech in tecnologias" :key="tech.nombre"
           class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 border-t-4"
-          :style="{ borderTopColor: tech.color }"
-        >
+          :style="{ borderTopColor: tech.color }">
           <div class="flex items-center mb-4">
             <i :class="tech.icono" class="text-2xl mr-3" :style="{ color: tech.color }"></i>
             <div>
-              <h3 class="text-lg negrilla text-gray-800">{{ tech.nombre }}</h3>
+              <h3 class=" negrilla text-gray-800">{{ tech.nombre }}</h3>
               <span class="texto-sm text-gray-500">v{{ tech.version }}</span>
             </div>
           </div>
           <p class="text-gray-600 mb-4">{{ tech.descripcion }}</p>
-          <a
-            :href="tech.url"
-            target="_blank"
-            class="inline-flex items-center text-blue-600 hover:text-blue-800 "
-          >
+          <a :href="tech.url" target="_blank" class="inline-flex items-center text-blue-600 hover:text-blue-800 ">
             Documentación
             <i class="pi pi-external-link ml-1 texto-sm"></i>
           </a>
@@ -182,19 +172,14 @@ const estadisticasProyecto = ref([
         Características Principales
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div
-          v-for="caracteristica in caracteristicas"
-          :key="caracteristica.titulo"
-          class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300"
-        >
+        <div v-for="caracteristica in caracteristicas" :key="caracteristica.titulo"
+          class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
           <div class="flex items-center mb-4">
-            <div
-              class="w-12 h-12 rounded-full flex items-center justify-center mr-4"
-              :style="{ backgroundColor: caracteristica.color + '20' }"
-            >
+            <div class="w-12 h-12 rounded-full flex items-center justify-center mr-4"
+              :style="{ backgroundColor: caracteristica.color + '20' }">
               <i :class="caracteristica.icono" class="text-xl" :style="{ color: caracteristica.color }"></i>
             </div>
-            <h3 class="text-lg negrilla text-gray-800">{{ caracteristica.titulo }}</h3>
+            <h3 class=" negrilla text-gray-800">{{ caracteristica.titulo }}</h3>
           </div>
           <p class="text-gray-600">{{ caracteristica.descripcion }}</p>
         </div>
