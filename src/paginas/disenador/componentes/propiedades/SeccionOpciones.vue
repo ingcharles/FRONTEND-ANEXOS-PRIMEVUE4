@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
@@ -405,44 +404,35 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
     <div class="grid">
       <div class="col-12">
         <label class="texto-sm">Fuente de opciones</label>
-        <PrimeSelect
-          :model-value="obtenerModoOpciones()"
-          :options="opcionesFuente"
-          option-label="label"
-          option-value="value"
-          class="ancho-100 texto-sm"
-          @update:model-value="(v: ModoOpciones) => actualizarModoOpciones(v)"
-        />
+        <PrimeSelect :model-value="obtenerModoOpciones()" :options="opcionesFuente" option-label="label"
+          option-value="value" class="ancho-100 texto-sm"
+          @update:model-value="(v: ModoOpciones) => actualizarModoOpciones(v)" />
       </div>
     </div>
 
     <!-- Opciones manuales -->
-  <template v-if="obtenerModoOpciones() === ModoOpciones.MANUAL">
+    <template v-if="obtenerModoOpciones() === ModoOpciones.MANUAL">
       <div class="flex justify-content-between align-items-center mb-2">
         <label class="texto-sm">Opciones</label>
         <PrimeButton label="Agregar" size="small" icon="pi pi-plus" @click="agregarOpcion" />
       </div>
 
       <div v-for="(opcion, indice) in obtenerOpciones()" :key="indice" class="grid align-items-end mb-2">
-        <div class="sm:col-12 md:col-12 lg:col-4">
+        <div class="col-12">
           <label class="texto-sm">Etiqueta</label>
-          <PrimeInputText
-            :model-value="String(opcion.etiqueta)"
+          <PrimeInputText :model-value="String(opcion.etiqueta)"
             @update:model-value="(v: string | undefined) => actualizarOpcion(indice, 'etiqueta', v || '')"
-            class="ancho-100 texto-sm"
-          />
+            class="ancho-100 texto-sm" />
         </div>
 
-        <div class="sm:col-12 md:col-12 lg:col-4">
+        <div class="col-12">
           <label class="texto-sm">Valor</label>
-          <PrimeInputText
-            :model-value="String(opcion.valor ?? '')"
+          <PrimeInputText :model-value="String(opcion.valor ?? '')"
             @update:model-value="(v: string | undefined) => actualizarOpcion(indice, 'valor', v || '')"
-            class="ancho-100 texto-sm"
-          />
+            class="ancho-100 texto-sm" />
         </div>
 
-        <div class="sm:col-12 md:col-12 lg:col-4 row-start-2 flex align-items-end">
+        <div class="col-12 row-start-2 flex align-items-end">
           <PrimeButton icon="pi pi-trash" severity="danger" text @click="eliminarOpcion(indice)" />
         </div>
       </div>
@@ -456,87 +446,58 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
         <!-- URL -->
         <div class="col-12">
           <label class="mb-2">URL</label>
-          <PrimeInputText
-            :model-value="configApi.url"
-            placeholder="https://api.midominio.com/opciones"
+          <PrimeInputText :model-value="configApi.url" placeholder="https://api.midominio.com/opciones"
             @update:model-value="(v: string | undefined) => actualizarConfigApi({ url: v || '' })"
-            class="ancho-100 texto-sm"
-            />
+            class="ancho-100 texto-sm" />
         </div>
 
         <!-- Método y Content-Type -->
-        <div class="sm:col-12 md:col-12 lg:col-4">
+        <div class="col-12">
           <label class="texto-sm">Método</label>
-          <PrimeSelect
-            :model-value="configApi.method || MetodoHttp.GET"
-            :options="opcionesMetodo"
-            option-label="label"
-            option-value="value"
-            class="ancho-100 texto-sm"
-            @update:model-value="(v: MetodoHttp) => actualizarConfigApi({ method: v })"
-          />
+          <PrimeSelect :model-value="configApi.method || MetodoHttp.GET" :options="opcionesMetodo" option-label="label"
+            option-value="value" class="ancho-100 texto-sm"
+            @update:model-value="(v: MetodoHttp) => actualizarConfigApi({ method: v })" />
         </div>
 
-        <div class="col-12 md:col-8">
+        <div class="col-12">
           <label class="texto-sm">Content-Type</label>
-          <PrimeSelect
-            :model-value="configApi.contentType || 'application/json'"
-            :options="opcionesContentType"
-            option-label="label"
-            option-value="value"
-            class="ancho-100 texto-sm"
-            @update:model-value="(v: string) => actualizarConfigApi({ contentType: v })"
-          />
+          <PrimeSelect :model-value="configApi.contentType || 'application/json'" :options="opcionesContentType"
+            option-label="label" option-value="value" class="ancho-100 texto-sm"
+            @update:model-value="(v: string) => actualizarConfigApi({ contentType: v })" />
         </div>
 
         <!-- Configuración de claves -->
-        <div class="col-12 md:col-6">
+        <div class="col-12">
           <label class="texto-sm">Ruta datos (opcional)</label>
-          <PrimeInputText
-            :model-value="configApi.dataPath"
-            placeholder="por ej.: data.items"
-            @update:model-value="(v: string | undefined) => actualizarConfigApi({ dataPath: v || '' })"
-          />
+          <PrimeInputText :model-value="configApi.dataPath" class="ancho-100" placeholder="por ej.: data.items"
+            @update:model-value="(v: string | undefined) => actualizarConfigApi({ dataPath: v || '' })" />
         </div>
 
-        <div class="col-12 md:col-3">
+        <div class="col-12">
           <label class="texto-sm">Clave Valor</label>
-          <PrimeInputText
-            :model-value="configApi.claveValor"
-            placeholder="valor"
-            @update:model-value="(v: string | undefined) => actualizarConfigApi({ claveValor: v || '' })"
-          />
+          <PrimeInputText :model-value="configApi.claveValor" class="ancho-100" placeholder="valor"
+            @update:model-value="(v: string | undefined) => actualizarConfigApi({ claveValor: v || '' })" />
         </div>
 
-        <div class="col-12 md:col-3">
+        <div class="col-12">
           <label class="texto-sm">Clave Etiqueta</label>
-          <PrimeInputText
-            :model-value="configApi.claveEtiqueta"
-            placeholder="etiqueta"
-            @update:model-value="(v: string | undefined) => actualizarConfigApi({ claveEtiqueta: v || '' })"
-          />
+          <PrimeInputText :model-value="configApi.claveEtiqueta" class="ancho-100" placeholder="etiqueta"
+            @update:model-value="(v: string | undefined) => actualizarConfigApi({ claveEtiqueta: v || '' })" />
         </div>
 
         <!-- Body para POST -->
         <div class="col-12" v-if="(configApi.method || MetodoHttp.GET) === MetodoHttp.POST">
           <label class="texto-sm">Body (JSON o texto)</label>
-          <PrimeTextarea
-            :model-value="configApi.body"
-            rows="4"
-            placeholder='{"page":1}'
-            @update:model-value="(v: string | undefined) => actualizarConfigApi({ body: v || '' })"
-          />
+          <PrimeTextarea :model-value="configApi.body" rows="4" placeholder='{"page":1}'
+            @update:model-value="(v: string | undefined) => actualizarConfigApi({ body: v || '' })" />
         </div>
 
         <!-- Headers -->
         <div class="col-12">
           <label class="texto-sm">Headers (JSON opcional)</label>
-          <PrimeTextarea
-            :model-value="configApi.headersJson"
-            rows="3"
+          <PrimeTextarea :model-value="configApi.headersJson" rows="3" class="area-texto-seccion ancho-100"
             placeholder='{"Authorization":"Bearer ..."}'
-            @update:model-value="(v: string | undefined) => actualizarConfigApi({ headersJson: v || '' })"
-          />
+            @update:model-value="(v: string | undefined) => actualizarConfigApi({ headersJson: v || '' })" />
         </div>
 
         <!-- Estructura detectada -->
@@ -546,8 +507,10 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
             <div class="text-xs text-blue-700 font-mono">
               {{ JSON.stringify(obtenerOpciones()[0], null, 2) }}
             </div>
-            <small class="text-blue-600 block mt-1">
-              Si tu API usa claves diferentes (como "etiqueta"/"valor"), se detectarán automáticamente al cargar desde la API.
+            <small class="text-blue-600 mt-1">
+              Si tu API usa claves diferentes (como "etiqueta"/"valor"), se detectarán automáticamente al cargar desde
+              la
+              API.
             </small>
           </div>
         </div>
@@ -555,25 +518,15 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
 
       <!-- Botones de carga -->
       <div class="flex align-items-center gap-2 flex-wrap mt-3">
-        <PrimeButton
-          :disabled="cargandoApi"
-          size="small"
-          icon="pi pi-refresh"
+        <PrimeButton :disabled="cargandoApi" size="small" icon="pi pi-refresh"
           :label="cargandoApi ? 'Cargando…' : 'Reemplazar con API'"
-          @click="cargarOpcionesDesdeApi(ModoCarga.REEMPLAZAR)"
-        />
-        <PrimeButton
-          :disabled="cargandoApi"
-          size="small"
-          icon="pi pi-plus"
-          severity="secondary"
-          label="Añadir desde API"
-          @click="cargarOpcionesDesdeApi(ModoCarga.AGREGAR)"
-        />
+          @click="cargarOpcionesDesdeApi(ModoCarga.REEMPLAZAR)" />
+        <PrimeButton :disabled="cargandoApi" size="small" icon="pi pi-plus" severity="secondary"
+          label="Añadir desde API" @click="cargarOpcionesDesdeApi(ModoCarga.AGREGAR)" />
         <small v-if="errorApi" class="color-rojo">{{ errorApi }}</small>
       </div>
 
-      <small class="text-color-secondary block mt-2">
+      <small class="text-color-secondary mt-2">
         Reemplazar: sustituye todas las opciones. Añadir: agrega nuevas sin duplicar por valor.
       </small>
     </div>
@@ -583,31 +536,19 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
       <label class="texto-sm">Valor por defecto</label>
 
       <template v-if="campo?.tipo === TipoCampoValor.Casilla">
-        <PrimeMultiSelect
-          :model-value="obtenerValorPorDefectoArray()"
-          :options="obtenerOpciones()"
-          option-label="etiqueta"
-          option-value="valor"
-          placeholder="(sin valores por defecto)"
-          class="ancho-100 texto-sm mb-2"
-          display="chip"
-          @update:model-value="(v: unknown[]) => actualizarValorPorDefecto(v)"
-        />
+        <PrimeMultiSelect :model-value="obtenerValorPorDefectoArray()" :options="obtenerOpciones()"
+          option-label="etiqueta" option-value="valor" placeholder="(sin valores por defecto)"
+          class="ancho-100 texto-sm mb-2" display="chip"
+          @update:model-value="(v: unknown[]) => actualizarValorPorDefecto(v)" />
         <small class="text-color-secondary">
           Puedes preseleccionar varias opciones para el grupo de checkboxes.
         </small>
       </template>
 
       <template v-else>
-        <PrimeSelect
-          :model-value="obtenerValorPorDefecto()"
-          :options="obtenerOpciones()"
-          option-label="etiqueta"
-          option-value="valor"
-          placeholder="(sin valor por defecto)"
-          class="ancho-100 texto-sm mb-2"
-          @update:model-value="actualizarValorPorDefecto"
-        />
+        <PrimeSelect :model-value="obtenerValorPorDefecto()" :options="obtenerOpciones()" option-label="etiqueta"
+          option-value="valor" placeholder="(sin valor por defecto)" class="ancho-100 texto-sm mb-2"
+          @update:model-value="actualizarValorPorDefecto" />
         <small class="text-color-secondary">
           Selecciona qué opción quedará preseleccionada por defecto.
         </small>
@@ -618,14 +559,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
     <SeccionDependencias v-if="campo" :campo="campo" />
 
     <!-- Modal de alerta para errores de API -->
-    <ModalAlerta
-      v-model="mostrarModalAlerta"
-      :titulo="datosModalAlerta.titulo"
-      :mensaje="datosModalAlerta.mensaje"
-      :mensaje-detalle="datosModalAlerta.detalle"
-      tipo="error"
-    />
+    <ModalAlerta v-model="mostrarModalAlerta" :titulo="datosModalAlerta.titulo" :mensaje="datosModalAlerta.mensaje"
+      :mensaje-detalle="datosModalAlerta.detalle" tipo="error" />
   </div>
 </template>
-
-

@@ -1,35 +1,26 @@
 <template>
-  <div class="mb-2 mt-2" >
+  <div class="mb-2 mt-2">
     <h3 class="texto-sm text-color mb-2">Ancho dispositivo</h3>
     <div class="grid">
-      <div class="sm:col-12 md:col-12 lg:col-4">
+      <div class="col-12">
         <label class="texto-sm">Pequeño</label>
-        <PrimeSelect
-          :model-value="campo?.grid?.sm ?? 12"
-          :options="[1,2,3,4,5,6,7,8,9,10,11,12]"
+        <PrimeSelect :model-value="campo?.grid?.sm ?? 12" :options="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
           class="texto-sm ancho-100"
-          @update:model-value="(v: number | null) => actualizarGrid({ sm: Number(v ?? 12) })"
-        />
+          @update:model-value="(v: number | null) => actualizarGrid({ sm: Number(v ?? 12) })" />
       </div>
 
-      <div class="sm:col-12 md:col-12 lg:col-4">
+      <div class="col-12">
         <label class="texto-sm">Mediano</label>
-        <PrimeSelect
-          :model-value="campo?.grid?.md ?? 6"
-          :options="[1,2,3,4,5,6,7,8,9,10,11,12]"
+        <PrimeSelect :model-value="campo?.grid?.md ?? 6" :options="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
           class="ancho-100 texto-sm"
-          @update:model-value="(v: number | null) => actualizarGrid({ md: Number(v ?? 6) })"
-        />
+          @update:model-value="(v: number | null) => actualizarGrid({ md: Number(v ?? 6) })" />
       </div>
 
-      <div class="sm:col-12 md:col-12 lg:col-4">
+      <div class="col-12">
         <label class="texto-sm">Grande</label>
-        <PrimeSelect
-          :model-value="campo?.grid?.lg ?? 6"
-          :options="[1,2,3,4,5,6,7,8,9,10,11,12]"
+        <PrimeSelect :model-value="campo?.grid?.lg ?? 6" :options="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
           class="ancho-100 texto-sm"
-          @update:model-value="(v: number | null) => actualizarGrid({ lg: Number(v ?? 6) })"
-        />
+          @update:model-value="(v: number | null) => actualizarGrid({ lg: Number(v ?? 6) })" />
       </div>
     </div>
 
@@ -57,7 +48,7 @@
     </div> -->
 
   </div>
-      <PrimeDivider class="my-3" />
+  <PrimeDivider class="my-3" />
 </template>
 
 <script setup lang="ts">
@@ -112,4 +103,3 @@ function actualizarGrid(parcial: Partial<ColumnasGrid>): void {
 //   almacen.actualizarCampo(props.campo.id, { metadatos: meta })
 // }
 </script>
-

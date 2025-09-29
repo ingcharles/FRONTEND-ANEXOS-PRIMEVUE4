@@ -4,78 +4,49 @@
 
     <div class="grid">
       <!-- Modo de envío -->
-      <div class="col-12 md:col-6">
+      <div class="col-12">
         <label class="texto-sm">Modo de envío</label>
-        <PrimeSelect
-          :model-value="configDependencia.modoEnvio || 'query'"
-          :options="modoEnvioOpciones"
-          option-label="label"
-          option-value="value"
-          class="ancho-100 texto-sm"
-          @focus="asegurarDependencia"
-          @update:model-value="(v: ModoEnvio) => actualizarDependencia('modoEnvio', v)"
-        />
+        <PrimeSelect :model-value="configDependencia.modoEnvio || 'query'" :options="modoEnvioOpciones"
+          option-label="label" option-value="value" class="ancho-100 texto-sm" @focus="asegurarDependencia"
+          @update:model-value="(v: ModoEnvio) => actualizarDependencia('modoEnvio', v)" />
       </div>
 
       <!-- Campo padre -->
-      <div class="col-12 md:col-6">
+      <div class="col-12">
         <label class="texto-sm">Campo padre (depende de)</label>
-        <PrimeMultiSelect
-          :model-value="obtenerCamposPadre()"
-          :options="camposPaginaActual"
-          option-label="label"
-          option-value="value"
-          placeholder="Seleccionar campo(s)"
-          class="ancho-100 texto-sm"
-          @focus="asegurarDependencia"
-          @update:model-value="actualizarCamposPadre"
-        />
-        <small class="text-color-secondary text-xs mt-1 block">
+        <PrimeMultiSelect :model-value="obtenerCamposPadre()" :options="camposPaginaActual" option-label="label"
+          option-value="value" placeholder="Seleccionar campo(s)" class="ancho-100 texto-sm"
+          @focus="asegurarDependencia" @update:model-value="actualizarCamposPadre" />
+        <small class="text-color-secondary text-xs mt-1">
           Puedes elegir múltiples padres; se guardan separados por comas y se respetará el orden.
         </small>
       </div>
 
       <!-- Nombre de parámetro -->
-      <div class="col-12 md:col-6" v-if="debeMostrarclaveParametro()">
+      <div class="col-12" v-if="debeMostrarclaveParametro()">
         <label class="texto-sm">Nombre de parámetro (claveParametro)</label>
-        <PrimeInputText
-          :model-value="(configDependencia.claveParametro as string) || ''"
-          :placeholder="obtenerPlaceholderclaveParametro()"
-          class="ancho-100 texto-sm"
-          @focus="asegurarDependencia"
-          @update:model-value="(v: string | undefined) => actualizarDependencia('claveParametro', v || '')"
-        />
+        <PrimeInputText :model-value="(configDependencia.claveParametro as string) || ''"
+          :placeholder="obtenerPlaceholderclaveParametro()" class="ancho-100 texto-sm" @focus="asegurarDependencia"
+          @update:model-value="(v: string | undefined) => actualizarDependencia('claveParametro', v || '')" />
       </div>
 
       <!-- Opciones de comportamiento -->
-      <div class="sm:col-12 md:col-12 lg:col-4 flex align-items-center gap-2">
-        <Checkbox
-          binary
-          :model-value="configDependencia.limpiarAlCambiar !== false"
-          @update:model-value="(v: boolean) => actualizarDependencia('limpiarAlCambiar', v)"
-        />
+      <div class="col-12 flex align-items-center gap-2">
+        <Checkbox binary :model-value="configDependencia.limpiarAlCambiar !== false"
+          @update:model-value="(v: boolean) => actualizarDependencia('limpiarAlCambiar', v)" />
         <label class="texto-sm">Limpiar al cambiar</label>
       </div>
 
-      <div class="sm:col-12 md:col-12 lg:col-4 flex align-items-center gap-2">
-        <Checkbox
-          binary
-          :model-value="configDependencia.deshabilitarHastaValor !== false"
-          @update:model-value="(v: boolean) => actualizarDependencia('deshabilitarHastaValor', v)"
-        />
+      <div class="col-12 flex align-items-center gap-2">
+        <Checkbox binary :model-value="configDependencia.deshabilitarHastaValor !== false"
+          @update:model-value="(v: boolean) => actualizarDependencia('deshabilitarHastaValor', v)" />
         <label class="texto-sm">Deshabilitar hasta que padre tenga valor</label>
       </div>
 
       <!-- Botón de limpiar -->
-      <div class="sm:col-12 md:col-12 lg:col-4">
-        <PrimeButton
-          size="small"
-          severity="secondary"
-          outlined
-          icon="pi pi-trash"
-          label="Limpiar dependencia"
-          @click="limpiarDependencia"
-        />
+      <div class="col-12">
+        <PrimeButton size="small" severity="secondary" outlined icon="pi pi-trash" label="Limpiar dependencia"
+          @click="limpiarDependencia" />
       </div>
     </div>
   </div>
@@ -240,4 +211,3 @@ function limpiarDependencia(): void {
   almacen.actualizarCampo(props.campo.id, { metadatos: meta })
 }
 </script>
-

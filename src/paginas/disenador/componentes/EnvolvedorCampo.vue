@@ -161,11 +161,11 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
       <PrimeTag class="text-xs px-1 py-1 pointer-events-auto informacion-redimension-tag" severity="primary">
         <div class="grid ancho-100 align-items-start">
           <!-- Columna izquierda (8/12): textos -->
-          <div class="col-8 ">
-            <!-- <span >{{ `${campo.tipo || campo.etiqueta}: ${campo.id}` }}</span> -->
+          <div class="col-8 flex flex-column">
             <span class="titulo">{{ `${punto}: ${columnaActual} Columnas` }}</span>
-            <span class="color-rojo" v-if="campo.tipo === 'panel'">Elementos: {{ conteoHijos }}</span>
-            <span v-if="ServicioCampos.soportaOpciones(campo.tipo)">Opciones: {{ conteoOpciones }}</span>
+            <span class="color-rojo texto-miga" v-if="campo.tipo === 'panel'">Elementos: {{ conteoHijos }}</span>
+            <span class="color-rojo texto-miga" v-if="ServicioCampos.soportaOpciones(campo.tipo)">Opciones: {{
+              conteoOpciones }}</span>
           </div>
           <!-- Columna derecha (4/12): acciones -->
           <div class="col-4 flex justify-content-end gap-1 pb-0">

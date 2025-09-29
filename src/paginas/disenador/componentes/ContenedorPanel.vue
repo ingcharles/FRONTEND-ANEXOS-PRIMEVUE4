@@ -45,40 +45,20 @@ function obtenerClasesColumna(elemento: EsquemaCampo): string[] {
 </script>
 
 <template>
-  <PrimePanel
-    class="p-2"
-    :header="propiedades.campo.etiqueta || 'Panel'"
-    :toggleable="true"
-    :collapsed="propiedades.contraido"
-    @toggle="emitir('alternar')"
-  >
-    <draggable
-      class="grid ancho-100 texto-sm"
-      v-model="lista"
-      item-key="id"
-      :group="{ name: 'paleta', pull: true, put: true }"
-      handle=".handler-mover"
-      @change="() => {}"
-      @add="manejarAgregar"
-      ghost-class="drag-ghost"
-      chosen-class="drag-chosen"
-      drag-class="drag-active"
-    >
+  <PrimePanel class="p-2" :header="propiedades.campo.etiqueta || 'Panel'" :toggleable="true"
+    :collapsed="propiedades.contraido" @toggle="emitir('alternar')">
+    <draggable class="grid ancho-100 texto-sm" v-model="lista" item-key="id"
+      :group="{ name: 'paleta', pull: true, put: true }" handle=".handler-mover" @change="() => { }"
+      @add="manejarAgregar" ghost-class="drag-ghost" chosen-class="drag-chosen" drag-class="drag-active">
       <template #item="{ element }">
-        <div
-          :class="obtenerClasesColumna(element)"
-          @click.stop="almacen.seleccionarCampo(element.id)"
-        >
-          <EnvolvedorCampo
-            :campo="element"
-            :seleccionado="almacen.idCampoSeleccionado === element.id"
-            @seleccionar="almacen.seleccionarCampo(element.id)"
-          />
+        <div :class="obtenerClasesColumna(element)" @click.stop="almacen.seleccionarCampo(element.id)">
+          <EnvolvedorCampo :campo="element" :seleccionado="almacen.idCampoSeleccionado === element.id"
+            @seleccionar="almacen.seleccionarCampo(element.id)" />
         </div>
       </template>
       <template #footer>
-        <div v-if="lista.length === 0" class="col-12 text-600 text-center p-2">
-          Arrastre aquí elementos mientras esté vacío
+        <div v-if="lista.length === 0" class="col-12 contenido p-2">
+          Arrastre aquí elementos desde la paleta
         </div>
       </template>
     </draggable>
@@ -86,8 +66,16 @@ function obtenerClasesColumna(elemento: EsquemaCampo): string[] {
 </template>
 
 <style scoped>
-.drag-ghost { opacity: .5; outline: 2px dashed var(--p-primary-400); }
-.drag-chosen { outline: 2px solid var(--p-primary-500); }
-.drag-active { cursor: grabbing; }
-</style>
+.drag-ghost {
+  opacity: .5;
+  outline: 2px dashed var(--p-primary-400);
+}
 
+.drag-chosen {
+  outline: 2px solid var(--p-primary-500);
+}
+
+.drag-active {
+  cursor: grabbing;
+}
+</style>

@@ -1926,6 +1926,9 @@ button.p-button.p-component.p-button-icon-only.p-button-rounded.p-button-seconda
 
 
 
+.texto-miga {
+  font-size: $fuente-size-miga;
+}
 
 input[type="file"] {
   display: none;
@@ -1952,9 +1955,6 @@ input[type="file"] {
   border-style: solid;
 }
 
-// .p-panel-content {
-//   padding: 0 1.125rem 1.125rem 1.125rem;
-// }
 
 .boton-pequenio {
   margin: 0;
@@ -1962,11 +1962,6 @@ input[type="file"] {
   width: auto;
   padding: 0 15px;
 }
-
-// .boton-pequenio {
-//   font-size: 0.075rem;
-//   padding: 0rem 0rem;
-// }
 
 .bg-surface-100 {
   background-color: var(--surface-100);
@@ -1981,9 +1976,17 @@ input[type="file"] {
   position: relative !important;
 }
 
+.area-texto-seccion {
+  min-width: initial !important;
+}
 
 .p-panel-header {
   padding: 1.125rem;
+  // padding: 0.375rem 1.125rem;
+}
+
+.p-panel-content {
+  padding: 0 1.125rem 1.125rem 1.125rem;
 }
 
 /********** estilos Flexible ************/

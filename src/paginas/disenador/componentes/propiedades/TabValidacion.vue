@@ -221,18 +221,12 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
     <div class="flex align-items-center justify-content-between mb-4">
       <div class="flex align-items-center gap-2">
         <i class="pi pi-shield text-primary text-xl"></i>
-        <h3 class="m-0 text-lg negrilla text-700">Validaciones</h3>
+        <h3 class="m-0 text-lg negrilla ">Validaciones</h3>
         <AyudaValidacion />
       </div>
 
-      <PrimeButton
-        v-if="tiposDisponibles.length > 0"
-        label="Agregar Validación"
-        icon="pi pi-plus"
-        size="small"
-        @click="mostrarMenuAgregar = true"
-        severity="success"
-      />
+      <PrimeButton v-if="tiposDisponibles.length > 0" label="Agregar Validación" icon="pi pi-plus" size="small"
+        @click="mostrarMenuAgregar = true" severity="success" />
     </div>
 
     <!-- Estado vacío mejorado -->
@@ -240,17 +234,12 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
       <template #content>
         <div class="p-4">
           <i class="pi pi-shield-check text-6xl text-300 mb-4 block"></i>
-          <h4 class="text-700 mb-2">Sin validaciones configuradas</h4>
-          <p class="text-500 mb-4 line-height-3">
+          <h4 class=" mb-2">Sin validaciones configuradas</h4>
+          <p class=" mb-4 line-height-3">
             Las validaciones ayudan a garantizar que los usuarios ingresen datos correctos y completos en este campo.
           </p>
-          <PrimeButton
-            v-if="tiposDisponibles.length > 0"
-            label="Agregar Primera Validación"
-            icon="pi pi-plus"
-            @click="mostrarMenuAgregar = true"
-            outlined
-          />
+          <PrimeButton v-if="tiposDisponibles.length > 0" label="Agregar Primera Validación" icon="pi pi-plus"
+            @click="mostrarMenuAgregar = true" outlined />
         </div>
       </template>
     </PrimeCard>
@@ -258,82 +247,59 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
     <!-- Lista de validaciones existentes -->
     <div v-else class="flex flex-column gap-3">
       <TransitionGroup name="validacion" tag="div" class="flex flex-column gap-3">
-        <PrimeCard
-          v-for="(regla, indice) in reglasValidacion"
-          :key="`${regla.tipo}-${indice}`"
-        >
+        <PrimeCard v-for="(regla, indice) in reglasValidacion" :key="`${regla.tipo}-${indice}`">
           <template #header>
             <div class="flex align-items-center gap-3 p-3">
-              <PrimeAvatar
-                :icon="`pi ${obtenerConfigTipo(regla.tipo).icono}`"
+              <PrimeAvatar :icon="`pi ${obtenerConfigTipo(regla.tipo).icono}`"
                 :style="{ backgroundColor: `var(--${obtenerConfigTipo(regla.tipo).color}-500)`, color: 'white' }"
-                size="large"
-              />
+                size="large" />
               <div class="flex-1">
-                <h5 class="m-0 text-700 negrilla">{{ obtenerConfigTipo(regla.tipo).titulo }}</h5>
-                <p class="m-0 text-500 texto-sm">{{ obtenerConfigTipo(regla.tipo).descripcion }}</p>
+                <h5 class="m-0 negrilla">{{ obtenerConfigTipo(regla.tipo).titulo }}</h5>
+                <p class="m-0 texto-sm">{{ obtenerConfigTipo(regla.tipo).descripcion }}</p>
               </div>
-              <PrimeButton
-                icon="pi pi-trash"
-                severity="danger"
-                text
-                rounded
-                size="small"
-                @click="eliminarValidacion(indice)"
-                v-tooltip.top="'Eliminar validación'"
-              />
+              <PrimeButton icon="pi pi-trash" severity="danger" text rounded size="small"
+                @click="eliminarValidacion(indice)" v-tooltip.top="'Eliminar validación'" />
             </div>
           </template>
 
           <template #content>
             <div class="p-3">
               <div class="field">
-                <label class="texto-sm text-700 mb-2 block">
+                <label class="texto-sm mb-2">
                   {{ regla.tipo === 'requerido' ? 'Mensaje de error' : 'Valor de configuración' }}
                 </label>
 
-                <PrimeInputText
-                  :model-value="String(regla.valor || '')"
+                <PrimeInputText :model-value="String(regla.valor || '')"
                   @update:model-value="actualizarValorValidacion(indice, $event)"
                   :placeholder="obtenerConfigTipo(regla.tipo).placeholder"
-                  :type="obtenerConfigTipo(regla.tipo).inputType || 'text'"
-                  class="w-full"
-                />
+                  :type="obtenerConfigTipo(regla.tipo).inputType || 'text'" class="w-full" />
 
-                <small v-if="obtenerConfigTipo(regla.tipo).ayuda" class="text-500 block mt-1">
+                <small v-if="obtenerConfigTipo(regla.tipo).ayuda" class=" mt-1">
                   {{ obtenerConfigTipo(regla.tipo).ayuda }}
                 </small>
 
                 <!-- Ejemplos para algunos tipos -->
                 <div v-if="obtenerConfigTipo(regla.tipo).ejemplos" class="mt-3">
-                  <small class="text-600  block mb-2">Ejemplos comunes:</small>
+                  <small class="contenido  mb-2">Ejemplos comunes:</small>
                   <div class="flex flex-wrap gap-1">
-                    <PrimeTag
-                      v-for="ejemplo in obtenerConfigTipo(regla.tipo).ejemplos"
-                      :key="ejemplo"
-                      :value="ejemplo"
-                      severity="info"
-                      class="cursor-pointer"
+                    <PrimeTag v-for="ejemplo in obtenerConfigTipo(regla.tipo).ejemplos" :key="ejemplo" :value="ejemplo"
+                      severity="info" class="cursor-pointer"
                       @click="actualizarValorValidacion(indice, ejemplo.split(' ')[0])"
-                      v-tooltip.top="`Clic para usar: ${ejemplo.split(' ')[0]}`"
-                    />
+                      v-tooltip.top="`Clic para usar: ${ejemplo.split(' ')[0]}`" />
                   </div>
                 </div>
 
                 <!-- Campo de mensaje personalizado (para validaciones no-requerido) -->
                 <div v-if="regla.tipo !== 'requerido'" class="field mt-3">
-                  <label class="texto-sm text-700 mb-2 block">
+                  <label class="texto-sm  mb-2 block">
                     Mensaje de error personalizado (opcional)
                   </label>
 
-                  <PrimeInputText
-                    :model-value="String(regla.mensaje || '')"
+                  <PrimeInputText :model-value="String(regla.mensaje || '')"
                     @update:model-value="actualizarMensajeValidacion(indice, $event)"
-                    :placeholder="obtenerMensajePorDefecto(regla.tipo, regla.valor)"
-                    class="w-full"
-                  />
+                    :placeholder="obtenerMensajePorDefecto(regla.tipo, regla.valor)" class="w-full" />
 
-                  <small class="text-500 block mt-1">
+                  <small class=" mt-1">
                     Si no especificas un mensaje, se usará: "{{ obtenerMensajePorDefecto(regla.tipo, regla.valor) }}"
                   </small>
                 </div>
@@ -345,32 +311,23 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
     </div>
 
     <!-- Dialog para agregar validaciones -->
-    <DialogoAyuda
-      v-model:visible="mostrarMenuAgregar"
-      titulo="Agregar Validación"
-      ancho="500px"
-    >
+    <DialogoAyuda v-model:visible="mostrarMenuAgregar" titulo="Agregar Validación" ancho="500px">
       <div class="flex flex-column gap-3">
         <PrimeMessage severity="info" :closable="false">
           Selecciona el tipo de validación que deseas agregar a este campo:
         </PrimeMessage>
 
         <div class="flex flex-column gap-2">
-          <PrimeCard
-            v-for="config in tiposDisponibles"
-            :key="config.tipo"
+          <PrimeCard v-for="config in tiposDisponibles" :key="config.tipo"
             class="cursor-pointer transition-all transition-duration-200 hover:shadow-3"
-            @click="agregarValidacion(config.tipo)"
-          >
+            @click="agregarValidacion(config.tipo)">
             <template #content>
               <div class="flex align-items-center gap-3 p-3">
-                <PrimeAvatar
-                  :icon="`pi ${config.icono}`"
-                  :style="{ backgroundColor: `var(--${config.color}-500)`, color: 'white' }"
-                />
+                <PrimeAvatar :icon="`pi ${config.icono}`"
+                  :style="{ backgroundColor: `var(--${config.color}-500)`, color: 'white' }" />
                 <div class="flex-1">
-                  <h5 class="m-0 text-700 negrilla">{{ config.titulo }}</h5>
-                  <p class="m-0 text-500 texto-sm">{{ config.descripcion }}</p>
+                  <h5 class="m-0  negrilla">{{ config.titulo }}</h5>
+                  <p class="m-0  texto-sm">{{ config.descripcion }}</p>
                 </div>
                 <i class="pi pi-chevron-right text-400"></i>
               </div>
@@ -382,7 +339,4 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
   </div>
 </template>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>

@@ -66,23 +66,23 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
 
 <template>
   <div class="p-3 grid ancho-100 texto-sm" style="min-height: 70vh">
-    <div class="col-12 md:col-3 lg:col-2">
+    <div class="col-12 lg:col-2">
       <PanelPaleta />
     </div>
-    <div class="col-12 md:col-6 lg:col-8">
+    <div class="col-12 lg:col-8">
       <!-- <div class="grid mb-2"> -->
       <!-- Columna izquierda -->
       <!-- <div class="col-12 lg:col-8"> -->
       <div class="grid">
-        <div class="col-12 md:col-3 lg:col-2">
+        <div class="col-12 lg:col-2">
           <PrimeButton label="Añadir página" class="ancho-100" icon="pi pi-plus"
             @click="almacen.crearPaginaDespuesActual" />
         </div>
-        <div class="col-12 md:col-3 lg:col-2">
+        <div class="col-12 lg:col-2">
           <PrimeButton label="Duplicar página" class="ancho-100" icon="pi pi-copy"
             @click="almacen.duplicarPagina(almacen.indicePaginaActiva)" />
         </div>
-        <div class="col-12 md:col-3 lg:col-2">
+        <div class="col-12 lg:col-2">
           <PrimeButton label="Eliminar página" severity="danger" class="ancho-100" icon="pi pi-trash"
             @click="almacen.confirmarEliminarPagina(almacen.indicePaginaActiva)" />
         </div>
@@ -185,7 +185,7 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
         </PrimeTabPanels>
       </PrimeTabs>
     </div>
-    <div class="col-12 md:col-3 lg:col-2">
+    <div class="col-12 lg:col-2">
       <Propiedades />
     </div>
   </div>

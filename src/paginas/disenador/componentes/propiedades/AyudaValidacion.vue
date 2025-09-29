@@ -1,20 +1,9 @@
 <template>
   <div>
-    <PrimeButton
-      icon="pi pi-question-circle"
-      severity="help"
-      text
-      rounded
-      size="small"
-      @click="mostrarAyuda = true"
-      v-tooltip.top="'Ver ejemplos y ayuda'"
-    />
+    <PrimeButton icon="pi pi-question-circle" severity="help" text rounded size="small" @click="mostrarAyuda = true"
+      v-tooltip.top="'Ver ejemplos y ayuda'" />
 
-    <DialogoAyuda
-      v-model:visible="mostrarAyuda"
-      titulo="Guía de Validaciones"
-      ancho="700px"
-    >
+    <DialogoAyuda v-model:visible="mostrarAyuda" titulo="Guía de Validaciones" ancho="700px">
       <PrimeTabs value="0">
         <PrimeTabList>
           <PrimeTab value="0">Básicas</PrimeTab>
@@ -34,7 +23,7 @@
                   </div>
                 </template>
                 <template #content>
-                  <p class="text-600 mb-3">{{ validacion.descripcion }}</p>
+                  <p class="contenido mb-3">{{ validacion.descripcion }}</p>
                   <PrimePanel header="Ejemplo" toggleable collapsed class="mb-3">
                     <template #content>
                       <div class="surface-100 border-round p-3">
@@ -44,7 +33,7 @@
                     </template>
                   </PrimePanel>
                   <div v-if="validacion.casos" class="surface-50 border-round p-3">
-                    <strong class="text-700">Casos comunes:</strong>
+                    <strong class="">Casos comunes:</strong>
                     <ul class="mt-2 mb-0 pl-3">
                       <li v-for="caso in validacion.casos" :key="caso" class="mb-1">{{ caso }}</li>
                     </ul>
@@ -65,35 +54,22 @@
               </PrimeMessage>
 
               <PrimeAccordion v-model:activeIndex="patronActivo" multiple>
-                <PrimeAccordionTab v-for="(patron, index) in patronesComunes" :key="patron.nombre" :header="patron.nombre">
+                <PrimeAccordionTab v-for="(patron, index) in patronesComunes" :key="patron.nombre"
+                  :header="patron.nombre">
                   <div class="flex flex-column gap-3">
                     <div class="flex align-items-center justify-content-between">
-                      <PrimeInputText
-                        :model-value="patron.regex"
-                        readonly
-                        class="flex-1 mr-2 font-mono texto-sm"
-                      />
-                      <PrimeButton
-                        label="Copiar"
-                        icon="pi pi-copy"
-                        size="small"
-                        outlined
-                        @click="copiarPatron(patron.regex)"
-                      />
+                      <PrimeInputText :model-value="patron.regex" readonly class="flex-1 mr-2 font-mono texto-sm" />
+                      <PrimeButton label="Copiar" icon="pi pi-copy" size="small" outlined
+                        @click="copiarPatron(patron.regex)" />
                     </div>
 
-                    <p class="text-600 m-0">{{ patron.descripcion }}</p>
+                    <p class="contenido m-0">{{ patron.descripcion }}</p>
 
                     <div>
-                      <strong class="text-700 texto-sm">Ejemplos válidos:</strong>
+                      <strong class=" texto-sm">Ejemplos válidos:</strong>
                       <div class="flex flex-wrap gap-1 mt-2">
-                        <PrimeTag
-                          v-for="ejemplo in patron.ejemplos"
-                          :key="ejemplo"
-                          :value="ejemplo"
-                          severity="success"
-                          rounded
-                        />
+                        <PrimeTag v-for="ejemplo in patron.ejemplos" :key="ejemplo" :value="ejemplo" severity="success"
+                          rounded />
                       </div>
                     </div>
                   </div>
@@ -109,26 +85,23 @@
                 <template #messageicon>
                   <i class="pi pi-code"></i>
                 </template>
-                Las funciones deben retornar <code>true</code> si el valor es válido, o <code>false</code> si no es válido.
+                Las funciones deben retornar <code>true</code> si el valor es válido, o <code>false</code> si no es
+                válido.
               </PrimeMessage>
 
               <PrimeCard v-for="ejemplo in ejemplosPersonalizados" :key="ejemplo.nombre">
                 <template #title>
                   <div class="flex align-items-center justify-content-between">
                     <span>{{ ejemplo.nombre }}</span>
-                    <PrimeButton
-                      label="Copiar Código"
-                      icon="pi pi-copy"
-                      size="small"
-                      text
-                      @click="copiarCodigo(ejemplo.codigo)"
-                    />
+                    <PrimeButton label="Copiar Código" icon="pi pi-copy" size="small" text
+                      @click="copiarCodigo(ejemplo.codigo)" />
                   </div>
                 </template>
                 <template #content>
-                  <p class="text-600 mb-3">{{ ejemplo.descripcion }}</p>
+                  <p class="contenido mb-3">{{ ejemplo.descripcion }}</p>
                   <PrimeScrollPanel style="width: 100%; height: 200px">
-                    <pre class="surface-900 text-0 p-3 border-round font-mono texto-sm overflow-auto"><code>{{ ejemplo.codigo }}</code></pre>
+                    <pre
+                      class="surface-900 text-0 p-3 border-round font-mono texto-sm overflow-auto"><code>{{ ejemplo.codigo }}</code></pre>
                   </PrimeScrollPanel>
                 </template>
               </PrimeCard>

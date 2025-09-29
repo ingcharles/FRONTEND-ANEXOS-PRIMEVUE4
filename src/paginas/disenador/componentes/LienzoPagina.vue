@@ -35,37 +35,33 @@ function obtenerClasesColumna(campo: EsquemaCampo): string[] {
 
 <template>
   <div class="border-1 border-dashed border-round surface-border p-2 ancho-100 texto-sm">
-    <draggable
-      :key="pagina.id"
-      class="grid ancho-100 texto-sm"
-      :list="pagina.campos"
-      item-key="id"
-      :group="{ name: 'paleta', pull: true, put: true }"
-      handle=".handler-mover"
-      @add="manejarAgregar"
-      ghost-class="drag-ghost"
-      chosen-class="drag-chosen"
-      drag-class="drag-active"
-    >
+    <draggable :key="pagina.id" class="grid ancho-100 texto-sm" :list="pagina.campos" item-key="id"
+      :group="{ name: 'paleta', pull: true, put: true }" handle=".handler-mover" @add="manejarAgregar"
+      ghost-class="drag-ghost" chosen-class="drag-chosen" drag-class="drag-active">
       <template #item="{ element }">
         <div :class="obtenerClasesColumna(element)">
-          <EnvolvedorCampo
-            :campo="element"
-            :seleccionado="almacen.idCampoSeleccionado === element.id"
-            @seleccionar="almacen.seleccionarCampo(element.id)"
-          />
+          <EnvolvedorCampo :campo="element" :seleccionado="almacen.idCampoSeleccionado === element.id"
+            @seleccionar="almacen.seleccionarCampo(element.id)" />
         </div>
       </template>
       <template #footer>
-        <div v-if="campos.length === 0" class="col-12 text-600 text-center p-3">Arrastra elementos aquí</div>
+        <div v-if="campos.length === 0" class="col-12 contenido p-3">Arrastra elementos aquí</div>
       </template>
     </draggable>
   </div>
 </template>
 
 <style scoped>
-.drag-ghost { opacity: .5; outline: 2px dashed var(--p-primary-400); }
-.drag-chosen { outline: 2px solid var(--p-primary-500); }
-.drag-active { cursor: grabbing; }
-</style>
+.drag-ghost {
+  opacity: .5;
+  outline: 2px dashed var(--p-primary-400);
+}
 
+.drag-chosen {
+  outline: 2px solid var(--p-primary-500);
+}
+
+.drag-active {
+  cursor: grabbing;
+}
+</style>
