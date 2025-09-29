@@ -1,9 +1,8 @@
 // Servicios para el manejo de campos - Principio de Responsabilidad Única
-import { TipoCampoValor, TIPOS_CAMPO_DE_TEXTO, TIPOS_CON_OPCIONES, TIPOS_CON_OPCIONES_HORIZONAL_VERTICAL, TIPOS_CON_PLACEHOLDER, TIPOS_OPCIONES_ESPANOL } from '@/constantes/Campos'
+import { TipoCampoValor, TIPOS_CAMPO_DE_TEXTO, TIPOS_CON_OPCIONES, TIPOS_CON_OPCIONES_HORIZONAL_VERTICAL, TIPOS_CON_PLACEHOLDER, TIPOS_DESHABILITABLES, TIPOS_OPCIONES_ESPANOL, TIPOS_SOLO_LECTURA } from '@/constantes/Campos'
 import type { TipoCampoEtiqueta } from '@/enumeraciones/Campos'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { EsquemaPagina } from '@/interfaces/Pagina'
-import type { TipoCampo } from '@/tipos/Campos'
 import { clonarProfundo, duplicarConNuevosIds } from '@/utilidades/Clonar'
 import { generarId } from '@/utilidades/GeneraId'
 
@@ -238,7 +237,7 @@ export class ServicioCampos {
    * Obtener la etiqueta en español a partir del tipo (union TipoCampo)
    * Acepta el tipo como string union para evitar casts a TipoCampoValor.
    */
-  static obtenerNombreOpciones(tipo: TipoCampo): TipoCampoEtiqueta | string {
+  static obtenerNombreOpciones(tipo: TipoCampoValor): TipoCampoEtiqueta | string {
     const encontrado = TIPOS_OPCIONES_ESPANOL.find(op => op.valor === tipo)
     return encontrado?.etiqueta ?? String(tipo)
   }
@@ -247,23 +246,32 @@ export class ServicioCampos {
   /**
  * Verificar si un tipo de campo soporta placeholder
  */
- static soportaPlaceholder(tipo: TipoCampo): boolean {
-  return (TIPOS_CON_PLACEHOLDER as readonly string[]).includes(tipo)
+ static soportaPlaceholder(tipo: TipoCampoValor): boolean {
+  return TIPOS_CON_PLACEHOLDER.includes(tipo)
 }
 
 /**
  * Verificar si un tipo de campo soporta opciones
  */
-static soportaOpciones(tipo: TipoCampo): boolean {
-  return (TIPOS_CON_OPCIONES as readonly string[]).includes(tipo)
+static soportaOpciones(tipo: TipoCampoValor): boolean {
+  return TIPOS_CON_OPCIONES.includes(tipo)
 }
 
-static soportaOpcionesHorizontalVertical(tipo: TipoCampo): boolean {
-  return (TIPOS_CON_OPCIONES_HORIZONAL_VERTICAL as readonly string[]).includes(tipo)
+static soportaOpcionesHorizontalVertical(tipo: TipoCampoValor): boolean {
+  return TIPOS_CON_OPCIONES_HORIZONAL_VERTICAL.includes(tipo)
 }
 
-static esCampoDeTexto(tipo: TipoCampo): boolean {
-  return (TIPOS_CAMPO_DE_TEXTO as readonly string[]).includes(tipo)
+static esCampoDeTexto(tipo: TipoCampoValor): boolean {
+  return TIPOS_CAMPO_DE_TEXTO.includes(tipo)
+}
+
+static esSoloLectura(tipo: TipoCampoValor): boolean {
+  return TIPOS_SOLO_LECTURA.includes(tipo)
+}
+
+static esDeshabilitable(tipo: TipoCampoValor): boolean {
+//   if (!props.campo) return false
+ return TIPOS_DESHABILITABLES.includes(tipo)
 }
 
 }

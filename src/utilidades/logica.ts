@@ -46,7 +46,7 @@ export function evaluarReglasCampo(
   return { visible, requerido }
 }
 
- 
+
 // function evaluarCondicionVieja(regla: any, valor: unknown): boolean {
 //   const operador = regla.operador || regla.operator || ''
 //   const valorRegla = regla.valor || regla.value

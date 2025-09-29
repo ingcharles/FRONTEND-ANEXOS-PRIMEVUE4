@@ -132,6 +132,7 @@ export const TIPOS_CAMPO_DE_TEXTO: readonly TipoCampoValor[] = [
   TipoCampoValor.AreaTexto,
 ]
 
+
 /**
  * Tipos de campo que soportan placeholder
  */
@@ -139,6 +140,8 @@ export const TIPOS_CON_PLACEHOLDER: readonly TipoCampoValor[] = [
   ...TIPOS_CAMPO_DE_TEXTO,
   TipoCampoValor.Numero,
 ]
+
+
 
 /**
  * Tipos de campo que soportan opciones (select, radio, checkbox múltiple)
@@ -157,4 +160,26 @@ export const TIPOS_CON_OPCIONES_HORIZONAL_VERTICAL: readonly TipoCampoValor[] = 
   TipoCampoValor.Casilla
 ]
 
+
+/**
+ * Tipos de campo que soportan placeholder
+ */
+export const TIPOS_SOLO_LECTURA: readonly TipoCampoValor[] = [
+  ...TIPOS_CAMPO_DE_TEXTO,
+  ...TIPOS_CON_OPCIONES,
+  TipoCampoValor.Fecha,
+  TipoCampoValor.Hora,
+  TipoCampoValor.Boton
+]
+
+/**
+ * Tipos de campo que soportan placeholder
+ */
+export const TIPOS_DESHABILITABLES: readonly TipoCampoValor[] = [
+  ...TIPOS_CAMPO_DE_TEXTO,
+  ...TIPOS_CON_OPCIONES,
+  TipoCampoValor.Fecha,
+  TipoCampoValor.Hora,
+  TipoCampoValor.Boton
+]
 

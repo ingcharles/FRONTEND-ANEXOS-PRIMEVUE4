@@ -32,13 +32,13 @@
 
       <!-- Opciones de comportamiento -->
       <div class="col-12 flex align-items-center gap-2">
-        <Checkbox binary :model-value="configDependencia.limpiarAlCambiar !== false"
+        <PrimeCheckbox binary :model-value="configDependencia.limpiarAlCambiar !== false"
           @update:model-value="(v: boolean) => actualizarDependencia('limpiarAlCambiar', v)" />
         <label class="texto-miga">Limpiar al cambiar</label>
       </div>
 
       <div class="col-12 flex align-items-center gap-2">
-        <Checkbox binary :model-value="configDependencia.deshabilitarHastaValor !== false"
+        <PrimeCheckbox binary :model-value="configDependencia.deshabilitarHastaValor !== false"
           @update:model-value="(v: boolean) => actualizarDependencia('deshabilitarHastaValor', v)" />
         <label class="texto-miga">Deshabilitar hasta que padre tenga valor</label>
       </div>
@@ -57,11 +57,6 @@ import { computed } from 'vue'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { ConfiguracionDependencia } from '@/interfaces/Comunes'
-import InputText from 'primevue/inputtext'
-import Select from 'primevue/select'
-import MultiSelect from 'primevue/multiselect'
-import Checkbox from 'primevue/checkbox'
-import Button from 'primevue/button'
 
 interface CampoPagina {
   label: string

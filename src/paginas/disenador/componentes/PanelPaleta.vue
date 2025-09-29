@@ -2,7 +2,6 @@
 import draggable from 'vuedraggable'
 import { ref, computed } from 'vue'
 import type { EsquemaCampo } from '@/interfaces/Campos'
-import type { TipoCampo } from '@/tipos/Campos'
 import { generarId } from '@/utilidades/GeneraId'
 import { TipoCampoEtiqueta, TipoCampoValor } from '@/enumeraciones/Campos'
 
@@ -159,7 +158,7 @@ const modeloPanelMenuFiltrado = computed(() => {
     .filter(categoria => categoria.items && categoria.items.length > 0)
 })
 
-function clonarDesdePaleta(elemento: { tipo: TipoCampo; label: string; propiedadesPorDefecto?: Record<string, unknown> }): EsquemaCampo {
+function clonarDesdePaleta(elemento: { tipo: TipoCampoValor; label: string; propiedadesPorDefecto?: Record<string, unknown> }): EsquemaCampo {
   const id = generarId('campo')
   // Configuración de grid según el tipo de campo
   const configuracionGrid = elemento.tipo === TipoCampoValor.Panel
@@ -181,7 +180,7 @@ function clonarDesdePaleta(elemento: { tipo: TipoCampo; label: string; propiedad
 }
 
 // Función para buscar elemento en categorías
-function buscarElementoPorClave(clave: string): { tipo: TipoCampo; label: string; propiedadesPorDefecto?: Record<string, unknown> } | undefined {
+function buscarElementoPorClave(clave: string): { tipo: TipoCampoValor; label: string; propiedadesPorDefecto?: Record<string, unknown> } | undefined {
   for (const categoria of categoriasPaleta.value) {
     const elemento = categoria.items?.find((el: { key: string }) => el.key === clave)
     if (elemento) return elemento
@@ -190,7 +189,7 @@ function buscarElementoPorClave(clave: string): { tipo: TipoCampo; label: string
 }
 
 // Función simplificada para clonar desde el menú
-function clonarDesdeMenu(elementoMenu: { key?: string; tipo?: TipoCampo }): EsquemaCampo | null {
+function clonarDesdeMenu(elementoMenu: { key?: string; tipo?: TipoCampoValor }): EsquemaCampo | null {
   if (!elementoMenu.tipo || !elementoMenu.key) return null
 
   const elemento = buscarElementoPorClave(elementoMenu.key)

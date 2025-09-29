@@ -1,8 +1,9 @@
 <!-- Componente para editar propiedades básicas de campos -->
 <script setup lang="ts">
 import type { EsquemaCampo } from '@/interfaces/Campos'
-import type { TipoCampo } from '@/tipos/Campos'
-import { TIPOS_OPCIONES } from '@/constantes/Campos'
+// import type { TipoCampo } from '@/tipos/Campos'
+import { TipoCampoValor, TIPOS_OPCIONES } from '@/constantes/Campos'
+import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 
 interface PropiedadesBasicas {
   campo: EsquemaCampo
@@ -11,7 +12,7 @@ interface PropiedadesBasicas {
 const props = defineProps<PropiedadesBasicas>()
 const emit = defineEmits<{
   actualizarTexto: [clave: keyof Pick<EsquemaCampo, 'etiqueta' | 'nombre' | 'marcadorPosicion'>, valor: string]
-  cambiarTipo: [nuevoTipo: TipoCampo]
+  cambiarTipo: [nuevoTipo: TipoCampoValor]
   actualizarBooleano: [clave: keyof Pick<EsquemaCampo, 'visible' | 'requerido'>, valor: boolean]
 }>()
 
@@ -20,7 +21,7 @@ function manejarCambioTexto(clave: keyof Pick<EsquemaCampo, 'etiqueta' | 'nombre
   emit('actualizarTexto', clave, objetivo.value)
 }
 
-function manejarCambioTipo(nuevoTipo: TipoCampo): void {
+function manejarCambioTipo(nuevoTipo: TipoCampoValor): void {
   emit('cambiarTipo', nuevoTipo)
 }
 
@@ -59,7 +60,7 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
     </div>
 
     <!-- Marcador de posición -->
-    <div v-if="ServiciosCampos.soportaPlaceholder(props.campo.tipo)" class="field mb-3">
+    <div v-if="ServicioCampos.soportaPlaceholder(props.campo.tipo)" class="field mb-3">
       <label for="placeholder-campo" class="block texto-miga  mb-2">Marcador de posición</label>
       <InputText id="placeholder-campo" :model-value="props.campo.marcadorPosicion || ''" class="ancho-100 texto-miga"
         placeholder="Texto de ayuda para el usuario" @input="(e) => manejarCambioTexto('marcadorPosicion', e)" />

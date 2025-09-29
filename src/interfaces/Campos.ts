@@ -2,8 +2,9 @@
 import type { ColumnasGrid, OpcionSeleccion } from '@/interfaces/Comunes'
 import type { ValorDato } from '@/tipos/Comunes'
 import type { ReglaValidacion, ReglaLogica } from '@/interfaces/Validacion'
-import type { TipoCampo } from '@/tipos/Campos'
+// import type { TipoCampo } from '@/tipos/Campos'
 import type { ColumnaTabla, ConfiguracionDependencia } from '@/interfaces/Comunes'
+import type { TipoCampoValor } from '@/enumeraciones/Campos'
 
 export interface MetadatosCampo {
   valorPorDefecto?: ValorDato | undefined
@@ -33,7 +34,7 @@ export interface MetadatosCampo {
 
 export interface EsquemaCampo {
   id: string
-  tipo: TipoCampo
+  tipo: TipoCampoValor
   etiqueta?: string
   nombre?: string
   marcadorPosicion?: string

@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import type { EsquemaCampo, MetadatosCampo } from '@/interfaces/Campos'
-import type { TipoCampo } from '@/tipos/Campos'
 import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 import { TIPOS_OPCIONES } from '@/constantes/Campos'
 import { TipoCampoValor } from '@/enumeraciones/Campos'
@@ -21,7 +20,7 @@ function actualizarTexto(clave: 'etiqueta' | 'nombre' | 'marcadorPosicion', valo
   almacen.actualizarCampo(propiedades.campo.id, { [clave]: valor })
 }
 
-function cambiarTipoCampo(nuevo: TipoCampo): void {
+function cambiarTipoCampo(nuevo: TipoCampoValor): void {
   const metadatosActuales = { ...metadatos.value }
   const metadatosPorDefecto = obtenerMetaPorDefecto(nuevo)
   const metadatosFinales = metadatosPorDefecto ? { ...metadatosActuales, ...metadatosPorDefecto } : metadatosActuales
@@ -29,7 +28,7 @@ function cambiarTipoCampo(nuevo: TipoCampo): void {
   almacen.actualizarCampo(propiedades.campo.id, { tipo: nuevo, metadatos: metadatosFinales })
 }
 
-function obtenerMetaPorDefecto(tipo: TipoCampo): Partial<MetadatosCampo> | undefined {
+function obtenerMetaPorDefecto(tipo: TipoCampoValor): Partial<MetadatosCampo> | undefined {
   if (tipo === 'seleccion' || tipo === 'radio') {
     return { opciones: [{ etiqueta: 'Item 1', valor: 'item1' }, { etiqueta: 'Item 2', valor: 'item2' }] }
   }

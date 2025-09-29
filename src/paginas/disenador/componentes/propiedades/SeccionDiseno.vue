@@ -1,25 +1,25 @@
 <template>
   <div class="mb-2 mt-2">
-    <h3 class="texto-sm text-color mb-2">Ancho dispositivo</h3>
+    <h3 class="texto-miga text-color mb-2">Ancho dispositivo</h3>
     <div class="grid">
       <div class="col-12">
-        <label class="texto-sm">Pequeño</label>
+        <label class="texto-miga">Pequeño</label>
         <PrimeSelect :model-value="campo?.grid?.sm ?? 12" :options="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
-          class="texto-sm ancho-100"
+          class="texto-miga ancho-100"
           @update:model-value="(v: number | null) => actualizarGrid({ sm: Number(v ?? 12) })" />
       </div>
 
       <div class="col-12">
-        <label class="texto-sm">Mediano</label>
+        <label class="texto-miga">Mediano</label>
         <PrimeSelect :model-value="campo?.grid?.md ?? 6" :options="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
-          class="ancho-100 texto-sm"
+          class="ancho-100 texto-miga"
           @update:model-value="(v: number | null) => actualizarGrid({ md: Number(v ?? 6) })" />
       </div>
 
       <div class="col-12">
-        <label class="texto-sm">Grande</label>
+        <label class="texto-miga">Grande</label>
         <PrimeSelect :model-value="campo?.grid?.lg ?? 6" :options="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]"
-          class="ancho-100 texto-sm"
+          class="ancho-100 texto-miga"
           @update:model-value="(v: number | null) => actualizarGrid({ lg: Number(v ?? 6) })" />
       </div>
     </div>
@@ -63,11 +63,13 @@ const props = defineProps<{
 
 const almacen = useAlmacenDisenador()
 
-// Metadatos tipados para diseño
-// const metadatos = computed(() => {
-//   if (!props.campo) return {}
-//   return props.campo.metadatos || {}
-// })
+// const tamanosGrid = [
+//   { clave: 'sm', etiqueta: 'Pequeño', defecto: 12 },
+//   { clave: 'md', etiqueta: 'Mediano', defecto: 6 },
+//   { clave: 'lg', etiqueta: 'Grande', defecto: 6 }
+// ];
+
+// const opcionesGrid = [1,2,3,4,5,6,7,8,9,10,11,12];
 
 // Grid responsivo
 function actualizarGrid(parcial: Partial<ColumnasGrid>): void {

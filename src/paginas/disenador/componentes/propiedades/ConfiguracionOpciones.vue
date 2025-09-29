@@ -117,7 +117,7 @@ function generarOpcionesPorDefecto(): void {
                   :model-value="opcion.etiqueta"
                   placeholder="Etiqueta"
                   class="ancho-100 texto-miga"
-                  @update:model-value="(valor) => valor && actualizarOpcion(index, 'etiqueta', valor)"
+                  @update:model-value="(valor: string) => valor && actualizarOpcion(index, 'etiqueta', valor)"
                 />
               </div>
               <div class="col-6">
@@ -125,7 +125,7 @@ function generarOpcionesPorDefecto(): void {
                   :model-value="opcion.valor.toString()"
                   placeholder="Valor"
                   class="ancho-100 texto-miga"
-                  @update:model-value="(valor) => valor && actualizarOpcion(index, 'valor', valor)"
+                  @update:model-value="(valor: string | number) => valor && actualizarOpcion(index, 'valor', valor)"
                 />
               </div>
             </div>
