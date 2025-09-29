@@ -1,10 +1,11 @@
+<!-- filepath: d:\proyectosVue\frontend-anexos-primevue4\src\paginas\disenador\componentes\propiedades\AyudaValidacion.vue -->
 <template>
   <div>
     <PrimeButton icon="pi pi-question-circle" severity="help" text rounded size="small" @click="mostrarAyuda = true"
       v-tooltip.top="'Ver ejemplos y ayuda'" />
 
     <DialogoAyuda v-model:visible="mostrarAyuda" titulo="Guía de Validaciones" ancho="700px">
-      <PrimeTabs value="0">
+      <PrimeTabs v-model="tabActivo">
         <PrimeTabList>
           <PrimeTab value="0">Básicas</PrimeTab>
           <PrimeTab value="1">Patrones</PrimeTab>
@@ -14,36 +15,36 @@
         <PrimeTabPanels>
           <!-- Validaciones Básicas -->
           <PrimeTabPanel value="0">
-            <div class="flex flex-column gap-4">
-              <PrimeCard v-for="validacion in validacionesBasicas" :key="validacion.tipo">
-                <template #title>
+            <Accordion v-model="panelActivo">
+              <AccordionPanel v-for="(validacion, index) in validacionesBasicas" :key="validacion.tipo"
+                :value="String(index)" class="p-3">
+                <AccordionHeader>
                   <div class="flex align-items-center gap-2">
                     <i :class="`pi ${validacion.icono} ${validacion.colorClase}`"></i>
                     {{ validacion.titulo }}
                   </div>
-                </template>
-                <template #content>
+                </AccordionHeader>
+                <AccordionContent>
                   <p class="contenido mb-3">{{ validacion.descripcion }}</p>
-                  <PrimePanel header="Ejemplo" toggleable collapsed class="mb-3">
-                    <template #content>
-                      <div class="surface-100 border-round p-3">
-                        <strong>{{ validacion.ejemploTitulo }}:</strong>
-                        <PrimeTag :value="validacion.ejemploValor" class="ml-2" />
-                      </div>
-                    </template>
-                  </PrimePanel>
+
                   <div v-if="validacion.casos" class="surface-50 border-round p-3">
-                    <strong class="">Casos comunes:</strong>
+                    <strong>Casos comunes:</strong>
                     <ul class="mt-2 mb-0 pl-3">
                       <li v-for="caso in validacion.casos" :key="caso" class="mb-1">{{ caso }}</li>
                     </ul>
                   </div>
-                </template>
-              </PrimeCard>
-            </div>
+
+
+                  <div class="surface-100 border-round p-3">
+                    <strong>{{ validacion.ejemploTitulo }}:</strong>
+                    <PrimeTag :value="validacion.ejemploValor" class="ml-2" />
+                  </div>
+                </AccordionContent>
+              </AccordionPanel>
+            </Accordion>
           </PrimeTabPanel>
 
-          <!-- Patrones -->
+          <!-- Patrones con nueva estructura Accordion -->
           <PrimeTabPanel value="1">
             <div class="flex flex-column gap-3">
               <PrimeMessage severity="info" :closable="false">
@@ -52,59 +53,79 @@
                 </template>
                 Expresiones regulares para validar formatos específicos. Haz clic en "Copiar" para usar el patrón.
               </PrimeMessage>
-
-              <PrimeAccordion v-model:activeIndex="patronActivo" multiple>
-                <PrimeAccordionTab v-for="(patron, index) in patronesComunes" :key="patron.nombre"
-                  :header="patron.nombre">
-                  <div class="flex flex-column gap-3">
-                    <div class="flex align-items-center justify-content-between">
-                      <PrimeInputText :model-value="patron.regex" readonly class="flex-1 mr-2 font-mono texto-sm" />
-                      <PrimeButton label="Copiar" icon="pi pi-copy" size="small" outlined
-                        @click="copiarPatron(patron.regex)" />
-                    </div>
-
-                    <p class="contenido m-0">{{ patron.descripcion }}</p>
-
-                    <div>
-                      <strong class=" texto-sm">Ejemplos válidos:</strong>
-                      <div class="flex flex-wrap gap-1 mt-2">
-                        <PrimeTag v-for="ejemplo in patron.ejemplos" :key="ejemplo" :value="ejemplo" severity="success"
-                          rounded />
+              <Accordion v-model="panelActivo">
+                <AccordionPanel v-for="(patron, index) in patronesComunes" :key="patron.nombre" :value="String(index)"
+                  class="p-3">
+                  <AccordionHeader>
+                    {{ patron.nombre }}
+                  </AccordionHeader>
+                  <AccordionContent>
+                    <div class="mb-2">
+                      <div class="flex align-items-center justify-content-between mb-2">
+                        <PrimeInputText :model-value="patron.regex" readonly class="w-100 font-mono texto-miga mr-2" />
+                        <PrimeButton label="Copiar" icon="pi pi-copy" size="small" outlined
+                          @click="copiarPatron(patron.regex)" />
+                      </div>
+                      <p class="contenido m-0">{{ patron.descripcion }}</p>
+                      <div>
+                        <strong class="texto-miga">Ejemplos válidos:</strong>
+                        <div class="flex flex-wrap gap-1 mt-2">
+                          <PrimeTag v-for="ejemplo in patron.ejemplos" :key="ejemplo" :value="ejemplo"
+                            severity="success" rounded />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </PrimeAccordionTab>
-              </PrimeAccordion>
+                  </AccordionContent>
+                </AccordionPanel>
+              </Accordion>
             </div>
           </PrimeTabPanel>
 
           <!-- Avanzadas -->
           <PrimeTabPanel value="2">
-            <div class="flex flex-column gap-4">
-              <PrimeMessage severity="warn" :closable="false">
+
+            <div class="flex flex-column gap-3">
+              <PrimeMessage severity="warn" :closable="false" class="mb-3">
                 <template #messageicon>
                   <i class="pi pi-code"></i>
                 </template>
                 Las funciones deben retornar <code>true</code> si el valor es válido, o <code>false</code> si no es
                 válido.
               </PrimeMessage>
-
-              <PrimeCard v-for="ejemplo in ejemplosPersonalizados" :key="ejemplo.nombre">
-                <template #title>
-                  <div class="flex align-items-center justify-content-between">
+              <Accordion v-model="panelActivo">
+                <AccordionPanel v-for="(ejemplo, index) in ejemplosPersonalizados" :key="ejemplo.nombre" class="p-3"
+                  :value="String(index)">
+                  <AccordionHeader>
                     <span>{{ ejemplo.nombre }}</span>
-                    <PrimeButton label="Copiar Código" icon="pi pi-copy" size="small" text
-                      @click="copiarCodigo(ejemplo.codigo)" />
-                  </div>
-                </template>
-                <template #content>
-                  <p class="contenido mb-3">{{ ejemplo.descripcion }}</p>
-                  <PrimeScrollPanel style="width: 100%; height: 200px">
-                    <pre
-                      class="surface-900 text-0 p-3 border-round font-mono texto-sm overflow-auto"><code>{{ ejemplo.codigo }}</code></pre>
-                  </PrimeScrollPanel>
-                </template>
-              </PrimeCard>
+
+                  </AccordionHeader>
+                  <AccordionContent>
+
+                    <div class="mb-2">
+                      <div class="flex align-items-center justify-content-between mb-2">
+                        <p class="contenido mb-3">{{ ejemplo.descripcion }}</p>
+                        <PrimeButton label="Copiar Código" icon="pi pi-copy" size="small" text
+                          @click="copiarCodigo(ejemplo.codigo)" />
+                      </div>
+                      <!-- <p class="contenido m-0">{{ patron.descripcion }}</p> -->
+                      <div>
+                        <strong class="texto-miga">Ejemplos válidos:</strong>
+                        <div class="flex flex-wrap gap-1 mt-2">
+                          <PrimeScrollPanel style="width: 100%; height: 200px">
+                            <pre class="p-3 border-round font-mono texto-miga overflow-auto">
+                    <code>{{ ejemplo.codigo }}</code>
+                  </pre>
+                          </PrimeScrollPanel>
+                        </div>
+                      </div>
+                    </div>
+
+
+
+
+                  </AccordionContent>
+                </AccordionPanel>
+              </Accordion>
             </div>
           </PrimeTabPanel>
         </PrimeTabPanels>
@@ -116,9 +137,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import DialogoAyuda from '@/componentes/DialogoAyuda.vue'
+import Accordion from 'primevue/accordion'
+import AccordionPanel from 'primevue/accordionpanel'
+import AccordionHeader from 'primevue/accordionheader'
+import AccordionContent from 'primevue/accordioncontent'
 
 const mostrarAyuda = ref(false)
-const patronActivo = ref<number[]>([])
+const tabActivo = ref('0')
+const panelActivo = ref('0')
 
 const validacionesBasicas = [
   {

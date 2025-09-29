@@ -62,7 +62,7 @@ import '@/assets/iconos/sri-app-icon/sri-app-icon-fuentes.min.css'
 import 'primeicons/primeicons.css' // icons
 
 import '@/assets/css/sri-en-linea-cargando.min.css'
-// import 'primeflex/primeflex.css'
+import 'primeflex/primeflex.css'
 import '@/assets/css/_sri-vue-cabecera.scss'
 import '@/assets/css/_sri-vue-plantilla.scss' // Estilos globales personalizados
 // import './assets/_sri-vue-variables.scss' // Variables SCSS globales
