@@ -116,7 +116,7 @@ function generarOpcionesPorDefecto(): void {
                 <PrimeInputText
                   :model-value="opcion.etiqueta"
                   placeholder="Etiqueta"
-                  class="ancho-100 texto-sm"
+                  class="ancho-100 texto-miga"
                   @update:model-value="(valor) => valor && actualizarOpcion(index, 'etiqueta', valor)"
                 />
               </div>
@@ -124,7 +124,7 @@ function generarOpcionesPorDefecto(): void {
                 <PrimeInputText
                   :model-value="opcion.valor.toString()"
                   placeholder="Valor"
-                  class="ancho-100 texto-sm"
+                  class="ancho-100 texto-miga"
                   @update:model-value="(valor) => valor && actualizarOpcion(index, 'valor', valor)"
                 />
               </div>
@@ -149,7 +149,7 @@ function generarOpcionesPorDefecto(): void {
           <PrimeInputText
             v-model="nuevaOpcion.etiqueta"
             placeholder="Etiqueta de la opción"
-            class="ancho-100 texto-sm"
+            class="ancho-100 texto-miga"
             @keydown.enter="agregarOpcion"
           />
         </div>
@@ -157,7 +157,7 @@ function generarOpcionesPorDefecto(): void {
           <PrimeInputText
             v-model="nuevaOpcion.valor"
             placeholder="Valor técnico"
-            class="ancho-100 texto-sm"
+            class="ancho-100 texto-miga"
             @keydown.enter="agregarOpcion"
           />
         </div>
@@ -166,7 +166,7 @@ function generarOpcionesPorDefecto(): void {
             icon="pi pi-plus"
             label="Agregar"
             size="small"
-            class="ancho-100 texto-sm"
+            class="ancho-100 texto-miga"
             :disabled="!nuevaOpcion.etiqueta.trim() || !nuevaOpcion.valor.toString().trim()"
             @click="agregarOpcion"
           />

@@ -82,8 +82,8 @@ function claseRellenoCelda(campo: EsquemaCampo): string {
 function clasesTablaCompleta(campo: EsquemaCampo): string[] {
   const estilo = obtenerEstiloTabla(campo)
   return [
-    'ancho-100 texto-sm',
-    'texto-sm',
+    'ancho-100 texto-miga',
+    'texto-miga',
     estilo.conBordes ? 'border-1 surface-border' : ''
   ]
 }
@@ -288,7 +288,7 @@ const esCampoRequerido = computed(() => {
         v-if="campo.tipo === TipoCampoValor.Texto || campo.tipo === TipoCampoValor.Correo || campo.tipo === TipoCampoValor.Contrasena"
         v-model="(valoresCampos as any)[campo.nombre || '']"
         :placeholder="campo.marcadorPosicion"
-        class="ancho-100 texto-sm"
+        class="ancho-100 texto-miga"
         :disabled="campo.deshabilitado"
         :readonly="campo.soloLectura"
       />
@@ -298,7 +298,7 @@ const esCampoRequerido = computed(() => {
         v-else-if="campo.tipo === TipoCampoValor.AreaTexto"
         v-model="(valoresCampos as any)[campo.nombre || '']"
         :placeholder="campo.marcadorPosicion"
-        class="ancho-100 texto-sm"
+        class="ancho-100 texto-miga"
         :disabled="campo.deshabilitado"
         :readonly="campo.soloLectura"
       />
@@ -309,7 +309,7 @@ const esCampoRequerido = computed(() => {
         v-model="(valoresCampos as any)[campo.nombre || '']"
         time-only
         hour-format="24"
-        class="ancho-100 texto-sm"
+        class="ancho-100 texto-miga"
         :disabled="campo.deshabilitado"
       />
 
@@ -317,7 +317,7 @@ const esCampoRequerido = computed(() => {
       <PrimeDatePicker
         v-else-if="campo.tipo === TipoCampoValor.Fecha"
         v-model="(valoresCampos as any)[campo.nombre || '']"
-        class="ancho-100 texto-sm"
+        class="ancho-100 texto-miga"
         :disabled="campo.deshabilitado"
       />
 
@@ -328,7 +328,7 @@ const esCampoRequerido = computed(() => {
         :options="opcionesCampo"
         option-label="etiqueta"
         option-value="valor"
-        class="ancho-100 texto-sm"
+        class="ancho-100 texto-miga"
         :disabled="campo.deshabilitado || estaDeshabilitadoPorDependencia(campo, valoresCampos as any)"
       />
 
@@ -336,7 +336,7 @@ const esCampoRequerido = computed(() => {
       <PrimeInputNumber
         v-else-if="campo.tipo === TipoCampoValor.Numero"
         v-model="(valoresCampos as any)[campo.nombre || '']"
-        class="ancho-100 texto-sm"
+        class="ancho-100 texto-miga"
         :placeholder="campo.marcadorPosicion"
         :min="(campo.metadatos as any)?.minimo"
         :max="(campo.metadatos as any)?.maximo"
@@ -442,7 +442,7 @@ const esCampoRequerido = computed(() => {
                   <PrimeInputText
                     v-if="(columnaTabla.tipo ?? columnaTabla.type) === 'texto'"
                     :model-value="String(filaTabla[columnaTabla.name] || '')"
-                    class="ancho-100 texto-sm"
+                    class="ancho-100 texto-miga"
                     :disabled="campo.deshabilitado"
                     @update:model-value="(v: string) => actualizarValorCeldaTabla(campo, indiceFila, columnaTabla.name, v)"
                   />
@@ -450,7 +450,7 @@ const esCampoRequerido = computed(() => {
                   <PrimeDatePicker
                     v-else-if="(columnaTabla.tipo ?? columnaTabla.type) === 'fecha'"
                     :model-value="filaTabla[columnaTabla.name] instanceof Date ? filaTabla[columnaTabla.name] as Date : null"
-                    class="ancho-100 texto-sm"
+                    class="ancho-100 texto-miga"
                     :disabled="campo.deshabilitado"
                     @update:model-value="(v: Date | null) => actualizarValorCeldaTabla(campo, indiceFila, columnaTabla.name, v)"
                   />
@@ -458,7 +458,7 @@ const esCampoRequerido = computed(() => {
                   <template v-else-if="(columnaTabla.tipo ?? columnaTabla.type) === 'numero'">
                     <PrimeInputNumber
                       :model-value="Number(filaTabla[columnaTabla.name] || 0)"
-                      class="ancho-100 texto-sm"
+                      class="ancho-100 texto-miga"
                       :disabled="campo.deshabilitado"
                       :min="(columnaTabla as any).minimo"
                       :max="(columnaTabla as any).maximo"
@@ -514,7 +514,7 @@ const esCampoRequerido = computed(() => {
       <!-- Mensaje de error -->
       <div
         v-if="campo.nombre && erroresCampos && erroresCampos[campo.nombre]"
-        class="color-rojo texto-sm mt-1"
+        class="color-rojo texto-miga mt-1"
       >
         {{ erroresCampos[campo.nombre] }}
       </div>

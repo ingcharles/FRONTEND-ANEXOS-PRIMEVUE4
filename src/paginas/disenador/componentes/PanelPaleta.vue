@@ -274,7 +274,7 @@ window.addEventListener('keydown', manejarAtajos)
           <draggable :list="[item]" item-key="key" :group="{ name: 'paleta', pull: 'clone', put: false }"
             :clone="() => clonarDesdeMenu(item)" :sort="false">
             <template #item="{ element }">
-              <a v-ripple class="flex items-center pl-4 pr-2 py-2 cursor-pointer group ancho-100 texto-sm">
+              <a v-ripple class="flex items-center pl-4 pr-2 py-2 cursor-pointer group ancho-100 texto-miga">
                 <i class="pi pi-grip-vertical p-mr-2" />
                 <i :class="['pi', element.icon, 'group-hover:text-inherit']" />
                 <span class="ml-2">{{ element.label }}</span>

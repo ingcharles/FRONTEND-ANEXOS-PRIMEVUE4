@@ -1,10 +1,10 @@
 <template>
   <div class="mb-2 mt-2" >
-    <h3 class="texto-sm text-color mb-2">Comportamiento</h3>
+    <h3 class="texto-miga text-color mb-2">Comportamiento</h3>
 
     <!-- Visibilidad -->
     <div class="mb-2">
-      <label class="texto-sm">
+      <label class="texto-miga">
         <Checkbox
           binary
           :model-value="!!campo?.visible"
@@ -16,7 +16,7 @@
 
     <!-- Requerido -->
     <!-- <div class="mb-2" v-if="esRequerible()">
-      <label class="texto-sm">
+      <label class="texto-miga">
         <Checkbox
           binary
           :model-value="!!campo?.requerido"
@@ -38,7 +38,7 @@
 
     <!-- Deshabilitado -->
     <div class="mb-2" v-if="esDeshabilitableOEscribible()">
-      <label class="texto-sm">
+      <label class="texto-miga">
         <Checkbox
           binary
           :model-value="!!campo?.deshabilitado"
@@ -50,7 +50,7 @@
 
     <!-- Solo lectura -->
     <div class="mb-2" v-if="esSoloLectura()">
-      <label class="texto-sm">
+      <label class="texto-miga">
         <Checkbox
           binary
           :model-value="!!campo?.soloLectura"

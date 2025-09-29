@@ -59,7 +59,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
 
     <!-- Presets rápidos -->
     <div class="presets-grid mb-4">
-      <h5 class="texto-sm  mb-2">Presets comunes</h5>
+      <h5 class="texto-miga  mb-2">Presets comunes</h5>
       <div class="flex gap-2 flex-wrap">
         <PrimeButton
           label="Completo"
@@ -90,12 +90,12 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
 
     <!-- Configuración por breakpoint -->
     <div class="breakpoints-config">
-      <h5 class="texto-sm  mb-3">Configuración por dispositivo</h5>
+      <h5 class="texto-miga  mb-3">Configuración por dispositivo</h5>
 
       <!-- Móvil (sm) -->
       <div class="breakpoint-config mb-3">
         <div class="flex align-items-center justify-content-between mb-2">
-          <label class="texto-sm ">
+          <label class="texto-miga ">
             <i class="pi pi-mobile mr-1"></i>
             Móvil (sm)
           </label>
@@ -107,7 +107,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
           option-label="etiqueta"
           option-value="valor"
           placeholder="Auto"
-          class="ancho-100 texto-sm"
+          class="ancho-100 texto-miga"
           @update:model-value="(valor: number | undefined) => actualizarBreakpoint('sm', valor)"
         />
       </div>
@@ -115,7 +115,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
       <!-- Tablet (md) -->
       <div class="breakpoint-config mb-3">
         <div class="flex align-items-center justify-content-between mb-2">
-          <label class="texto-sm ">
+          <label class="texto-miga ">
             <i class="pi pi-tablet mr-1"></i>
             Tablet (md)
           </label>
@@ -127,7 +127,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
           option-label="etiqueta"
           option-value="valor"
           placeholder="Auto"
-          class="ancho-100 texto-sm"
+          class="ancho-100 texto-miga"
           @update:model-value="(valor: number | undefined) => actualizarBreakpoint('md', valor)"
         />
       </div>
@@ -135,7 +135,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
       <!-- Desktop (lg) -->
       <div class="breakpoint-config mb-3">
         <div class="flex align-items-center justify-content-between mb-2">
-          <label class="texto-sm ">
+          <label class="texto-miga ">
             <i class="pi pi-desktop mr-1"></i>
             Desktop (lg)
           </label>
@@ -147,7 +147,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
           option-label="etiqueta"
           option-value="valor"
           placeholder="Auto"
-          class="ancho-100 texto-sm"
+          class="ancho-100 texto-miga"
           @update:model-value="(valor: number | undefined) => actualizarBreakpoint('lg', valor)"
         />
       </div>

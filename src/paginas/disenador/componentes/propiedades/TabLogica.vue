@@ -88,40 +88,40 @@ function esOperadorPersonalizado(operador: ReglaLogica['operador']): boolean {
       <div class="grid align-items-end">
         <!-- Campo objetivo -->
         <div class="col-12">
-          <label class="texto-sm">Campo</label>
-          <PrimeInputText v-model="regla.campoCondicionId" class="ancho-100 texto-sm"
+          <label class="texto-miga">Campo</label>
+          <PrimeInputText v-model="regla.campoCondicionId" class="ancho-100 texto-miga"
             placeholder="Seleccionar campo..." />
         </div>
 
         <!-- Operador de comparación -->
         <div class="col-12">
-          <label class="texto-sm">Operador</label>
+          <label class="texto-miga">Operador</label>
           <PrimeSelect v-model="regla.operador" :options="opcionesOperadores" option-label="etiqueta"
-            option-value="valor" class="ancho-100 texto-sm" placeholder="Seleccionar operador..." />
+            option-value="valor" class="ancho-100 texto-miga" placeholder="Seleccionar operador..." />
         </div>
 
         <!-- Valor de comparación -->
         <div class="col-12">
-          <label class="texto-sm">Valor</label>
+          <label class="texto-miga">Valor</label>
           <PrimeInputText :model-value="String(regla.valor || '')"
             @update:model-value="regla.valor = ($event || '') as string | number | boolean | Date"
-            class="ancho-100 texto-sm" placeholder="Valor de comparación..." />
+            class="ancho-100 texto-miga" placeholder="Valor de comparación..." />
         </div>
 
         <!-- Acción a ejecutar -->
         <div class="col-12">
-          <label class="texto-sm">Acción</label>
+          <label class="texto-miga">Acción</label>
           <PrimeSelect v-model="regla.accion" :options="opcionesAcciones" option-label="etiqueta" option-value="valor"
-            class="ancho-100 texto-sm" placeholder="Seleccionar acción..." />
+            class="ancho-100 texto-miga" placeholder="Seleccionar acción..." />
         </div>
       </div>
 
       <!-- Expresión personalizada para operadores custom -->
       <div v-if="esOperadorPersonalizado(regla.operador)" class="mt-3 p-3 surface-50 border-round">
-        <label class="texto-sm">
+        <label class="texto-miga">
           <i class="pi pi-code mr-2"></i>Expresión personalizada
         </label>
-        <PrimeTextarea v-model="regla.expresion" rows="3" class="ancho-100 texto-sm"
+        <PrimeTextarea v-model="regla.expresion" rows="3" class="ancho-100 texto-miga"
           placeholder="Escribir expresión JavaScript..." />
         <small class=" mt-1">
           Ejemplo: campo.valor > 18 && campo.visible === true

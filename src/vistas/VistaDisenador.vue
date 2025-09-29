@@ -65,7 +65,7 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
 </script>
 
 <template>
-  <div class="p-3 grid ancho-100 texto-sm" style="min-height: 70vh">
+  <div class="p-3 grid ancho-100 texto-miga" style="min-height: 70vh">
     <div class="col-12 lg:col-2">
       <PanelPaleta />
     </div>
@@ -140,7 +140,7 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
                   <div class="negrilla cursor-pointer hover:bg-gray-100 px-2 py-1 border-round"
                     @click="iniciarEdicionTitulo">
                     {{ paginaActual.titulo || ('Página ' + (almacen.indicePaginaActiva + 1)) }}
-                    <i class="pi pi-pencil ml-2 text-gray-500 texto-sm"></i>
+                    <i class="pi pi-pencil ml-2 text-gray-500 texto-miga"></i>
                   </div>
                 </div>
                 <div v-else class="flex items-center gap-2">
@@ -161,7 +161,7 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
                   <div class="negrilla cursor-pointer hover:bg-gray-100 px-2 py-1 border-round"
                     @click="iniciarEdicionTitulo">
                     {{ paginaActual.titulo || ('Página ' + (almacen.indicePaginaActiva + 1)) }}
-                    <i class="pi pi-pencil ml-2 text-gray-500 texto-sm"></i>
+                    <i class="pi pi-pencil ml-2 text-gray-500 texto-miga"></i>
                   </div>
                 </div>
                 <div v-else class="flex items-center gap-2">

@@ -366,7 +366,7 @@ function irPaginaSiguiente(): void {
         class="col-12"
         v-if="(totalPaginas === 1 || indicePagina >= almacen.esquemaFormulario.paginas.length - 1) && !paginaActual?.campos?.some(f => f.tipo === 'boton')"
       >
-        <PrimeButton type="submit" label="Enviar" icon="pi pi-check" class="ancho-100 texto-sm" />
+        <PrimeButton type="submit" label="Enviar" icon="pi pi-check" class="ancho-100 texto-miga" />
       </div>
     </form>
   </div>
