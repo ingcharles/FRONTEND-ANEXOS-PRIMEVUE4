@@ -48,6 +48,7 @@ export default defineConfig({
       '@types': fileURLToPath(new URL('./src/types', import.meta.url)),
       '@assets': fileURLToPath(new URL('./src/assets', import.meta.url)),
       '@views': fileURLToPath(new URL('./src/views', import.meta.url)),
+      '@paginas': fileURLToPath(new URL('./src/paginas', import.meta.url)),
     },
   }
   , css: {

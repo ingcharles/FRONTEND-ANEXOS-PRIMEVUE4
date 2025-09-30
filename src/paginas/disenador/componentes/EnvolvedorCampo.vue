@@ -6,6 +6,7 @@ import ModalConfirmar from '@/componentes/ModalConfirmar.vue'
 import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 import { usarPuntoDeCorte } from '@/almacenes/UsarPuntoDeCorte'
 import { TipoCampoValor } from '@/enumeraciones/Campos'
+import ContenedorPanel from '@paginas/disenador/componentes/ContenedorPanel.vue'
 
 const propiedades = defineProps<{ campo: EsquemaCampo; seleccionado?: boolean }>()
 const emitir = defineEmits<{ (e: 'seleccionar'): void }>()
@@ -150,7 +151,7 @@ onUnmounted(() => {
 })
 
 // Carga perezosa segura del contenedor de panel
-const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./ContenedorPanel.vue'))
+//const ContenedorPanelAsincrono = defineAsyncComponent(ContenedorPanel)
 </script>
 
 <template>
@@ -306,7 +307,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
         </div>
       </template>
       <template v-else-if="campo.tipo === 'panel'">
-        <ContenedorPanelAsincrono :campo="campo" />
+        <ContenedorPanel :campo="campo" />
       </template>
       <template v-else>
         <em>Tipo {{ campo.tipo }} no implementado en mock</em>

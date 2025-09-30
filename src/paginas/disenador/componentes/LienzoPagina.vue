@@ -35,7 +35,7 @@ function obtenerClasesColumna(campo: EsquemaCampo): string[] {
 
 <template>
   <div class="border-1 border-dashed border-round surface-border p-2 ancho-100 tamanio-fuente-miga">
-    <draggable :key="pagina.id" class="grid ancho-100 tamanio-fuente-miga" :list="pagina.campos" item-key="id"
+    <draggable :key="pagina.id" class="grid ancho-100" :list="pagina.campos" item-key="id"
       :group="{ name: 'paleta', pull: true, put: true }" handle=".handler-mover" @add="manejarAgregar"
       ghost-class="drag-ghost" chosen-class="drag-chosen" drag-class="drag-active">
       <template #item="{ element }">

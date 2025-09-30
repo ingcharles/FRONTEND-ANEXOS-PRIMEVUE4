@@ -2001,9 +2001,6 @@ input[type="file"] {
   pointer-events: auto !important;
 }
 
-.border-dashed {
-  border-style: dashed !important;
-}
 
 .border-1 {
   border-width: 1px !important;
@@ -2035,6 +2032,9 @@ input[type="file"] {
   width: 100% !important;
 }
 
+.border-dashed {
+  border-style: dashed !important;
+}
 
 .relative {
   position: relative !important;
@@ -2046,12 +2046,10 @@ input[type="file"] {
 
 .p-panel-header {
   padding: 1.125rem;
-  // padding: 0.375rem 1.125rem;
+
 }
 
-// .p-panel-content {
-//   padding: 0 1.125rem 1.125rem 1.125rem;
-// }
+
 
 /********** estilos Flexible ************/
 .flex {
@@ -2293,9 +2291,10 @@ input[type="file"] {
     margin-right: 0.5rem !important;
   }
 
- .sm\:mt-2 {
+  .sm\:mt-2 {
     margin-top: 0.5rem !important;
   }
+
   .sm\:mt-3 {
     margin-top: 1rem !important;
   }
@@ -2434,9 +2433,11 @@ input[type="file"] {
   .md\:mr-2 {
     margin-right: 0.5rem !important;
   }
-.md\:mt-2 {
+
+  .md\:mt-2 {
     margin-top: 0.5rem !important;
   }
+
   .md\:mt-3 {
     margin-top: 1rem !important;
   }
@@ -2584,9 +2585,10 @@ input[type="file"] {
     margin-right: 0.5rem !important;
   }
 
- .lg\:mt-2 {
+  .lg\:mt-2 {
     margin-top: 0.5rem !important;
   }
+
   .lg\:mt-3 {
     margin-top: 1rem !important;
   }
@@ -2738,9 +2740,11 @@ input[type="file"] {
   .xl\:mb-2 {
     margin-bottom: 0.5rem !important;
   }
-.xl\:mt-2 {
+
+  .xl\:mt-2 {
     margin-top: 0.5rem !important;
   }
+
   .xl\:mt-3 {
     margin-top: 1rem !important;
   }
