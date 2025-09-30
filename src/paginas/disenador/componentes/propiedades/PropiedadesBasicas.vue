@@ -36,23 +36,23 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
 
     <!-- Tipo de campo -->
     <div class="field mb-3">
-      <label for="tipo-campo" class="block texto-miga  mb-2">Tipo de campo</label>
+      <label for="tipo-campo" class="block tamanio-fuente-miga  mb-2">Tipo de campo</label>
       <PrimeSelect id="tipo-campo" :model-value="props.campo.tipo" :options="[...TIPOS_OPCIONES]"
-        option-label="etiqueta" option-value="valor" class="ancho-100 texto-miga"
+        option-label="etiqueta" option-value="valor" class="ancho-100 tamanio-fuente-miga"
         @update:model-value="manejarCambioTipo" />
     </div>
 
     <!-- Etiqueta -->
     <div class="field mb-3">
-      <label for="etiqueta-campo" class="block texto-miga  mb-2">Etiqueta</label>
-      <InputText id="etiqueta-campo" :model-value="props.campo.etiqueta || ''" class="ancho-100 texto-miga"
+      <label for="etiqueta-campo" class="block tamanio-fuente-miga  mb-2">Etiqueta</label>
+      <InputText id="etiqueta-campo" :model-value="props.campo.etiqueta || ''" class="ancho-100 tamanio-fuente-miga"
         placeholder="Etiqueta del campo" @input="(e) => manejarCambioTexto('etiqueta', e)" />
     </div>
 
     <!-- Nombre técnico -->
     <div class="field mb-3">
-      <label for="nombre-campo" class="block texto-miga  mb-2">Nombre técnico</label>
-      <InputText id="nombre-campo" :model-value="props.campo.nombre || ''" class="ancho-100 texto-miga"
+      <label for="nombre-campo" class="block tamanio-fuente-miga  mb-2">Nombre técnico</label>
+      <InputText id="nombre-campo" :model-value="props.campo.nombre || ''" class="ancho-100 tamanio-fuente-miga"
         placeholder="nombre_campo" @input="(e) => manejarCambioTexto('nombre', e)" />
       <small class="text-muted-color">
         Nombre único para identificar el campo en el formulario
@@ -61,9 +61,10 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
 
     <!-- Marcador de posición -->
     <div v-if="ServicioCampos.soportaPlaceholder(props.campo.tipo)" class="field mb-3">
-      <label for="placeholder-campo" class="block texto-miga  mb-2">Marcador de posición</label>
-      <InputText id="placeholder-campo" :model-value="props.campo.marcadorPosicion || ''" class="ancho-100 texto-miga"
-        placeholder="Texto de ayuda para el usuario" @input="(e) => manejarCambioTexto('marcadorPosicion', e)" />
+      <label for="placeholder-campo" class="block tamanio-fuente-miga  mb-2">Marcador de posición</label>
+      <InputText id="placeholder-campo" :model-value="props.campo.marcadorPosicion || ''"
+        class="ancho-100 tamanio-fuente-miga" placeholder="Texto de ayuda para el usuario"
+        @input="(e) => manejarCambioTexto('marcadorPosicion', e)" />
     </div>
 
     <!-- Propiedades booleanas -->

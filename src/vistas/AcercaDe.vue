@@ -153,13 +153,13 @@ const estadisticasProyecto = ref([
             <i :class="tech.icono" class="text-2xl mr-3" :style="{ color: tech.color }"></i>
             <div>
               <h3 class=" negrilla text-gray-800">{{ tech.nombre }}</h3>
-              <span class="texto-miga text-gray-500">v{{ tech.version }}</span>
+              <span class="tamanio-fuente-miga text-gray-500">v{{ tech.version }}</span>
             </div>
           </div>
           <p class="text-gray-600 mb-4">{{ tech.descripcion }}</p>
           <a :href="tech.url" target="_blank" class="inline-flex items-center text-blue-600 hover:text-blue-800 ">
             Documentación
-            <i class="pi pi-external-link ml-1 texto-miga"></i>
+            <i class="pi pi-external-link ml-1 tamanio-fuente-miga"></i>
           </a>
         </div>
       </div>
@@ -234,7 +234,7 @@ const estadisticasProyecto = ref([
               <i class="pi pi-folder text-yellow-500 mr-2"></i>
               Estructura de Carpetas
             </h3>
-            <div class="bg-gray-50 rounded-lg p-4 font-mono texto-miga">
+            <div class="bg-gray-50 rounded-lg p-4 font-mono tamanio-fuente-miga">
               <div class="text-blue-600">src/</div>
               <div class="ml-2 text-green-600">├── vistas/ <span class="text-gray-500">(views en español)</span></div>
               <div class="ml-2 text-green-600">├── componentes/ <span class="text-gray-500">(components)</span></div>
@@ -254,7 +254,7 @@ const estadisticasProyecto = ref([
       <p class="text-gray-600">
         Desarrollado con ❤️ usando Vue.js 3, TypeScript y PrimeVue 4
       </p>
-      <p class="texto-miga text-gray-500 mt-2">
+      <p class="tamanio-fuente-miga text-gray-500 mt-2">
         Siguiendo principios SOLID y mejores prácticas de desarrollo
       </p>
     </div>

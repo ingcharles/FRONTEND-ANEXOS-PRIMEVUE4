@@ -89,54 +89,31 @@ function generarOpcionesPorDefecto(): void {
   <div v-if="tieneOpciones" class="configuracion-opciones p-4 border-round border-1 surface-border">
     <div class="flex justify-content-between align-items-center mb-3">
       <h4 class="text-base negrilla m-0">Opciones de selección</h4>
-      <PrimeButton
-        v-if="opcionesActuales.length === 0"
-        label="Generar opciones"
-        icon="pi pi-plus"
-        size="small"
-        text
-        @click="generarOpcionesPorDefecto"
-      />
+      <PrimeButton v-if="opcionesActuales.length === 0" label="Generar opciones" icon="pi pi-plus" size="small" text
+        @click="generarOpcionesPorDefecto" />
     </div>
 
     <!-- Lista de opciones existentes -->
     <div v-if="opcionesActuales.length > 0" class="opciones-existentes mb-4">
-      <draggable
-        v-model="opcionesActuales"
-        item-key="valor"
-        handle=".handle-ordenar"
-        @change="manejarCambioDragDrop"
-      >
+      <draggable v-model="opcionesActuales" item-key="valor" handle=".handle-ordenar" @change="manejarCambioDragDrop">
         <template #item="{ element: opcion, index }">
           <div class="opcion-item flex align-items-center gap-2 p-2 mb-2 border-round surface-ground">
             <i class="pi pi-bars handle-ordenar cursor-move text-muted-color"></i>
 
             <div class="flex-1 grid">
               <div class="col-6">
-                <PrimeInputText
-                  :model-value="opcion.etiqueta"
-                  placeholder="Etiqueta"
-                  class="ancho-100 texto-miga"
-                  @update:model-value="(valor: string) => valor && actualizarOpcion(index, 'etiqueta', valor)"
-                />
+                <PrimeInputText :model-value="opcion.etiqueta" placeholder="Etiqueta"
+                  class="ancho-100 tamanio-fuente-miga"
+                  @update:model-value="(valor: string) => valor && actualizarOpcion(index, 'etiqueta', valor)" />
               </div>
               <div class="col-6">
-                <PrimeInputText
-                  :model-value="opcion.valor.toString()"
-                  placeholder="Valor"
-                  class="ancho-100 texto-miga"
-                  @update:model-value="(valor: string | number) => valor && actualizarOpcion(index, 'valor', valor)"
-                />
+                <PrimeInputText :model-value="opcion.valor.toString()" placeholder="Valor"
+                  class="ancho-100 tamanio-fuente-miga"
+                  @update:model-value="(valor: string | number) => valor && actualizarOpcion(index, 'valor', valor)" />
               </div>
             </div>
 
-            <PrimeButton
-              icon="pi pi-trash"
-              size="small"
-              text
-              severity="danger"
-              @click="eliminarOpcion(index)"
-            />
+            <PrimeButton icon="pi pi-trash" size="small" text severity="danger" @click="eliminarOpcion(index)" />
           </div>
         </template>
       </draggable>
@@ -146,30 +123,16 @@ function generarOpcionesPorDefecto(): void {
     <div class="agregar-opcion border-top-1 surface-border pt-3">
       <div class="grid">
         <div class="col-5">
-          <PrimeInputText
-            v-model="nuevaOpcion.etiqueta"
-            placeholder="Etiqueta de la opción"
-            class="ancho-100 texto-miga"
-            @keydown.enter="agregarOpcion"
-          />
+          <PrimeInputText v-model="nuevaOpcion.etiqueta" placeholder="Etiqueta de la opción"
+            class="ancho-100 tamanio-fuente-miga" @keydown.enter="agregarOpcion" />
         </div>
         <div class="col-5">
-          <PrimeInputText
-            v-model="nuevaOpcion.valor"
-            placeholder="Valor técnico"
-            class="ancho-100 texto-miga"
-            @keydown.enter="agregarOpcion"
-          />
+          <PrimeInputText v-model="nuevaOpcion.valor" placeholder="Valor técnico" class="ancho-100 tamanio-fuente-miga"
+            @keydown.enter="agregarOpcion" />
         </div>
         <div class="col-2">
-          <PrimeButton
-            icon="pi pi-plus"
-            label="Agregar"
-            size="small"
-            class="ancho-100 texto-miga"
-            :disabled="!nuevaOpcion.etiqueta.trim() || !nuevaOpcion.valor.toString().trim()"
-            @click="agregarOpcion"
-          />
+          <PrimeButton icon="pi pi-plus" label="Agregar" size="small" class="ancho-100 tamanio-fuente-miga"
+            :disabled="!nuevaOpcion.etiqueta.trim() || !nuevaOpcion.valor.toString().trim()" @click="agregarOpcion" />
         </div>
       </div>
     </div>

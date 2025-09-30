@@ -57,7 +57,7 @@ Se ha implementado la funcionalidad para que cuando se añade una validación "r
 
 ### `RenderizadorCampo.vue`
 
-- Mejorado el estilo del mensaje de error (añadido texto-miga)
+- Mejorado el estilo del mensaje de error (añadido tamanio-fuente-miga)
 
 ## Pruebas
 

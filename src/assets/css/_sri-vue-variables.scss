@@ -58,6 +58,7 @@ $fuente-size-campo: 14px;
 $fuente-size-placeholder: 14px;
 $fuente-size-paginador: 14px;
 $fuente-size-tabla: 14px;
+$fuente-size-24: 24px;
 
 /*** tamanio iconos ******/
 $icono-size-informacion: 39px;
@@ -148,12 +149,12 @@ $fuente-pag-error-color: $color-coral-fuerte;
 
 /*********** bootstrap : breakpoints: dimensiones del diseño responsive****/
 $grid-breakpoints: (
-    xs: 0,
-    sm: 576px,
-    md: 768px,
-    lg: 992px,
-    xl: 1200px,
-    xxl: 1400px
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px
 );
 
 /********** variables agregadas para diseñador************/

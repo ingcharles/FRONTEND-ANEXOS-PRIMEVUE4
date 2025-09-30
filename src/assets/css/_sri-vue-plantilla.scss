@@ -1924,13 +1924,20 @@ button.p-button.p-component.p-button-icon-only.p-button-rounded.p-button-seconda
   z-index: 1;
 }
 
+.centrar-texto {
+  text-align: center !important;
+}
 
 .overflow-auto {
   overflow: auto !important;
 }
 
-.texto-miga {
+.tamanio-fuente-miga {
   font-size: $fuente-size-miga;
+}
+
+.tamanio-fuente-24 {
+  font-size: $fuente-size-24;
 }
 
 input[type="file"] {
@@ -1958,6 +1965,15 @@ input[type="file"] {
   border-style: solid;
 }
 
+
+
+
+.input-buscador {
+  flex: 1 1 auto;
+  /* el input ocupa el espacio sobrante */
+  min-width: 0;
+  /* evita que empuje al botón fuera */
+}
 
 .boton-pequenio {
   margin: 0;
@@ -1999,6 +2015,10 @@ input[type="file"] {
 
 .flex-1 {
   flex: 1 1 0% !important;
+}
+
+.flex-auto {
+  flex: 1 1 auto !important;
 }
 
 .flex-row {
@@ -3379,7 +3399,7 @@ input[type="file"] {
 
 /************** combos select*************/
 
-// .texto-miga {
+// .tamanio-fuente-miga {
 //   font-size: 0.875rem;
 // }
 
@@ -3506,7 +3526,7 @@ span.p-select-trigger-icon.pi.pi-chevron-down {
   --p-primary-color: #0c4597;
   --p-button-primary-background: #4077BA;
   --p-tabs-tab-padding: 1rem 1.125rem;
-
+  --surface-border: #dee2e6;
 
   --p-transition-duration: 0.2s;
   --p-disabled-opacity: 0.6;

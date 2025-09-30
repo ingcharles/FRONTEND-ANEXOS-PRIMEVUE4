@@ -245,17 +245,24 @@ window.addEventListener('keydown', manejarAtajos)
 
     </div>
     <!-- Buscador -->
-    <div class="p-inputgroup mb-3 mt-3">
-      <span class="p-inputgroup-addon">
-        <i class="pi pi-search" />
-      </span>
-      <PrimeInputText id="buscador-paleta" v-model="filtro" type="text" autocomplete="off"
-        placeholder="Filtrar (Ctrl+K)" class="p-inputtext" />
-      <PrimeButton v-if="filtro" @click="limpiarFiltro" type="button" class="p-button p-button-text"
-        aria-label="Limpiar filtro">
-        <i class="pi pi-times" />
-      </PrimeButton>
-      <div class="p-ml-auto p-d-flex p-ai-center">
+    <!-- Buscador -->
+    <div class="grid mb-3 mt-3">
+      <!-- Columna del buscador -->
+      <div class="col-12">
+        <div class="flex align-items-center gap-2">
+          <span class="icono">
+            <i class="pi pi-search"></i>
+          </span>
+          <PrimeInputText id="buscador-paleta" v-model="filtro" type="text" autocomplete="off"
+            placeholder="Filtrar (Ctrl+K)" class="input-buscador" />
+          <PrimeButton v-if="filtro" @click="limpiarFiltro" type="button" class="" aria-label="Limpiar filtro">
+            <i class="pi pi-times" />
+          </PrimeButton>
+        </div>
+      </div>
+
+      <!-- Columna de acciones -->
+      <div class="col-12 flex justify-content-end align-items-center">
         <PrimeButton size="small" text severity="secondary" icon="pi pi-plus" @click="expandir"
           :disabled="Object.keys(clavesExpandidas).length === modeloPanelMenuFiltrado.length"
           v-tooltip.top="'Expandir todo'" />
@@ -273,7 +280,7 @@ window.addEventListener('keydown', manejarAtajos)
           <draggable :list="[item]" item-key="key" :group="{ name: 'paleta', pull: 'clone', put: false }"
             :clone="() => clonarDesdeMenu(item)" :sort="false">
             <template #item="{ element }">
-              <a v-ripple class="flex items-center pl-4 pr-2 py-2 cursor-pointer group ancho-100 texto-miga">
+              <a v-ripple class="flex items-center pl-4 pr-2 py-2 cursor-pointer group ancho-100 tamanio-fuente-miga">
                 <i class="pi pi-grip-vertical p-mr-2" />
                 <i :class="['pi', element.icon, 'group-hover:text-inherit']" />
                 <span class="ml-2">{{ element.label }}</span>

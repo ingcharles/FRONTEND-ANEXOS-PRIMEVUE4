@@ -255,7 +255,7 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
                 size="large" />
               <div class="flex-1">
                 <h5 class="m-0 negrilla">{{ obtenerConfigTipo(regla.tipo).titulo }}</h5>
-                <p class="m-0 texto-miga">{{ obtenerConfigTipo(regla.tipo).descripcion }}</p>
+                <p class="m-0 tamanio-fuente-miga">{{ obtenerConfigTipo(regla.tipo).descripcion }}</p>
               </div>
               <PrimeButton icon="pi pi-trash" severity="danger" text rounded size="small"
                 @click="eliminarValidacion(indice)" v-tooltip.top="'Eliminar validación'" />
@@ -265,7 +265,7 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
           <template #content>
             <div class="p-2">
               <div class="field">
-                <label class="texto-miga mb-2">
+                <label class="tamanio-fuente-miga mb-2">
                   {{ regla.tipo === 'requerido' ? 'Mensaje de error' : 'Valor de configuración' }}
                 </label>
 
@@ -291,7 +291,7 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
 
                 <!-- Campo de mensaje personalizado (para validaciones no-requerido) -->
                 <div v-if="regla.tipo !== 'requerido'" class="field mt-3">
-                  <label class="texto-miga  mb-2 block">
+                  <label class="tamanio-fuente-miga  mb-2 block">
                     Mensaje de error personalizado (opcional)
                   </label>
 
@@ -327,7 +327,7 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
                   :style="{ backgroundColor: `var(--${config.color}-500)`, color: 'white' }" />
                 <div class="flex-1">
                   <h5 class="m-0  negrilla">{{ config.titulo }}</h5>
-                  <p class="m-0  texto-miga">{{ config.descripcion }}</p>
+                  <p class="m-0  tamanio-fuente-miga">{{ config.descripcion }}</p>
                 </div>
                 <i class="pi pi-chevron-right text-400"></i>
               </div>

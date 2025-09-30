@@ -1,15 +1,12 @@
 <template>
-  <div class="mb-2 mt-2" >
-    <h3 class="texto-miga text-color mb-2">Comportamiento</h3>
+  <div class="mb-2 mt-2">
+    <h3 class="tamanio-fuente-miga text-color mb-2">Comportamiento</h3>
 
     <!-- Visibilidad -->
     <div class="mb-2">
-      <label class="texto-miga">
-        <Checkbox
-          binary
-          :model-value="!!campo?.visible"
-          @update:model-value="(v: boolean) => actualizarPropiedad('visible', v)"
-        />
+      <label class="tamanio-fuente-miga">
+        <Checkbox binary :model-value="!!campo?.visible"
+          @update:model-value="(v: boolean) => actualizarPropiedad('visible', v)" />
         Visible
       </label>
     </div>
@@ -17,24 +14,18 @@
 
     <!-- Deshabilitado -->
     <div class="mb-2" v-if="ServicioCampos.esDeshabilitable(campo?.tipo)">
-      <label class="texto-miga">
-        <Checkbox
-          binary
-          :model-value="!!campo?.deshabilitado"
-          @update:model-value="(v: boolean) => actualizarPropiedad('deshabilitado', v)"
-        />
+      <label class="tamanio-fuente-miga">
+        <Checkbox binary :model-value="!!campo?.deshabilitado"
+          @update:model-value="(v: boolean) => actualizarPropiedad('deshabilitado', v)" />
         Deshabilitado
       </label>
     </div>
 
     <!-- Solo lectura -->
     <div class="mb-2" v-if="ServicioCampos.esSoloLectura(campo?.tipo)">
-      <label class="texto-miga">
-        <Checkbox
-          binary
-          :model-value="!!campo?.soloLectura"
-          @update:model-value="(v: boolean) => actualizarPropiedad('soloLectura', v)"
-        />
+      <label class="tamanio-fuente-miga">
+        <Checkbox binary :model-value="!!campo?.soloLectura"
+          @update:model-value="(v: boolean) => actualizarPropiedad('soloLectura', v)" />
         Solo lectura
       </label>
     </div>
@@ -42,13 +33,8 @@
     <!-- Layout para grupos de opciones -->
     <div class="mb-2" v-if="ServicioCampos.soportaOpcionesHorizontalVertical(props?.campo?.tipo)">
       <label class="block mb-1">Distribución de opciones</label>
-      <SelectButton
-        :model-value="obtenerLayoutGrupo()"
-        :options="opcionesLayout"
-        option-label="label"
-        option-value="value"
-        @update:model-value="(v: TipoDiseno) => actualizarLayoutGrupo(v)"
-      />
+      <SelectButton :model-value="obtenerLayoutGrupo()" :options="opcionesLayout" option-label="label"
+        option-value="value" @update:model-value="(v: TipoDiseno) => actualizarLayoutGrupo(v)" />
       <small class="text-muted-color">Controla si las opciones se muestran en columna o en fila.</small>
     </div>
 
@@ -109,4 +95,3 @@ function actualizarLayoutGrupo(layout: TipoDiseno): void {
   almacen.actualizarCampo(props.campo.id, { metadatos: meta })
 }
 </script>
-

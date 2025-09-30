@@ -129,8 +129,8 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
     </div>
 
     <!-- Estado vacío -->
-    <div v-if="reglasLogica.length === 0" class="text-center p-6 surface-50 border-round-lg border-1 surface-border">
-      <i class="pi pi-sitemap text-4xl text-primary mb-3"></i>
+    <div v-if="reglasLogica.length === 0" class="centrar-texto p-3 border-round-lg border-1 surface-border">
+      <i class="pi pi-sitemap tamanio-fuente-24 mb-3"></i>
       <p class="contenido m-0 font-semibold">No hay reglas de lógica configuradas</p>
       <small class="text-500 mt-2 block">
         Las reglas de lógica permiten mostrar/ocultar campos y hacerlos requeridos según los valores de otros campos
@@ -147,7 +147,7 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
       <div class="flex align-items-center justify-content-between mb-3 pb-2"
         style="border-bottom: 1px solid var(--surface-100);">
         <div class="flex align-items-center gap-2">
-          <i class="pi pi-arrow-right text-primary"></i>
+          <i class="pi pi-arrow-right"></i>
           <span class="font-semibold text-700">Regla {{ indice + 1 }}</span>
         </div>
         <PrimeButton icon="pi pi-trash" severity="danger" size="small" text rounded
@@ -158,25 +158,25 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
       <div class="grid align-items-end">
         <!-- Campo objetivo -->
         <div class="col-12">
-          <label class="texto-miga">Campo</label>
+          <label class="tamanio-fuente-miga">Campo</label>
           <PrimeSelect v-model="regla.campoCondicionId" :options="camposDisponibles" option-label="etiqueta"
-            option-value="valor" class="ancho-100 texto-miga" placeholder="Seleccionar campo..." :filter="true"
+            option-value="valor" class="ancho-100 tamanio-fuente-miga" placeholder="Seleccionar campo..." :filter="true"
             filter-placeholder="Buscar campo..." />
         </div>
 
         <!-- Operador de comparación -->
         <div class="col-12">
-          <label class="texto-miga">Operador</label>
+          <label class="tamanio-fuente-miga">Operador</label>
           <PrimeSelect v-model="regla.operador" :options="opcionesOperadores" option-label="etiqueta"
-            option-value="valor" class="ancho-100 texto-miga" placeholder="Seleccionar operador..." />
+            option-value="valor" class="ancho-100 tamanio-fuente-miga" placeholder="Seleccionar operador..." />
         </div>
 
         <!-- Valor de comparación -->
         <div class="col-12">
-          <label class="texto-miga">Valor</label>
+          <label class="tamanio-fuente-miga">Valor</label>
           <PrimeInputText :model-value="String(regla.valor || '')"
             @update:model-value="regla.valor = ($event || '') as string | number | boolean | Date"
-            class="ancho-100 texto-miga" placeholder="Valor de comparación..."
+            class="ancho-100 tamanio-fuente-miga" placeholder="Valor de comparación..."
             :disabled="esOperadorPersonalizado(regla.operador)" />
           <small v-if="esOperadorPersonalizado(regla.operador)" class="text-500 mt-1 block">
             Para operadores personalizados, usa la expresión JavaScript abajo
@@ -185,18 +185,18 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
 
         <!-- Acción a ejecutar -->
         <div class="col-12">
-          <label class="texto-miga">Acción</label>
+          <label class="tamanio-fuente-miga">Acción</label>
           <PrimeSelect v-model="regla.accion" :options="opcionesAcciones" option-label="etiqueta" option-value="valor"
-            class="ancho-100 texto-miga" placeholder="Seleccionar acción..." />
+            class="ancho-100 tamanio-fuente-miga" placeholder="Seleccionar acción..." />
         </div>
       </div>
 
       <!-- Expresión personalizada para operadores custom -->
-      <div v-if="esOperadorPersonalizado(regla.operador)" class="mt-3 p-3 surface-50 border-round">
-        <label class="texto-miga">
+      <div v-if="esOperadorPersonalizado(regla.operador)" class="mt-3 p-3 border-round">
+        <label class="tamanio-fuente-miga">
           <i class="pi pi-code mr-2"></i>Expresión personalizada
         </label>
-        <PrimeTextarea v-model="regla.expresion" rows="3" class="ancho-100 texto-miga"
+        <PrimeTextarea v-model="regla.expresion" rows="3" class="ancho-100 tamanio-fuente-miga"
           placeholder="Escribir expresión JavaScript..." />
         <small class=" mt-1">
           Ejemplo: campo.valor > 18 && campo.visible === true
@@ -204,8 +204,8 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
       </div>
 
       <!-- Resumen de la regla -->
-      <div class="mt-3 p-3 surface-50 border-round text-sm">
-        <i class="pi pi-info-circle text-primary mr-2"></i>
+      <div class="mt-3 p-3 border-round text-sm">
+        <i class="pi pi-info-circle mr-2"></i>
         <span class="text-600">
           <strong>Si</strong> el campo
           <span class="text-primary font-semibold">{{ obtenerNombreCampo(regla.campoCondicionId) }}</span><strong>{{

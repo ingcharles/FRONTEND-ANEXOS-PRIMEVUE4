@@ -146,31 +146,21 @@ const mostrarConfiguracionGrid = computed(() => {
 
     <div v-else class="contenido-atributos flex flex-column gap-4">
       <!-- Propiedades básicas -->
-      <PropiedadesBasicas
-        :campo="campoSeleccionado"
-        @actualizar-texto="manejarActualizacionTexto"
-        @cambiar-tipo="manejarCambioTipo"
-        @actualizar-booleano="manejarCambioBooleano"
-      />
+      <PropiedadesBasicas :campo="campoSeleccionado" @actualizar-texto="manejarActualizacionTexto"
+        @cambiar-tipo="manejarCambioTipo" @actualizar-booleano="manejarCambioBooleano" />
 
       <!-- Configuración de opciones (para select, radio, checkbox) -->
-      <ConfiguracionOpciones
-        v-if="mostrarConfiguracionOpciones"
-        :campo="campoSeleccionado"
-        @actualizar-opciones="manejarActualizacionOpciones"
-      />
+      <ConfiguracionOpciones v-if="mostrarConfiguracionOpciones" :campo="campoSeleccionado"
+        @actualizar-opciones="manejarActualizacionOpciones" />
 
       <!-- Configuración de grid responsivo -->
-      <ConfiguracionGrid
-        v-if="mostrarConfiguracionGrid"
-        :campo="campoSeleccionado"
-        @actualizar-grid="manejarActualizacionGrid"
-      />
+      <ConfiguracionGrid v-if="mostrarConfiguracionGrid" :campo="campoSeleccionado"
+        @actualizar-grid="manejarActualizacionGrid" />
 
       <!-- Información de depuración (solo en desarrollo) -->
       <div v-if="import.meta.env.DEV" class="debug-info p-3 border-round surface-100">
         <details>
-          <summary class="cursor-pointer texto-miga ">
+          <summary class="cursor-pointer tamanio-fuente-miga ">
             <i class="pi pi-code mr-1"></i>
             Información de depuración
           </summary>

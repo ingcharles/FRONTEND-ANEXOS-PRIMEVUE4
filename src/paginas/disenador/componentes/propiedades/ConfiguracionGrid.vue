@@ -48,108 +48,64 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
   <div class="configuracion-grid p-4 border-round border-1 surface-border">
     <div class="flex justify-content-between align-items-center mb-3">
       <h4 class="text-base negrilla m-0">Diseño responsivo</h4>
-      <PrimeButton
-        label="Restablecer"
-        icon="pi pi-refresh"
-        size="small"
-        text
-        @click="restablecerGrid"
-      />
+      <PrimeButton label="Restablecer" icon="pi pi-refresh" size="small" text @click="restablecerGrid" />
     </div>
 
     <!-- Presets rápidos -->
     <div class="presets-grid mb-4">
-      <h5 class="texto-miga  mb-2">Presets comunes</h5>
+      <h5 class="tamanio-fuente-miga  mb-2">Presets comunes</h5>
       <div class="flex gap-2 flex-wrap">
-        <PrimeButton
-          label="Completo"
-          size="small"
-          outlined
-          @click="aplicarPreset('completo')"
-        />
-        <PrimeButton
-          label="Mitad"
-          size="small"
-          outlined
-          @click="aplicarPreset('mitad')"
-        />
-        <PrimeButton
-          label="Tercio"
-          size="small"
-          outlined
-          @click="aplicarPreset('tercio')"
-        />
-        <PrimeButton
-          label="Cuarto"
-          size="small"
-          outlined
-          @click="aplicarPreset('cuarto')"
-        />
+        <PrimeButton label="Completo" size="small" outlined @click="aplicarPreset('completo')" />
+        <PrimeButton label="Mitad" size="small" outlined @click="aplicarPreset('mitad')" />
+        <PrimeButton label="Tercio" size="small" outlined @click="aplicarPreset('tercio')" />
+        <PrimeButton label="Cuarto" size="small" outlined @click="aplicarPreset('cuarto')" />
       </div>
     </div>
 
     <!-- Configuración por breakpoint -->
     <div class="breakpoints-config">
-      <h5 class="texto-miga  mb-3">Configuración por dispositivo</h5>
+      <h5 class="tamanio-fuente-miga  mb-3">Configuración por dispositivo</h5>
 
       <!-- Móvil (sm) -->
       <div class="breakpoint-config mb-3">
         <div class="flex align-items-center justify-content-between mb-2">
-          <label class="texto-miga ">
+          <label class="tamanio-fuente-miga ">
             <i class="pi pi-mobile mr-1"></i>
             Móvil (sm)
           </label>
           <span class="text-xs text-muted-color">&lt; 768px</span>
         </div>
-        <PrimeSelect
-          :model-value="gridActual.sm"
-          :options="opcionesColumnas"
-          option-label="etiqueta"
-          option-value="valor"
-          placeholder="Auto"
-          class="ancho-100 texto-miga"
-          @update:model-value="(valor: number | undefined) => actualizarBreakpoint('sm', valor)"
-        />
+        <PrimeSelect :model-value="gridActual.sm" :options="opcionesColumnas" option-label="etiqueta"
+          option-value="valor" placeholder="Auto" class="ancho-100 tamanio-fuente-miga"
+          @update:model-value="(valor: number | undefined) => actualizarBreakpoint('sm', valor)" />
       </div>
 
       <!-- Tablet (md) -->
       <div class="breakpoint-config mb-3">
         <div class="flex align-items-center justify-content-between mb-2">
-          <label class="texto-miga ">
+          <label class="tamanio-fuente-miga ">
             <i class="pi pi-tablet mr-1"></i>
             Tablet (md)
           </label>
           <span class="text-xs text-muted-color">768px - 1024px</span>
         </div>
-        <PrimeSelect
-          :model-value="gridActual.md"
-          :options="opcionesColumnas"
-          option-label="etiqueta"
-          option-value="valor"
-          placeholder="Auto"
-          class="ancho-100 texto-miga"
-          @update:model-value="(valor: number | undefined) => actualizarBreakpoint('md', valor)"
-        />
+        <PrimeSelect :model-value="gridActual.md" :options="opcionesColumnas" option-label="etiqueta"
+          option-value="valor" placeholder="Auto" class="ancho-100 tamanio-fuente-miga"
+          @update:model-value="(valor: number | undefined) => actualizarBreakpoint('md', valor)" />
       </div>
 
       <!-- Desktop (lg) -->
       <div class="breakpoint-config mb-3">
         <div class="flex align-items-center justify-content-between mb-2">
-          <label class="texto-miga ">
+          <label class="tamanio-fuente-miga ">
             <i class="pi pi-desktop mr-1"></i>
             Desktop (lg)
           </label>
           <span class="text-xs text-muted-color">&gt; 1024px</span>
         </div>
-        <PrimeSelect
-          :model-value="gridActual.lg"
-          :options="opcionesColumnas"
-          option-label="etiqueta"
-          option-value="valor"
-          placeholder="Auto"
-          class="ancho-100 texto-miga"
-          @update:model-value="(valor: number | undefined) => actualizarBreakpoint('lg', valor)"
-        />
+        <PrimeSelect :model-value="gridActual.lg" :options="opcionesColumnas" option-label="etiqueta"
+          option-value="valor" placeholder="Auto" class="ancho-100 tamanio-fuente-miga"
+          @update:model-value="(valor: number | undefined) => actualizarBreakpoint('lg', valor)" />
       </div>
     </div>
 
@@ -157,14 +113,9 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
     <div class="vista-previa-grid mt-4 p-3 border-round surface-ground">
       <h6 class="text-xs  mb-2">Vista previa</h6>
       <div class="grid-preview flex gap-1">
-        <div
-          v-for="n in 12"
-          :key="n"
-          class="grid-cell"
-          :class="{
-            'cell-ocupada': (gridActual.lg || gridActual.md || gridActual.sm || 12) >= n
-          }"
-        />
+        <div v-for="n in 12" :key="n" class="grid-cell" :class="{
+          'cell-ocupada': (gridActual.lg || gridActual.md || gridActual.sm || 12) >= n
+        }" />
       </div>
       <div class="grid-info mt-2">
         <small class="text-muted-color">

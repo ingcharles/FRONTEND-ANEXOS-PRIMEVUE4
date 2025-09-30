@@ -163,8 +163,9 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
           <!-- Columna izquierda (8/12): textos -->
           <div class="col-8 flex flex-column">
             <span class="titulo">{{ `${punto}: ${columnaActual} Columnas` }}</span>
-            <span class="color-rojo texto-miga" v-if="campo.tipo === 'panel'">Elementos: {{ conteoHijos }}</span>
-            <span class="color-rojo texto-miga" v-if="ServicioCampos.soportaOpciones(campo.tipo)">Opciones: {{
+            <span class="color-rojo tamanio-fuente-miga" v-if="campo.tipo === 'panel'">Elementos: {{ conteoHijos
+              }}</span>
+            <span class="color-rojo tamanio-fuente-miga" v-if="ServicioCampos.soportaOpciones(campo.tipo)">Opciones: {{
               conteoOpciones }}</span>
           </div>
           <!-- Columna derecha (4/12): acciones -->
@@ -183,29 +184,29 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
       <template
         v-if="campo.tipo === TipoCampoValor.Texto || campo.tipo === TipoCampoValor.Correo || campo.tipo === TipoCampoValor.Contrasena">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
-        <PrimeInputText :model-value="valorActualTexto" :placeholder="campo.marcadorPosicion" class="ancho-100 texto-miga"
-          :disabled="campo.deshabilitado" :readonly="campo.soloLectura" />
+        <PrimeInputText :model-value="valorActualTexto" :placeholder="campo.marcadorPosicion"
+          class="ancho-100 tamanio-fuente-miga" :disabled="campo.deshabilitado" :readonly="campo.soloLectura" />
       </template>
       <template v-else-if="campo.tipo === TipoCampoValor.Fecha">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
-        <PrimeInputText class="ancho-100 texto-miga"
+        <PrimeInputText class="ancho-100 tamanio-fuente-miga"
           :model-value="(valorActual instanceof Date) ? valorActual : (typeof valorActual === 'string' && valorActual ? new Date(valorActual) : undefined)"
           :disabled="campo.deshabilitado" />
       </template>
       <template v-else-if="campo.tipo === TipoCampoValor.Hora">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
-        <PrimeDatePicker time-only hour-format="24" class="ancho-100 texto-miga"
+        <PrimeDatePicker time-only hour-format="24" class="ancho-100 tamanio-fuente-miga"
           :model-value="(typeof valorActual === 'string' && /^([01]?\d|2[0-3]):([0-5]\d)$/.test(valorActual as any)) ? (() => { const [hh, mm] = String(valorActual).split(':'); const d = new Date(); d.setHours(Number(hh), Number(mm), 0, 0); return d; })() : undefined"
           :disabled="campo.deshabilitado" />
       </template>
       <template v-else-if="campo.tipo === TipoCampoValor.AreaTexto">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
-        <PrimeTextarea :model-value="valorActualTexto" :placeholder="campo.marcadorPosicion" class="ancho-100 texto-miga"
-          :disabled="campo.deshabilitado" :readonly="campo.soloLectura" />
+        <PrimeTextarea :model-value="valorActualTexto" :placeholder="campo.marcadorPosicion"
+          class="ancho-100 tamanio-fuente-miga" :disabled="campo.deshabilitado" :readonly="campo.soloLectura" />
       </template>
       <template v-else-if="campo.tipo === TipoCampoValor.Seleccion">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
-        <PrimeSelect class="ancho-100 texto-miga"
+        <PrimeSelect class="ancho-100 tamanio-fuente-miga"
           :options="(campo.metadatos?.opciones as Array<{ etiqueta: string; valor: unknown }>) || []"
           option-label="etiqueta" option-value="valor" :model-value="valorActual" :disabled="campo.deshabilitado || (Boolean((campo.metadatos as any)?.dependencia?.deshabilitarHastaValor) && !String((campo.metadatos as any)?.dependencia?.campoPadre || '').split(',').map((s: string) => s.trim()).filter(Boolean).every((padre: string) => {
             const pid = almacen.paginaActiva?.id ?? almacen.esquemaFormulario.paginas[almacen.indicePaginaActiva]?.id
@@ -214,7 +215,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
       </template>
       <template v-else-if="campo.tipo === TipoCampoValor.Numero">
         <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
-        <PrimeInputNumber class="ancho-100 texto-miga"
+        <PrimeInputNumber class="ancho-100 tamanio-fuente-miga"
           :model-value="(valorActualTexto != null && valorActualTexto !== '' && !Number.isNaN(Number(valorActualTexto))) ? Number(valorActualTexto) : undefined"
           :placeholder="campo.marcadorPosicion" :disabled="campo.deshabilitado" :readonly="campo.soloLectura" />
       </template>
@@ -269,7 +270,7 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
         <div class="border rounded-border p-2">
           <div class="negrilla mb-2">Tabla</div>
           <div class="overflow-auto">
-            <table class="ancho-100 texto-miga texto-miga">
+            <table class="ancho-100 tamanio-fuente-miga tamanio-fuente-miga">
               <thead>
                 <tr>
                   <th v-for="col in ((campo.metadatos as any)?.columnas || [])" :key="col.name"
@@ -282,11 +283,11 @@ const ContenedorPanelAsincrono = defineAsyncComponent(() => import('./Contenedor
                 <tr v-for="(fila, indice) in Array.from({ length: Number((campo.metadatos as any)?.filas || 1) })"
                   :key="indice">
                   <td v-for="col in ((campo.metadatos as any)?.columnas || [])" :key="col.name" class="p-2">
-                    <PrimeInputText v-if="col.tipo === TipoCampoValor.Texto" class="ancho-100 texto-miga" disabled
-                      placeholder="Texto" />
-                    <PrimeInputNumber v-else-if="col.tipo === TipoCampoValor.Numero" class="ancho-100 texto-miga" disabled
-                      placeholder="0" />
-                    <PrimeDatePicker v-else-if="col.tipo === TipoCampoValor.Fecha" class="ancho-100 texto-miga"
+                    <PrimeInputText v-if="col.tipo === TipoCampoValor.Texto" class="ancho-100 tamanio-fuente-miga"
+                      disabled placeholder="Texto" />
+                    <PrimeInputNumber v-else-if="col.tipo === TipoCampoValor.Numero"
+                      class="ancho-100 tamanio-fuente-miga" disabled placeholder="0" />
+                    <PrimeDatePicker v-else-if="col.tipo === TipoCampoValor.Fecha" class="ancho-100 tamanio-fuente-miga"
                       disabled />
                     <span v-else class="text-muted-color">—</span>
                   </td>

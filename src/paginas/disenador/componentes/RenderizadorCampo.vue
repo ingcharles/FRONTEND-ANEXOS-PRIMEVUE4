@@ -82,8 +82,8 @@ function claseRellenoCelda(campo: EsquemaCampo): string {
 function clasesTablaCompleta(campo: EsquemaCampo): string[] {
   const estilo = obtenerEstiloTabla(campo)
   return [
-    'ancho-100 texto-miga',
-    'texto-miga',
+    'ancho-100 tamanio-fuente-miga',
+    'tamanio-fuente-miga',
     estilo.conBordes ? 'border-1 surface-border' : ''
   ]
 }
@@ -265,12 +265,8 @@ const esCampoRequerido = computed(() => {
       <div class="grid">
         <template v-for="campoHijo in (campo.hijos || [])" :key="campoHijo.id">
           <div :class="clasesColumnaCampo(campoHijo)">
-            <RenderizadorCampo
-              :campo="campoHijo"
-              :valores-campos="valoresCampos"
-              :mapa-id-nombre="mapaIdNombre"
-              :errores-campos="erroresCampos"
-            />
+            <RenderizadorCampo :campo="campoHijo" :valores-campos="valoresCampos" :mapa-id-nombre="mapaIdNombre"
+              :errores-campos="erroresCampos" />
           </div>
         </template>
       </div>
@@ -286,64 +282,36 @@ const esCampoRequerido = computed(() => {
       <!-- Campo de texto -->
       <PrimeInputText
         v-if="campo.tipo === TipoCampoValor.Texto || campo.tipo === TipoCampoValor.Correo || campo.tipo === TipoCampoValor.Contrasena"
-        v-model="(valoresCampos as any)[campo.nombre || '']"
-        :placeholder="campo.marcadorPosicion"
-        class="ancho-100 texto-miga"
-        :disabled="campo.deshabilitado"
-        :readonly="campo.soloLectura"
-      />
+        v-model="(valoresCampos as any)[campo.nombre || '']" :placeholder="campo.marcadorPosicion"
+        class="ancho-100 tamanio-fuente-miga" :disabled="campo.deshabilitado" :readonly="campo.soloLectura" />
 
       <!-- Área de texto -->
-      <PrimeTextarea
-        v-else-if="campo.tipo === TipoCampoValor.AreaTexto"
-        v-model="(valoresCampos as any)[campo.nombre || '']"
-        :placeholder="campo.marcadorPosicion"
-        class="ancho-100 texto-miga"
-        :disabled="campo.deshabilitado"
-        :readonly="campo.soloLectura"
-      />
+      <PrimeTextarea v-else-if="campo.tipo === TipoCampoValor.AreaTexto"
+        v-model="(valoresCampos as any)[campo.nombre || '']" :placeholder="campo.marcadorPosicion"
+        class="ancho-100 tamanio-fuente-miga" :disabled="campo.deshabilitado" :readonly="campo.soloLectura" />
 
       <!-- Selector de tiempo -->
-      <PrimeDatePicker
-        v-else-if="campo.tipo === TipoCampoValor.Hora"
-        v-model="(valoresCampos as any)[campo.nombre || '']"
-        time-only
-        hour-format="24"
-        class="ancho-100 texto-miga"
-        :disabled="campo.deshabilitado"
-      />
+      <PrimeDatePicker v-else-if="campo.tipo === TipoCampoValor.Hora"
+        v-model="(valoresCampos as any)[campo.nombre || '']" time-only hour-format="24"
+        class="ancho-100 tamanio-fuente-miga" :disabled="campo.deshabilitado" />
 
       <!-- Selector de fecha -->
-      <PrimeDatePicker
-        v-else-if="campo.tipo === TipoCampoValor.Fecha"
-        v-model="(valoresCampos as any)[campo.nombre || '']"
-        class="ancho-100 texto-miga"
-        :disabled="campo.deshabilitado"
-      />
+      <PrimeDatePicker v-else-if="campo.tipo === TipoCampoValor.Fecha"
+        v-model="(valoresCampos as any)[campo.nombre || '']" class="ancho-100 tamanio-fuente-miga"
+        :disabled="campo.deshabilitado" />
 
       <!-- Select/Dropdown -->
-      <PrimeSelect
-        v-else-if="campo.tipo === TipoCampoValor.Seleccion"
-        v-model="(valoresCampos as any)[campo.nombre || '']"
-        :options="opcionesCampo"
-        option-label="etiqueta"
-        option-value="valor"
-        class="ancho-100 texto-miga"
-        :disabled="campo.deshabilitado || estaDeshabilitadoPorDependencia(campo, valoresCampos as any)"
-      />
+      <PrimeSelect v-else-if="campo.tipo === TipoCampoValor.Seleccion"
+        v-model="(valoresCampos as any)[campo.nombre || '']" :options="opcionesCampo" option-label="etiqueta"
+        option-value="valor" class="ancho-100 tamanio-fuente-miga"
+        :disabled="campo.deshabilitado || estaDeshabilitadoPorDependencia(campo, valoresCampos as any)" />
 
       <!-- Campo numérico -->
-      <PrimeInputNumber
-        v-else-if="campo.tipo === TipoCampoValor.Numero"
-        v-model="(valoresCampos as any)[campo.nombre || '']"
-        class="ancho-100 texto-miga"
-        :placeholder="campo.marcadorPosicion"
-        :min="(campo.metadatos as any)?.minimo"
-        :max="(campo.metadatos as any)?.maximo"
-        :step="(campo.metadatos as any)?.paso ?? 1"
-        :disabled="campo.deshabilitado"
-        :readonly="campo.soloLectura"
-      />
+      <PrimeInputNumber v-else-if="campo.tipo === TipoCampoValor.Numero"
+        v-model="(valoresCampos as any)[campo.nombre || '']" class="ancho-100 tamanio-fuente-miga"
+        :placeholder="campo.marcadorPosicion" :min="(campo.metadatos as any)?.minimo"
+        :max="(campo.metadatos as any)?.maximo" :step="(campo.metadatos as any)?.paso ?? 1"
+        :disabled="campo.deshabilitado" :readonly="campo.soloLectura" />
 
       <!-- Checkbox -->
       <div v-else-if="campo.tipo === TipoCampoValor.Casilla">
@@ -353,18 +321,11 @@ const esCampoRequerido = computed(() => {
             'flex',
             ((campo.metadatos as any)?.layout === 'horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')
           ]">
-            <label
-            v-for="opcionCheckbox in opcionesCampo"
-            :key="String(opcionCheckbox.valor)"
-              class="inline-flex align-items-center gap-2 flex-shrink-0"
-            >
-              <PrimeCheckbox
-              :input-id="String(opcionCheckbox.valor)"
-              :value="opcionCheckbox.valor"
-                v-model="(valoresCampos as any)[campo.nombre || '']"
-                :disabled="campo.deshabilitado"
-              />
-            <span>{{ opcionCheckbox.etiqueta }}</span>
+            <label v-for="opcionCheckbox in opcionesCampo" :key="String(opcionCheckbox.valor)"
+              class="inline-flex align-items-center gap-2 flex-shrink-0">
+              <PrimeCheckbox :input-id="String(opcionCheckbox.valor)" :value="opcionCheckbox.valor"
+                v-model="(valoresCampos as any)[campo.nombre || '']" :disabled="campo.deshabilitado" />
+              <span>{{ opcionCheckbox.etiqueta }}</span>
             </label>
           </div>
         </template>
@@ -372,32 +333,23 @@ const esCampoRequerido = computed(() => {
         <!-- Checkbox simple -->
         <template v-else>
           <div class="inline-flex align-items-center gap-2">
-            <PrimeCheckbox
-              v-model="(valoresCampos as any)[campo.nombre || '']"
-              :binary="true"
-              :disabled="campo.deshabilitado"
-            />
+            <PrimeCheckbox v-model="(valoresCampos as any)[campo.nombre || '']" :binary="true"
+              :disabled="campo.deshabilitado" />
           </div>
         </template>
       </div>
 
       <!-- Radio buttons -->
-      <div v-else-if="campo.tipo === TipoCampoValor.Radio && Array.isArray(opcionesCampo) && (opcionesCampo.length || 0) > 0">
+      <div
+        v-else-if="campo.tipo === TipoCampoValor.Radio && Array.isArray(opcionesCampo) && (opcionesCampo.length || 0) > 0">
         <div :class="[
           'flex',
           ((campo.metadatos as any)?.layout === 'horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')
         ]">
-          <label
-            v-for="opcionRadio in opcionesCampo"
-            :key="String(opcionRadio.valor)"
-            class="inline-flex align-items-center gap-2 flex-shrink-0"
-          >
-            <PrimeRadioButton
-              :input-id="String(opcionRadio.valor)"
-              :value="opcionRadio.valor"
-              v-model="(valoresCampos as any)[campo.nombre || '']"
-              :disabled="campo.deshabilitado"
-            />
+          <label v-for="opcionRadio in opcionesCampo" :key="String(opcionRadio.valor)"
+            class="inline-flex align-items-center gap-2 flex-shrink-0">
+            <PrimeRadioButton :input-id="String(opcionRadio.valor)" :value="opcionRadio.valor"
+              v-model="(valoresCampos as any)[campo.nombre || '']" :disabled="campo.deshabilitado" />
             <span>{{ opcionRadio.etiqueta }}</span>
           </label>
         </div>
@@ -412,60 +364,40 @@ const esCampoRequerido = computed(() => {
           <table :class="clasesTablaCompleta(campo)">
             <thead>
               <tr>
-                <th
-                  v-for="columnaTabla in obtenerColumnasTabla(campo)"
-                  :key="columnaTabla.name"
-                  :class="[
-                    'text-left',
-                    claseRellenoCelda(campo),
-                    obtenerEstiloTabla(campo).conBordes ? 'border-bottom-1 surface-border' : ''
-                  ]"
-                >
+                <th v-for="columnaTabla in obtenerColumnasTabla(campo)" :key="columnaTabla.name" :class="[
+                  'text-left',
+                  claseRellenoCelda(campo),
+                  obtenerEstiloTabla(campo).conBordes ? 'border-bottom-1 surface-border' : ''
+                ]">
                   {{ columnaTabla.label }}
                 </th>
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="(filaTabla, indiceFila) in obtenerFilasTabla(campo)"
-                :key="indiceFila"
-                :class="clasesFilaTabla(campo)"
-              >
-                <td
-                  v-for="columnaTabla in obtenerColumnasTabla(campo)"
-                  :key="columnaTabla.name"
-                  :class="clasesCeldaTabla(campo)"
-                >
+              <tr v-for="(filaTabla, indiceFila) in obtenerFilasTabla(campo)" :key="indiceFila"
+                :class="clasesFilaTabla(campo)">
+                <td v-for="columnaTabla in obtenerColumnasTabla(campo)" :key="columnaTabla.name"
+                  :class="clasesCeldaTabla(campo)">
                   <!-- Campo de texto en tabla -->
 
 
-                  <PrimeInputText
-                    v-if="(columnaTabla.tipo ?? columnaTabla.type) === 'texto'"
-                    :model-value="String(filaTabla[columnaTabla.name] || '')"
-                    class="ancho-100 texto-miga"
+                  <PrimeInputText v-if="(columnaTabla.tipo ?? columnaTabla.type) === 'texto'"
+                    :model-value="String(filaTabla[columnaTabla.name] || '')" class="ancho-100 tamanio-fuente-miga"
                     :disabled="campo.deshabilitado"
-                    @update:model-value="(v: string) => actualizarValorCeldaTabla(campo, indiceFila, columnaTabla.name, v)"
-                  />
+                    @update:model-value="(v: string) => actualizarValorCeldaTabla(campo, indiceFila, columnaTabla.name, v)" />
 
-                  <PrimeDatePicker
-                    v-else-if="(columnaTabla.tipo ?? columnaTabla.type) === 'fecha'"
+                  <PrimeDatePicker v-else-if="(columnaTabla.tipo ?? columnaTabla.type) === 'fecha'"
                     :model-value="filaTabla[columnaTabla.name] instanceof Date ? filaTabla[columnaTabla.name] as Date : null"
-                    class="ancho-100 texto-miga"
-                    :disabled="campo.deshabilitado"
-                    @update:model-value="(v: Date | null) => actualizarValorCeldaTabla(campo, indiceFila, columnaTabla.name, v)"
-                  />
+                    class="ancho-100 tamanio-fuente-miga" :disabled="campo.deshabilitado"
+                    @update:model-value="(v: Date | null) => actualizarValorCeldaTabla(campo, indiceFila, columnaTabla.name, v)" />
 
                   <template v-else-if="(columnaTabla.tipo ?? columnaTabla.type) === 'numero'">
-                    <PrimeInputNumber
-                      :model-value="Number(filaTabla[columnaTabla.name] || 0)"
-                      class="ancho-100 texto-miga"
-                      :disabled="campo.deshabilitado"
-                      :min="(columnaTabla as any).minimo"
-                      :max="(columnaTabla as any).maximo"
+                    <PrimeInputNumber :model-value="Number(filaTabla[columnaTabla.name] || 0)"
+                      class="ancho-100 tamanio-fuente-miga" :disabled="campo.deshabilitado"
+                      :min="(columnaTabla as any).minimo" :max="(columnaTabla as any).maximo"
                       :min-fraction-digits="(columnaTabla as any).decimalesMinimos ?? 0"
                       :max-fraction-digits="(columnaTabla as any).decimalesMaximos ?? 2"
-                      @update:model-value="(v: number | null) => actualizarValorCeldaTabla(campo, indiceFila, columnaTabla.name, v || 0)"
-                    />
+                      @update:model-value="(v: number | null) => actualizarValorCeldaTabla(campo, indiceFila, columnaTabla.name, v || 0)" />
                   </template>
 
                   <!-- Campo no soportado -->
@@ -477,11 +409,8 @@ const esCampoRequerido = computed(() => {
             <!-- Pie de tabla con agregaciones -->
             <tfoot v-if="tieneColumnasConAgregado(campo) || (campo.metadatos as any)?.mostrarResumen">
               <tr>
-                <td
-                  v-for="(columnaTabla, indiceColumna) in obtenerColumnasTabla(campo)"
-                  :key="columnaTabla.name"
-                  :class="[claseRellenoCelda(campo), 'negrilla']"
-                >
+                <td v-for="(columnaTabla, indiceColumna) in obtenerColumnasTabla(campo)" :key="columnaTabla.name"
+                  :class="[claseRellenoCelda(campo), 'negrilla']">
                   <span v-if="indiceColumna === 0">
                     {{ (campo.metadatos as any)?.summaryLabel ?? 'Total' }}
                   </span>
@@ -502,20 +431,14 @@ const esCampoRequerido = computed(() => {
 
         <!-- Botón para agregar filas -->
         <div class="mt-2" v-if="permitirAgregarFilas(campo)">
-          <PrimeButton
-            size="small"
-            icon="pi pi-plus"
-            label="Añadir fila"
-            @click.prevent="agregarNuevaFilaCampo(campo)"
-          />
+          <PrimeButton size="small" icon="pi pi-plus" label="Añadir fila"
+            @click.prevent="agregarNuevaFilaCampo(campo)" />
         </div>
       </div>
 
       <!-- Mensaje de error -->
-      <div
-        v-if="campo.nombre && erroresCampos && erroresCampos[campo.nombre]"
-        class="color-rojo texto-miga mt-1"
-      >
+      <div v-if="campo.nombre && erroresCampos && erroresCampos[campo.nombre]"
+        class="color-rojo tamanio-fuente-miga mt-1">
         {{ erroresCampos[campo.nombre] }}
       </div>
     </template>
@@ -526,6 +449,4 @@ const esCampoRequerido = computed(() => {
 export default { name: 'RenderizadorCampo' }
 </script>
 
-<style scoped>
-</style>
-
+<style scoped></style>

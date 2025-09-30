@@ -77,13 +77,14 @@
                   <AccordionContent>
                     <div class="mb-2">
                       <div class="flex align-items-center justify-content-between mb-2">
-                        <PrimeInputText :model-value="patron.regex" readonly class="w-100 font-mono texto-miga mr-2" />
+                        <PrimeInputText :model-value="patron.regex" readonly
+                          class="w-100 font-mono tamanio-fuente-miga mr-2" />
                         <PrimeButton label="Copiar" icon="pi pi-copy" size="small" outlined
                           @click="copiarPatron(patron.regex)" />
                       </div>
                       <p class="contenido m-0">{{ patron.descripcion }}</p>
                       <div>
-                        <strong class="texto-miga">Ejemplos válidos:</strong>
+                        <strong class="tamanio-fuente-miga">Ejemplos válidos:</strong>
                         <div class="flex flex-wrap gap-1 mt-2">
                           <PrimeTag v-for="ejemplo in patron.ejemplos" :key="ejemplo" :value="ejemplo"
                             severity="success" rounded />
@@ -124,10 +125,10 @@
                       </div>
                       <!-- <p class="contenido m-0">{{ patron.descripcion }}</p> -->
                       <div>
-                        <strong class="texto-miga">Ejemplos válidos:</strong>
+                        <strong class="tamanio-fuente-miga">Ejemplos válidos:</strong>
                         <div class="flex flex-wrap gap-1 mt-2">
                           <PrimeScrollPanel style="width: 100%; height: 200px">
-                            <pre class="p-3 border-round font-mono texto-miga overflow-auto">
+                            <pre class="p-3 border-round font-mono tamanio-fuente-miga overflow-auto">
                     <code>{{ ejemplo.codigo }}</code>
                   </pre>
                           </PrimeScrollPanel>

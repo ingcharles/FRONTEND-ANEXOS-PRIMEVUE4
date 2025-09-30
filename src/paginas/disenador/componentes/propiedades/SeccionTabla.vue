@@ -192,7 +192,7 @@ watch(() => obtenerColumnas().length, () => {
 
 <template>
   <div v-if="campo?.tipo === TipoCampoValor.Tabla">
-    <h3 class="texto-miga text-color mb-2">Tabla</h3>
+    <h3 class="tamanio-fuente-miga text-color mb-2">Tabla</h3>
     <span class="negrilla">Columnas</span>
     <div class="grid">
       <div class="col-12 md:col-12 lg:col-8">
@@ -208,7 +208,7 @@ watch(() => obtenerColumnas().length, () => {
       </div>
 
     </div>
-    <!-- <h3 class="texto-miga text-color mb-2">Tabla</h3> -->
+    <!-- <h3 class="tamanio-fuente-miga text-color mb-2">Tabla</h3> -->
 
     <!-- Gestión de columnas -->
 
@@ -248,7 +248,7 @@ watch(() => obtenerColumnas().length, () => {
       <!-- Propiedades básicas -->
       <div class="grid align-items-end mb-3">
         <div class="col-12">
-          <label class="texto-miga">Nombre</label>
+          <label class="tamanio-fuente-miga">Nombre</label>
           <PrimeInputText :model-value="columnaActual.nombre"
             @update:model-value="(v: string | undefined) => actualizarColumna('nombre', v || '')" />
           <small v-if="esNombreColumnaDuplicado()" class="color-rojo">
@@ -257,13 +257,13 @@ watch(() => obtenerColumnas().length, () => {
         </div>
 
         <div class="col-12">
-          <label class="texto-miga">Etiqueta</label>
+          <label class="tamanio-fuente-miga">Etiqueta</label>
           <PrimeInputText :model-value="columnaActual.etiqueta"
             @update:model-value="(v: string | undefined) => actualizarColumna('etiqueta', v || '')" />
         </div>
 
         <div class="col-12">
-          <label class="texto-miga">Tipo</label>
+          <label class="tamanio-fuente-miga">Tipo</label>
           <PrimeSelect :model-value="columnaActual.tipo || 'texto'" :options="tiposColumna"
             @update:model-value="(v: TipoColumna) => actualizarColumna('tipo', v)" />
         </div>
@@ -274,51 +274,51 @@ watch(() => obtenerColumnas().length, () => {
         <div class="negrilla mb-2">Formato Numérico</div>
         <div class="grid">
           <div class="col-12">
-            <label class="texto-miga">Modo</label>
+            <label class="tamanio-fuente-miga">Modo</label>
             <PrimeSelect :model-value="columnaActual.modoFormato || 'decimal'" :options="opcionesModoFormato"
               @update:model-value="(v: ModoFormato) => actualizarColumna('modoFormato', v)" />
           </div>
 
           <div class="col-12" v-if="columnaActual.modoFormato === 'currency'">
-            <label class="texto-miga">Moneda</label>
+            <label class="tamanio-fuente-miga">Moneda</label>
             <PrimeInputText :model-value="String(columnaActual.moneda || 'USD')"
               @update:model-value="(v: string | undefined) => actualizarColumna('moneda', v || 'USD')" />
           </div>
 
           <div class="col-12">
-            <label class="texto-miga">Idioma</label>
+            <label class="tamanio-fuente-miga">Idioma</label>
             <PrimeInputText :model-value="String(columnaActual.idioma || 'es-ES')"
               @update:model-value="(v: string | undefined) => actualizarColumna('idioma', v || 'es-ES')" />
           </div>
 
           <div class="col-12">
-            <label class="texto-miga">Prefijo</label>
+            <label class="tamanio-fuente-miga">Prefijo</label>
             <PrimeInputText :model-value="String(columnaActual.prefijo || '')"
               @update:model-value="(v: string | undefined) => actualizarColumna('prefijo', v || '')" />
           </div>
 
           <div class="col-12">
-            <label class="texto-miga">Sufijo</label>
+            <label class="tamanio-fuente-miga">Sufijo</label>
             <PrimeInputText :model-value="String(columnaActual.sufijo || '')"
               @update:model-value="(v: string | undefined) => actualizarColumna('sufijo', v || '')" />
           </div>
 
           <div class="col-12">
-            <label class="texto-miga">Mín. decimales</label>
+            <label class="tamanio-fuente-miga">Mín. decimales</label>
             <InputNumber :model-value="Number(columnaActual.decimalesMinimos ?? 0)" :min="0" :max="8"
-              class="ancho-100 texto-miga"
+              class="ancho-100 tamanio-fuente-miga"
               @update:model-value="(v: number | null) => actualizarColumna('decimalesMinimos', v ?? 0)" />
           </div>
 
           <div class="col-12">
-            <label class="texto-miga">Máx. decimales</label>
+            <label class="tamanio-fuente-miga">Máx. decimales</label>
             <InputNumber :model-value="Number(columnaActual.decimalesMaximos ?? 2)" :min="0" :max="8"
-              class="ancho-100 texto-miga"
+              class="ancho-100 tamanio-fuente-miga"
               @update:model-value="(v: number | null) => actualizarColumna('decimalesMaximos', v ?? 2)" />
           </div>
 
           <div class="col-12" v-if="columnaActual.modoFormato === 'percent'">
-            <label class="texto-miga">Escala porcentaje</label>
+            <label class="tamanio-fuente-miga">Escala porcentaje</label>
             <PrimeSelect :model-value="columnaActual.escalaPorcentaje || 'whole'" :options="opcionesEscalaPorcentaje"
               option-label="label" option-value="value"
               @update:model-value="(v: EscalaPorcentaje) => actualizarColumna('escalaPorcentaje', v)" />
@@ -331,27 +331,27 @@ watch(() => obtenerColumnas().length, () => {
         <div class="negrilla mb-2">Agregado</div>
         <div class="grid">
           <div class="col-12">
-            <label class="texto-miga">Función</label>
+            <label class="tamanio-fuente-miga">Función</label>
             <PrimeSelect :model-value="columnaActual.agregar || 'none'" :options="funcionesAgregado"
               @update:model-value="(v: FuncionAgregado) => actualizarColumna('agregar', v)" />
           </div>
 
           <div class="col-12">
-            <label class="texto-miga">Prefijo</label>
+            <label class="tamanio-fuente-miga">Prefijo</label>
             <PrimeInputText :model-value="String(columnaActual.prefijoAgregado || '')"
               @update:model-value="(v: string | undefined) => actualizarColumna('prefijoAgregado', v || '')" />
           </div>
 
           <div class="col-12">
-            <label class="texto-miga">Sufijo</label>
+            <label class="tamanio-fuente-miga">Sufijo</label>
             <PrimeInputText :model-value="String(columnaActual.sufijoAgregado || '')"
               @update:model-value="(v: string | undefined) => actualizarColumna('sufijoAgregado', v || '')" />
           </div>
 
           <div class="col-12">
-            <label class="texto-miga">Decimales</label>
+            <label class="tamanio-fuente-miga">Decimales</label>
             <InputNumber :model-value="Number(columnaActual.decimales ?? 2)" :min="0" :max="8"
-              class="ancho-100 texto-miga"
+              class="ancho-100 tamanio-fuente-miga"
               @update:model-value="(v: number | null) => actualizarColumna('decimales', v ?? 2)" />
           </div>
         </div>
@@ -371,25 +371,27 @@ watch(() => obtenerColumnas().length, () => {
 
           <template v-if="columnaActual.tipo === 'number'">
             <div class="col-12">
-              <label class="texto-miga">Mínimo</label>
+              <label class="tamanio-fuente-miga">Mínimo</label>
               <InputNumber :model-value="typeof columnaActual.minimo === 'number' ? columnaActual.minimo : null"
-                class="ancho-100 texto-miga" @update:model-value="(v: number | null) => actualizarColumna('minimo', v)" />
+                class="ancho-100 tamanio-fuente-miga"
+                @update:model-value="(v: number | null) => actualizarColumna('minimo', v)" />
             </div>
 
             <div class="col-12">
-              <label class="texto-miga">Máximo</label>
+              <label class="tamanio-fuente-miga">Máximo</label>
               <InputNumber :model-value="typeof columnaActual.maximo === 'number' ? columnaActual.maximo : null"
-                class="ancho-100 texto-miga" @update:model-value="(v: number | null) => actualizarColumna('maximo', v)" />
+                class="ancho-100 tamanio-fuente-miga"
+                @update:model-value="(v: number | null) => actualizarColumna('maximo', v)" />
             </div>
 
             <div class="col-12">
-              <label class="texto-miga">Mensaje min</label>
+              <label class="tamanio-fuente-miga">Mensaje min</label>
               <PrimeInputText :model-value="String(columnaActual.mensajeMinimo || '')"
                 @update:model-value="(v: string | undefined) => actualizarColumna('mensajeMinimo', v || '')" />
             </div>
 
             <div class="col-12">
-              <label class="texto-miga">Mensaje max</label>
+              <label class="tamanio-fuente-miga">Mensaje max</label>
               <PrimeInputText :model-value="String(columnaActual.mensajeMaximo || '')"
                 @update:model-value="(v: string | undefined) => actualizarColumna('mensajeMaximo', v || '')" />
             </div>
@@ -414,8 +416,8 @@ watch(() => obtenerColumnas().length, () => {
       <!-- Número de filas iniciales -->
       <div class="grid align-items-end">
         <div class="col-12">
-          <label class="texto-miga">Filas iniciales</label>
-          <InputNumber :model-value="Number(metadatos.filas ?? 1)" :min="1" class="ancho-100 texto-miga"
+          <label class="tamanio-fuente-miga">Filas iniciales</label>
+          <InputNumber :model-value="Number(metadatos.filas ?? 1)" :min="1" class="ancho-100 tamanio-fuente-miga"
             @update:model-value="(v: number | null) => actualizarMetadato('filas', Math.max(1, v ?? 1))" />
         </div>
 
@@ -456,7 +458,7 @@ watch(() => obtenerColumnas().length, () => {
         </div>
 
         <div class="col-12 sm:col-3">
-          <label class="texto-miga">Padding</label>
+          <label class="tamanio-fuente-miga">Padding</label>
           <PrimeSelect :model-value="estiloTabla.padding || 'md'" :options="opcionesPadding"
             @update:model-value="(v: TamañoPadding) => actualizarEstiloTabla('padding', v)" />
         </div>
