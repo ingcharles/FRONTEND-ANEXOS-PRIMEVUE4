@@ -162,8 +162,7 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
     </div>
 
     <!-- Barra lateral derecha integrada en el grid -->
-    <div v-show="sidebarVisible" class="col-12 lg:col-2 properties-sidebar-expanded" @mouseenter="sidebarVisible = true"
-      @mouseleave="sidebarVisible = false">
+    <div v-show="sidebarVisible" class="col-12 lg:col-2 properties-sidebar-expanded">
       <div class="sidebar-content-expanded">
         <div class="sidebar-header">
           <div class="flex align-items-center gap-2">
@@ -193,7 +192,7 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
   </div>
 
   <!-- Tab vertical flotante siempre visible -->
-  <div class="properties-sidebar-tab" @mouseenter="sidebarVisible = true">
+  <div class="properties-sidebar-tab" @click="sidebarVisible = !sidebarVisible">
     <div class="sidebar-tab" :class="{ 'expanded': sidebarVisible }">
       <div class="tab-icons">
         <div class="tab-icon" :class="{ 'active': tabPropiedades === 'attrs' }" @click="tabPropiedades = 'attrs'"
