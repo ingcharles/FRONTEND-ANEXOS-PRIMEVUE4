@@ -2,7 +2,9 @@
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import PanelPaleta from '@/paginas/disenador/componentes/PanelPaleta.vue'
 import LienzoPagina from '@/paginas/disenador/componentes/LienzoPagina.vue'
-import Propiedades from '@/paginas/disenador/componentes/Propiedades.vue'
+import TabAtributos from '@/paginas/disenador/componentes/propiedades/TabAtributos.vue'
+import TabLogica from '@/paginas/disenador/componentes/propiedades/TabLogica.vue'
+import TabValidacion from '@/paginas/disenador/componentes/propiedades/TabValidacion.vue'
 import VistaPrevia from '@/paginas/disenador/componentes/VistaPrevia.vue'
 import VistaJson from '@/paginas/disenador/componentes/VistaJson.vue'
 import ModalConfirmar from '@/componentes/ModalConfirmar.vue'
@@ -17,6 +19,11 @@ const pestana = ref<string>('disenador')
 // Estado para edición de título de página
 const editandoTitulo = ref(false)
 const tituloTemporal = ref('')
+
+// Estado para barra lateral de propiedades
+const sidebarVisible = ref(false)
+const tabPropiedades = ref<'attrs' | 'logic' | 'valid'>('attrs')
+const seleccionado = computed(() => almacen.campoSeleccionado)
 
 const tabTitles = [
   { value: 'disenador', label: 'Diseñador', icon: 'pi pi-sitemap' },
@@ -62,6 +69,23 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
     cancelarEdicionTitulo()
   }
 }
+
+// Función para manejar el mouseleave con delay
+function handleMouseLeave(event: MouseEvent): void {
+  // Verificar si el mouse se está moviendo hacia la barra lateral expandida
+  const relatedTarget = event.relatedTarget as HTMLElement
+  if (relatedTarget && relatedTarget.closest('.properties-sidebar-expanded')) {
+    return // No cerrar si se mueve hacia la barra lateral
+  }
+
+  // Delay para evitar cierre accidental
+  setTimeout(() => {
+    if (!document.querySelector('.properties-sidebar-expanded:hover') &&
+      !document.querySelector('.properties-sidebar-tab:hover')) {
+      sidebarVisible.value = false
+    }
+  }, 100)
+}
 </script>
 
 <template>
@@ -69,53 +93,21 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
     <div class="col-12 lg:col-2">
       <PanelPaleta />
     </div>
-    <div class="col-12 lg:col-8">
-      <!-- <div class="grid mb-2"> -->
-      <!-- Columna izquierda -->
-      <!-- <div class="col-12 lg:col-8"> -->
+    <div class="col-12" :class="sidebarVisible ? 'lg:col-8' : 'lg:col-10'">
       <div class="grid">
-        <div class="col-12 lg:col-2">
+        <div class="col-12 lg:col-3">
           <PrimeButton label="Añadir página" class="ancho-100" icon="pi pi-plus"
             @click="almacen.crearPaginaDespuesActual" />
         </div>
-        <div class="col-12 lg:col-2">
+        <div class="col-12 lg:col-3">
           <PrimeButton label="Duplicar página" class="ancho-100" icon="pi pi-copy"
             @click="almacen.duplicarPagina(almacen.indicePaginaActiva)" />
         </div>
-        <div class="col-12 lg:col-2">
+        <div class="col-12 lg:col-3">
           <PrimeButton label="Eliminar página" severity="danger" class="ancho-100" icon="pi pi-trash"
             @click="almacen.confirmarEliminarPagina(almacen.indicePaginaActiva)" />
         </div>
       </div>
-      <!-- </div> -->
-
-      <!-- Columna derecha -->
-      <!-- <div class="col-4 sm:col-4">
-          <div class="p-d-flex p-ai-center p-gap-2 p-jc-end">
-            <PrimeButton label="Exportar" icon="pi pi-upload" @click="almacen.exportarJson" />
-            <label class="p-button p-component cursor-pointer">
-              <i class="pi pi-download p-mr-2" />
-              <span>Importar</span>
-              <input type="file" accept="application/json" class="hidden" @change="almacen.manejarImportarArchivo" />
-            </label>
-          </div>
-        </div> -->
-      <!-- </div> -->
-      <!-- <div class="flex items-center justify-between mb-2">
-        <div class="flex gap-2 principal">
-          <PrimeButton label="Añadir página" icon="pi pi-plus" @click="almacen.crearPaginaDespuesActual"/>
-          <PrimeButton label="Duplicar página" icon="pi pi-copy" @click="almacen.duplicarPagina(almacen.indicePaginaActiva)" />
-          <PrimeButton label="Eliminar página" severity="danger" icon="pi pi-trash" @click="almacen.confirmarEliminarPagina(almacen.indicePaginaActiva)" />
-        </div>
-        <div class="flex gap-2 items-center">
-          <PrimeButton label="Exportar" icon="pi pi-upload" @click="almacen.exportarJson" />
-          <label class="p-button p-component cursor-pointer">
-            <i class="pi pi-download mr-2" />
-            <span>Importar</span>
-            <input type="file" accept="application/json" class="hidden" @change="(e: Event)=> { const input = e.target as HTMLInputElement; const f = input.files?.[0]; if (f) almacen.importarJson(f) }" />
-          </label>
-        </div>
-      </div> -->
       <PrimeTabs v-model:value="pestana" class="center-tabs">
         <div class="center-tabs-header">
           <PrimeTabList>
@@ -171,8 +163,6 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
                   <PrimeButton icon="pi pi-times" severity="secondary" size="small" @click="cancelarEdicionTitulo" />
                 </div>
               </div>
-
-              <!-- Sin botón enviar en el diseñador -->
             </div>
             <LienzoPagina :key="almacen.indicePaginaActiva + ':' + (paginaActual.id || '')" :pagina="paginaActual" />
           </PrimeTabPanel>
@@ -185,8 +175,53 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
         </PrimeTabPanels>
       </PrimeTabs>
     </div>
-    <div class="col-12 lg:col-2">
-      <Propiedades />
+
+    <!-- Barra lateral derecha integrada en el grid -->
+    <div v-show="sidebarVisible" class="col-12 lg:col-2 properties-sidebar-expanded" @mouseenter="sidebarVisible = true"
+      @mouseleave="sidebarVisible = false">
+      <div class="sidebar-content-expanded">
+        <div class="sidebar-header">
+          <div class="flex align-items-center gap-2">
+            <i class="pi pi-cog text-primary"></i>
+            <span class="font-semibold">Propiedades</span>
+          </div>
+        </div>
+
+        <div class="sidebar-body">
+          <div v-if="!seleccionado" class="text-center p-4">
+            <i class="pi pi-info-circle text-4xl text-color-secondary mb-3"></i>
+            <p class="text-color-secondary">Selecciona un elemento para ver sus propiedades</p>
+          </div>
+
+          <template v-else>
+            <div class="tab-content">
+              <TabAtributos v-if="tabPropiedades === 'attrs'" :id-campo="seleccionado.id" />
+              <TabLogica v-if="tabPropiedades === 'logic'" :id-campo="seleccionado.id" />
+              <TabValidacion v-if="tabPropiedades === 'valid'" :id-campo="seleccionado.id" />
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab vertical flotante siempre visible -->
+  <div class="properties-sidebar-tab" @mouseenter="sidebarVisible = true" @mouseleave="handleMouseLeave">
+    <div class="sidebar-tab" :class="{ 'expanded': sidebarVisible }">
+      <div class="tab-icons">
+        <div class="tab-icon" :class="{ 'active': tabPropiedades === 'attrs' }" @click="tabPropiedades = 'attrs'"
+          v-tooltip.left="'Atributos'">
+          <i class="pi pi-cog"></i>
+        </div>
+        <div class="tab-icon" :class="{ 'active': tabPropiedades === 'logic' }" @click="tabPropiedades = 'logic'"
+          v-tooltip.left="'Lógica'">
+          <i class="pi pi-sitemap"></i>
+        </div>
+        <div class="tab-icon" :class="{ 'active': tabPropiedades === 'valid' }" @click="tabPropiedades = 'valid'"
+          v-tooltip.left="'Validaciones'">
+          <i class="pi pi-shield"></i>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -195,3 +230,7 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
     message="¿Estás seguro de que deseas eliminar esta página? Esta acción no se puede deshacer."
     @confirm="almacen.ejecutarEliminarPagina" @cancel="almacen.cancelarEliminarPagina" />
 </template>
+
+<style scoped>
+
+</style>
