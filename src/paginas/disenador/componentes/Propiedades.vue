@@ -41,7 +41,7 @@ const emit = defineEmits<{
       </div>
 
       <div class="sidebar-body">
-        <div v-if="!seleccionado" class="text-center p-4">
+        <div v-if="!seleccionado" class="text-center p-3">
           <i class="pi pi-info-circle text-4xl text-color-secondary mb-3"></i>
           <p class="text-color-secondary">Selecciona un elemento para ver sus propiedades</p>
         </div>
@@ -161,7 +161,6 @@ const emit = defineEmits<{
 .sidebar-body {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem;
 }
 
 .tab-content {

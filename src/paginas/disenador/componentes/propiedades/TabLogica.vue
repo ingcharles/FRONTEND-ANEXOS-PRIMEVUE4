@@ -122,17 +122,17 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
 </script>
 
 <template>
-  <div class="flex flex-column gap-4">
+  <div class="flex flex-column gap-3">
     <!-- Botón para agregar nueva regla -->
     <div class="flex justify-content-end">
-      <PrimeButton label="Añadir regla" icon="pi pi-plus" size="small" @click="agregarReglaLogica" class="shadow-1" />
+      <PrimeButton label="Añadir regla" icon="pi pi-plus" size="small" @click="agregarReglaLogica" severity="success" />
     </div>
 
     <!-- Estado vacío -->
     <div v-if="reglasLogica.length === 0" class="centrar-texto p-3 border-round-lg border-1 surface-border">
       <i class="pi pi-sitemap tamanio-fuente-24 mb-3"></i>
-      <p class="contenido m-0 font-semibold">No hay reglas de lógica configuradas</p>
-      <small class="text-500 mt-2 block">
+      <p class="contenido m-0 negrilla">No hay reglas de lógica configuradas</p>
+      <small class="mt-2 block">
         Las reglas de lógica permiten mostrar/ocultar campos y hacerlos requeridos según los valores de otros campos
       </small>
       <PrimeButton label="Crear Primera Regla" icon="pi pi-plus" size="small" class="mt-3"
@@ -140,80 +140,82 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
     </div>
 
     <!-- Lista de reglas existentes -->
-    <div v-for="(regla, indice) in reglasLogica" :key="regla.id" class="surface-0 border-round-lg p-4 shadow-1"
-      style="border: 1px solid var(--surface-200);">
 
-      <!-- Header de la regla -->
-      <div class="flex align-items-center justify-content-between mb-3 pb-2"
-        style="border-bottom: 1px solid var(--surface-100);">
-        <div class="flex align-items-center gap-2">
-          <i class="pi pi-arrow-right"></i>
-          <span class="font-semibold text-700">Regla {{ indice + 1 }}</span>
+    <PrimeCard v-for="(regla, indice) in reglasLogica" :key="regla.id" class="mb-3">
+      <!-- Header -->
+      <template #title>
+        <div class="flex align-items-center justify-content-between">
+          <div class="flex align-items-center gap-2">
+            <i class="pi pi-arrow-right"></i>
+            <span class="negrilla">Regla {{ indice + 1 }}</span>
+          </div>
+          <PrimeButton icon="pi pi-trash" severity="danger" size="small" text rounded
+            @click="eliminarReglaLogica(regla.id)" v-tooltip.top="'Eliminar regla'" />
         </div>
-        <PrimeButton icon="pi pi-trash" severity="danger" size="small" text rounded
-          @click="eliminarReglaLogica(regla.id)" v-tooltip.top="'Eliminar regla'" />
-      </div>
+      </template>
 
-      <!-- Configuración principal de la regla -->
-      <div class="grid align-items-end">
-        <!-- Campo objetivo -->
-        <div class="col-12">
-          <label class="tamanio-fuente-miga">Campo</label>
-          <PrimeSelect v-model="regla.campoCondicionId" :options="camposDisponibles" option-label="etiqueta"
-            option-value="valor" class="ancho-100 tamanio-fuente-miga" placeholder="Seleccionar campo..." :filter="true"
-            filter-placeholder="Buscar campo..." />
+      <!-- Contenido principal -->
+      <template #content>
+        <div class="grid align-items-end">
+          <!-- Campo objetivo -->
+          <div class="col-12">
+            <label class="tamanio-fuente-miga">Campo</label>
+            <PrimeSelect v-model="regla.campoCondicionId" :options="camposDisponibles" option-label="etiqueta"
+              option-value="valor" class="ancho-100 tamanio-fuente-miga" placeholder="Seleccionar campo..."
+              :filter="true" filter-placeholder="Buscar campo..." />
+          </div>
+
+          <!-- Operador -->
+          <div class="col-12">
+            <label class="tamanio-fuente-miga">Operador</label>
+            <PrimeSelect v-model="regla.operador" :options="opcionesOperadores" option-label="etiqueta"
+              option-value="valor" class="ancho-100 tamanio-fuente-miga" placeholder="Seleccionar operador..." />
+          </div>
+
+          <!-- Valor -->
+          <div class="col-12">
+            <label class="tamanio-fuente-miga">Valor</label>
+            <PrimeInputText :model-value="String(regla.valor || '')"
+              @update:model-value="regla.valor = ($event || '') as string | number | boolean | Date"
+              class="ancho-100 tamanio-fuente-miga" placeholder="Valor de comparación..."
+              :disabled="esOperadorPersonalizado(regla.operador)" />
+            <small v-if="esOperadorPersonalizado(regla.operador)" class="mt-1 block">
+              Para operadores personalizados, usa la expresión JavaScript abajo
+            </small>
+          </div>
+
+          <!-- Acción -->
+          <div class="col-12">
+            <label class="tamanio-fuente-miga">Acción</label>
+            <PrimeSelect v-model="regla.accion" :options="opcionesAcciones" option-label="etiqueta" option-value="valor"
+              class="ancho-100 tamanio-fuente-miga" placeholder="Seleccionar acción..." />
+          </div>
         </div>
 
-        <!-- Operador de comparación -->
-        <div class="col-12">
-          <label class="tamanio-fuente-miga">Operador</label>
-          <PrimeSelect v-model="regla.operador" :options="opcionesOperadores" option-label="etiqueta"
-            option-value="valor" class="ancho-100 tamanio-fuente-miga" placeholder="Seleccionar operador..." />
-        </div>
-
-        <!-- Valor de comparación -->
-        <div class="col-12">
-          <label class="tamanio-fuente-miga">Valor</label>
-          <PrimeInputText :model-value="String(regla.valor || '')"
-            @update:model-value="regla.valor = ($event || '') as string | number | boolean | Date"
-            class="ancho-100 tamanio-fuente-miga" placeholder="Valor de comparación..."
-            :disabled="esOperadorPersonalizado(regla.operador)" />
-          <small v-if="esOperadorPersonalizado(regla.operador)" class="text-500 mt-1 block">
-            Para operadores personalizados, usa la expresión JavaScript abajo
+        <!-- Expresión personalizada -->
+        <div v-if="esOperadorPersonalizado(regla.operador)" class="mt-3 p-3 border-round">
+          <label class="tamanio-fuente-miga">
+            <i class="pi pi-code mr-2"></i>Expresión personalizada
+          </label>
+          <PrimeTextarea v-model="regla.expresion" rows="3" class="ancho-100 tamanio-fuente-miga"
+            placeholder="Escribir expresión JavaScript..." />
+          <small class="mt-1">
+            Ejemplo: campo.valor > 18 && campo.visible === true
           </small>
         </div>
 
-        <!-- Acción a ejecutar -->
-        <div class="col-12">
-          <label class="tamanio-fuente-miga">Acción</label>
-          <PrimeSelect v-model="regla.accion" :options="opcionesAcciones" option-label="etiqueta" option-value="valor"
-            class="ancho-100 tamanio-fuente-miga" placeholder="Seleccionar acción..." />
+        <!-- Resumen -->
+        <div class="mt-3 p-3 border-round text-sm">
+          <i class="pi pi-info-circle mr-2"></i>
+          <span class="text-600">
+            <strong>Si</strong> el campo
+            <span class="text-primary negrilla">{{ obtenerNombreCampo(regla.campoCondicionId) }}</span>
+            <strong>{{ obtenerTextoOperador(regla.operador) }}</strong>
+            <span class="text-primary negrilla">"{{ regla.valor }}"</span>
+            <strong> entonces {{ obtenerTextoAccion(regla.accion) }}</strong> este campo.
+          </span>
         </div>
-      </div>
-
-      <!-- Expresión personalizada para operadores custom -->
-      <div v-if="esOperadorPersonalizado(regla.operador)" class="mt-3 p-3 border-round">
-        <label class="tamanio-fuente-miga">
-          <i class="pi pi-code mr-2"></i>Expresión personalizada
-        </label>
-        <PrimeTextarea v-model="regla.expresion" rows="3" class="ancho-100 tamanio-fuente-miga"
-          placeholder="Escribir expresión JavaScript..." />
-        <small class=" mt-1">
-          Ejemplo: campo.valor > 18 && campo.visible === true
-        </small>
-      </div>
-
-      <!-- Resumen de la regla -->
-      <div class="mt-3 p-3 border-round text-sm">
-        <i class="pi pi-info-circle mr-2"></i>
-        <span class="text-600">
-          <strong>Si</strong> el campo
-          <span class="text-primary font-semibold">{{ obtenerNombreCampo(regla.campoCondicionId) }}</span><strong>{{
-            obtenerTextoOperador(regla.operador) }}</strong><span class="text-primary font-semibold">"{{ regla.valor
-            }}"</span>
-          <strong> entonces {{ obtenerTextoAccion(regla.accion) }}</strong> este campo.
-        </span>
-      </div>
-    </div>
+      </template>
+    </PrimeCard>
   </div>
 </template>

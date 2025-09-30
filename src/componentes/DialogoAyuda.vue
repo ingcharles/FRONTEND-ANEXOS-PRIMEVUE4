@@ -1,19 +1,11 @@
 <template>
-  <PrimeDialog
-    :visible="visible"
-    :header="titulo"
-    :modal="true"
-    :closable="true"
-    :draggable="false"
-    :style="{ width: ancho }"
-    :class="clasePersonalizada"
-    @update:visible="$emit('update:visible', $event)"
-  >
+  <PrimeDialog :visible="visible" :header="titulo" :modal="true" :closable="true" :draggable="false"
+    :style="{ width: ancho }" :class="clasePersonalizada" @update:visible="$emit('update:visible', $event)">
     <template #header v-if="$slots.header">
       <slot name="header" />
     </template>
 
-    <div class="p-4">
+    <div class="p-3">
       <slot />
     </div>
 

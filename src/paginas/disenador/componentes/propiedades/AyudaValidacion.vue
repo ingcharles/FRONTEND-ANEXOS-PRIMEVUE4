@@ -9,19 +9,19 @@
         <PrimeTabList>
           <PrimeTab value="0" class="tab-item">
             <div class="flex align-items-center gap-2">
-              <i class="pi pi-check-circle text-green-500"></i>
+              <i class="pi pi-check-circle color-verde-claro"></i>
               <span>Básicas</span>
             </div>
           </PrimeTab>
           <PrimeTab value="1" class="tab-item">
             <div class="flex align-items-center gap-2">
-              <i class="pi pi-search text-blue-500"></i>
+              <i class="pi pi-search color-cyan-fuerte"></i>
               <span>Patrones</span>
             </div>
           </PrimeTab>
           <PrimeTab value="2" class="tab-item">
             <div class="flex align-items-center gap-2">
-              <i class="pi pi-code text-purple-500"></i>
+              <i class="pi pi-code color-violeta-fuerte"></i>
               <span>Avanzadas</span>
             </div>
           </PrimeTab>
@@ -79,7 +79,7 @@
                       <div class="flex align-items-center justify-content-between mb-2">
                         <PrimeInputText :model-value="patron.regex" readonly
                           class="w-100 font-mono tamanio-fuente-miga mr-2" />
-                        <PrimeButton label="Copiar" icon="pi pi-copy" size="small" outlined
+                        <PrimeButton label="Copiar" icon="pi pi-copy" size="small"
                           @click="copiarPatron(patron.regex)" />
                       </div>
                       <p class="contenido m-0">{{ patron.descripcion }}</p>
@@ -177,7 +177,7 @@ const validacionesBasicas = [
     titulo: 'Longitud Mínima',
     descripcion: 'Define el número mínimo de caracteres que debe tener el texto.',
     icono: 'pi-arrow-down',
-    colorClase: 'text-blue-500',
+    colorClase: 'color-cyan-fuerte',
     ejemploTitulo: 'Valor mínimo',
     ejemploValor: '3',
     casos: ['Nombres: 2 caracteres', 'Contraseñas: 8 caracteres', 'Comentarios: 10 caracteres']
@@ -187,7 +187,7 @@ const validacionesBasicas = [
     titulo: 'Longitud Máxima',
     descripcion: 'Limita el número máximo de caracteres permitidos.',
     icono: 'pi-arrow-up',
-    colorClase: 'text-orange-500',
+    colorClase: 'color-naranja-fuerte',
     ejemploTitulo: 'Valor máximo',
     ejemploValor: '100',
     casos: ['Títulos: 100 caracteres', 'Descripciones: 500 caracteres', 'Comentarios: 1000 caracteres']

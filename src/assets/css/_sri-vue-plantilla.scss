@@ -1924,6 +1924,38 @@ button.p-button.p-component.p-button-icon-only.p-button-rounded.p-button-seconda
   z-index: 1;
 }
 
+.color-verde-claro {
+  color: $color-verde-claro;
+}
+
+.color-cyan-fuerte {
+  color: $color-cyan-fuerte;
+}
+
+.color-violeta-fuerte {
+  color: $color-violeta-fuerte;
+}
+
+.color-naranja-fuerte {
+  color: $color-naranja-fuerte;
+}
+
+.color-turqueza-fuerte {
+  color: $color-turqueza-fuerte;
+}
+
+.color-coral-fuerte {
+  color: $color-coral-fuerte;
+}
+
+.color-violeta-claro {
+  color: $color-violeta-claro;
+}
+
+.color-amarillo-fuerte {
+  color: $color-amarillo-fuerte;
+}
+
 .centrar-texto {
   text-align: center !important;
 }
@@ -1933,11 +1965,19 @@ button.p-button.p-component.p-button-icon-only.p-button-rounded.p-button-seconda
 }
 
 .tamanio-fuente-miga {
-  font-size: $fuente-size-miga;
+  font-size: $fuente-size-miga !important;
 }
 
 .tamanio-fuente-24 {
-  font-size: $fuente-size-24;
+  font-size: $fuente-size-24 !important;
+}
+
+.tamanio-fuente-32 {
+  font-size: $fuente-size-32 !important;
+}
+
+.block {
+  display: block !important;
 }
 
 input[type="file"] {
@@ -2136,6 +2176,14 @@ input[type="file"] {
   margin-left: 0.5rem !important;
 }
 
+.mr-2 {
+  margin-right: 0.5rem !important;
+}
+
+.mt-3 {
+  margin-top: 1rem !important;
+}
+
 .mb-1 {
   margin-bottom: 0.25rem !important;
 }
@@ -2156,6 +2204,11 @@ input[type="file"] {
 .my-3 {
   margin-top: 1rem !important;
   margin-bottom: 1rem !important;
+}
+
+.mx-auto {
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 /********** estilos responsive************/
@@ -2226,6 +2279,14 @@ input[type="file"] {
     margin-left: 0.5rem !important;
   }
 
+  .sm\:mr-2 {
+    margin-right: 0.5rem !important;
+  }
+
+  .sm\:mt-3 {
+    margin-top: 1rem !important;
+  }
+
   .sm\:mb-1 {
     margin-bottom: 0.25rem !important;
   }
@@ -2246,6 +2307,11 @@ input[type="file"] {
   .sm\:my-3 {
     margin-top: 1rem !important;
     margin-bottom: 1rem !important;
+  }
+
+  .sm\:mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 
   .sm\:gap-2 {
@@ -2352,6 +2418,14 @@ input[type="file"] {
     margin-left: 0.5rem !important;
   }
 
+  .md\:mr-2 {
+    margin-right: 0.5rem !important;
+  }
+
+  .md\:mt-3 {
+    margin-top: 1rem !important;
+  }
+
   .md\:m-0 {
     margin: 0rem !important;
   }
@@ -2376,6 +2450,11 @@ input[type="file"] {
   .md\:my-3 {
     margin-top: 1rem !important;
     margin-bottom: 1rem !important;
+  }
+
+  .md\:mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 
   .md\:gap-2 {
@@ -2486,6 +2565,14 @@ input[type="file"] {
     margin-left: 0.5rem !important;
   }
 
+  .lg\:mr-2 {
+    margin-right: 0.5rem !important;
+  }
+
+  .lg\:mt-3 {
+    margin-top: 1rem !important;
+  }
+
   .lg\:mb-1 {
     margin-bottom: 0.25rem !important;
   }
@@ -2506,6 +2593,11 @@ input[type="file"] {
   .lg\:my-3 {
     margin-top: 1rem !important;
     margin-bottom: 1rem !important;
+  }
+
+  .lg\:mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 
   .lg\:gap-2 {
@@ -2608,6 +2700,11 @@ input[type="file"] {
     padding-bottom: 1rem !important;
   }
 
+  .xl\:mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
   .xl\:m-0 {
     margin: 0rem !important;
   }
@@ -2616,8 +2713,16 @@ input[type="file"] {
     margin-left: 0.5rem !important;
   }
 
+  .xl\:mr-2 {
+    margin-right: 0.5rem !important;
+  }
+
   .xl\:mb-2 {
     margin-bottom: 0.5rem !important;
+  }
+
+  .xl\:mt-3 {
+    margin-top: 1rem !important;
   }
 
   .xl\:mb-3 {

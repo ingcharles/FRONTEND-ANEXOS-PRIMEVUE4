@@ -377,7 +377,7 @@ function irPaginaSiguiente(): void {
       </template>
 
       <!-- Botón Enviar de respaldo: si no hay botón en la página y es la última o única -->
-      <div class="col-12"
+      <div class="col-2 sm:col-12 md:col-4"
         v-if="(totalPaginas === 1 || indicePagina >= almacen.esquemaFormulario.paginas.length - 1) && !paginaActual?.campos?.some(f => f.tipo === 'boton')">
         <PrimeButton type="submit" label="Enviar" icon="pi pi-check" class="ancho-100 tamanio-fuente-miga" />
       </div>

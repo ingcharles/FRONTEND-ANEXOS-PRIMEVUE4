@@ -1,12 +1,6 @@
 <template>
-  <PrimeDialog
-    v-model:visible="visible"
-    :header="titulo"
-    modal
-    :style="{ width: ancho }"
-    :closable="cerrable"
-    @update:visible="actualizarVisible"
-  >
+  <PrimeDialog v-model:visible="visible" :header="titulo" modal :style="{ width: ancho }" :closable="cerrable"
+    @update:visible="actualizarVisible">
     <div class="flex items-start gap-3">
       <i :class="obtenerClaseIcono()" class="text-2xl mt-1"></i>
       <div class="flex-1">
@@ -19,20 +13,10 @@
 
     <template #footer>
       <div class="flex justify-end gap-2">
-        <PrimeButton
-          v-if="mostrarBotonCancelar"
-          :label="textoBotonCancelar"
-          severity="secondary"
-          outlined
-          @click="emitirCancelar"
-        />
-        <PrimeButton
-          :label="textoBotonConfirmar"
-          :icon="iconoBotonConfirmar"
-          :severity="severidadBotonConfirmar"
-          @click="emitirConfirmar"
-          autofocus
-        />
+        <PrimeButton v-if="mostrarBotonCancelar" :label="textoBotonCancelar" severity="secondary"
+          @click="emitirCancelar" />
+        <PrimeButton :label="textoBotonConfirmar" :icon="iconoBotonConfirmar" :severity="severidadBotonConfirmar"
+          @click="emitirConfirmar" autofocus />
       </div>
     </template>
   </PrimeDialog>
@@ -68,9 +52,9 @@ const visible = computed({
 function obtenerClaseIcono(): string {
   const iconos = {
     error: 'pi pi-exclamation-triangle color-rojo',
-    warning: 'pi pi-exclamation-triangle text-orange-500',
-    info: 'pi pi-info-circle text-blue-500',
-    success: 'pi pi-check-circle text-green-500'
+    warning: 'pi pi-exclamation-triangle color-naranja-fuerte',
+    info: 'pi pi-info-circle color-cyan-fuerte',
+    success: 'pi pi-check-circle color-verde-claro'
   }
   return iconos[props.tipo]
 }

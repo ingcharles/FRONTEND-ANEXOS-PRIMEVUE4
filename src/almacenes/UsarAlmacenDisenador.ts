@@ -18,19 +18,7 @@ export interface ElementoPortapapeles {
   campo: EsquemaCampo
 }
 
-/**
- * Interface para el estado de modales de confirmación
- */
-// export interface EstadoModales {
-//   eliminarPagina: {
-//     mostrar: boolean
-//     indicePagina: number | null
-//   }
-//   eliminarCampo: {
-//     mostrar: boolean
-//     idCampo: string | null
-//   }
-// }
+
 
 /**
  * Factory para crear formulario vacío

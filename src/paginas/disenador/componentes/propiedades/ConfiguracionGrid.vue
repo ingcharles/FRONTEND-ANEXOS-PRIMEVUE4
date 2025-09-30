@@ -52,13 +52,13 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
     </div>
 
     <!-- Presets rápidos -->
-    <div class="presets-grid mb-4">
+    <div class="presets-grid mb-3">
       <h5 class="tamanio-fuente-miga  mb-2">Presets comunes</h5>
       <div class="flex gap-2 flex-wrap">
-        <PrimeButton label="Completo" size="small" outlined @click="aplicarPreset('completo')" />
-        <PrimeButton label="Mitad" size="small" outlined @click="aplicarPreset('mitad')" />
-        <PrimeButton label="Tercio" size="small" outlined @click="aplicarPreset('tercio')" />
-        <PrimeButton label="Cuarto" size="small" outlined @click="aplicarPreset('cuarto')" />
+        <PrimeButton label="Completo" size="small" @click="aplicarPreset('completo')" />
+        <PrimeButton label="Mitad" size="small" @click="aplicarPreset('mitad')" />
+        <PrimeButton label="Tercio" size="small" @click="aplicarPreset('tercio')" />
+        <PrimeButton label="Cuarto" size="small" @click="aplicarPreset('cuarto')" />
       </div>
     </div>
 

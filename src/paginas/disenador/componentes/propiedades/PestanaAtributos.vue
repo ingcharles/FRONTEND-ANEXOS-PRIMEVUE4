@@ -144,7 +144,7 @@ const mostrarConfiguracionGrid = computed(() => {
       </p>
     </div>
 
-    <div v-else class="contenido-atributos flex flex-column gap-4">
+    <div v-else class="contenido-atributos flex flex-column gap-3">
       <!-- Propiedades básicas -->
       <PropiedadesBasicas :campo="campoSeleccionado" @actualizar-texto="manejarActualizacionTexto"
         @cambiar-tipo="manejarCambioTipo" @actualizar-booleano="manejarCambioBooleano" />

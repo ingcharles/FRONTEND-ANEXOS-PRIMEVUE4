@@ -30,8 +30,8 @@ const caracteristicasPrincipales = ref([
   <div class="inicio p-6 max-w-6xl mx-auto">
     <!-- Sección de Bienvenida -->
     <div class="text-center mb-8">
-      <h1 class="text-4xl font-bold text-gray-800 mb-4">
-        <i class="pi pi-home text-blue-500 mr-3"></i>
+      <h1 class="text-4xl font-bold text-gray-800 mb-3">
+        <i class="pi pi-home color-cyan-fuerte mr-3"></i>
         {{ mensajeBienvenida }}
       </h1>
       <p class=" text-gray-600 max-w-2xl mx-auto">
@@ -47,7 +47,7 @@ const caracteristicasPrincipales = ref([
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div v-for="caracteristica in caracteristicasPrincipales" :key="caracteristica.titulo"
           class="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow duration-300">
-          <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+          <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3"
             :style="{ backgroundColor: caracteristica.color + '20' }">
             <i :class="caracteristica.icono" class="text-2xl" :style="{ color: caracteristica.color }"></i>
           </div>
@@ -63,7 +63,7 @@ const caracteristicasPrincipales = ref([
 
     <!-- Llamada a la Acción -->
     <div class="text-center bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg p-8">
-      <h2 class="text-2xl font-bold mb-4">
+      <h2 class="text-2xl font-bold mb-3">
         ¿Listo para comenzar?
       </h2>
       <p class=" mb-6">

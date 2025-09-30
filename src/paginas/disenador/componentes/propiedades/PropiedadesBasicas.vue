@@ -1,7 +1,6 @@
 <!-- Componente para editar propiedades básicas de campos -->
 <script setup lang="ts">
 import type { EsquemaCampo } from '@/interfaces/Campos'
-// import type { TipoCampo } from '@/tipos/Campos'
 import { TipoCampoValor, TIPOS_OPCIONES } from '@/constantes/Campos'
 import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 
@@ -36,24 +35,24 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
 
     <!-- Tipo de campo -->
     <div class="field mb-3">
-      <label for="tipo-campo" class="block tamanio-fuente-miga  mb-2">Tipo de campo</label>
-      <PrimeSelect id="tipo-campo" :model-value="props.campo.tipo" :options="[...TIPOS_OPCIONES]"
+      <label for="campo-tipo" class="block tamanio-fuente-miga  mb-2">Tipo de campo</label>
+      <PrimeSelect id="campo-tipo" :model-value="props.campo.tipo" :options="[...TIPOS_OPCIONES]"
         option-label="etiqueta" option-value="valor" class="ancho-100 tamanio-fuente-miga"
         @update:model-value="manejarCambioTipo" />
     </div>
 
     <!-- Etiqueta -->
     <div class="field mb-3">
-      <label for="etiqueta-campo" class="block tamanio-fuente-miga  mb-2">Etiqueta</label>
-      <InputText id="etiqueta-campo" :model-value="props.campo.etiqueta || ''" class="ancho-100 tamanio-fuente-miga"
-        placeholder="Etiqueta del campo" @input="(e) => manejarCambioTexto('etiqueta', e)" />
+      <label for="campo-etiqueta" class="block tamanio-fuente-miga  mb-2">Etiqueta</label>
+      <InputText id="campo-etiqueta" :model-value="props.campo.etiqueta || ''" class="ancho-100 tamanio-fuente-miga"
+        placeholder="Etiqueta del campo" @input="(e: Event) => manejarCambioTexto('etiqueta', e)" />
     </div>
 
     <!-- Nombre técnico -->
     <div class="field mb-3">
       <label for="nombre-campo" class="block tamanio-fuente-miga  mb-2">Nombre técnico</label>
       <InputText id="nombre-campo" :model-value="props.campo.nombre || ''" class="ancho-100 tamanio-fuente-miga"
-        placeholder="nombre_campo" @input="(e) => manejarCambioTexto('nombre', e)" />
+        placeholder="nombre_campo" @input="(e: Event) => manejarCambioTexto('nombre', e)" />
       <small class="text-muted-color">
         Nombre único para identificar el campo en el formulario
       </small>
@@ -64,21 +63,21 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
       <label for="placeholder-campo" class="block tamanio-fuente-miga  mb-2">Marcador de posición</label>
       <InputText id="placeholder-campo" :model-value="props.campo.marcadorPosicion || ''"
         class="ancho-100 tamanio-fuente-miga" placeholder="Texto de ayuda para el usuario"
-        @input="(e) => manejarCambioTexto('marcadorPosicion', e)" />
+        @input="(e: Event) => manejarCambioTexto('marcadorPosicion', e)" />
     </div>
 
     <!-- Propiedades booleanas -->
     <div class="field mb-3">
       <div class="flex align-items-center mb-2">
-        <Checkbox :model-value="props.campo.visible ?? true" input-id="visible-campo" binary
-          @update:model-value="(valor) => manejarCambioBooleano('visible', valor)" />
-        <label for="visible-campo" class="ml-2">Visible</label>
+        <Checkbox :model-value="props.campo.visible ?? true" input-id="campo-visible" binary
+          @update:model-value="(valor: boolean) => manejarCambioBooleano('visible', valor)" />
+        <label for="campo-visible" class="ml-2">Visible</label>
       </div>
 
       <div class="flex align-items-center">
-        <Checkbox :model-value="props.campo.requerido ?? false" input-id="requerido-campo" binary
-          @update:model-value="(valor) => manejarCambioBooleano('requerido', valor)" />
-        <label for="requerido-campo" class="ml-2">Requerido</label>
+        <Checkbox :model-value="props.campo.requerido ?? false" input-id="campo-requerido" binary
+          @update:model-value="(valor: boolean) => manejarCambioBooleano('requerido', valor)" />
+        <label for="campo-requerido" class="ml-2">Requerido</label>
       </div>
     </div>
   </div>

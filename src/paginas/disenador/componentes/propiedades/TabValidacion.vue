@@ -50,7 +50,7 @@ const tiposValidacionConfig: TipoValidacionConfig[] = [
     titulo: 'Campo Obligatorio',
     descripcion: 'El usuario debe completar este campo',
     icono: 'pi-exclamation-triangle',
-    color: 'red',
+    color: 'color-rojo',
     placeholder: 'Este campo es obligatorio',
     ayuda: 'Mensaje que verá el usuario si deja el campo vacío'
   },
@@ -59,7 +59,7 @@ const tiposValidacionConfig: TipoValidacionConfig[] = [
     titulo: 'Longitud Mínima',
     descripcion: 'Número mínimo de caracteres requeridos',
     icono: 'pi-arrow-down',
-    color: 'blue',
+    color: 'color-cyan-fuerte',
     placeholder: '3',
     inputType: 'number',
     ayuda: 'Cantidad mínima de caracteres que debe tener el texto',
@@ -70,7 +70,7 @@ const tiposValidacionConfig: TipoValidacionConfig[] = [
     titulo: 'Longitud Máxima',
     descripcion: 'Número máximo de caracteres permitidos',
     icono: 'pi-arrow-up',
-    color: 'orange',
+    color: 'color-naranja-fuerte',
     placeholder: '100',
     inputType: 'number',
     ayuda: 'Cantidad máxima de caracteres permitidos en el texto',
@@ -81,7 +81,7 @@ const tiposValidacionConfig: TipoValidacionConfig[] = [
     titulo: 'Valor Mínimo',
     descripcion: 'Valor numérico mínimo permitido',
     icono: 'pi-sort-numeric-down',
-    color: 'cyan',
+    color: 'color-turqueza-fuerte',
     placeholder: '0',
     inputType: 'number',
     ayuda: 'El número ingresado debe ser mayor o igual a este valor',
@@ -92,7 +92,7 @@ const tiposValidacionConfig: TipoValidacionConfig[] = [
     titulo: 'Valor Máximo',
     descripcion: 'Valor numérico máximo permitido',
     icono: 'pi-sort-numeric-up',
-    color: 'indigo',
+    color: 'color-coral-fuerte',
     placeholder: '1000',
     inputType: 'number',
     ayuda: 'El número ingresado debe ser menor o igual a este valor',
@@ -103,7 +103,7 @@ const tiposValidacionConfig: TipoValidacionConfig[] = [
     titulo: 'Formato Específico',
     descripcion: 'El texto debe seguir un patrón específico',
     icono: 'pi-search',
-    color: 'purple',
+    color: 'color-violeta-claro',
     placeholder: '^[a-zA-Z]+$',
     ayuda: 'Expresión regular que define el formato válido',
     ejemplos: ['^[a-zA-Z]+$ (solo letras)', '^\\d{4}$ (4 dígitos)', '^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$ (email)']
@@ -113,7 +113,7 @@ const tiposValidacionConfig: TipoValidacionConfig[] = [
     titulo: 'Validación Personalizada',
     descripcion: 'Lógica de validación personalizada con JavaScript',
     icono: 'pi-code',
-    color: 'teal',
+    color: 'color-amarillo-fuerte',
     placeholder: 'function(valor) { return valor > 0; }',
     ayuda: 'Función JavaScript que debe retornar true si el valor es válido'
   }
@@ -218,47 +218,46 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
 <template>
   <div class="p-2">
     <!-- Header con botón para agregar -->
-    <div class="flex align-items-center justify-content-between mb-4">
+    <div class="flex align-items-center justify-content-between mb-3">
       <div class="flex align-items-center gap-2">
         <i class="pi pi-shield"></i>
         <h3 class="m-0 negrilla ">Validaciones</h3>
         <AyudaValidacion />
       </div>
 
-      <PrimeButton v-if="tiposDisponibles.length > 0" label="Agregar Validación" icon="pi pi-plus" size="small"
-        @click="mostrarMenuAgregar = true" severity="success" />
-    </div>
 
+    </div>
+    <PrimeButton v-if="tiposDisponibles.length > 0" label="Añadir Validación" icon="pi pi-plus" size="small"
+      @click="mostrarMenuAgregar = true" severity="success" />
     <!-- Estado vacío mejorado -->
     <PrimeCard v-if="reglasValidacion.length === 0" class="text-center">
       <template #content>
-        <div class="p-4">
-          <i class="pi pi-shield-check text-6xl text-300 mb-4 block"></i>
+        <div class="p-3">
+          <i class="pi pi-check-circle  mb-3 block"></i>
           <h4 class="mb-2">Sin validaciones configuradas</h4>
-          <p class="mb-4 line-height-3">
+          <p class="mb-3">
             Las validaciones ayudan a garantizar que los usuarios ingresen datos correctos y completos en este campo.
           </p>
           <PrimeButton v-if="tiposDisponibles.length > 0" label="Agregar Primera Validación" icon="pi pi-plus"
-            @click="mostrarMenuAgregar = true" outlined />
+            @click="mostrarMenuAgregar = true" />
         </div>
       </template>
     </PrimeCard>
 
     <!-- Lista de validaciones existentes -->
-    <div v-else class="flex flex-column gap-3">
+    <div v-else class="flex flex-column">
       <TransitionGroup name="validacion" tag="div" class="flex flex-column gap-3">
         <PrimeCard v-for="(regla, indice) in reglasValidacion" :key="`${regla.tipo}-${indice}`">
           <template #header>
-            <div class="flex align-items-center gap-3 p-2">
-              <PrimeAvatar :icon="`pi ${obtenerConfigTipo(regla.tipo).icono}`"
-                :style="{ backgroundColor: `var(--${obtenerConfigTipo(regla.tipo).color}-500)`, color: 'white' }"
+            <div class="flex align-items-center gap-2 p-2">
+              <PrimeAvatar :icon="`pi ${obtenerConfigTipo(regla.tipo).icono} ${obtenerConfigTipo(regla.tipo).color}`"
                 size="large" />
               <div class="flex-1">
                 <h5 class="m-0 negrilla">{{ obtenerConfigTipo(regla.tipo).titulo }}</h5>
                 <p class="m-0 tamanio-fuente-miga">{{ obtenerConfigTipo(regla.tipo).descripcion }}</p>
               </div>
-              <PrimeButton icon="pi pi-trash" severity="danger" text rounded size="small"
-                @click="eliminarValidacion(indice)" v-tooltip.top="'Eliminar validación'" />
+              <PrimeButton icon="pi pi-trash" severity="primary" @click="eliminarValidacion(indice)"
+                v-tooltip.top="'Eliminar validación'" />
             </div>
           </template>
 
@@ -272,15 +271,15 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
                 <PrimeInputText :model-value="String(regla.valor || '')"
                   @update:model-value="actualizarValorValidacion(indice, $event)"
                   :placeholder="obtenerConfigTipo(regla.tipo).placeholder"
-                  :type="obtenerConfigTipo(regla.tipo).inputType || 'text'" class="w-full" />
+                  :type="obtenerConfigTipo(regla.tipo).inputType || 'text'" class="ancho-100" />
 
-                <small v-if="obtenerConfigTipo(regla.tipo).ayuda" class=" mt-1">
+                <small v-if="obtenerConfigTipo(regla.tipo).ayuda" class="mt-1">
                   {{ obtenerConfigTipo(regla.tipo).ayuda }}
                 </small>
 
                 <!-- Ejemplos para algunos tipos -->
                 <div v-if="obtenerConfigTipo(regla.tipo).ejemplos" class="mt-3">
-                  <small class="contenido  mb-2">Ejemplos comunes:</small>
+                  <small class="contenido mb-2">Ejemplos comunes:</small>
                   <div class="flex flex-wrap gap-1">
                     <PrimeTag v-for="ejemplo in obtenerConfigTipo(regla.tipo).ejemplos" :key="ejemplo" :value="ejemplo"
                       severity="info" class="cursor-pointer"
@@ -291,15 +290,15 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
 
                 <!-- Campo de mensaje personalizado (para validaciones no-requerido) -->
                 <div v-if="regla.tipo !== 'requerido'" class="field mt-3">
-                  <label class="tamanio-fuente-miga  mb-2 block">
+                  <label class="tamanio-fuente-miga mb-2 block">
                     Mensaje de error personalizado (opcional)
                   </label>
 
                   <PrimeInputText :model-value="String(regla.mensaje || '')"
                     @update:model-value="actualizarMensajeValidacion(indice, $event)"
-                    :placeholder="obtenerMensajePorDefecto(regla.tipo, regla.valor)" class="w-full" />
+                    :placeholder="obtenerMensajePorDefecto(regla.tipo, regla.valor)" class="ancho-100" />
 
-                  <small class=" mt-1">
+                  <small class="mt-1">
                     Si no especificas un mensaje, se usará: "{{ obtenerMensajePorDefecto(regla.tipo, regla.valor) }}"
                   </small>
                 </div>
@@ -323,8 +322,8 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
             @click="agregarValidacion(config.tipo)">
             <template #content>
               <div class="flex align-items-center gap-3 p-2">
-                <PrimeAvatar :icon="`pi ${config.icono}`"
-                  :style="{ backgroundColor: `var(--${config.color}-500)`, color: 'white' }" />
+                <PrimeAvatar :icon="`pi ${config.icono} ${config.color}`"
+                  :style="{ backgroundColor: `${config.color}`, color: 'white' }" />
                 <div class="flex-1">
                   <h5 class="m-0  negrilla">{{ config.titulo }}</h5>
                   <p class="m-0  tamanio-fuente-miga">{{ config.descripcion }}</p>

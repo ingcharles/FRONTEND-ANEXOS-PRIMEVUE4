@@ -236,11 +236,11 @@ function manejarAtajos(evento: KeyboardEvent): void {
 window.addEventListener('keydown', manejarAtajos)
 </script>
 <template>
-  <div class="p-card p-p-3">
+  <div class="p-card p-3">
     <!-- Header -->
-    <div class="p-d-flex p-ai-center p-mb-2">
-      <h3 class="p-m-0 p-d-flex p-ai-center">
-        <i class="pi pi-box p-mr-2" /> Componentes
+    <div class="flex mb-2">
+      <h3 class="m-0 flex">
+        <i class="pi pi-box mr-2" /> Componentes
       </h3>
 
     </div>
@@ -281,7 +281,7 @@ window.addEventListener('keydown', manejarAtajos)
             :clone="() => clonarDesdeMenu(item)" :sort="false">
             <template #item="{ element }">
               <a v-ripple class="flex items-center pl-4 pr-2 py-2 cursor-pointer group ancho-100 tamanio-fuente-miga">
-                <i class="pi pi-grip-vertical p-mr-2" />
+                <i class="pi pi-grip-vertical mr-2" />
                 <i :class="['pi', element.icon, 'group-hover:text-inherit']" />
                 <span class="ml-2">{{ element.label }}</span>
               </a>

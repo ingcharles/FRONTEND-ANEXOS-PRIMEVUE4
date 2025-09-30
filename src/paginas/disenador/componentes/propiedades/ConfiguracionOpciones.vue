@@ -94,7 +94,7 @@ function generarOpcionesPorDefecto(): void {
     </div>
 
     <!-- Lista de opciones existentes -->
-    <div v-if="opcionesActuales.length > 0" class="opciones-existentes mb-4">
+    <div v-if="opcionesActuales.length > 0" class="opciones-existentes mb-3">
       <draggable v-model="opcionesActuales" item-key="valor" handle=".handle-ordenar" @change="manejarCambioDragDrop">
         <template #item="{ element: opcion, index }">
           <div class="opcion-item flex align-items-center gap-2 p-2 mb-2 border-round surface-ground">

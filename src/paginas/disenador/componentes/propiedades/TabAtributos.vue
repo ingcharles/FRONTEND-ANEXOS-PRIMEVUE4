@@ -14,7 +14,7 @@ const campo = computed(() => almacen.campoSeleccionado)
 </script>
 
 <template>
-  <div v-if="campo" class="p-d-flex p-flex-column p-gap-4 py-2 px-2">
+  <div v-if="campo" class="flex p-flex-column p-gap-4 py-2 px-2">
 
     <!-- Información general del campo -->
     <SeccionGeneral :campo="campo" />
@@ -30,14 +30,9 @@ const campo = computed(() => almacen.campoSeleccionado)
     <!-- Opciones para select/radio/checkbox -->
     <SeccionOpciones
       v-if="campo.tipo === TipoCampoValor.Seleccion || campo.tipo === TipoCampoValor.Radio || campo.tipo === TipoCampoValor.Casilla"
-      :campo="campo"
-    />
+      :campo="campo" />
 
     <!-- Configuración de tabla -->
-    <SeccionTabla
-      v-if="campo.tipo === TipoCampoValor.Tabla"
-      :campo="campo"
-    />
+    <SeccionTabla v-if="campo.tipo === TipoCampoValor.Tabla" :campo="campo" />
   </div>
 </template>
-

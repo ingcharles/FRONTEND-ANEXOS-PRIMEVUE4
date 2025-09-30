@@ -98,9 +98,9 @@ describe('ModalAlerta', () => {
     const tipos = ['error', 'warning', 'info', 'success'] as const
     const iconosEsperados = [
       'pi-exclamation-triangle color-rojo',
-      'pi-exclamation-triangle text-orange-500',
-      'pi-info-circle text-blue-500',
-      'pi-check-circle text-green-500'
+      'pi-exclamation-triangle color-naranja-fuerte',
+      'pi-info-circle color-cyan-fuerte',
+      'pi-check-circle color-verde-claro'
     ]
 
     for (let i = 0; i < tipos.length; i++) {
