@@ -23,9 +23,27 @@ const errores = ref<Record<string, string>>({})
 // Computed properties principales
 const paginaActual = computed(() => almacen.esquemaFormulario.paginas[indicePagina.value])
 const totalPaginas = computed(() => almacen.esquemaFormulario.paginas.length)
-const campos = computed<EsquemaCampo[]>(() => paginaActual.value?.campos || [])
-const valores = computed<RegistroDatos>(() => almacen.obtenerValoresPagina(paginaActual.value?.id || '') as RegistroDatos)
-const mapaIdNombre = computed(() => servicioEsquemas.construirMapaIdNombre(campos.value))
+const campos = computed(() => (paginaActual.value?.campos || []) as EsquemaCampo[])
+const valores = computed(() => almacen.obtenerValoresPagina(paginaActual.value?.id || '') as RegistroDatos)
+
+// Mapa basado en campos originales (sin lógica aplicada)
+const mapaIdNombre = computed(() => servicioEsquemas.construirMapaIdNombre(campos.value as EsquemaCampo[]))
+
+// Computed para aplicar reglas de lógica a los campos
+const camposConLogica = computed(() => {
+  const camposOriginales = campos.value as EsquemaCampo[]
+  const valoresActuales = valores.value as RegistroDatos
+  const mapa = mapaIdNombre.value as Record<string, string>
+
+  return camposOriginales.map(campo => {
+    const estado = evaluarReglasCampo(campo, valoresActuales, mapa)
+    return {
+      ...campo,
+      visible: estado.visible,
+      requerido: estado.requerido
+    } as EsquemaCampo
+  })
+})
 
 // Gestión de dependencias
 const registroDependencias = new Map<string, () => void>()
@@ -162,8 +180,8 @@ function reconfigurarDependencias(): void {
   const todosCampos = servicioEsquemas.aplanarCampos(campos.value, [])
 
   for (const campo of todosCampos) {
-  const metadatos = (campo.metadatos || {}) as MetadatosCampo
-  const dependencia = (metadatos.dependencia || {}) as ConfiguracionDependencia
+    const metadatos = (campo.metadatos || {}) as MetadatosCampo
+    const dependencia = (metadatos.dependencia || {}) as ConfiguracionDependencia
 
     // Cargar opciones independientes (sin dependencias) que usan API
     const tieneConfiguracionApi = metadatos.modoOpciones === ModoOpciones.API ||
@@ -205,7 +223,7 @@ function reconfigurarDependencias(): void {
           metadatosHelper.deshabilitado = algunPadreVacio
         }
 
-  await servicioDependencias.cargarOpcionesDependientes(campo, (valorActual ?? null) as ValorDato | RegistroDatos)
+        await servicioDependencias.cargarOpcionesDependientes(campo, (valorActual ?? null) as ValorDato | RegistroDatos)
       },
       { immediate: true }
     )
@@ -283,7 +301,18 @@ function enviar(): void {
     const valoresPagina = almacen.obtenerValoresPagina(pagina.id) as RegistroDatos
     Object.assign(valoresGlobales, valoresPagina)
 
-    const esquemaPagina = servicioEsquemas.crearEsquemaValidacion(pagina.campos)
+    // Aplicar reglas de lógica a los campos antes de validar
+    const mapaIdNombrePagina = servicioEsquemas.construirMapaIdNombre(pagina.campos)
+    const camposConLogicaPagina = pagina.campos.map(campo => {
+      const estado = evaluarReglasCampo(campo, valoresPagina, mapaIdNombrePagina)
+      return {
+        ...campo,
+        visible: estado.visible,
+        requerido: estado.requerido
+      }
+    })
+
+    const esquemaPagina = servicioEsquemas.crearEsquemaValidacion(camposConLogicaPagina)
     const resultado = esquemaPagina.safeParse(valoresPagina)
 
     if (!resultado.success) {
@@ -322,22 +351,12 @@ function irPaginaSiguiente(): void {
   <div class="p-3">
     <!-- Navegación entre páginas -->
     <div class="flex justify-between items-center mb-3" v-if="totalPaginas > 1">
-      <PrimeButton
-        label="Anterior"
-        icon="pi pi-angle-left"
-        :disabled="indicePagina === 0"
-        @click="irPaginaAnterior"
-      />
+      <PrimeButton label="Anterior" icon="pi pi-angle-left" :disabled="indicePagina === 0" @click="irPaginaAnterior" />
       <div class="negrilla">
         {{ paginaActual.titulo || ('Página ' + (indicePagina + 1)) }}
       </div>
-      <PrimeButton
-        label="Siguiente"
-        icon-pos="right"
-        icon="pi pi-angle-right"
-        :disabled="indicePagina >= almacen.esquemaFormulario.paginas.length - 1"
-        @click="irPaginaSiguiente"
-      />
+      <PrimeButton label="Siguiente" icon-pos="right" icon="pi pi-angle-right"
+        :disabled="indicePagina >= almacen.esquemaFormulario.paginas.length - 1" @click="irPaginaSiguiente" />
     </div>
 
     <!-- Título de página única -->
@@ -349,26 +368,19 @@ function irPaginaSiguiente(): void {
 
     <!-- Formulario principal -->
     <form class="grid" @submit.prevent="enviar">
-      <template v-for="campo in campos" :key="campo.id">
+      <template v-for="campo in camposConLogica" :key="campo.id">
         <div :class="clasesColumna(campo)">
-          <RenderizadorCampo
-            :campo="campo"
-            :valores-campos="valores"
-            :errores-campos="errores"
+          <RenderizadorCampo :campo="campo" :valores-campos="valores" :errores-campos="errores"
             :mapa-id-nombre="mapaIdNombre"
-            @valor-cambiado="(nombre: string, valor: unknown) => almacen.actualizarValorCampo(paginaActual.id, nombre, valor as ValorDato)"
-/>
+            @valor-cambiado="(nombre: string, valor: unknown) => almacen.actualizarValorCampo(paginaActual.id, nombre, valor as ValorDato)" />
         </div>
       </template>
 
       <!-- Botón Enviar de respaldo: si no hay botón en la página y es la última o única -->
-      <div
-        class="col-12"
-        v-if="(totalPaginas === 1 || indicePagina >= almacen.esquemaFormulario.paginas.length - 1) && !paginaActual?.campos?.some(f => f.tipo === 'boton')"
-      >
+      <div class="col-12"
+        v-if="(totalPaginas === 1 || indicePagina >= almacen.esquemaFormulario.paginas.length - 1) && !paginaActual?.campos?.some(f => f.tipo === 'boton')">
         <PrimeButton type="submit" label="Enviar" icon="pi pi-check" class="ancho-100 texto-miga" />
       </div>
     </form>
   </div>
 </template>
-
