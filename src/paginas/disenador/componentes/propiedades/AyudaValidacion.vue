@@ -62,7 +62,7 @@
           <!-- Patrones con nueva estructura Accordion -->
           <PrimeTabPanel value="1">
             <div class="flex flex-column gap-3">
-              <PrimeMessage severity="info" :closable="false">
+              <PrimeMessage severity="info" :closable="false" class="p-2 mt-3">
                 <template #messageicon>
                   <i class="pi pi-search"></i>
                 </template>
@@ -101,7 +101,7 @@
           <PrimeTabPanel value="2">
 
             <div class="flex flex-column gap-3">
-              <PrimeMessage severity="warn" :closable="false" class="mb-3">
+              <PrimeMessage severity="success" :closable="false" class="p-2 mt-3">
                 <template #messageicon>
                   <i class="pi pi-code"></i>
                 </template>
@@ -119,8 +119,8 @@
 
                     <div class="mb-2">
                       <div class="flex align-items-center justify-content-between mb-2">
-                        <p class="contenido mb-3">{{ ejemplo.descripcion }}</p>
-                        <PrimeButton label="Copiar Código" icon="pi pi-copy" size="small" text
+                        <p class="contenido-izquierda mb-3">{{ ejemplo.descripcion }}</p>
+                        <PrimeButton label="Copiar Código" icon="pi pi-copy"
                           @click="copiarCodigo(ejemplo.codigo)" />
                       </div>
                       <!-- <p class="contenido m-0">{{ patron.descripcion }}</p> -->

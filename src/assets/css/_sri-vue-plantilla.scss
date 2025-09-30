@@ -1960,6 +1960,11 @@ button.p-button.p-component.p-button-icon-only.p-button-rounded.p-button-seconda
   text-align: center !important;
 }
 
+.contenido-izquierda {
+  text-align: left;
+  color: $color-gris-fuerte;
+}
+
 .overflow-auto {
   overflow: auto !important;
 }
@@ -2180,6 +2185,11 @@ input[type="file"] {
   margin-right: 0.5rem !important;
 }
 
+
+.mt-2 {
+  margin-top: 0.5rem !important;
+}
+
 .mt-3 {
   margin-top: 1rem !important;
 }
@@ -2283,6 +2293,9 @@ input[type="file"] {
     margin-right: 0.5rem !important;
   }
 
+ .sm\:mt-2 {
+    margin-top: 0.5rem !important;
+  }
   .sm\:mt-3 {
     margin-top: 1rem !important;
   }
@@ -2421,7 +2434,9 @@ input[type="file"] {
   .md\:mr-2 {
     margin-right: 0.5rem !important;
   }
-
+.md\:mt-2 {
+    margin-top: 0.5rem !important;
+  }
   .md\:mt-3 {
     margin-top: 1rem !important;
   }
@@ -2569,6 +2584,9 @@ input[type="file"] {
     margin-right: 0.5rem !important;
   }
 
+ .lg\:mt-2 {
+    margin-top: 0.5rem !important;
+  }
   .lg\:mt-3 {
     margin-top: 1rem !important;
   }
@@ -2720,7 +2738,9 @@ input[type="file"] {
   .xl\:mb-2 {
     margin-bottom: 0.5rem !important;
   }
-
+.xl\:mt-2 {
+    margin-top: 0.5rem !important;
+  }
   .xl\:mt-3 {
     margin-top: 1rem !important;
   }
