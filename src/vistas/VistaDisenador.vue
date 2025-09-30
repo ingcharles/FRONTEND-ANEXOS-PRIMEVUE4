@@ -70,22 +70,7 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
   }
 }
 
-// Función para manejar el mouseleave con delay
-function handleMouseLeave(event: MouseEvent): void {
-  // Verificar si el mouse se está moviendo hacia la barra lateral expandida
-  const relatedTarget = event.relatedTarget as HTMLElement
-  if (relatedTarget && relatedTarget.closest('.properties-sidebar-expanded')) {
-    return // No cerrar si se mueve hacia la barra lateral
-  }
 
-  // Delay para evitar cierre accidental
-  setTimeout(() => {
-    if (!document.querySelector('.properties-sidebar-expanded:hover') &&
-      !document.querySelector('.properties-sidebar-tab:hover')) {
-      sidebarVisible.value = false
-    }
-  }, 100)
-}
 </script>
 
 <template>
@@ -93,7 +78,7 @@ function handleMouseLeave(event: MouseEvent): void {
     <div class="col-12 lg:col-2">
       <PanelPaleta />
     </div>
-    <div class="col-12" :class="sidebarVisible ? 'lg:col-8' : 'lg:col-10'">
+    <div class="col-12 main-content" :class="sidebarVisible ? 'lg:col-8' : 'lg:col-10'">
       <div class="grid">
         <div class="col-12 lg:col-3">
           <PrimeButton label="Añadir página" class="ancho-100" icon="pi pi-plus"
@@ -195,9 +180,11 @@ function handleMouseLeave(event: MouseEvent): void {
 
           <template v-else>
             <div class="tab-content">
-              <TabAtributos v-if="tabPropiedades === 'attrs'" :id-campo="seleccionado.id" />
-              <TabLogica v-if="tabPropiedades === 'logic'" :id-campo="seleccionado.id" />
-              <TabValidacion v-if="tabPropiedades === 'valid'" :id-campo="seleccionado.id" />
+              <Transition name="fade" mode="out-in">
+                <TabAtributos v-if="tabPropiedades === 'attrs'" :id-campo="seleccionado.id" key="attrs" />
+                <TabLogica v-else-if="tabPropiedades === 'logic'" :id-campo="seleccionado.id" key="logic" />
+                <TabValidacion v-else-if="tabPropiedades === 'valid'" :id-campo="seleccionado.id" key="valid" />
+              </Transition>
             </div>
           </template>
         </div>
@@ -206,7 +193,7 @@ function handleMouseLeave(event: MouseEvent): void {
   </div>
 
   <!-- Tab vertical flotante siempre visible -->
-  <div class="properties-sidebar-tab" @mouseenter="sidebarVisible = true" @mouseleave="handleMouseLeave">
+  <div class="properties-sidebar-tab" @mouseenter="sidebarVisible = true">
     <div class="sidebar-tab" :class="{ 'expanded': sidebarVisible }">
       <div class="tab-icons">
         <div class="tab-icon" :class="{ 'active': tabPropiedades === 'attrs' }" @click="tabPropiedades = 'attrs'"
@@ -232,5 +219,117 @@ function handleMouseLeave(event: MouseEvent): void {
 </template>
 
 <style scoped>
+.properties-sidebar-expanded {
+  background: var(--p-surface-0);
+  border: 1px solid var(--p-surface-200);
+  border-radius: 8px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
 
+.sidebar-content-expanded {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.properties-sidebar-tab {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  z-index: 1000;
+}
+
+.sidebar-tab {
+  width: 50px;
+  background: var(--p-surface-100);
+  border: 1px solid var(--p-surface-200);
+  border-radius: 8px 0 0 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+  padding: 1rem 0;
+}
+
+.sidebar-tab.expanded {
+  background: var(--p-surface-200);
+}
+
+.tab-icons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tab-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--p-surface-0);
+  border: 1px solid var(--p-surface-300);
+  color: var(--p-text-color);
+}
+
+.tab-icon:hover {
+  background: var(--p-primary-100);
+  color: var(--p-primary-600);
+  transform: scale(1.05);
+}
+
+.tab-icon.active {
+  background: var(--p-primary-500);
+  color: var(--p-primary-contrast-color);
+  border-color: var(--p-primary-500);
+}
+
+.sidebar-header {
+  padding: 1rem;
+  border-bottom: 1px solid var(--p-surface-200);
+  background: var(--p-surface-50);
+}
+
+.sidebar-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.tab-content {
+  position: relative;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.fade-enter-from {
+  opacity: 0;
+  transform: translateX(10px);
+}
+
+.fade-leave-to {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.main-content {
+  transition: all 0.4s ease;
+}
 </style>
