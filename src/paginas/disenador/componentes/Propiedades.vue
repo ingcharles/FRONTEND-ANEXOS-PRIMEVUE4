@@ -1,32 +1,31 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
-// import TabAtributos from './propiedades/TabAtributos.vue'
-// import TabLogica from './propiedades/TabLogica.vue'
-// import TabValidacion from './propiedades/TabValidacion.vue'
 import TabAtributos from '@/paginas/disenador/componentes/propiedades/TabAtributos.vue'
 import TabLogica from '@/paginas/disenador/componentes/propiedades/TabLogica.vue'
 import TabValidacion from '@/paginas/disenador/componentes/propiedades/TabValidacion.vue'
-// import Panel from 'primevue/panel'
-// import Tabs from 'primevue/tabs'
-// import TabList from 'primevue/tablist'
-// import Tab from 'primevue/tab'
-// import TabPanels from 'primevue/tabpanels'
-// import TabPanel from 'primevue/tabpanel'
+
 const props = defineProps<{ sidebarVisible: boolean; }>()
 const almacen = useAlmacenDisenador()
 const seleccionado = computed(() => almacen.campoSeleccionado)
-const tabPropiedades = ref<'attrs' | 'logic' | 'valid'>('attrs')
-// const sidebarVisible = ref(props.sidebarVisible)
+const tabPropiedades = ref<'attrs' | 'logic' | 'valid' | null>(null)
+
 const emit = defineEmits<{
   'update:sidebarVisible': [value: boolean]
 }>()
-// const tabActivo = ref<'attrs' | 'logic' | 'valid'>('attrs')
 
-// // Resetear el tab activo solo cuando se selecciona un campo DIFERENTE
-// watch(() => seleccionado.value?.id, () => {
-//   tabActivo.value = 'attrs'
-// })
+// Función para manejar el click en los tabs
+const handleTabClick = (tab: 'attrs' | 'logic' | 'valid') => {
+  if (tabPropiedades.value === tab) {
+    // Si el tab ya está activo, lo desactivamos y ocultamos sidebar
+    tabPropiedades.value = null
+    emit('update:sidebarVisible', false)
+  } else {
+    // Activamos el nuevo tab y mostramos sidebar
+    tabPropiedades.value = tab
+    emit('update:sidebarVisible', true)
+  }
+}
 </script>
 
 <template>
@@ -46,7 +45,7 @@ const emit = defineEmits<{
           <p class="text-color-secondary">Selecciona un elemento para ver sus propiedades</p>
         </div>
 
-        <template v-else>
+        <template v-else-if="tabPropiedades">
           <div class="tab-content">
             <Transition name="fade" mode="out-in">
               <TabAtributos v-if="tabPropiedades === 'attrs'" :id-campo="seleccionado.id" key="attrs" />
@@ -55,29 +54,35 @@ const emit = defineEmits<{
             </Transition>
           </div>
         </template>
+
+        <div v-else-if="seleccionado" class="text-center p-3">
+          <i class="pi pi-hand-point-up text-4xl text-color-secondary mb-3"></i>
+          <p class="text-color-secondary">Selecciona una pestaña para ver las propiedades</p>
+        </div>
       </div>
     </div>
   </div>
   <!-- Tab vertical flotante siempre visible -->
-  <div class="properties-sidebar-tab" @click="emit('update:sidebarVisible', !props.sidebarVisible)">
+  <div class="properties-sidebar-tab">
     <div class="sidebar-tab" :class="{ 'expanded': props.sidebarVisible }">
       <div class="tab-icons">
-        <div class="tab-icon" :class="{ 'active': tabPropiedades === 'attrs' }" @click="tabPropiedades = 'attrs'"
-          v-tooltip.left="'Atributos'">
+        <div class="tab-icon" :class="{ 'active': tabPropiedades === 'attrs' }" @click.stop="handleTabClick('attrs')"
+          v-tooltip.left="tabPropiedades === 'attrs' ? 'Cerrar Atributos' : 'Atributos'">
           <i class="pi pi-cog"></i>
         </div>
-        <div class="tab-icon" :class="{ 'active': tabPropiedades === 'logic' }" @click="tabPropiedades = 'logic'"
-          v-tooltip.left="'Lógica'">
+        <div class="tab-icon" :class="{ 'active': tabPropiedades === 'logic' }" @click.stop="handleTabClick('logic')"
+          v-tooltip.left="tabPropiedades === 'logic' ? 'Cerrar Lógica' : 'Lógica'">
           <i class="pi pi-sitemap"></i>
         </div>
-        <div class="tab-icon" :class="{ 'active': tabPropiedades === 'valid' }" @click="tabPropiedades = 'valid'"
-          v-tooltip.left="'Validaciones'">
+        <div class="tab-icon" :class="{ 'active': tabPropiedades === 'valid' }" @click.stop="handleTabClick('valid')"
+          v-tooltip.left="tabPropiedades === 'valid' ? 'Cerrar Validaciones' : 'Validaciones'">
           <i class="pi pi-shield"></i>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 <style scoped>
 .properties-sidebar-expanded {
   background: var(--p-surface-0);

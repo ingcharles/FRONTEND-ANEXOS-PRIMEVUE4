@@ -62,7 +62,6 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
 }
 </script>
 <template>
-  <div class="mb-2 mt-2">
     <h3 class="tamanio-fuente-miga text-color mb-2">Generales</h3>
 
     <!-- Formulario de propiedades -->
@@ -175,6 +174,5 @@ function actualizarMetaNumero(actualizacion: Partial<{ min: number; max: number;
           @update:model-value="actualizarValorPorDefecto" placeholder="Fecha inicial" />
       </div>
     </div>
-  </div>
   <PrimeDivider class="my-3" />
 </template>

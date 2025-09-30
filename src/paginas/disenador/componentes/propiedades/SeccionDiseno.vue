@@ -1,5 +1,4 @@
 <template>
-  <div class="mb-2 mt-2">
     <h3 class="tamanio-fuente-miga text-color mb-2">Ancho dispositivo</h3>
     <div class="grid">
       <div class="col-12">
@@ -24,30 +23,8 @@
       </div>
     </div>
 
-    <!-- Clases CSS personalizadas -->
-    <!-- <div class="field">
-      <label class="block mb-1">Clases CSS</label>
-      <PrimeInputText
-        :model-value="obtenerClasesPersonalizadas()"
-        placeholder="p-2 text-center border-round"
-        @update:model-value="(v: string | undefined) => actualizarClasesPersonalizadas(v || '')"
-      />
-      <small class="text-muted-color">Clases CSS adicionales para el campo.</small>
-    </div> -->
 
-    <!-- Estilos inline -->
-    <!-- <div class="field">
-      <label class="block mb-1">Estilos CSS</label>
-      <PrimeTextarea
-        :model-value="obtenerEstilosInline()"
-        rows="3"
-        placeholder="color: #333; font-weight: bold;"
-        @update:model-value="(v: string | undefined) => actualizarEstilosInline(v || '')"
-      />
-      <small class="text-muted-color">Estilos CSS inline para el campo.</small>
-    </div> -->
 
-  </div>
   <PrimeDivider class="my-3" />
 </template>
 
