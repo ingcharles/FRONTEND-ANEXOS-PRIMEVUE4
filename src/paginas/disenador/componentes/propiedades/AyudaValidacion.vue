@@ -5,11 +5,26 @@
       v-tooltip.top="'Ver ejemplos y ayuda'" />
 
     <DialogoAyuda v-model:visible="mostrarAyuda" titulo="Guía de Validaciones" ancho="700px">
-      <PrimeTabs v-model="tabActivo">
+      <PrimeTabs v-model:value="tabActivo" class="validation-tabs">
         <PrimeTabList>
-          <PrimeTab value="0">Básicas</PrimeTab>
-          <PrimeTab value="1">Patrones</PrimeTab>
-          <PrimeTab value="2">Avanzadas</PrimeTab>
+          <PrimeTab value="0" class="tab-item">
+            <div class="flex align-items-center gap-2">
+              <i class="pi pi-check-circle text-green-500"></i>
+              <span>Básicas</span>
+            </div>
+          </PrimeTab>
+          <PrimeTab value="1" class="tab-item">
+            <div class="flex align-items-center gap-2">
+              <i class="pi pi-search text-blue-500"></i>
+              <span>Patrones</span>
+            </div>
+          </PrimeTab>
+          <PrimeTab value="2" class="tab-item">
+            <div class="flex align-items-center gap-2">
+              <i class="pi pi-code text-purple-500"></i>
+              <span>Avanzadas</span>
+            </div>
+          </PrimeTab>
         </PrimeTabList>
 
         <PrimeTabPanels>
