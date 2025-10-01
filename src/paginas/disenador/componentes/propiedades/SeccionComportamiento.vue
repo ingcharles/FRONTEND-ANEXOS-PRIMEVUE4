@@ -43,7 +43,7 @@
         <Checkbox binary :model-value="obtenerToggleable()"
           @update:model-value="(v: boolean) => actualizarToggleable(v)" />
         Plegable
-        <i class="pi pi-info-circle text-gray-400 cursor-help" 
+        <i class="pi pi-info-circle text-gray-400 cursor-help"
            v-tooltip.top="'Permite al usuario colapsar/expandir el panel'"></i>
       </label>
     </div>

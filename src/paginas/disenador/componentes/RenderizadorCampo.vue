@@ -267,8 +267,8 @@ function obtenerToggleablePanel(campo: EsquemaCampo): boolean {
 <template>
   <div v-if="esCampoVisible">
     <!-- Panel contenedor -->
-    <PrimePanel v-if="campo.tipo === TipoCampoValor.Panel" 
-      :header="campo.etiqueta || 'Panel'" 
+    <PrimePanel v-if="campo.tipo === TipoCampoValor.Panel"
+      :header="campo.etiqueta || 'Panel'"
       :toggleable="obtenerToggleablePanel(campo)"
       class="p-3">
       <div class="grid">
