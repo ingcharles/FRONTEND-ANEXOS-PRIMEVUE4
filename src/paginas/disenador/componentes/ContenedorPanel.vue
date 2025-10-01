@@ -10,6 +10,12 @@ const almacen = useAlmacenDisenador()
 
 const hijos = computed(() => propiedades.campo.hijos ?? [])
 
+// Computed para obtener si el panel es toggleable desde metadatos
+const esToggleable = computed(() => {
+  const metadatos = propiedades.campo.metadatos as Record<string, unknown> | undefined
+  return metadatos?.toggleable === true || metadatos?.toggleable === undefined // Por defecto es true
+})
+
 function actualizarHijos(nuevosHijos: EsquemaCampo[]) {
   // Solo panel puede tener hijos: el almacen ya impone esta restricción
   almacen.actualizarCampo(propiedades.campo.id, { hijos: [...nuevosHijos] })
@@ -17,7 +23,7 @@ function actualizarHijos(nuevosHijos: EsquemaCampo[]) {
 </script>
 
 <template>
-  <PrimePanel class="p-2" :header="propiedades.campo.etiqueta || 'Panel'" :toggleable="true"
+  <PrimePanel class="p-2" :header="propiedades.campo.etiqueta || 'Panel'" :toggleable="esToggleable"
     :collapsed="propiedades.contraido" @toggle="emitir('alternar')">
     <ContenedorArrastrable
       :elementos="hijos"

@@ -37,6 +37,16 @@
       <small class="color-negro">Controla si las opciones se muestran en columna o en fila.</small>
     </div>
 
+    <!-- Plegable para paneles -->
+    <div class="mb-2" v-if="campo?.tipo === 'panel'">
+      <label class="tamanio-fuente-miga">
+        <Checkbox binary :model-value="obtenerToggleable()"
+          @update:model-value="(v: boolean) => actualizarToggleable(v)" />
+        Plegable
+      </label>
+      <small class="block color-negro mt-1">Permite al usuario colapsar/expandir el panel.</small>
+    </div>
+
 
   <PrimeDivider class="my-3" />
 </template>
@@ -90,6 +100,19 @@ function actualizarLayoutGrupo(layout: TipoDiseno): void {
   if (!props.campo) return
   const meta = { ...metadatos.value } as Record<string, unknown>
   meta.layout = layout
+  almacen.actualizarCampo(props.campo.id, { metadatos: meta })
+}
+
+// Toggleable para paneles
+function obtenerToggleable(): boolean {
+  const meta = metadatos.value as Record<string, unknown>
+  return meta.toggleable === true || meta.toggleable === undefined // Por defecto es true
+}
+
+function actualizarToggleable(toggleable: boolean): void {
+  if (!props.campo) return
+  const meta = { ...metadatos.value } as Record<string, unknown>
+  meta.toggleable = toggleable
   almacen.actualizarCampo(props.campo.id, { metadatos: meta })
 }
 </script>

@@ -256,12 +256,21 @@ const esCampoRequerido = computed(() => {
   if (!propiedades.campo) return false
   return evaluarReglasCampo(propiedades.campo, propiedades.valoresCampos, propiedades.mapaIdNombre).requerido
 })
+
+// Función para obtener si el panel es toggleable
+function obtenerToggleablePanel(campo: EsquemaCampo): boolean {
+  const metadatos = campo.metadatos as Record<string, unknown> | undefined
+  return metadatos?.toggleable === true || metadatos?.toggleable === undefined // Por defecto es true
+}
 </script>
 
 <template>
   <div v-if="esCampoVisible">
     <!-- Panel contenedor -->
-    <PrimePanel v-if="campo.tipo === TipoCampoValor.Panel" :header="campo.etiqueta || 'Panel'" class="p-3">
+    <PrimePanel v-if="campo.tipo === TipoCampoValor.Panel" 
+      :header="campo.etiqueta || 'Panel'" 
+      :toggleable="obtenerToggleablePanel(campo)"
+      class="p-3">
       <div class="grid">
         <template v-for="campoHijo in (campo.hijos || [])" :key="campoHijo.id">
           <div :class="clasesColumnaCampo(campoHijo)">
