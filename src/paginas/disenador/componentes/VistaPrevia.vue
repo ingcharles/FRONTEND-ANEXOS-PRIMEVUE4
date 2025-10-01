@@ -233,7 +233,21 @@ watch([firmaDependencias, indicePagina], () => {
 watch(firmaDefaults, () => {
   aplicarValoresPorDefecto(campos.value, true)
 })
-
+// Helper para aplicar lógica a campos sin problemas de tipos recursivos
+function aplicarLogicaACamposSeguro(
+  campos: unknown[],
+  valores: RegistroDatos,
+  mapa: Record<string, string>
+): EsquemaCampo[] {
+  return (campos as EsquemaCampo[]).map(campo => {
+    const estado = evaluarReglasCampo(campo, valores, mapa)
+    return {
+      ...campo,
+      visible: estado.visible,
+      requerido: estado.requerido
+    } as EsquemaCampo
+  })
+}
 // Función principal de envío
 function enviar(): void {
   errores.value = {}
@@ -246,15 +260,16 @@ function enviar(): void {
     Object.assign(valoresGlobales, valoresPagina)
 
     // Aplicar reglas de lógica a los campos antes de validar
-    const mapaIdNombrePagina = servicioEsquemas.construirMapaIdNombre(pagina.campos)
-    const camposConLogicaPagina = pagina.campos.map(campo => {
-      const estado = evaluarReglasCampo(campo, valoresPagina, mapaIdNombrePagina)
-      return {
-        ...campo,
-        visible: estado.visible,
-        requerido: estado.requerido
-      }
-    })
+    //const mapaIdNombrePagina = servicioEsquemas.construirMapaIdNombre(pagina.campos)
+    const camposConLogicaPagina = aplicarLogicaACamposSeguro(pagina.campos, valoresPagina, mapaIdNombre.value)
+    // const camposConLogicaPagina = pagina.campos.map(campo => {
+    //   const estado = evaluarReglasCampo(campo, valoresPagina, mapaIdNombre.value)
+    //   return {
+    //     ...campo,
+    //     visible: estado.visible,
+    //     requerido: estado.requerido
+    //   }
+    // })
 
     const esquemaPagina = servicioEsquemas.crearEsquemaValidacion(camposConLogicaPagina)
     const resultado = esquemaPagina.safeParse(valoresPagina)
