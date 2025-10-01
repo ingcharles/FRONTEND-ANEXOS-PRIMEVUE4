@@ -241,6 +241,15 @@ export const useAlmacenDisenador = defineStore('disenador', () => {
     return ServicioPaginas.actualizarTituloPagina(esquemaFormulario.value, indicePagina, nuevoTitulo)
   }
 
+  function actualizarCamposPagina(paginaId: string, nuevosCampos: EsquemaCampo[]): boolean {
+    const indicePagina = esquemaFormulario.value.paginas.findIndex(p => p.id === paginaId)
+    if (indicePagina !== -1) {
+      esquemaFormulario.value.paginas[indicePagina].campos = [...nuevosCampos]
+      return true
+    }
+    return false
+  }
+
   // =================== GESTIÓN DE VALORES ===================
   function obtenerValoresPagina(idPagina: string): Record<string, unknown> {
     let mapa = valoresPorPagina.value[idPagina]
@@ -444,6 +453,7 @@ export const useAlmacenDisenador = defineStore('disenador', () => {
     cancelarEliminarPagina,
     cambiarPaginaActiva,
     actualizarTituloPagina,
+    actualizarCamposPagina,
     crearPaginaDespuesActual,
     obtenerPaginaActual: () => esquemaFormulario.value.paginas[indicePaginaActiva.value] || null,
 
