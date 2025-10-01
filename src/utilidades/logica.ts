@@ -7,15 +7,7 @@ export interface EstadoEfectivoCampo {
   requerido: boolean
 }
 
-// Versión compatible con esquema viejo (EsquemaCampo) - Alias para compatibilidad
-// export function EvaluarReglasCampo(
-//   campo: EsquemaCampo,
-//   valoresPorNombre: Record<string, unknown>,
-//   idAName: Record<string, string>
-// ): { visible: boolean; required: boolean } {
-//   const resultado = evaluarReglasCampo(campo, valoresPorNombre, idAName)
-//   return { visible: resultado.visible, required: resultado.requerido }
-// }
+
 
 // Versión nueva con esquema español (EsquemaCampo)
 export function evaluarReglasCampo(
@@ -47,37 +39,6 @@ export function evaluarReglasCampo(
 }
 
 
-// function evaluarCondicionVieja(regla: any, valor: unknown): boolean {
-//   const operador = regla.operador || regla.operator || ''
-//   const valorRegla = regla.valor || regla.value
-
-//   if (operador === 'igual' || operador === 'equals') {
-//     return valor === valorRegla
-//   }
-//   if (operador === 'diferente' || operador === 'not_equals') {
-//     return valor !== valorRegla
-//   }
-//   if (operador === 'contiene' || operador === 'contains') {
-//     return Array.isArray(valor) ? valor.includes(valorRegla) : String(valor ?? '').includes(String(valorRegla ?? ''))
-//   }
-//   if (operador === 'mayor-que' || operador === 'gt') {
-//     return Number(valor) > Number(valorRegla)
-//   }
-//   if (operador === 'menor-que' || operador === 'lt') {
-//     return Number(valor) < Number(valorRegla)
-//   }
-//   if (operador === 'personalizado' || operador === 'custom') {
-//     const expresion = regla.expresion || regla.expression
-//     if (!expresion) return false
-//     try {
-//       const fn = new Function('valor', `return (${expresion})`) as (valor: unknown) => boolean
-//       return !!fn(valor)
-//     } catch {
-//       return false
-//     }
-//   }
-//   return false
-// }
 function evaluarCondicion(regla: ReglaLogica, valor: ValorDato | undefined): boolean {
   switch (regla.operador) {
     case 'igual':
