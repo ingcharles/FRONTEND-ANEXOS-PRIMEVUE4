@@ -2,43 +2,53 @@
   <h3 class="tamanio-fuente-miga text-color mb-2">Comportamiento</h3>
 
   <!-- Visibilidad -->
-  <div class="mb-2">
-    <label class="tamanio-fuente-miga">
+  <div>
+    <label class="flex align-items-center gap-2">
       <Checkbox binary :model-value="!!campo?.visible"
         @update:model-value="(v: boolean) => actualizarPropiedad('visible', v)" />
       Visible
+      <i class="pi pi-info-circle texto-ayuda p-2"
+        v-tooltip.top="'Controla si el campo se muestra o se oculta en el formulario'"></i>
     </label>
   </div>
 
 
   <!-- Deshabilitado -->
-  <div class="mb-2" v-if="ServicioCampos.esDeshabilitable(campo?.tipo)">
-    <label class="tamanio-fuente-miga">
+  <div v-if="ServicioCampos.esDeshabilitable(campo?.tipo)">
+    <label class="flex align-items-center gap-2">
       <Checkbox binary :model-value="!!campo?.deshabilitado"
         @update:model-value="(v: boolean) => actualizarPropiedad('deshabilitado', v)" />
       Deshabilitado
+      <i class="pi pi-info-circle texto-ayuda p-2"
+        v-tooltip.top="'El campo se muestra pero no permite interacción del usuario'"></i>
     </label>
   </div>
 
   <!-- Solo lectura -->
-  <div class="mb-2" v-if="ServicioCampos.esSoloLectura(campo?.tipo)">
-    <label class="tamanio-fuente-miga">
+  <div v-if="ServicioCampos.esSoloLectura(campo?.tipo)">
+    <label class="flex align-items-center gap-2">
       <Checkbox binary :model-value="!!campo?.soloLectura"
         @update:model-value="(v: boolean) => actualizarPropiedad('soloLectura', v)" />
       Solo lectura
+      <i class="pi pi-info-circle texto-ayuda p-2"
+        v-tooltip.top="'El campo muestra información pero no permite modificación'"></i>
     </label>
   </div>
 
   <!-- Layout para grupos de opciones -->
-  <div class="mb-2" v-if="ServicioCampos.soportaOpcionesHorizontalVertical(props?.campo?.tipo)">
-    <label class="block mb-1">Distribución de opciones</label>
+  <div v-if="ServicioCampos.soportaOpcionesHorizontalVertical(props?.campo?.tipo)">
+    <div class="flex align-items-center gap-2 mb-1">
+      <label class="block">Distribución de opciones</label>
+      <i class="pi pi-info-circle texto-ayuda p-2"
+        v-tooltip.top="'Controla si las opciones se muestran en columna (vertical) o en fila (horizontal)'"></i>
+    </div>
     <SelectButton :model-value="obtenerLayoutGrupo()" :options="opcionesLayout" option-label="label"
       option-value="value" @update:model-value="(v: TipoDiseno) => actualizarLayoutGrupo(v)" />
     <small class="color-negro">Controla si las opciones se muestran en columna o en fila.</small>
   </div>
 
   <!-- Plegable para paneles -->
-  <div class="mb-2" v-if="campo?.tipo === 'panel'">
+  <div v-if="campo?.tipo === 'panel'">
     <label class="flex align-items-center gap-2">
       <Checkbox binary :model-value="obtenerToggleable()"
         @update:model-value="(v: boolean) => actualizarToggleable(v)" />
