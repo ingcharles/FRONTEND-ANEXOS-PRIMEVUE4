@@ -1,12 +1,11 @@
 # AGENTS.md
 
-Guía para agentes (humanos y de IA ) que contribuyen a este proyecto con Vue 3, Pinia, TypeScript, PrimeVue, PrimeFlex y pruebas con Vitest. Todo el código generado en español y funciones (methods, computed, watch, emit) deben ser descriptivos y escritos
-en infinitivo indicando así la acción que van a realizar, apunta a calidad, consistencia y velocidad.
+Este proyecto es un generador de formularios completo con Vue 3, Pinia, TypeScript, PrimeVue y pruebas tdd con Vitest. Código en español
 
 ## Objetivos
 
 - Código claro, tipado y probado.
-- UI accesible y consistente con PrimeVue/PrimeFlex.
+- UI accesible y consistente con PrimeVue.
 - Estado predecible con Pinia.
 - DX rápida con Vite + Vitest.
 
@@ -24,14 +23,16 @@ en infinitivo indicando así la acción que van a realizar, apunta a calidad, co
 ```src/
   app/ # App.vue, main.ts, boot files
   components/disenador/componentes/  # Presentacionales y reutilizables
-  pages/disenador/paginas/          # Vistas de router
-  stores/ # Pinia stores
+  vistas/          # Vistas de router
+  enumeraciones/          # Vistas de router
+  constantes/          # Vistas de router
+  almacenes/ # Pinia stores
   composables/ # Lógica reutilizable (Composition API)
-  services/disenador/servicios/      # API clients y adaptadores
-  router/ # Configuración de rutas
+  servicios/disenador/      # API clients y adaptadores
+  enrutador/ # Configuración de rutas
   styles/ # CSS global, variables y tema
-  types/ # Tipos y contratos TS
-  utils/ # Utilidades puras
+  tipos/ # Tipos y contratos TS
+  utilidades/ # Utilidades puras
   test/ # Config y helpers de test
 assets/
 ```
@@ -41,28 +42,19 @@ assets/
 - Principios SOLID de desarrollo y buenas prácticas de desarrollo
 - TypeScript estricto: evita `any` implícito, usa tipos/`interface` y genéricos.
 - Composition API + `<script setup>` por defecto.
-- Componentes pequeños (<200 líneas), con `name` y `props`/`emits` tipados.
+- Componentes pequeños (<200 líneas), con `props`/`emits` tipados.
 - No mutar `props`; usar `v-model` con nombres explícitos (`v-model:valor`).
-- Lógica de datos en composables/servicios; componentes solo presentan.
 - Estado global en Pinia (acciones para mutaciones, no manipular fuera de acciones).
-- Importar solo los componentes de PrimeVue usados; evita import masivo.
-- Accesibilidad: etiquetas ARIA, foco manejado, contraste, navegación por teclado.
-- Estilos con timewindcss/primeui y variables CSS; evita estilos inline.
 - Rutas y componentes pesados con carga diferida (code splitting).
-  Variables y funciones en español
+- Nombre de archivos, variables y funciones en español
+- Comentarios tipo JSDocs
 
 ## Uso estilos u componentes
 
 - Utilizar componentes de la libreria primeVue.
-- Utilizar estilos de libreria tailwindcss-primeui.
+- Estilos con primeui y CSS \_sri-vue-plantilla.scss; evita estilos inline.
 
-## Convenciones de commits y ramas
-
-- Conventional Commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
-- Ramas: `feature/…`, `fix/…`, `chore/…`.
-- PR checklist: pruebas pasan, cobertura OK, accesibilidad básica, sin TODOs.
-
-## Configuración de PrimeVue/PrimeFlex (ejemplo)
+## Configuración de PrimeVue
 
 ```ts
 // src/app/main.ts
@@ -114,26 +106,6 @@ function onClick() {
 - `storeToRefs(almacen)` para exponer estado a componentes.
 
 ```ts
-// src/stores/contador.ts
-import { defineStore } from "pinia";
-import { ref, computed } from "vue";
-
-export const useContador = defineStore("contador", () => {
-  const valor = ref(0);
-  const doble = computed(() => valor.value * 2);
-  function incrementar(n = 1) {
-    valor.value += n;
-  }
-  return { valor, doble, incrementar };
-});
-```
-
-## Servicios y composables de datos
-
-- Aísla acceso a API en `services/` con tipos TS.
-- Composables devuelven `{ data, loading, error, ... }` y aceptan dependencias inyectables (p. ej., `fetch`).
-
-```ts
 // src/services/nombreModulo/servicios/usuario.service.ts
 export interface Usuario {
   id: number;
@@ -148,15 +120,15 @@ export async function getUsuarios(api = fetch): Promise<Usuario[]> {
 
 // src/composables/useDisenador.ts
 import { ref } from "vue";
-import type { Disenador } from "@/types/disenador";
-import { getDisenador } from "@/services/disenador/servicios/disenador.service";
+import type { Disenador } from "@/tipos/disenador";
+import { getDisenador } from "@/servicios/disenador/servicios/disenador.service";
 
 export function Disenador(api = getDisenador) {
   const disenador = ref<Disenador[]>([]);
   const cargando = ref(false);
   const error = ref<string | null>(null);
 
-  async function cargar() {
+  async function cargarDatos() {
     cargando.value = true;
     error.value = null;
     try {
@@ -168,62 +140,18 @@ export function Disenador(api = getDisenador) {
     }
   }
 
-  return { usuarios, cargando, error, cargar };
+  return { usuarios, cargando, error, cargarDatos };
 }
 ```
 
 ## Pruebas con Vitest
-
-### Configuración base
-
-```ts
-// vitest.config.ts
-import { defineConfig } from "vitest/config";
-import vue from "@vitejs/plugin-vue";
-
-export default defineConfig({
-  plugins: [vue()],
-  test: {
-    environment: "jsdom",
-    setupFiles: "./test/setup.ts",
-    globals: true,
-    coverage: {
-      provider: "v8",
-      reporter: ["text", "html"],
-      thresholds: { lines: 90, functions: 90, branches: 85, statements: 90 },
-    },
-  },
-});
-```
-
-```ts
-// test/setup.ts
-import { config } from "@vue/test-utils";
-import PrimeVue from "primevue/config";
-import Button from "primevue/button";
-import { beforeEach } from "vitest";
-import { createPinia, setActivePinia } from "pinia";
-
-config.global.plugins = [[PrimeVue, { ripple: false }]];
-config.global.components = { Button };
-config.global.stubs = {
-  transition: false,
-  "router-link": { template: "<a><slot /></a>" },
-};
-
-beforeEach(() => {
-  setActivePinia(createPinia());
-});
-```
-
-### Prueba de componente con PrimeVue
 
 ```ts
 // src/components/__tests__/Saludo.spec.ts
 import { mount } from "@vue/test-utils";
 import Saludo from "@/components/Saludo.vue";
 
-it('emite "clicked" al pulsar el botón', async () => {
+it('Deberia emitir "clicked" al pulsar el botón', async () => {
   const wrapper = mount(Saludo, { props: { mensaje: "Hola" } });
   await wrapper.find("button").trigger("click");
   expect(wrapper.emitted("clicked")).toBeTruthy();
@@ -236,7 +164,7 @@ it('emite "clicked" al pulsar el botón', async () => {
 // src/stores/__tests__/contador.spec.ts
 import { useContador } from "@/stores/contador";
 
-it("incrementa correctamente", () => {
+it("Deberia incrementa el valor correctamente", () => {
   const almacen = useContador();
   almacen.incrementar(2);
   expect(almacen.valor).toBe(2);
@@ -251,7 +179,7 @@ it("incrementa correctamente", () => {
 import { useUsuarios } from "@/composables/useUsuarios";
 import { vi } from "vitest";
 
-it("carga usuarios desde el servicio", async () => {
+it("Deberia cargar usuarios desde el servicio", async () => {
   const mockApi = vi.fn().mockResolvedValue([{ id: 1, nombre: "Ada" }]);
   const { usuarios, cargando, cargar } = useUsuarios(mockApi as any);
   const prom = cargar();
@@ -260,12 +188,6 @@ it("carga usuarios desde el servicio", async () => {
   expect(usuarios.value).toHaveLength(1);
 });
 ```
-
-### Comandos útiles
-
-- `npm run test` – ejecuta las pruebas una vez.
-- `npm run test:watch` – modo observación.
-- `npm run test:coverage` – genera cobertura.
 
 ## Accesibilidad (A11y)
 
@@ -284,20 +206,7 @@ it("carga usuarios desde el servicio", async () => {
 - Evita `v-html` (si es imprescindible, sanitiza).
 - Valida entradas; maneja errores y tiempos de espera de red.
 - No expongas secretos en cliente.
-
-## Checklist para agentes IA
-
-- [ ] ¿El cambio respeta la estructura de carpetas y patrones?
-- [ ] ¿Tipos completos sin `any` innecesarios?
-- [ ] ¿Incluye pruebas de unidad con Vitest y pasan?
-- [ ] ¿UI usa PrimeVue/PrimeFlex y es accesible?
-- [ ] ¿No se introducen dependencias sin justificación?
-- [ ] ¿Se documenta cualquier decisión relevante?
-
-## Política de dependencias
-
-- Preferir estándar del ecosistema Vue/TS.
-- Antes de añadir una dependencia: justificar alternativa, tamaño, mantenimiento y seguridad.
+- Security By Design
 
 ## Ejemplo de plantilla de componente + test
 
@@ -338,12 +247,6 @@ it("Debería emitir submit con el valor", async () => {
   expect(wrapper.emitted("submit")?.[0][0]).toBe("Grace");
 });
 ```
-
-## Cómo empezar (local)
-
-- `npm i`
-- `npm run dev`
-- `npm run test`
 
 ## Notas finales
 
