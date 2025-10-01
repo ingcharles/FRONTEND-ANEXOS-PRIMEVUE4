@@ -309,7 +309,7 @@ function irPaginaSiguiente(): void {
 <template>
   <div class="p-3">
     <!-- Navegación entre páginas -->
-    <div class="flex justify-between items-center mb-3" v-if="totalPaginas > 1">
+    <div class="flex justify-between mb-3" v-if="totalPaginas > 1">
       <PrimeButton label="Anterior" icon="pi pi-angle-left" :disabled="indicePagina === 0" @click="irPaginaAnterior" />
       <div class="negrilla">
         {{ paginaActual.titulo || ('Página ' + (indicePagina + 1)) }}

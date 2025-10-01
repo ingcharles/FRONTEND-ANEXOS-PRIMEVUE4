@@ -280,7 +280,7 @@ window.addEventListener('keydown', manejarAtajos)
           <draggable :list="[item]" item-key="key" :group="{ name: 'paleta', pull: 'clone', put: false }"
             :clone="() => clonarDesdeMenu(item)" :sort="false">
             <template #item="{ element }">
-              <a v-ripple class="flex items-center pl-4 pr-2 py-2 cursor-pointer group ancho-100 tamanio-fuente-miga">
+              <a v-ripple class="flex pl-4 pr-2 py-2 cursor-pointer group ancho-100 tamanio-fuente-miga">
                 <i class="pi pi-grip-vertical mr-2" />
                 <i :class="['pi', element.icon, 'group-hover:text-inherit']" />
                 <span class="ml-2">{{ element.label }}</span>
@@ -289,7 +289,7 @@ window.addEventListener('keydown', manejarAtajos)
           </draggable>
         </div>
         <!-- Cabecera de categoría -->
-        <div v-else class="flex items-center px-3 pt-3 pb-2 negrilla tracking-wide">
+        <div v-else class="flex px-3 pt-3 pb-2 negrilla tracking-wide">
           <i :class="['pi', item.icon]" />
           <span class="ml-2 flex-1">{{ item.label }}</span>
           <span v-if="item.items" class="pi pi-angle-down ml-auto" />

@@ -47,7 +47,7 @@ const caracteristicasPrincipales = ref([
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div v-for="caracteristica in caracteristicasPrincipales" :key="caracteristica.titulo"
           class="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow duration-300">
-          <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3"
+          <div class="w-16 h-16 rounded-full flex justify-center mx-auto mb-3"
             :style="{ backgroundColor: caracteristica.color + '20' }">
             <i :class="caracteristica.icono" class="text-2xl" :style="{ color: caracteristica.color }"></i>
           </div>
@@ -70,7 +70,7 @@ const caracteristicasPrincipales = ref([
         Empieza a crear formularios increíbles con nuestro diseñador intuitivo.
       </p>
       <router-link to="/disenador"
-        class="inline-flex items-center px-6 py-3 bg-white text-blue-600 negrilla rounded-lg transition-colors duration-300">
+        class="inline-flex px-6 py-3 bg-white text-blue-600 negrilla rounded-lg transition-colors duration-300">
         <i class="pi pi-play mr-2"></i>
         Ir al Diseñador
       </router-link>

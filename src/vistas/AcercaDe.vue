@@ -149,7 +149,7 @@ const estadisticasProyecto = ref([
         <div v-for="tech in tecnologias" :key="tech.nombre"
           class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 border-t-3"
           :style="{ borderTopColor: tech.color }">
-          <div class="flex items-center mb-3">
+          <div class="flex mb-3">
             <i :class="tech.icono" class="text-2xl mr-3" :style="{ color: tech.color }"></i>
             <div>
               <h3 class=" negrilla text-gray-800">{{ tech.nombre }}</h3>
@@ -157,7 +157,7 @@ const estadisticasProyecto = ref([
             </div>
           </div>
           <p class="text-gray-600 mb-3">{{ tech.descripcion }}</p>
-          <a :href="tech.url" target="_blank" class="inline-flex items-center text-blue-600 hover:text-blue-800 ">
+          <a :href="tech.url" target="_blank" class="inline-flex text-blue-600 hover:text-blue-800 ">
             Documentación
             <i class="pi pi-external-link ml-1 tamanio-fuente-miga"></i>
           </a>
@@ -174,8 +174,8 @@ const estadisticasProyecto = ref([
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div v-for="caracteristica in caracteristicas" :key="caracteristica.titulo"
           class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
-          <div class="flex items-center mb-3">
-            <div class="w-12 h-12 rounded-full flex items-center justify-center mr-3"
+          <div class="flex mb-3">
+            <div class="w-12 h-12 rounded-full flex justify-center mr-3"
               :style="{ backgroundColor: caracteristica.color + '20' }">
               <i :class="caracteristica.icono" class="text-xl" :style="{ color: caracteristica.color }"></i>
             </div>
