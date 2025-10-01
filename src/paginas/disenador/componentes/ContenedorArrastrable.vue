@@ -29,9 +29,9 @@ const lista = computed<EsquemaCampo[]>({
   set: (v) => emitir('actualizar', [...v])
 })
 
-async function manejarAgregar(evento: { newIndex: number }) {
+function manejarAgregar(evento: { newIndex: number }) {
   const indice = evento.newIndex
-  await nextTick()
+  // await nextTick()
   const arreglo = lista.value
   const elemento = (indice != null && indice >= 0 && indice < arreglo.length)
     ? arreglo[indice]
@@ -58,7 +58,6 @@ function obtenerClasesColumna(elemento: EsquemaCampo): string[] {
     v-model="lista"
     item-key="id"
     :group="{ name: 'paleta', pull: true, put: true }"
-
     @change="() => { }"
     @add="manejarAgregar"
     ghost-class="drag-ghost"
