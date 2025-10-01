@@ -39,12 +39,13 @@
 
     <!-- Plegable para paneles -->
     <div class="mb-2" v-if="campo?.tipo === 'panel'">
-      <label class="tamanio-fuente-miga">
+      <label class="tamanio-fuente-miga flex items-center gap-2">
         <Checkbox binary :model-value="obtenerToggleable()"
           @update:model-value="(v: boolean) => actualizarToggleable(v)" />
         Plegable
+        <i class="pi pi-info-circle text-gray-400 cursor-help" 
+           v-tooltip.top="'Permite al usuario colapsar/expandir el panel'"></i>
       </label>
-      <small class="block color-negro mt-1">Permite al usuario colapsar/expandir el panel.</small>
     </div>
 
 

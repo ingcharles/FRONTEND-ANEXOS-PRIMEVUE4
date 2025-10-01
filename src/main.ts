@@ -92,7 +92,6 @@ app.use(ToastService)
 
 app.directive('ripple', Ripple)
 app.directive('tooltip', Tooltip)
-
 app.component('PrimeButton', PrimeButton)
 app.component('PrimeInputText', PrimeInputText)
 app.component('PrimeTextarea', PrimeTextarea)
@@ -113,13 +112,6 @@ app.component('PrimeToast', PrimeToast)
 app.component('PrimeTab', PrimeTab)
 app.component('PrimeTabs', PrimeTabs)
 app.component('PrimeTabPanel', PrimeTabPanel)
-// // eslint-disable-next-line vue/multi-word-component-names
-// app.component('Tabs', Tabs)
-// app.component('TabList', TabList)
-// // eslint-disable-next-line vue/multi-word-component-names
-// app.component('Tab', Tab)
-// app.component('TabPanels', TabPanels)
-// app.component('TabPanel', TabPanel)
 app.component('PrimeMenu', PrimeMenu)
 app.component('PrimeMenubar', PrimeMenubar)
 app.component('PrimePanelMenu', PrimePanelMenu)
