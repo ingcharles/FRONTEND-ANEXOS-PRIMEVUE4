@@ -2016,7 +2016,11 @@ input[type="file"] {
 }
 
 
-
+/* Asegurar que el tooltip funcione correctamente */
+.texto-ayuda {
+  position: relative;
+  z-index: 1;
+}
 
 .input-buscador {
   flex: 1 1 auto;
@@ -2060,6 +2064,10 @@ input[type="file"] {
 
 
 /********** estilos Flexible ************/
+.inline-flex {
+  display: inline-flex !important;
+}
+
 .flex {
   display: flex !important;
 }
@@ -2084,9 +2092,6 @@ input[type="file"] {
   flex-direction: column !important;
 }
 
-// .flex-column-reverse {
-//   flex-direction: column-reverse !important;
-// }
 
 /********** estilos espacios Flexible ************/
 .gap-2 {
