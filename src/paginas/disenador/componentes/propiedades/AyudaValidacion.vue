@@ -30,16 +30,16 @@
         <PrimeTabPanels>
           <!-- Validaciones Básicas -->
           <PrimeTabPanel value="0">
-            <Accordion v-model="panelActivo">
-              <AccordionPanel v-for="(validacion, index) in validacionesBasicas" :key="validacion.tipo"
+            <PrimeAccordion v-model="panelActivo">
+              <PrimeAccordionPanel v-for="(validacion, index) in validacionesBasicas" :key="validacion.tipo"
                 :value="String(index)" class="p-3">
-                <AccordionHeader>
+                <PrimeAccordionHeader>
                   <div class="flex align-items-center gap-2">
                     <i :class="`pi ${validacion.icono} ${validacion.colorClase}`"></i>
                     {{ validacion.titulo }}
                   </div>
-                </AccordionHeader>
-                <AccordionContent>
+                </PrimeAccordionHeader>
+                <PrimeAccordionContent>
                   <p class="contenido mb-3">{{ validacion.descripcion }}</p>
 
                   <div v-if="validacion.casos" class="surface-50 p-3">
@@ -54,9 +54,9 @@
                     <strong>{{ validacion.ejemploTitulo }}:</strong>
                     <PrimeTag :value="validacion.ejemploValor" class="ml-2" />
                   </div>
-                </AccordionContent>
-              </AccordionPanel>
-            </Accordion>
+                </PrimeAccordionContent>
+              </PrimeAccordionPanel>
+            </PrimeAccordion>
           </PrimeTabPanel>
 
           <!-- Patrones con nueva estructura Accordion -->
@@ -68,13 +68,13 @@
                 </template>
                 Expresiones regulares para validar formatos específicos. Haz clic en "Copiar" para usar el patrón.
               </PrimeMessage>
-              <Accordion v-model="panelActivo">
-                <AccordionPanel v-for="(patron, index) in patronesComunes" :key="patron.nombre" :value="String(index)"
+              <PrimeAccordion v-model="panelActivo">
+                <PrimeAccordionPanel v-for="(patron, index) in patronesComunes" :key="patron.nombre" :value="String(index)"
                   class="p-3">
-                  <AccordionHeader>
+                  <PrimeAccordionHeader>
                     {{ patron.nombre }}
-                  </AccordionHeader>
-                  <AccordionContent>
+                  </PrimeAccordionHeader>
+                  <PrimeAccordionContent>
                     <div class="mb-2">
                       <div class="flex align-items-center justify-content-between mb-2">
                         <PrimeInputText :model-value="patron.regex" readonly
@@ -91,9 +91,9 @@
                         </div>
                       </div>
                     </div>
-                  </AccordionContent>
-                </AccordionPanel>
-              </Accordion>
+                  </PrimeAccordionContent>
+                </PrimeAccordionPanel>
+              </PrimeAccordion>
             </div>
           </PrimeTabPanel>
 
@@ -108,14 +108,14 @@
                 Las funciones deben retornar <code>true</code> si el valor es válido, o <code>false</code> si no es
                 válido.
               </PrimeMessage>
-              <Accordion v-model="panelActivo">
-                <AccordionPanel v-for="(ejemplo, index) in ejemplosPersonalizados" :key="ejemplo.nombre" class="p-3"
+              <PrimeAccordion v-model="panelActivo">
+                <PrimeAccordionPanel v-for="(ejemplo, index) in ejemplosPersonalizados" :key="ejemplo.nombre" class="p-3"
                   :value="String(index)">
-                  <AccordionHeader>
+                  <PrimeAccordionHeader>
                     <span>{{ ejemplo.nombre }}</span>
 
-                  </AccordionHeader>
-                  <AccordionContent>
+                  </PrimeAccordionHeader>
+                  <PrimeAccordionContent>
 
                     <div class="mb-2">
                       <div class="flex align-items-center justify-content-between mb-2">
@@ -123,7 +123,6 @@
                         <PrimeButton label="Copiar Código" icon="pi pi-copy"
                           @click="copiarCodigo(ejemplo.codigo)" />
                       </div>
-                      <!-- <p class="contenido m-0">{{ patron.descripcion }}</p> -->
                       <div>
                         <strong class="tamanio-fuente-miga">Ejemplos válidos:</strong>
                         <div class="flex flex-wrap gap-1 mt-2">
@@ -139,9 +138,9 @@
 
 
 
-                  </AccordionContent>
-                </AccordionPanel>
-              </Accordion>
+                  </PrimeAccordionContent>
+                </PrimeAccordionPanel>
+              </PrimeAccordion>
             </div>
           </PrimeTabPanel>
         </PrimeTabPanels>
@@ -153,10 +152,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import DialogoAyuda from '@/componentes/DialogoAyuda.vue'
-import Accordion from 'primevue/accordion'
-import AccordionPanel from 'primevue/accordionpanel'
-import AccordionHeader from 'primevue/accordionheader'
-import AccordionContent from 'primevue/accordioncontent'
 
 const mostrarAyuda = ref(false)
 const tabActivo = ref('0')

@@ -27,11 +27,6 @@ import PrimeToast from 'primevue/toast'
 import PrimeTabs from 'primevue/tabs'
 import PrimeTabPanel from 'primevue/tabpanel'
 import PrimeTabList from 'primevue/tablist'
-// import Tabs from 'primevue/tabs'
-// import TabList from 'primevue/tablist'
-// import Tab from 'primevue/tab'
-// import TabPanels from 'primevue/tabpanels'
-// import TabPanel from 'primevue/tabpanel'
 import PrimeMenu from 'primevue/menu'
 import PrimeMenubar from 'primevue/menubar'
 import PrimePanelMenu from 'primevue/panelmenu'
@@ -46,9 +41,13 @@ import PrimeSelectButton from 'primevue/selectbutton'
 import PrimeScrollPanel from 'primevue/scrollpanel'
 import PrimeTag from 'primevue/tag'
 import PrimeAccordion from 'primevue/accordion'
-import PrimeAccordionTab from 'primevue/accordiontab'
+import PrimeAccordionPanel from 'primevue/accordionpanel'
+import PrimeAccordionHeader from 'primevue/accordionheader'
+import PrimeAccordionContent from 'primevue/accordioncontent'
+
 import PrimeMessage from 'primevue/message'
 import PrimeAvatar from 'primevue/avatar'
+
 
 // Styles
 // import './assets/main.css' // TailwindCSS + estilos personalizados
@@ -135,7 +134,9 @@ app.component('PrimeSelectButton', PrimeSelectButton)
 app.component('PrimeScrollPanel', PrimeScrollPanel)
 app.component('PrimeTag', PrimeTag)
 app.component('PrimeAccordion', PrimeAccordion)
-app.component('PrimeAccordionTab', PrimeAccordionTab)
+app.component('PrimeAccordionPanel', PrimeAccordionPanel)
+app.component('PrimeAccordionHeader', PrimeAccordionHeader)
+app.component('PrimeAccordionContent', PrimeAccordionContent)
 app.component('PrimeAvatar', PrimeAvatar)
 app.component('PrimeMessage', PrimeMessage)
 

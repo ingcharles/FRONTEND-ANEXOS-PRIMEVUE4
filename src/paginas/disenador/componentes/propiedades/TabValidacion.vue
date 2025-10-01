@@ -312,7 +312,7 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
     <!-- Dialog para agregar validaciones -->
     <DialogoAyuda v-model:visible="mostrarMenuAgregar" titulo="Agregar Validación" ancho="500px">
       <div class="flex flex-column gap-3">
-        <PrimeMessage severity="info" :closable="false">
+        <PrimeMessage severity="info" class="p-2" :closable="false">
           Selecciona el tipo de validación que deseas agregar a este campo:
         </PrimeMessage>
 
