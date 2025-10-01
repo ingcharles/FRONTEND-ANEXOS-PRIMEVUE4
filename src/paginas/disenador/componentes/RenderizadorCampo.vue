@@ -38,7 +38,7 @@ function clasesColumnaCampo(campo: EsquemaCampo): string[] {
     `col-${Math.min(12, Math.max(1, pequeno))}`,
     `md:col-${Math.min(12, Math.max(1, mediano))}`,
     `lg:col-${Math.min(12, Math.max(1, grande))}`,
-    'p-2',
+    'p-3',
   ]
 }
 
@@ -261,7 +261,7 @@ const esCampoRequerido = computed(() => {
 <template>
   <div v-if="esCampoVisible">
     <!-- Panel contenedor -->
-    <PrimePanel v-if="campo.tipo === TipoCampoValor.Panel" :header="campo.etiqueta || 'Panel'">
+    <PrimePanel v-if="campo.tipo === TipoCampoValor.Panel" :header="campo.etiqueta || 'Panel'" class="p-3">
       <div class="grid">
         <template v-for="campoHijo in (campo.hijos || [])" :key="campoHijo.id">
           <div :class="clasesColumnaCampo(campoHijo)">
