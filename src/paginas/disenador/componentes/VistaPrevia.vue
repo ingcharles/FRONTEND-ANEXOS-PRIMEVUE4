@@ -10,6 +10,7 @@ import RenderizadorCampo from './RenderizadorCampo.vue'
 import type { RegistroDatos, ValorDato } from '@/tipos/Comunes'
 import { TipoCampoValor } from '@/enumeraciones/Campos'
 import { ModoOpciones } from '@/tipos/TabAtributos'
+import { esVacio, normalizarCasilla, normalizarFecha, normalizarNumero, normalizarTabla, parsearHoraCadenaAFecha } from '@/utilidades/Normalizar'
 
 // Composables y servicios
 const almacen = useAlmacenDisenador()
@@ -61,27 +62,6 @@ function clasesColumna(campo: EsquemaCampo): string[] {
   ]
 }
 
-function esVacio(valor: ValorDato | undefined): boolean {
-  return valor === undefined || valor === null || (typeof valor === 'string' && valor.trim() === '')
-}
-
-function parsearHoraCadenaAFecha(cadena: string): Date | null {
-  const coincidencia = /^([01]?\d|2[0-3]):([0-5]\d)$/.exec(cadena)
-  if (!coincidencia) return null
-  const [, horas, minutos] = coincidencia
-  const fecha = new Date()
-  fecha.setHours(Number(horas), Number(minutos), 0, 0)
-  return fecha
-}
-
-function obtenerOpciones(campo: EsquemaCampo): Array<{ label: string; value: string | number; disabled?: boolean }> {
-  const metadatos = campo.metadatos as MetadatosCampo | undefined
-  const opciones = (metadatos?.opciones ?? metadatos?.opciones) as
-    | Array<{ label: string; value: string | number; disabled?: boolean }>
-    | undefined
-  return Array.isArray(opciones) ? opciones : []
-}
-
 
 function aplicarValoresPorDefecto(lista: EsquemaCampo[], sobrescribirSiVacio = false): void {
   if (!Array.isArray(lista)) return;
@@ -117,42 +97,6 @@ function obtenerValorDefectoNormalizado(campo: EsquemaCampo): ValorDato | undefi
   }
 }
 
-function normalizarNumero(valor: ValorDato | undefined): number | undefined {
-  if (typeof valor === 'string' && valor.trim() !== '') {
-    const numero = Number(valor);
-    return isNaN(numero) ? undefined : numero;
-  }
-  return valor as number | undefined;
-}
-
-function normalizarFecha(valor: ValorDato | undefined): Date | undefined {
-  if (typeof valor === 'string' && valor.trim() !== '') {
-    const fecha = new Date(valor);
-    return isNaN(fecha.getTime()) ? undefined : fecha;
-  }
-  return valor as Date | undefined;
-}
-
-function normalizarCasilla(campo: EsquemaCampo, valor: ValorDato | undefined): ValorDato {
-  if (obtenerOpciones(campo).length > 0) {
-    return Array.isArray(valor) ? valor : [];
-  }
-  if (typeof valor === 'string') {
-    return valor.toLowerCase() === 'true';
-  }
-  if (typeof valor === 'boolean') {
-    return valor;
-  }
-  // Si no hay valor, retorna false por defecto para casilla simple
-  return false;
-}
-
-function normalizarTabla(campo: EsquemaCampo, valor: ValorDato | undefined): ValorDato {
-  if (Array.isArray(valor)) return valor;
-  const columnas = servicioEsquemas.obtenerColumnasTabla(campo);
-  const filas = servicioEsquemas.obtenerFilasTabla(campo);
-  return Array.from({ length: filas }, () => servicioEsquemas.crearFilaVacia(columnas));
-}
 
 function aplicarValorSiCorresponde(
   campo: EsquemaCampo,
