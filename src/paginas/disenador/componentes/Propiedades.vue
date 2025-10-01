@@ -68,7 +68,7 @@ const getTooltipText = (tab: typeof tabs[0]) => {
       <div class="sidebar-header">
         <div class="flex align-items-center gap-2">
           <i class="pi pi-cog text-primary"></i>
-          <span class="font-semibold">Propiedades</span>
+          <span class="negrilla">Propiedades</span>
         </div>
       </div>
 

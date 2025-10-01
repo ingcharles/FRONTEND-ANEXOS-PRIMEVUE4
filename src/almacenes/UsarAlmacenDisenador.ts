@@ -327,13 +327,7 @@ export const useAlmacenDisenador = defineStore('disenador', () => {
   // }
 
   // =================== REINICIO DEL ESTADO ===================
-  function reiniciarFormulario(): void {
-    esquemaFormulario.value = crearFormularioVacio()
-    idCampoSeleccionado.value = null
-    indicePaginaActiva.value = 0
-    valoresPorPagina.value = {}
-    portapapeles.value = null
-  }
+
 
   // Métodos de compatibilidad para tests existentes
   function cargarFormulario(formulario: EsquemaFormulario): void {
@@ -455,7 +449,6 @@ export const useAlmacenDisenador = defineStore('disenador', () => {
     manejarImportarArchivo,
 
     // Utilidades
-    reiniciarFormulario,
 
     // Métodos de compatibilidad para tests
     cargarFormulario,

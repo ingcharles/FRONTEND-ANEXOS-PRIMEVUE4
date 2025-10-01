@@ -19,6 +19,10 @@ const pestana = ref<string>('disenador')
 const editandoTitulo = ref(false)
 const tituloTemporal = ref('')
 
+// Estado para edición del nombre del formulario
+const editandoNombreFormulario = ref(false)
+const nombreFormularioTemporal = ref('')
+
 // Estado para barra lateral de propiedades
 const sidebarVisible = ref(false)
 // const tabPropiedades = ref<'attrs' | 'logic' | 'valid'>('attrs')
@@ -69,11 +73,70 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
   }
 }
 
+// Funciones para editar nombre del formulario
+function iniciarEdicionNombreFormulario(): void {
+  nombreFormularioTemporal.value = almacen.esquemaFormulario.nombre || 'Nuevo formulario'
+  editandoNombreFormulario.value = true
+  // Enfocar el input después del próximo tick
+  nextTick(() => {
+    const input = document.querySelector('.nombre-formulario-input') as HTMLInputElement
+    if (input) {
+      input.focus()
+      input.select()
+    }
+  })
+}
+
+function guardarNombreFormulario(): void {
+  if (nombreFormularioTemporal.value.trim()) {
+    almacen.esquemaFormulario.nombre = nombreFormularioTemporal.value.trim()
+  }
+  cancelarEdicionNombreFormulario()
+}
+
+function cancelarEdicionNombreFormulario(): void {
+  editandoNombreFormulario.value = false
+  nombreFormularioTemporal.value = ''
+}
+
+function manejarTeclasNombreFormulario(event: KeyboardEvent): void {
+  if (event.key === 'Enter') {
+    guardarNombreFormulario()
+  } else if (event.key === 'Escape') {
+    cancelarEdicionNombreFormulario()
+  }
+}
+
 
 </script>
 
 <template>
   <div class="p-3 grid ancho-100 tamanio-fuente-miga" style="min-height: 70vh">
+    <!-- Nombre del formulario editable -->
+    <div class="col-12 mb-3">
+      <div class="flex items-center gap-2">
+        <span class="negrilla">Formulario:</span>
+        <div v-if="!editandoNombreFormulario" class="flex items-center gap-2">
+          <div class="negrilla cursor-pointer px-2 py-1 rounded"
+            @click="iniciarEdicionNombreFormulario">
+            {{ almacen.esquemaFormulario.nombre || 'Nuevo formulario' }}
+            <i class="pi pi-pencil ml-2 tamanio-fuente-miga text-gray-400"></i>
+          </div>
+        </div>
+        <div v-else class="flex items-center gap-2">
+          <PrimeInputText
+            v-model="nombreFormularioTemporal"
+            class="nombre-formulario-input w-64"
+            @keydown="manejarTeclasNombreFormulario"
+            @blur="guardarNombreFormulario"
+            placeholder="Nombre del formulario"
+          />
+          <PrimeButton icon="pi pi-check" severity="success" size="small" @click="guardarNombreFormulario" />
+          <PrimeButton icon="pi pi-times" severity="secondary" size="small" @click="cancelarEdicionNombreFormulario" />
+        </div>
+      </div>
+    </div>
+
     <div class="col-12 lg:col-2">
       <PanelPaleta />
     </div>
@@ -98,7 +161,7 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
             <template v-for="tab in tabTitles" :key="tab.value">
               <PrimeTab :value="tab.value" as="div" class="flex items-center gap-2">
                 <i :class="tab.icon"></i>
-                <span class="font-bold whitespace-nowrap">{{ tab.label }}</span>
+                <span class="negrilla whitespace-nowrap">{{ tab.label }}</span>
               </PrimeTab>
             </template>
           </PrimeTabList>
@@ -113,7 +176,7 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
 
                 <!-- Título editable -->
                 <div v-if="!editandoTitulo" class="flex items-center gap-2">
-                  <div class="negrilla cursor-pointer hover:bg-gray-100 px-2 py-1"
+                  <div class="negrilla cursor-pointer px-2 py-1"
                     @click="iniciarEdicionTitulo">
                     {{ paginaActual.titulo || ('Página ' + (almacen.indicePaginaActiva + 1)) }}
                     <i class="pi pi-pencil ml-2 tamanio-fuente-miga"></i>
@@ -134,7 +197,7 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
               <!-- Título editable para página única -->
               <div v-else class="flex items-center gap-2">
                 <div v-if="!editandoTitulo" class="flex items-center gap-2">
-                  <div class="negrilla cursor-pointer hover:bg-gray-100 px-2 py-1"
+                  <div class="negrilla cursor-pointer px-2 py-1"
                     @click="iniciarEdicionTitulo">
                     {{ paginaActual.titulo || ('Página ' + (almacen.indicePaginaActiva + 1)) }}
                     <i class="pi pi-pencil ml-2 tamanio-fuente-miga"></i>

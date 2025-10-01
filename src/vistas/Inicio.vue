@@ -30,11 +30,11 @@ const caracteristicasPrincipales = ref([
   <div class="inicio p-6 max-w-6xl mx-auto">
     <!-- Sección de Bienvenida -->
     <div class="text-center mb-8">
-      <h1 class="text-4xl font-bold text-gray-800 mb-3">
+      <h1 class="text-4xl negrilla text-gray-800 mb-3">
         <i class="pi pi-home color-cyan-fuerte mr-3"></i>
         {{ mensajeBienvenida }}
       </h1>
-      <p class=" text-gray-600 max-w-2xl mx-auto">
+      <p class=" max-w-2xl mx-auto">
         {{ descripcionAplicacion }}
       </p>
     </div>
@@ -63,14 +63,14 @@ const caracteristicasPrincipales = ref([
 
     <!-- Llamada a la Acción -->
     <div class="text-center bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg p-8">
-      <h2 class="text-2xl font-bold mb-3">
+      <h2 class="text-2xl negrilla mb-3">
         ¿Listo para comenzar?
       </h2>
       <p class=" mb-6">
         Empieza a crear formularios increíbles con nuestro diseñador intuitivo.
       </p>
       <router-link to="/disenador"
-        class="inline-flex items-center px-6 py-3 bg-white text-blue-600 negrilla rounded-lg hover:bg-gray-100 transition-colors duration-300">
+        class="inline-flex items-center px-6 py-3 bg-white text-blue-600 negrilla rounded-lg transition-colors duration-300">
         <i class="pi pi-play mr-2"></i>
         Ir al Diseñador
       </router-link>
