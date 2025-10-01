@@ -225,7 +225,7 @@ watch(() => obtenerColumnas().length, () => {
       <draggable :list="columnasProxy" item-key="name" handle=".drag-handle" ghost-class="surface-100" class="grid"
         @end="manejarReordenColumnas">
         <template #item="{ element, index }">
-          <div class="col-12 flex align-items-center justify-content-between p-2 border-1 surface-border border-round">
+          <div class="col-12 flex align-items-center justify-content-between p-2 border-1">
             <div class="flex align-items-center gap-2">
               <i class="pi pi-bars drag-handle cursor-move" />
               <span>

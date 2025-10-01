@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-3 p-3 border-1 surface-border border-round">
+  <div class="mt-3 p-3 border-1">
     <div class="negrilla mb-2 tamanio-fuente-miga">Dependencias</div>
 
     <div class="grid">

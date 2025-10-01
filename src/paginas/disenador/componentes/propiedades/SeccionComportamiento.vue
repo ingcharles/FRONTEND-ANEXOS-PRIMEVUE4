@@ -34,7 +34,7 @@
       <label class="block mb-1">Distribución de opciones</label>
       <SelectButton :model-value="obtenerLayoutGrupo()" :options="opcionesLayout" option-label="label"
         option-value="value" @update:model-value="(v: TipoDiseno) => actualizarLayoutGrupo(v)" />
-      <small class="text-muted-color">Controla si las opciones se muestran en columna o en fila.</small>
+      <small class="color-negro">Controla si las opciones se muestran en columna o en fila.</small>
     </div>
 
 

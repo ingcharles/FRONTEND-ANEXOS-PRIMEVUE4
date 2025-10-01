@@ -155,7 +155,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div ref="elementoRaiz" class="border-round p-2 surface-card border-1 relative handler-mover"
+  <div ref="elementoRaiz" class="p-2 border-1 relative"
     :class="{ 'border-primary border-2': seleccionado }" role="button" tabindex="0" @click="seleccionar">
     <!-- Badge informativo (superior derecha) con dos columnas: texto izquierda, acciones derecha -->
     <div v-if="seleccionado" class="informacion-redimension">
@@ -259,7 +259,7 @@ onUnmounted(() => {
         </div>
       </template>
       <template v-else-if="campo.tipo === TipoCampoValor.Etiqueta">
-        <div class="text-muted-color">{{ campo.etiqueta }}</div>
+        <div class="color-negro">{{ campo.etiqueta }}</div>
       </template>
       <template v-else-if="campo.tipo === TipoCampoValor.Divisor">
         <PrimeDivider class="my-3" />
@@ -268,14 +268,14 @@ onUnmounted(() => {
         <PrimeButton :label="campo.etiqueta || 'Botón'" />
       </template>
       <template v-else-if="campo.tipo === TipoCampoValor.Tabla">
-        <div class="border rounded-border p-2">
+        <div class="m-2">
           <div class="negrilla mb-2">Tabla</div>
           <div class="overflow-auto">
-            <table class="ancho-100 tamanio-fuente-miga tamanio-fuente-miga">
+            <table class="ancho-100 tamanio-fuente-miga">
               <thead>
                 <tr>
                   <th v-for="col in ((campo.metadatos as any)?.columnas || [])" :key="col.name"
-                    class="text-left p-2 border-bottom-1 surface-border">
+                    class="texto-izquierda p-2 border-inferior-1">
                     {{ col.label || col.name }}
                   </th>
                 </tr>
@@ -290,7 +290,7 @@ onUnmounted(() => {
                       class="ancho-100 tamanio-fuente-miga" disabled placeholder="0" />
                     <PrimeDatePicker v-else-if="col.tipo === TipoCampoValor.Fecha" class="ancho-100 tamanio-fuente-miga"
                       disabled />
-                    <span v-else class="text-muted-color">—</span>
+                    <span v-else class="color-negro">—</span>
                   </td>
                 </tr>
               </tbody>
@@ -299,7 +299,7 @@ onUnmounted(() => {
           <div class="mt-2" v-if="(campo.metadatos as any)?.agregarFilas">
             <PrimeButton label="Añadir fila" size="small" icon="pi pi-plus" disabled />
           </div>
-          <div class="text-xs text-muted-color mt-2">
+          <div class="text-xs color-negro mt-2">
             Filas: {{ Number((campo.metadatos as any)?.filas || 1) }} |
             Columnas: {{ ((campo.metadatos as any)?.columnas || []).length }}
           </div>

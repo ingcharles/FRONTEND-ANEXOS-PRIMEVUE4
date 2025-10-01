@@ -30,7 +30,7 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
 </script>
 
 <template>
-  <div class="propiedades-basicas p-4 border-round border-1 surface-border">
+  <div class="propiedades-basicas p-4 border-1">
     <h3 class=" negrilla mb-3">Propiedades básicas</h3>
 
     <!-- Tipo de campo -->
@@ -53,7 +53,7 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
       <label for="nombre-campo" class="block tamanio-fuente-miga  mb-2">Nombre técnico</label>
       <InputText id="nombre-campo" :model-value="props.campo.nombre || ''" class="ancho-100 tamanio-fuente-miga"
         placeholder="nombre_campo" @input="(e: Event) => manejarCambioTexto('nombre', e)" />
-      <small class="text-muted-color">
+      <small class="color-negro">
         Nombre único para identificar el campo en el formulario
       </small>
     </div>
@@ -92,7 +92,7 @@ function manejarCambioBooleano(clave: keyof Pick<EsquemaCampo, 'visible' | 'requ
   margin-bottom: 1rem;
 } */
 
-.text-muted-color {
+.color-negro {
   color: var(--text-color-secondary);
 }
 </style>

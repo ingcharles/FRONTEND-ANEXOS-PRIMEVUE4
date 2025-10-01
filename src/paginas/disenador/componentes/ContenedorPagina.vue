@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { EsquemaPagina } from '@/interfaces/Pagina'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
-import ContenedorArrastrable from './ContenedorArrastrable.vue'
+import ContenedorArrastrable from '@paginas/disenador/componentes/ContenedorArrastrable.vue'
 
 const propiedades = defineProps<{ pagina: EsquemaPagina }>()
 const almacen = useAlmacenDisenador()
@@ -18,7 +18,7 @@ function actualizarCampos(nuevosCampos: EsquemaCampo[]) {
 </script>
 
 <template>
-  <div class="border-1 border-dashed border-round surface-border p-2 ancho-100 tamanio-fuente-miga">
+  <div class="border-1 border-dashed p-2 ancho-100 tamanio-fuente-miga">
     <ContenedorArrastrable
       :key="pagina.id"
       :elementos="campos"

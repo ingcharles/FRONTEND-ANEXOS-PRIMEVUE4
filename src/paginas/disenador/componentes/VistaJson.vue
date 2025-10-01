@@ -8,16 +8,6 @@ const almacen = useAlmacenDisenador()
 // Computed properties
 const contenidoJson = computed(() => almacen.serializar())
 
-// Métodos de gestión de archivos
-// function manejarImportarArchivo(evento: Event): void {
-//   const input = evento.target as HTMLInputElement
-//   const archivo = input.files?.[0]
-//   if (archivo) {
-//     almacen.importarJson(archivo)
-//   }
-// }
-
-
 </script>
 
 <template>
@@ -31,7 +21,7 @@ const contenidoJson = computed(() => almacen.serializar())
       </label>
     </div>
 
-    <pre class="bg-surface-100 p-3 border-round overflow-auto" style="max-height: 50vh">{{ contenidoJson }}</pre>
+    <pre class="bg-surface-100 p-3 overflow-auto" style="max-height: 50vh">{{ contenidoJson }}</pre>
   </div>
 </template>
 

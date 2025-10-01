@@ -58,7 +58,7 @@ function obtenerClasesColumna(elemento: EsquemaCampo): string[] {
     v-model="lista"
     item-key="id"
     :group="{ name: 'paleta', pull: true, put: true }"
-    handle=".handler-mover"
+
     @change="() => { }"
     @add="manejarAgregar"
     ghost-class="drag-ghost"

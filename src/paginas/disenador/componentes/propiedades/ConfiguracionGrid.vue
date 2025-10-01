@@ -45,7 +45,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
 </script>
 
 <template>
-  <div class="configuracion-grid p-4 border-round border-1 surface-border">
+  <div class="configuracion-grid p-4 border-1">
     <div class="flex justify-content-between align-items-center mb-3">
       <h4 class="text-base negrilla m-0">Diseño responsivo</h4>
       <PrimeButton label="Restablecer" icon="pi pi-refresh" size="small" text @click="restablecerGrid" />
@@ -73,7 +73,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
             <i class="pi pi-mobile mr-1"></i>
             Móvil (sm)
           </label>
-          <span class="text-xs text-muted-color">&lt; 768px</span>
+          <span class="text-xs color-negro">&lt; 768px</span>
         </div>
         <PrimeSelect :model-value="gridActual.sm" :options="opcionesColumnas" option-label="etiqueta"
           option-value="valor" placeholder="Auto" class="ancho-100 tamanio-fuente-miga"
@@ -87,7 +87,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
             <i class="pi pi-tablet mr-1"></i>
             Tablet (md)
           </label>
-          <span class="text-xs text-muted-color">768px - 1024px</span>
+          <span class="text-xs color-negro">768px - 1024px</span>
         </div>
         <PrimeSelect :model-value="gridActual.md" :options="opcionesColumnas" option-label="etiqueta"
           option-value="valor" placeholder="Auto" class="ancho-100 tamanio-fuente-miga"
@@ -101,7 +101,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
             <i class="pi pi-desktop mr-1"></i>
             Desktop (lg)
           </label>
-          <span class="text-xs text-muted-color">&gt; 1024px</span>
+          <span class="text-xs color-negro">&gt; 1024px</span>
         </div>
         <PrimeSelect :model-value="gridActual.lg" :options="opcionesColumnas" option-label="etiqueta"
           option-value="valor" placeholder="Auto" class="ancho-100 tamanio-fuente-miga"
@@ -110,7 +110,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
     </div>
 
     <!-- Vista previa del grid -->
-    <div class="vista-previa-grid mt-4 p-3 border-round surface-ground">
+    <div class="vista-previa-grid mt-4 p-3 surface-ground">
       <h6 class="text-xs  mb-2">Vista previa</h6>
       <div class="grid-preview flex gap-1">
         <div v-for="n in 12" :key="n" class="grid-cell" :class="{
@@ -118,7 +118,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
         }" />
       </div>
       <div class="grid-info mt-2">
-        <small class="text-muted-color">
+        <small class="color-negro">
           El campo ocupará
           {{ gridActual.lg || gridActual.md || gridActual.sm || 12 }}
           de 12 columnas disponibles
@@ -128,7 +128,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
 
     <!-- Información de ayuda -->
     <div class="mt-3">
-      <small class="text-muted-color">
+      <small class="color-negro">
         <i class="pi pi-info-circle mr-1"></i>
         El sistema de grid usa 12 columnas. Configura cuántas columnas ocupa el campo en cada tipo de dispositivo.
       </small>
@@ -151,7 +151,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
   padding-bottom: 0;
 }
 
-.text-muted-color {
+.color-negro {
   color: var(--text-color-secondary);
 }
 

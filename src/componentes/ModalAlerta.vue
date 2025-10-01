@@ -5,7 +5,7 @@
       <i :class="obtenerClaseIcono()" class="text-2xl mt-1"></i>
       <div class="flex-1">
         <p class="text-gray-700 leading-relaxed">{{ mensaje }}</p>
-        <div v-if="mensajeDetalle" class="mt-2 p-2 bg-gray-50 border-1 border-gray-200 border-round">
+        <div v-if="mensajeDetalle" class="mt-2 p-2 bg-gray-50 border-1 border-gray-200">
           <small class="text-gray-600">{{ mensajeDetalle }}</small>
         </div>
       </div>

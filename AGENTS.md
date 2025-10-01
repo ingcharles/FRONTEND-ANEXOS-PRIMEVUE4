@@ -99,8 +99,8 @@ function onClick() {
 </script>
 
 <template>
-  <div class="p-4 surface-card border-round shadow-1">
-    <p class="text-2xl  m-0">{{ props.mensaje }}</p>
+  <div class="p-4">
+    <p class="tamanio-fuente-24 m-0">{{ props.mensaje }}</p>
     <PrimeButton label="Haz clic" @click="onClick" />
   </div>
 </template>

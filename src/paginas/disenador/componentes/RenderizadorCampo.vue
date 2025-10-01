@@ -84,7 +84,7 @@ function clasesTablaCompleta(campo: EsquemaCampo): string[] {
   return [
     'ancho-100 tamanio-fuente-miga',
     'tamanio-fuente-miga',
-    estilo.conBordes ? 'border-1 surface-border' : ''
+    estilo.conBordes ? 'border-1' : ''
   ]
 }
 
@@ -93,7 +93,7 @@ function clasesCeldaTabla(campo: EsquemaCampo): string[] {
   const clasesRelleno = claseRellenoCelda(campo)
   return [
     clasesRelleno,
-    estilo.conBordes ? 'border-bottom-1 surface-border' : ''
+    estilo.conBordes ? 'border-inferior-1' : ''
   ]
 }
 
@@ -367,7 +367,7 @@ const esCampoRequerido = computed(() => {
                 <th v-for="columnaTabla in obtenerColumnasTabla(campo)" :key="columnaTabla.name" :class="[
                   'text-left',
                   claseRellenoCelda(campo),
-                  obtenerEstiloTabla(campo).conBordes ? 'border-bottom-1 surface-border' : ''
+                  obtenerEstiloTabla(campo).conBordes ? 'border-inferior-1' : ''
                 ]">
                   {{ columnaTabla.label }}
                 </th>
@@ -401,7 +401,7 @@ const esCampoRequerido = computed(() => {
                   </template>
 
                   <!-- Campo no soportado -->
-                  <span v-else class="text-muted-color">—</span>
+                  <span v-else class="color-negro">—</span>
                 </td>
               </tr>
             </tbody>

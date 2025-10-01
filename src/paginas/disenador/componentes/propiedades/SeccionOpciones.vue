@@ -439,7 +439,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
     </template>
 
     <!-- Configuración de API -->
-    <div v-if="obtenerModoOpciones() === ModoOpciones.API" class="mt-2 p-3 border-1 surface-border border-round">
+    <div v-if="obtenerModoOpciones() === ModoOpciones.API" class="mt-2 p-3 border-1">
       <div class="negrilla mb-2 tamanio-fuente-miga">Cargar opciones por API</div>
 
       <div class="grid">
@@ -502,7 +502,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
 
         <!-- Estructura detectada -->
         <div class="col-12" v-if="obtenerOpciones().length > 0">
-          <div class="p-3 bg-blue-50 border-1 border-blue-200 border-round">
+          <div class="p-3 bg-blue-50 border-1 border-blue-200">
             <div class="tamanio-fuente-miga  text-blue-800 mb-1">Estructura detectada:</div>
             <div class="text-xs text-blue-700 font-mono">
               {{ JSON.stringify(obtenerOpciones()[0], null, 2) }}

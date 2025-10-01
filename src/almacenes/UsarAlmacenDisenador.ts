@@ -369,22 +369,6 @@ export const useAlmacenDisenador = defineStore('disenador', () => {
     return ServicioCampos.buscarCampoPorId(esquemaFormulario.value.paginas, id)
   }
 
-  // =================== COMPATIBILIDAD PARA TESTS ===================
-  // const servicioEsquemas = new ServicioEsquemasFormulario()
-
-  // const mapsIdToName = computed<Record<string, Record<string, string>>>(() => {
-  //   const resultado: Record<string, Record<string, string>> = {}
-  //   for (const pagina of esquemaFormulario.value.paginas) {
-  //     const mapa: Record<string, string> = {}
-  //     const camposConNombre = servicioEsquemas.recolectarCamposConNombre(pagina.campos, [])
-  //     for (const campo of camposConNombre) {
-  //       if (campo.id && campo.nombre) mapa[campo.id] = campo.nombre
-  //     }
-  //     resultado[pagina.id] = mapa
-  //   }
-  //   return resultado
-  // })
-
   async function validarYEnviarFormulario(
     valores: Record<string, Record<string, unknown>>
   ): Promise<{ exito: boolean; mensaje: string; errores?: Record<string, string> }>
@@ -469,9 +453,6 @@ export const useAlmacenDisenador = defineStore('disenador', () => {
     manejarExportarArchivo,
     importarJson,
     manejarImportarArchivo,
-    // Portapapeles
-    // copiarCampo,
-    // pegarCampo,
 
     // Utilidades
     reiniciarFormulario,

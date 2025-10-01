@@ -129,7 +129,7 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
     </div>
 
     <!-- Estado vacío -->
-    <div v-if="reglasLogica.length === 0" class="centrar-texto p-3 border-round-lg border-1 surface-border">
+    <div v-if="reglasLogica.length === 0" class="centrar-texto p-3-lg border-1">
       <i class="pi pi-sitemap tamanio-fuente-24 mb-3"></i>
       <p class="contenido m-0 negrilla">No hay reglas de lógica configuradas</p>
       <small class="mt-2 block">
@@ -193,7 +193,7 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
         </div>
 
         <!-- Expresión personalizada -->
-        <div v-if="esOperadorPersonalizado(regla.operador)" class="mt-3 p-3 border-round">
+        <div v-if="esOperadorPersonalizado(regla.operador)" class="mt-3 p-3">
           <label class="tamanio-fuente-miga">
             <i class="pi pi-code mr-2"></i>Expresión personalizada
           </label>
@@ -205,7 +205,7 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
         </div>
 
         <!-- Resumen -->
-        <div class="mt-3 p-3 border-round text-sm">
+        <div class="mt-3 p-3 text-sm">
           <i class="pi pi-info-circle mr-2"></i>
           <span class="text-600">
             <strong>Si</strong> el campo

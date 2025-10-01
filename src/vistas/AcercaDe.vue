@@ -254,7 +254,7 @@ const estadisticasProyecto = ref([
       <p class="text-gray-600">
         Desarrollado con ❤️ usando Vue.js 3, TypeScript y PrimeVue 4
       </p>
-      <p class="tamanio-fuente-miga text-gray-500 mt-2">
+      <p class="tamanio-fuente-miga mt-2">
         Siguiendo principios SOLID y mejores prácticas de desarrollo
       </p>
     </div>

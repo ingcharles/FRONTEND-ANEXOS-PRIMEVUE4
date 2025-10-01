@@ -42,7 +42,7 @@
                 <AccordionContent>
                   <p class="contenido mb-3">{{ validacion.descripcion }}</p>
 
-                  <div v-if="validacion.casos" class="surface-50 border-round p-3">
+                  <div v-if="validacion.casos" class="surface-50 p-3">
                     <strong>Casos comunes:</strong>
                     <ul class="mt-2 mb-0 pl-3">
                       <li v-for="caso in validacion.casos" :key="caso" class="mb-1">{{ caso }}</li>
@@ -50,7 +50,7 @@
                   </div>
 
 
-                  <div class="surface-100 border-round p-3">
+                  <div class="surface-100 p-3">
                     <strong>{{ validacion.ejemploTitulo }}:</strong>
                     <PrimeTag :value="validacion.ejemploValor" class="ml-2" />
                   </div>
@@ -119,7 +119,7 @@
 
                     <div class="mb-2">
                       <div class="flex align-items-center justify-content-between mb-2">
-                        <p class="contenido-izquierda mb-3">{{ ejemplo.descripcion }}</p>
+                        <p class="texto-izquierda color-negro mb-3">{{ ejemplo.descripcion }}</p>
                         <PrimeButton label="Copiar Código" icon="pi pi-copy"
                           @click="copiarCodigo(ejemplo.codigo)" />
                       </div>
@@ -128,7 +128,7 @@
                         <strong class="tamanio-fuente-miga">Ejemplos válidos:</strong>
                         <div class="flex flex-wrap gap-1 mt-2">
                           <PrimeScrollPanel style="width: 100%; height: 200px">
-                            <pre class="p-3 border-round font-mono tamanio-fuente-miga overflow-auto">
+                            <pre class="p-3 font-mono tamanio-fuente-miga overflow-auto">
                     <code>{{ ejemplo.codigo }}</code>
                   </pre>
                           </PrimeScrollPanel>

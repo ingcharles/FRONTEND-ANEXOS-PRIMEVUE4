@@ -138,8 +138,8 @@ const mostrarConfiguracionGrid = computed(() => {
 <template>
   <div class="pestana-atributos">
     <div v-if="!campoSeleccionado" class="sin-campo-seleccionado p-4 text-center">
-      <i class="pi pi-info-circle text-4xl text-muted-color mb-3"></i>
-      <p class="text-muted-color m-0">
+      <i class="pi pi-info-circle text-4xl color-negro mb-3"></i>
+      <p class="color-negro m-0">
         Selecciona un campo para editar sus propiedades
       </p>
     </div>
@@ -158,13 +158,13 @@ const mostrarConfiguracionGrid = computed(() => {
         @actualizar-grid="manejarActualizacionGrid" />
 
       <!-- Información de depuración (solo en desarrollo) -->
-      <div v-if="import.meta.env.DEV" class="debug-info p-3 border-round surface-100">
+      <div v-if="import.meta.env.DEV" class="debug-info p-3 surface-100">
         <details>
           <summary class="cursor-pointer tamanio-fuente-miga ">
             <i class="pi pi-code mr-1"></i>
             Información de depuración
           </summary>
-          <pre class="text-xs mt-2 p-2 border-round surface-0">{{ JSON.stringify(campoSeleccionado, null, 2) }}</pre>
+          <pre class="text-xs mt-2 p-2 surface-0">{{ JSON.stringify(campoSeleccionado, null, 2) }}</pre>
         </details>
       </div>
     </div>
@@ -190,7 +190,7 @@ const mostrarConfiguracionGrid = computed(() => {
   padding: 1rem;
 }
 
-.text-muted-color {
+.color-negro {
   color: var(--text-color-secondary);
 }
 

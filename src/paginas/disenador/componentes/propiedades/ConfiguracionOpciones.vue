@@ -86,7 +86,7 @@ function generarOpcionesPorDefecto(): void {
 </script>
 
 <template>
-  <div v-if="tieneOpciones" class="configuracion-opciones p-4 border-round border-1 surface-border">
+  <div v-if="tieneOpciones" class="configuracion-opciones p-4 border-1">
     <div class="flex justify-content-between align-items-center mb-3">
       <h4 class="text-base negrilla m-0">Opciones de selección</h4>
       <PrimeButton v-if="opcionesActuales.length === 0" label="Generar opciones" icon="pi pi-plus" size="small" text
@@ -97,8 +97,8 @@ function generarOpcionesPorDefecto(): void {
     <div v-if="opcionesActuales.length > 0" class="opciones-existentes mb-3">
       <draggable v-model="opcionesActuales" item-key="valor" handle=".handle-ordenar" @change="manejarCambioDragDrop">
         <template #item="{ element: opcion, index }">
-          <div class="opcion-item flex align-items-center gap-2 p-2 mb-2 border-round surface-ground">
-            <i class="pi pi-bars handle-ordenar cursor-move text-muted-color"></i>
+          <div class="opcion-item flex align-items-center gap-2 p-2 mb-2 surface-ground">
+            <i class="pi pi-bars handle-ordenar cursor-move color-negro"></i>
 
             <div class="flex-1 grid">
               <div class="col-6">
@@ -120,7 +120,7 @@ function generarOpcionesPorDefecto(): void {
     </div>
 
     <!-- Formulario para agregar nueva opción -->
-    <div class="agregar-opcion border-top-1 surface-border pt-3">
+    <div class="agregar-opcion border-top-1 pt-3">
       <div class="grid">
         <div class="col-5">
           <PrimeInputText v-model="nuevaOpcion.etiqueta" placeholder="Etiqueta de la opción"
@@ -139,7 +139,7 @@ function generarOpcionesPorDefecto(): void {
 
     <!-- Información de ayuda -->
     <div class="mt-3">
-      <small class="text-muted-color">
+      <small class="color-negro">
         <i class="pi pi-info-circle mr-1"></i>
         La etiqueta es lo que ve el usuario, el valor es lo que se envía con el formulario.
         Puedes arrastrar las opciones para reordenarlas.
@@ -170,7 +170,7 @@ function generarOpcionesPorDefecto(): void {
   cursor: grabbing;
 }
 
-.text-muted-color {
+.color-negro {
   color: var(--text-color-secondary);
 }
 

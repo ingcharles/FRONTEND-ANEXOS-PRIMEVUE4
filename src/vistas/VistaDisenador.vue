@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import PanelPaleta from '@/paginas/disenador/componentes/PanelPaleta.vue'
-import LienzoPagina from '@/paginas/disenador/componentes/LienzoPagina.vue'
+import ContenedorPagina from '@/paginas/disenador/componentes/ContenedorPagina.vue'
 
 import VistaPrevia from '@/paginas/disenador/componentes/VistaPrevia.vue'
 import VistaJson from '@/paginas/disenador/componentes/VistaJson.vue'
@@ -113,10 +113,10 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
 
                 <!-- Título editable -->
                 <div v-if="!editandoTitulo" class="flex items-center gap-2">
-                  <div class="negrilla cursor-pointer hover:bg-gray-100 px-2 py-1 border-round"
+                  <div class="negrilla cursor-pointer hover:bg-gray-100 px-2 py-1"
                     @click="iniciarEdicionTitulo">
                     {{ paginaActual.titulo || ('Página ' + (almacen.indicePaginaActiva + 1)) }}
-                    <i class="pi pi-pencil ml-2 text-gray-500 tamanio-fuente-miga"></i>
+                    <i class="pi pi-pencil ml-2 tamanio-fuente-miga"></i>
                   </div>
                 </div>
                 <div v-else class="flex items-center gap-2">
@@ -134,10 +134,10 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
               <!-- Título editable para página única -->
               <div v-else class="flex items-center gap-2">
                 <div v-if="!editandoTitulo" class="flex items-center gap-2">
-                  <div class="negrilla cursor-pointer hover:bg-gray-100 px-2 py-1 border-round"
+                  <div class="negrilla cursor-pointer hover:bg-gray-100 px-2 py-1"
                     @click="iniciarEdicionTitulo">
                     {{ paginaActual.titulo || ('Página ' + (almacen.indicePaginaActiva + 1)) }}
-                    <i class="pi pi-pencil ml-2 text-gray-500 tamanio-fuente-miga"></i>
+                    <i class="pi pi-pencil ml-2 tamanio-fuente-miga"></i>
                   </div>
                 </div>
                 <div v-else class="flex items-center gap-2">
@@ -148,7 +148,7 @@ function manejarTeclasTitulo(event: KeyboardEvent): void {
                 </div>
               </div>
             </div>
-            <LienzoPagina :key="almacen.indicePaginaActiva + ':' + (paginaActual.id || '')" :pagina="paginaActual" />
+            <ContenedorPagina :key="almacen.indicePaginaActiva + ':' + (paginaActual.id || '')" :pagina="paginaActual" />
           </PrimeTabPanel>
           <PrimeTabPanel value="preview">
             <VistaPrevia />
