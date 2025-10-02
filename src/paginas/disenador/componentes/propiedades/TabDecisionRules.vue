@@ -80,7 +80,16 @@ function crearNuevaReglaDecisionRules(): ReglaLogica {
     decisionRulesId: '',
     decisionRulesVersion: 1,
     camposEntrada: [],
-    condicionResultado: ''
+    condicionResultado: '',
+    camposAsignar: []
+  }
+}
+
+// Función para manejar el cambio de acción
+function onAccionChange(regla: ReglaLogica): void {
+  // Si se selecciona "establecer-valor" y no hay campos de asignación, agregar uno automáticamente
+  if (regla.accion === 'establecer-valor' && (!regla.camposAsignar || regla.camposAsignar.length === 0)) {
+    agregarCampoAsignar(regla)
   }
 }
 
@@ -105,7 +114,20 @@ function agregarCampoAsignar(regla: ReglaLogica): void {
   if (!regla.camposAsignar) {
     regla.camposAsignar = []
   }
-  regla.camposAsignar.push({ nombreCampo: '', expresionValor: '' })
+  // Si el campo seleccionado tiene nombre, usarlo por defecto
+  const nombreCampoActual = campoSeleccionado.value?.nombre || ''
+  regla.camposAsignar.push({
+    nombreCampo: nombreCampoActual,
+    expresionValor: nombreCampoActual ? `result.${nombreCampoActual}` : ''
+  })
+}
+
+// Función para autocompletar la expresión cuando se selecciona un campo
+function autocompletarExpresion(campoAsignar: { nombreCampo: string; expresionValor: string }): void {
+  if (campoAsignar.nombreCampo && !campoAsignar.expresionValor) {
+    // Autocompletar con result.nombreCampo
+    campoAsignar.expresionValor = `result.${campoAsignar.nombreCampo}`
+  }
 }
 
 function eliminarCampoEntrada(regla: ReglaLogica, indice: number): void {
@@ -283,6 +305,7 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
               option-value="valor"
               class="ancho-100 tamanio-fuente-miga"
               placeholder="Seleccionar acción..."
+              @change="onAccionChange(regla)"
             />
           </div>
 
@@ -413,17 +436,31 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
                     class="ancho-100 tamanio-fuente-miga"
                     placeholder="Seleccionar campo..."
                     :filter="true"
+                    @change="autocompletarExpresion(campoAsignar)"
                   />
                 </div>
                 <div class="col-12 md:col-5">
                   <label class="tamanio-fuente-miga">Expresión del Valor</label>
-                  <PrimeInputText
-                    v-model="campoAsignar.expresionValor"
-                    class="ancho-100 tamanio-fuente-miga"
-                    placeholder="result[0].result o result.value"
-                  />
+                  <div class="flex gap-2">
+                    <PrimeInputText
+                      v-model="campoAsignar.expresionValor"
+                      class="flex-1 tamanio-fuente-miga"
+                      :placeholder="campoAsignar.nombreCampo ? `result.${campoAsignar.nombreCampo}` : 'result[0].result o result.value'"
+                    />
+                    <PrimeButton
+                      icon="pi pi-refresh"
+                      size="small"
+                      text
+                      v-tooltip.top="'Autocompletar con result.nombreCampo'"
+                      @click="campoAsignar.expresionValor = `result.${campoAsignar.nombreCampo}`"
+                      v-if="campoAsignar.nombreCampo"
+                    />
+                  </div>
                   <small class="mt-1 block text-xs">
-                    Expresión JavaScript para extraer el valor del resultado
+                    Expresión JavaScript para extraer el valor del resultado.
+                    <span v-if="campoAsignar.nombreCampo" class="text-primary">
+                      Sugerencia: <code>result.{{ campoAsignar.nombreCampo }}</code>
+                    </span>
                   </small>
                 </div>
                 <div class="col-12 md:col-2 flex align-items-end">

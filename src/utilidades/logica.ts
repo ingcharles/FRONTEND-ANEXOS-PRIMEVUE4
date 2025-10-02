@@ -39,8 +39,8 @@ export async function evaluarReglasCampo(
     let cumple = false
 
     if (r.tipo === 'decisionrules') {
-      // Evaluar regla de DecisionRules
-      cumple = await evaluarReglaDecisionRules(r, valoresPorNombre)
+      // Evaluar regla de DecisionRules, pasando el nombre del campo actual
+      cumple = await evaluarReglaDecisionRules(r, valoresPorNombre, campo.nombre)
     } else {
       // Evaluar regla simple
       const nombreDependencia = mapaIdNombre[r.campoCondicionId]
@@ -53,6 +53,7 @@ export async function evaluarReglasCampo(
       if (r.accion === 'ocultar') visible = false
       if (r.accion === 'requerir') requerido = true
       if (r.accion === 'opcional') requerido = false
+      // La acción 'establecer-valor' se maneja dentro de evaluarReglaDecisionRules
     }
   }
 
@@ -99,7 +100,8 @@ export function obtenerUltimoResultadoDecisionRules(): any {
 
 async function evaluarReglaDecisionRules(
   regla: ReglaLogica,
-  valoresPorNombre: RegistroDatos
+  valoresPorNombre: RegistroDatos,
+  nombreCampoActual?: string
 ): Promise<boolean> {
   console.log('🔵 [DecisionRules] Evaluando regla:', regla.id)
 
@@ -178,10 +180,24 @@ async function evaluarReglaDecisionRules(
         const resultado = !!fn(response)
         console.log('✅ [DecisionRules] Resultado de condición:', resultado)
 
-        // Si la condición se cumple y la acción es establecer-valor, aplicar asignaciones
-        if (resultado && regla.accion === 'establecer-valor' && regla.camposAsignar) {
-          console.log('📝 [DecisionRules] Aplicando asignaciones de valores...')
-          aplicarAsignacionesValores(regla, response, valoresPorNombre)
+        // Si la condición se cumple y la acción es establecer-valor
+        if (resultado && regla.accion === 'establecer-valor') {
+          if (regla.camposAsignar && regla.camposAsignar.length > 0) {
+            // Usar configuración de campos a asignar
+            console.log('📝 [DecisionRules] Aplicando asignaciones configuradas...')
+            aplicarAsignacionesValores(regla, response, valoresPorNombre)
+          } else if (nombreCampoActual) {
+            // Asignación automática al campo actual usando la expresión de la condición
+            console.log('📝 [DecisionRules] Asignación automática al campo actual:', nombreCampoActual)
+            try {
+              // Usar la misma expresión de la condición para obtener el valor
+              const valor = fn(response)
+              console.log(`   📝 Asignando: ${nombreCampoActual} = ${JSON.stringify(valor)}`)
+              valoresPorNombre[nombreCampoActual] = valor
+            } catch (error) {
+              console.error('❌ Error al asignar valor automático:', error)
+            }
+          }
         }
 
         return resultado
@@ -210,7 +226,7 @@ function aplicarAsignacionesValores(
   for (const asignacion of regla.camposAsignar) {
     try {
       // Evaluar la expresión para obtener el valor
-      const fn = new Function('result', `return (${asignacion.expresionValor})`) as (result: any) => unknown
+      const fn = new Function('result', `return (${asignacion.expresionValor})`) as (result: unknown) => unknown
       const valor = fn(resultado)
 
       console.log(`   📝 Asignando: ${asignacion.nombreCampo} = ${JSON.stringify(valor)}`)
