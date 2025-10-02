@@ -101,9 +101,22 @@ function agregarCampoEntrada(regla: ReglaLogica): void {
   regla.camposEntrada.push({ nombreCampo: '', claveDecisionRules: '' })
 }
 
+function agregarCampoAsignar(regla: ReglaLogica): void {
+  if (!regla.camposAsignar) {
+    regla.camposAsignar = []
+  }
+  regla.camposAsignar.push({ nombreCampo: '', expresionValor: '' })
+}
+
 function eliminarCampoEntrada(regla: ReglaLogica, indice: number): void {
   if (regla.camposEntrada) {
     regla.camposEntrada.splice(indice, 1)
+  }
+}
+
+function eliminarCampoAsignar(regla: ReglaLogica, indice: number): void {
+  if (regla.camposAsignar) {
+    regla.camposAsignar.splice(indice, 1)
   }
 }
 
@@ -113,6 +126,7 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
     case 'ocultar': return 'ocultar'
     case 'requerir': return 'hacer requerido'
     case 'opcional': return 'hacer opcional'
+    case 'establecer-valor': return 'establecer valores en los campos'
     default: return accion
   }
 }
@@ -262,7 +276,8 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
                 { etiqueta: 'Mostrar', valor: 'mostrar' },
                 { etiqueta: 'Ocultar', valor: 'ocultar' },
                 { etiqueta: 'Requerir', valor: 'requerir' },
-                { etiqueta: 'Opcional', valor: 'opcional' }
+                { etiqueta: 'Opcional', valor: 'opcional' },
+                { etiqueta: 'Establecer Valor', valor: 'establecer-valor' }
               ]"
               option-label="etiqueta"
               option-value="valor"
@@ -355,7 +370,73 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
             <small class="mt-1 block">
               Expresión JavaScript para evaluar el resultado de DecisionRules.
               La variable <code>result</code> contiene la respuesta de la API.
+              <br>
+              <strong>Ejemplos:</strong>
+              <br>• Array: <code>result[0].result === 20</code> para <code>[{"result": 20}]</code>
+              <br>• Objeto: <code>result.value &lt; 6</code> para <code>{"value": 14}</code>
+              <br>• Múltiples: <code>result.approved === true && result.score > 75</code>
             </small>
+          </div>
+
+          <!-- Campos a asignar (solo si la acción es establecer-valor) -->
+          <div class="col-12" v-if="regla.accion === 'establecer-valor'">
+            <div class="flex justify-content-between align-items-center mb-2">
+              <label class="tamanio-fuente-miga negrilla">
+                <i class="pi pi-arrow-right mr-2"></i>Campos a Asignar
+              </label>
+              <PrimeButton
+                label="Añadir campo"
+                icon="pi pi-plus"
+                size="small"
+                text
+                @click="agregarCampoAsignar(regla)"
+              />
+            </div>
+
+            <div v-if="!regla.camposAsignar || regla.camposAsignar.length === 0" class="p-3 border-1 centrar-texto">
+              <small>No hay campos de asignación configurados</small>
+            </div>
+
+            <div v-else class="flex flex-column gap-2">
+              <div
+                v-for="(campoAsignar, idx) in regla.camposAsignar"
+                :key="idx"
+                class="p-3 border-1 grid"
+              >
+                <div class="col-12 md:col-5">
+                  <label class="tamanio-fuente-miga">Campo del Formulario</label>
+                  <PrimeSelect
+                    v-model="campoAsignar.nombreCampo"
+                    :options="camposDisponibles"
+                    option-label="etiqueta"
+                    option-value="valor"
+                    class="ancho-100 tamanio-fuente-miga"
+                    placeholder="Seleccionar campo..."
+                    :filter="true"
+                  />
+                </div>
+                <div class="col-12 md:col-5">
+                  <label class="tamanio-fuente-miga">Expresión del Valor</label>
+                  <PrimeInputText
+                    v-model="campoAsignar.expresionValor"
+                    class="ancho-100 tamanio-fuente-miga"
+                    placeholder="result[0].result o result.value"
+                  />
+                  <small class="mt-1 block text-xs">
+                    Expresión JavaScript para extraer el valor del resultado
+                  </small>
+                </div>
+                <div class="col-12 md:col-2 flex align-items-end">
+                  <PrimeButton
+                    icon="pi pi-trash"
+                    severity="danger"
+                    size="small"
+                    text
+                    @click="eliminarCampoAsignar(regla, idx)"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

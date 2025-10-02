@@ -90,6 +90,13 @@ export function evaluarReglasCampoSync(
   return { visible, requerido }
 }
 
+// Variable para almacenar el último resultado de DecisionRules
+let ultimoResultadoDecisionRules: any = null
+
+export function obtenerUltimoResultadoDecisionRules(): any {
+  return ultimoResultadoDecisionRules
+}
+
 async function evaluarReglaDecisionRules(
   regla: ReglaLogica,
   valoresPorNombre: RegistroDatos
@@ -160,6 +167,9 @@ async function evaluarReglaDecisionRules(
       return false
     }
 
+    // Guardar el resultado para uso posterior (asignación de valores)
+    ultimoResultadoDecisionRules = response
+
     // Evaluar la condición del resultado
     if (regla.condicionResultado) {
       try {
@@ -167,6 +177,13 @@ async function evaluarReglaDecisionRules(
         const fn = new Function('result', `return (${regla.condicionResultado})`) as (result: unknown) => boolean
         const resultado = !!fn(response)
         console.log('✅ [DecisionRules] Resultado de condición:', resultado)
+
+        // Si la condición se cumple y la acción es establecer-valor, aplicar asignaciones
+        if (resultado && regla.accion === 'establecer-valor' && regla.camposAsignar) {
+          console.log('📝 [DecisionRules] Aplicando asignaciones de valores...')
+          aplicarAsignacionesValores(regla, response, valoresPorNombre)
+        }
+
         return resultado
       } catch (error) {
         console.error('❌ [DecisionRules] Error al evaluar condición:', error)
@@ -181,6 +198,30 @@ async function evaluarReglaDecisionRules(
   }
 }
 
+
+// Función para aplicar asignaciones de valores desde el resultado de DecisionRules
+function aplicarAsignacionesValores(
+  regla: ReglaLogica,
+  resultado: any,
+  valoresPorNombre: RegistroDatos
+): void {
+  if (!regla.camposAsignar) return
+
+  for (const asignacion of regla.camposAsignar) {
+    try {
+      // Evaluar la expresión para obtener el valor
+      const fn = new Function('result', `return (${asignacion.expresionValor})`) as (result: any) => unknown
+      const valor = fn(resultado)
+
+      console.log(`   📝 Asignando: ${asignacion.nombreCampo} = ${JSON.stringify(valor)}`)
+
+      // Asignar el valor (esto se reflejará en el formulario)
+      valoresPorNombre[asignacion.nombreCampo] = valor
+    } catch (error) {
+      console.error(`❌ Error al asignar valor a ${asignacion.nombreCampo}:`, error)
+    }
+  }
+}
 
 function evaluarCondicion(regla: ReglaLogica, valor: ValorDato | undefined): boolean {
   switch (regla.operador) {

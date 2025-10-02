@@ -12,11 +12,13 @@ export interface ReglaLogica {
   campoCondicionId: string
   operador: 'igual' | 'diferente' | 'contiene' | 'mayor-que' | 'menor-que' | 'personalizado'
   valor: string | number | boolean | Date
-  accion: 'mostrar' | 'ocultar' | 'requerir' | 'opcional'
+  accion: 'mostrar' | 'ocultar' | 'requerir' | 'opcional' | 'establecer-valor'
   expresion?: string
   // Propiedades para DecisionRules
   decisionRulesId?: string // ID de la regla en DecisionRules.io
   decisionRulesVersion?: number
   camposEntrada?: Array<{ nombreCampo: string; claveDecisionRules: string }>
   condicionResultado?: string // Expresión para evaluar el resultado
+  // Propiedades para acción "establecer-valor"
+  camposAsignar?: Array<{ nombreCampo: string; expresionValor: string }> // Mapeo de campos a asignar
 }
