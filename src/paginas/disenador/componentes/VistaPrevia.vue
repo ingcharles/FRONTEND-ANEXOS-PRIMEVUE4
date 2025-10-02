@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, watchEffect, onMounted } from 'vue'
 import type { EsquemaCampo, MetadatosCampo } from '@/interfaces/Campos'
 import type { ConfiguracionDependencia } from '@/interfaces/Comunes'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
@@ -11,11 +11,24 @@ import type { RegistroDatos, ValorDato } from '@/tipos/Comunes'
 import { TipoCampoValor } from '@/enumeraciones/Campos'
 import { ModoOpciones } from '@/tipos/TabAtributos'
 import { esVacio, normalizarCasilla, normalizarFecha, normalizarNumero, normalizarTabla, parsearHoraCadenaAFecha } from '@/utilidades/Normalizar'
+import { usarDecisionRules } from '@/composables/usarDecisionRules'
 
 // Composables y servicios
 const almacen = useAlmacenDisenador()
 const servicioDependencias = new ServicioDependenciasFormulario()
 const servicioEsquemas = new ServicioEsquemasFormulario()
+const decisionRules = usarDecisionRules()
+
+// Cargar configuración de DecisionRules al montar
+onMounted(() => {
+  console.log('🔧 [VistaPrevia] Cargando configuración de DecisionRules...')
+  decisionRules.cargarConfiguracion()
+  if (decisionRules.estaConfigurado.value) {
+    console.log('✅ [VistaPrevia] DecisionRules configurado correctamente')
+  } else {
+    console.warn('⚠️ [VistaPrevia] DecisionRules no está configurado')
+  }
+})
 
 // Estado reactivo local
 const indicePagina = ref(0)
@@ -30,20 +43,40 @@ const valores = computed(() => almacen.obtenerValoresPagina(paginaActual.value?.
 // Mapa basado en campos originales (sin lógica aplicada)
 const mapaIdNombre = computed(() => servicioEsquemas.construirMapaIdNombre(campos.value as EsquemaCampo[]))
 
-// Computed para aplicar reglas de lógica a los campos
-const camposConLogica = computed(() => {
+// Estado reactivo para campos con lógica aplicada
+const camposConLogica = ref<EsquemaCampo[]>([])
+
+// Función para evaluar reglas de forma asíncrona
+async function evaluarYActualizarCampos() {
   const camposOriginales = campos.value as EsquemaCampo[]
   const valoresActuales = valores.value as RegistroDatos
   const mapa = mapaIdNombre.value as Record<string, string>
 
-  return camposOriginales.map(campo => {
-    const estado = evaluarReglasCampo(campo, valoresActuales, mapa)
-    return {
-      ...campo,
-      visible: estado.visible,
-      requerido: estado.requerido
-    } as EsquemaCampo
-  })
+  console.log('🔍 [VistaPrevia] Evaluando campos...')
+  console.log('   Campos:', camposOriginales.map(c => ({ id: c.id, nombre: c.nombre, etiqueta: c.etiqueta })))
+  console.log('   Valores actuales:', valoresActuales)
+  console.log('   Mapa ID→Nombre:', mapa)
+
+  const camposEvaluados = await Promise.all(
+    camposOriginales.map(async (campo) => {
+      const estado = await evaluarReglasCampo(campo, valoresActuales, mapa)
+      return {
+        ...campo,
+        visible: estado.visible,
+        requerido: estado.requerido
+      } as EsquemaCampo
+    })
+  )
+
+  camposConLogica.value = camposEvaluados
+}
+
+// Watch para re-evaluar cuando cambien los valores o campos
+watchEffect(() => {
+  // Trigger cuando cambien campos o valores
+  const _ = campos.value
+  const __ = valores.value
+  evaluarYActualizarCampos()
 })
 
 // Gestión de dependencias
@@ -105,15 +138,17 @@ function aplicarValorSiCorresponde(
 ): void {
   if (!campo.nombre) return; // <-- Asegura que nombre existe
 
-  const estado = evaluarReglasCampo(campo, valores.value, mapaIdNombre.value);
-  if (valorDefecto === undefined || !estado.visible) return;
+  // Evaluar reglas de forma asíncrona
+  evaluarReglasCampo(campo, valores.value, mapaIdNombre.value).then(estado => {
+    if (valorDefecto === undefined || !estado.visible) return;
 
-  const valorActual = valores.value[campo.nombre];
-  const debeSobrescribir = sobrescribirSiVacio ? esVacio(valorActual) : valorActual === undefined;
+    const valorActual = valores.value[campo.nombre!];
+    const debeSobrescribir = sobrescribirSiVacio ? esVacio(valorActual) : valorActual === undefined;
 
-  if (debeSobrescribir) {
-    almacen.actualizarValorCampo(paginaActual.value.id, campo.nombre, valorDefecto);
-  }
+    if (debeSobrescribir) {
+      almacen.actualizarValorCampo(paginaActual.value.id, campo.nombre!, valorDefecto);
+    }
+  })
 }
 
 // Función para configurar dependencias
@@ -240,7 +275,7 @@ function aplicarLogicaACamposSeguro(
   mapa: Record<string, string>
 ): EsquemaCampo[] {
   return (campos as EsquemaCampo[]).map(campo => {
-    const estado = evaluarReglasCampo(campo, valores, mapa)
+    const estado = evaluarReglasCampoSync(campo, valores, mapa)
     return {
       ...campo,
       visible: estado.visible,

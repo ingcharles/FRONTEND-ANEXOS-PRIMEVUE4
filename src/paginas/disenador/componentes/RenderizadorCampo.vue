@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ColumnaTablaBasica, ColumnaTablaExtendida, EsquemaCampo } from '@/interfaces/Campos'
-import { evaluarReglasCampo } from '@/utilidades/Logica'
+import { evaluarReglasCampoSync } from '@/utilidades/Logica'
 import type { RegistroDatos, TamanoDiseno, ValorDato } from '@/tipos/Comunes'
 import type { OpcionSeleccion } from '@/interfaces/Comunes'
 import { TipoCampoValor } from '@/enumeraciones/Campos'
@@ -249,12 +249,12 @@ function calcularValorAgregado(columna: ColumnaTablaExtendida, filasTabla: Recor
 
 const esCampoVisible = computed(() => {
   if (!propiedades.campo) return false
-  return evaluarReglasCampo(propiedades.campo, propiedades.valoresCampos, propiedades.mapaIdNombre).visible
+  return evaluarReglasCampoSync(propiedades.campo, propiedades.valoresCampos, propiedades.mapaIdNombre).visible
 })
 
 const esCampoRequerido = computed(() => {
   if (!propiedades.campo) return false
-  return evaluarReglasCampo(propiedades.campo, propiedades.valoresCampos, propiedades.mapaIdNombre).requerido
+  return evaluarReglasCampoSync(propiedades.campo, propiedades.valoresCampos, propiedades.mapaIdNombre).requerido
 })
 
 // Función para obtener si el panel es toggleable

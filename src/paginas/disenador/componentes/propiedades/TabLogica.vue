@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import type { ReglaLogica } from '@/interfaces/Validacion'
 import { generarId } from '@/utilidades/GeneraId'
 import type { OpcionAccion, OpcionOperador, PropiedadesTabLogica } from '@/interfaces/Propiedades'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import { ServicioEsquemasFormulario } from '@/servicios/disenador/ServicioEsquemas'
+import TabDecisionRules from './TabDecisionRules.vue'
 
 // Props del componente
 defineProps<PropiedadesTabLogica>()
+
+// Estado para pestañas
+const tipoRegla = ref<'simple' | 'decisionrules'>('simple')
 
 // Servicios
 const servicioEsquemas = new ServicioEsquemasFormulario()
@@ -20,10 +24,13 @@ const almacen = useAlmacenDisenador()
 const campoSeleccionado = computed(() => almacen.campoSeleccionado)
 
 const reglasLogica = computed<ReglaLogica[]>({
-  get: () => campoSeleccionado.value?.logica ?? [],
+  get: () => (campoSeleccionado.value?.logica ?? []).filter(r => r.tipo !== 'decisionrules'),
   set: (nuevasReglas) => {
     if (campoSeleccionado.value) {
-      almacen.actualizarCampo(campoSeleccionado.value.id, { logica: nuevasReglas })
+      const reglasDecisionRules = (campoSeleccionado.value.logica ?? []).filter(r => r.tipo === 'decisionrules')
+      almacen.actualizarCampo(campoSeleccionado.value.id, {
+        logica: [...nuevasReglas, ...reglasDecisionRules]
+      })
     }
   },
 })
@@ -71,6 +78,7 @@ const opcionesAcciones: OpcionAccion[] = [
 function crearNuevaRegla(): ReglaLogica {
   return {
     id: generarId('logic'),
+    tipo: 'simple',
     campoCondicionId: '',
     operador: 'igual',
     valor: '',
@@ -123,10 +131,28 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
 
 <template>
   <div class="flex flex-column gap-3">
-    <!-- Botón para agregar nueva regla -->
-    <div class="flex justify-content-end">
-      <PrimeButton label="Añadir regla" icon="pi pi-plus" size="small" @click="agregarReglaLogica" severity="success" />
+    <!-- Selector de tipo de regla -->
+    <div class="flex gap-2 mb-3">
+      <PrimeButton
+        label="Reglas Simples"
+        :severity="tipoRegla === 'simple' ? 'primary' : 'secondary'"
+        size="small"
+        @click="tipoRegla = 'simple'"
+      />
+      <PrimeButton
+        label="DecisionRules"
+        :severity="tipoRegla === 'decisionrules' ? 'primary' : 'secondary'"
+        size="small"
+        @click="tipoRegla = 'decisionrules'"
+      />
     </div>
+
+    <!-- Contenido según tipo de regla -->
+    <template v-if="tipoRegla === 'simple'">
+      <!-- Botón para agregar nueva regla -->
+      <div class="flex justify-content-end">
+        <PrimeButton label="Añadir regla" icon="pi pi-plus" size="small" @click="agregarReglaLogica" severity="success" />
+      </div>
 
     <!-- Estado vacío -->
     <div v-if="reglasLogica.length === 0" class="centrar-texto p-3-lg border-1">
@@ -217,5 +243,9 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
         </div>
       </template>
     </PrimeCard>
+    </template>
+
+    <!-- Tab de DecisionRules -->
+    <TabDecisionRules v-else-if="tipoRegla === 'decisionrules'" />
   </div>
 </template>
