@@ -93,6 +93,20 @@ const mostrarConfiguracion = ref(false)
 const apiKey = ref('')
 const urlBase = ref('')
 
+// Computed para mostrar el origen de la configuración
+const origenTexto = computed(() => {
+  switch (decisionRules.origenConfiguracion.value) {
+    case 'env':
+      return 'Variables de Entorno'
+    case 'localStorage':
+      return 'localStorage'
+    case 'manual':
+      return 'Configuración Manual'
+    default:
+      return ''
+  }
+})
+
 // Función para guardar configuración
 function guardarConfiguracion(): void {
   if (apiKey.value) {
@@ -211,6 +225,7 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
       </template>
       <template #content v-if="mostrarConfiguracion">
         <div class="grid">
+          <!-- Estado de configuración -->
           <div class="col-12">
             <div class="flex align-items-center gap-2 mb-2">
               <i class="pi pi-check-circle" v-if="decisionRules.estaConfigurado.value" style="color: green"></i>
@@ -218,38 +233,66 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
               <span class="tamanio-fuente-miga">
                 {{ decisionRules.estaConfigurado.value ? 'Configurado' : 'No configurado' }}
               </span>
+              <span v-if="decisionRules.estaConfigurado.value" class="tamanio-fuente-miga text-600">
+                ({{ origenTexto }})
+              </span>
             </div>
           </div>
-          <div class="col-12">
-            <label class="tamanio-fuente-miga">API Key</label>
-            <PrimeInputText
-              v-model="apiKey"
-              class="ancho-100 tamanio-fuente-miga"
-              placeholder="Tu API Key de DecisionRules.io"
-              type="password"
-              @blur="guardarConfiguracion"
-            />
-            <small class="mt-1 block">
-              Obtén tu API Key desde <a href="https://app.decisionrules.io" target="_blank">DecisionRules.io</a>
-            </small>
+
+          <!-- Mensaje si viene de variables de entorno -->
+          <div class="col-12" v-if="decisionRules.origenConfiguracion.value === 'env'">
+            <div class="p-3 border-1 border-round" style="background-color: #e3f2fd; border-color: #2196f3;">
+              <div class="flex align-items-start gap-2">
+                <i class="pi pi-info-circle" style="color: #2196f3; margin-top: 2px;"></i>
+                <div>
+                  <p class="m-0 mb-2 negrilla" style="color: #1976d2;">Configuración desde Variables de Entorno</p>
+                  <small class="text-600">
+                    La API Key está configurada en el archivo <code>.env</code> del proyecto.
+                    Esta es la forma recomendada para producción.
+                  </small>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="col-12">
-            <label class="tamanio-fuente-miga">URL Base (opcional)</label>
-            <PrimeInputText
-              v-model="urlBase"
-              class="ancho-100 tamanio-fuente-miga"
-              placeholder="https://api.decisionrules.io"
-              @blur="guardarConfiguracion"
-            />
-          </div>
-          <div class="col-12">
-            <PrimeButton
-              label="Guardar Configuración"
-              icon="pi pi-save"
-              size="small"
-              @click="guardarConfiguracion"
-            />
-          </div>
+
+          <!-- Formulario de configuración manual -->
+          <template v-else>
+            <div class="col-12">
+              <label class="tamanio-fuente-miga">API Key</label>
+              <PrimeInputText
+                v-model="apiKey"
+                class="ancho-100 tamanio-fuente-miga"
+                placeholder="Tu API Key de DecisionRules.io"
+                type="password"
+                @blur="guardarConfiguracion"
+              />
+              <small class="mt-1 block">
+                Obtén tu API Key desde <a href="https://app.decisionrules.io" target="_blank">DecisionRules.io</a>
+              </small>
+            </div>
+            <div class="col-12">
+              <label class="tamanio-fuente-miga">URL Base (opcional)</label>
+              <PrimeInputText
+                v-model="urlBase"
+                class="ancho-100 tamanio-fuente-miga"
+                placeholder="https://api.decisionrules.io"
+                @blur="guardarConfiguracion"
+              />
+            </div>
+            <div class="col-12">
+              <PrimeButton
+                label="Guardar Configuración"
+                icon="pi pi-save"
+                size="small"
+                @click="guardarConfiguracion"
+              />
+            </div>
+            <div class="col-12">
+              <small class="text-600">
+                💡 <strong>Recomendación:</strong> Para producción, configura <code>VITE_DECISIONRULES_API_KEY</code> en tu archivo <code>.env</code>
+              </small>
+            </div>
+          </template>
         </div>
       </template>
     </PrimeCard>
