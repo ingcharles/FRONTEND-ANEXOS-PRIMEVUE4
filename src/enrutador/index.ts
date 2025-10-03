@@ -22,6 +22,11 @@ const enrutador = createRouter({
       name: 'disenador',
       component: () => import('../vistas/VistaDisenador.vue'),
     },
+    {
+      path: '/formulario',
+      name: 'formulario',
+      component: () => import('../vistas/VistaFormulario.vue'),
+    },
     // {
     //   path: '/disenador-avanzado',
     //   name: 'disenador-avanzado',

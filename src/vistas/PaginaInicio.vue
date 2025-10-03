@@ -9,19 +9,22 @@ const caracteristicasPrincipales = ref([
     titulo: 'Diseño Visual',
     descripcion: 'Interfaz intuitiva drag-and-drop para diseñar formularios',
     icono: 'pi pi-palette',
-    color: '#42b883'
+    color: '#42b883',
+    ruta: '/disenador'
   },
   {
     titulo: 'Vista Previa',
     descripcion: 'Visualiza tus formularios en tiempo real mientras los creas',
     icono: 'pi pi-eye',
-    color: '#007ad9'
+    color: '#007ad9',
+    ruta: '/disenador'
   },
   {
-    titulo: 'Exportación JSON',
-    descripcion: 'Exporta e importa esquemas de formularios fácilmente',
-    icono: 'pi pi-download',
-    color: '#ffd25c'
+    titulo: 'Renderizar Formulario',
+    descripcion: 'Importa y usa formularios desde JSON como usuario final',
+    icono: 'pi pi-file-import',
+    color: '#ff6b6b',
+    ruta: '/formulario'
   }
 ])
 </script>
@@ -45,8 +48,9 @@ const caracteristicasPrincipales = ref([
         Características Destacadas
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div v-for="caracteristica in caracteristicasPrincipales" :key="caracteristica.titulo"
-          class="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow duration-300">
+        <router-link v-for="caracteristica in caracteristicasPrincipales" :key="caracteristica.titulo"
+          :to="caracteristica.ruta"
+          class="bg-white rounded-lg shadow-md p-6 text-center hover:shadow-lg transition-shadow duration-300 cursor-pointer">
           <div class="w-16 h-16 rounded-full flex justify-center mx-auto mb-3"
             :style="{ backgroundColor: caracteristica.color + '20' }">
             <i :class="caracteristica.icono" class="text-2xl" :style="{ color: caracteristica.color }"></i>
@@ -57,7 +61,7 @@ const caracteristicasPrincipales = ref([
           <p class="text-gray-600">
             {{ caracteristica.descripcion }}
           </p>
-        </div>
+        </router-link>
       </div>
     </div>
 
