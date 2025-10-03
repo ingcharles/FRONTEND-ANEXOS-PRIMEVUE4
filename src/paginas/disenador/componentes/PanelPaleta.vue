@@ -245,7 +245,6 @@ window.addEventListener('keydown', manejarAtajos)
 
     </div>
     <!-- Buscador -->
-    <!-- Buscador -->
     <div class="grid mb-3 mt-3">
       <!-- Columna del buscador -->
       <div class="col-12">
@@ -263,12 +262,12 @@ window.addEventListener('keydown', manejarAtajos)
 
       <!-- Columna de acciones -->
       <div class="col-12 flex justify-content-end align-items-center">
-        <PrimeButton size="small" text severity="success" icon="pi pi-plus" @click="expandir"
+        <PrimeButton class='boton-pequenio' severity="success" icon="pi pi-plus" @click="expandir"
           :disabled="Object.keys(clavesExpandidas).length === modeloPanelMenuFiltrado.length"
           v-tooltip.top="'Expandir todo'" />
-        <PrimeButton size="small" text severity="success" icon="pi pi-minus" @click="colapsar"
+        <PrimeButton class='boton-pequenio' severity="success" icon="pi pi-minus" @click="colapsar"
           :disabled="!Object.keys(clavesExpandidas).length" v-tooltip.top="'Colapsar todo'" />
-        <PrimeButton size="small" text severity="success" icon="pi pi-refresh" @click="alternarTodo"
+        <PrimeButton class='boton-pequenio' severity="success" icon="pi pi-refresh" @click="alternarTodo"
           v-tooltip.top="'Alternar expansión'" />
       </div>
     </div>

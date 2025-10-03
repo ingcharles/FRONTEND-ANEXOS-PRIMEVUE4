@@ -89,8 +89,8 @@ function generarOpcionesPorDefecto(): void {
   <div v-if="tieneOpciones" class="configuracion-opciones p-4 border-1">
     <div class="flex justify-content-between align-items-center mb-3">
       <h4 class="text-base negrilla m-0">Opciones de selección</h4>
-      <PrimeButton v-if="opcionesActuales.length === 0" label="Generar opciones" icon="pi pi-plus" size="small" text
-        @click="generarOpcionesPorDefecto" />
+      <PrimeButton v-if="opcionesActuales.length === 0" label="Generar opciones" icon="pi pi-plus"
+        class='boton-pequenio' @click="generarOpcionesPorDefecto" />
     </div>
 
     <!-- Lista de opciones existentes -->
@@ -113,7 +113,7 @@ function generarOpcionesPorDefecto(): void {
               </div>
             </div>
 
-            <PrimeButton icon="pi pi-trash" size="small" text severity="danger" @click="eliminarOpcion(index)" />
+            <PrimeButton icon="pi pi-trash" class='boton-pequenio' severity="danger" @click="eliminarOpcion(index)" />
           </div>
         </template>
       </draggable>

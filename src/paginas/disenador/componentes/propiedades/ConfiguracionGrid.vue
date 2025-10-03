@@ -48,7 +48,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
   <div class="configuracion-grid p-4 border-1">
     <div class="flex justify-content-between align-items-center mb-3">
       <h4 class="text-base negrilla m-0">Diseño responsivo</h4>
-      <PrimeButton label="Restablecer" icon="pi pi-refresh" size="small" text @click="restablecerGrid" />
+      <PrimeButton label="Restablecer" icon="pi pi-refresh" class='boton-pequenio' @click="restablecerGrid" />
     </div>
 
     <!-- Presets rápidos -->
