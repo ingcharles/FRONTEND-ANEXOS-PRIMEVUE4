@@ -113,28 +113,12 @@ function limpiarFormulario(): void {
           </p>
         </div>
         <div class="flex gap-2">
-          <PrimeButton
-            v-if="!formularioCargado"
-            label="Importar Formulario"
-            icon="pi pi-upload"
-            @click="abrirDialogoImportar"
-            severity="primary"
-          />
-          <PrimeButton
-            v-else
-            label="Cambiar Formulario"
-            icon="pi pi-refresh"
-            @click="abrirDialogoImportar"
-            severity="success"
-          />
-          <PrimeButton
-            v-if="formularioCargado"
-            label="Limpiar"
-            icon="pi pi-times"
-            @click="limpiarFormulario"
-            severity="danger"
-            outlined
-          />
+          <PrimeButton v-if="!formularioCargado" label="Importar Formulario" icon="pi pi-upload"
+            @click="abrirDialogoImportar" severity="primary" />
+          <PrimeButton v-else label="Cambiar Formulario" icon="pi pi-refresh" @click="abrirDialogoImportar"
+            severity="success" />
+          <PrimeButton v-if="formularioCargado" label="Limpiar" icon="pi pi-times" @click="limpiarFormulario"
+            severity="danger" outlined />
         </div>
       </div>
     </div>
@@ -146,12 +130,7 @@ function limpiarFormulario(): void {
       <p class="text-600 mb-4">
         Importa un formulario desde JSON para comenzar a usarlo
       </p>
-      <PrimeButton
-        label="Importar Formulario"
-        icon="pi pi-upload"
-        @click="abrirDialogoImportar"
-        size="large"
-      />
+      <PrimeButton label="Importar Formulario" icon="pi pi-upload" @click="abrirDialogoImportar" size="large" />
     </div>
 
     <!-- Renderizador del formulario -->
@@ -160,16 +139,11 @@ function limpiarFormulario(): void {
     </div>
 
     <!-- Dialog de importación -->
-    <PrimeDialog
-      v-model:visible="mostrarDialogoImportar"
-      modal
-      header="Importar Formulario"
-      :style="{ width: '50rem' }"
-      :breakpoints="{ '1199px': '75vw', '575px': '90vw' }"
-    >
+    <PrimeDialog v-model:visible="mostrarDialogoImportar" modal header="Importar Formulario" :style="{ width: '50rem' }"
+      :breakpoints="{ '1199px': '75vw', '575px': '90vw' }">
       <div class="flex flex-column gap-3">
         <!-- Instrucciones -->
-        <div class="p-3 border-1 border-round" style="background-color: #e3f2fd; border-color: #2196f3;">
+        <div class="p-3 border-1 border-round">
           <div class="flex align-items-start gap-2">
             <i class="pi pi-info-circle" style="color: #2196f3; margin-top: 2px;"></i>
             <div>
@@ -192,13 +166,8 @@ function limpiarFormulario(): void {
               <small class="text-600">o arrastra y suelta aquí</small>
             </div>
           </label>
-          <input
-            id="file-upload"
-            type="file"
-            accept=".json,application/json"
-            style="display: none"
-            @change="importarDesdeArchivo"
-          />
+          <input id="file-upload" type="file" accept=".json,application/json" style="display: none"
+            @change="importarDesdeArchivo" />
         </div>
 
         <!-- Separador -->
@@ -211,16 +180,12 @@ function limpiarFormulario(): void {
         <!-- Área de texto para JSON -->
         <div>
           <label class="block mb-2 negrilla">JSON del Formulario</label>
-          <PrimeTextarea
-            v-model="jsonTexto"
-            rows="15"
-            class="ancho-100 font-mono"
-            placeholder='{"nombre": "Mi Formulario", "paginas": [...]}'
-          />
+          <PrimeTextarea v-model="jsonTexto" rows="15" class="ancho-100 font-mono"
+            placeholder='{"nombre": "Mi Formulario", "paginas": [...]}' />
         </div>
 
         <!-- Error -->
-        <div v-if="errorImportacion" class="p-3 border-1 border-round" style="background-color: #ffebee; border-color: #f44336;">
+        <div v-if="errorImportacion" class="p-3 border-1 border-round">
           <div class="flex align-items-start gap-2">
             <i class="pi pi-exclamation-triangle" style="color: #f44336; margin-top: 2px;"></i>
             <div>

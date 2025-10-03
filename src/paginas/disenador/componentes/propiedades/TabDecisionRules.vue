@@ -220,75 +220,63 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
 <template>
   <div class="flex flex-column gap-3">
     <!-- Configuración de API -->
-    <PrimeCard class="p-3">
-      <template #title>
-        <div class="flex align-items-center justify-content-between">
-          <span class="tamanio-fuente-miga">Configuración</span>
-          <PrimeButton :icon="mostrarConfiguracion ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
-            @click="mostrarConfiguracion = !mostrarConfiguracion" />
-        </div>
-      </template>
-      <template #content v-if="mostrarConfiguracion">
-        <div class="grid">
-          <!-- Estado de configuración -->
-          <div class="col-12">
-            <div class="flex align-items-center gap-2 mb-2">
-              <i class="pi pi-check-circle color-verde" v-if="decisionRules.estaConfigurado.value"></i>
-              <i class="pi pi-times-circle color-rojo" v-else></i>
-              <span class="tamanio-fuente-miga">
-                {{ decisionRules.estaConfigurado.value ? 'Configurado' : 'No configurado' }}
-              </span>
-              <span v-if="decisionRules.estaConfigurado.value" class="tamanio-fuente-miga text-600">
-                ({{ origenTexto }})
-              </span>
-            </div>
+    <PrimePanel header="Configuración DecisionRules" :toggleable="true" :collapsed="!mostrarConfiguracion"
+      @toggle="mostrarConfiguracion = !mostrarConfiguracion">
+      <div class="grid">
+        <!-- Estado de configuración -->
+        <div class="col-12">
+          <div class="flex align-items-center gap-2 mb-2">
+            <i class="pi pi-check-circle color-verde" v-if="decisionRules.estaConfigurado.value"></i>
+            <i class="pi pi-times-circle color-rojo" v-else></i>
+            <span class="tamanio-fuente-miga">
+              {{ decisionRules.estaConfigurado.value ? 'Configurado' : 'No configurado' }}
+            </span>
+            <span v-if="decisionRules.estaConfigurado.value" class="tamanio-fuente-miga text-600">
+              ({{ origenTexto }})
+            </span>
           </div>
+        </div>
 
-          <!-- Mensaje si viene de variables de entorno -->
-          <div class="col-12" v-if="decisionRules.origenConfiguracion.value === 'env'">
-            <div class="p-3 border-1 border-round" style="background-color: #e3f2fd; border-color: #2196f3;">
-              <div class="flex align-items-start gap-2">
-                <IconoAyuda
-                  mensaje="La API Key está configurada en el archivo .env del proyecto. Esta es la forma recomendada para producción." />
-                <div>
-                  <p class="m-0 mb-2 negrilla color-azul">Configuración desde Variables de Entorno</p>
-                  <!-- <small class="text-600">
-                    La API Key está configurada en el archivo <code>.env</code> del proyecto.
-                    Esta es la forma recomendada para producción.
-                  </small> -->
-                </div>
+        <!-- Mensaje si viene de variables de entorno -->
+        <div class="col-12" v-if="decisionRules.origenConfiguracion.value === 'env'">
+          <div class="p-3 border-1 border-round">
+            <div class="flex align-items-start gap-2">
+              <IconoAyuda
+                mensaje="La API Key está configurada en el archivo .env del proyecto. Esta es la forma recomendada para producción." />
+              <div>
+                <p class="m-0 mb-2 negrilla color-azul">Configuración desde Variables de Entorno</p>
               </div>
             </div>
           </div>
-
-          <!-- Formulario de configuración manual -->
-          <template v-else>
-            <div class="col-12">
-              <label class="tamanio-fuente-miga">API Key</label>
-              <PrimeInputText v-model="apiKey" class="ancho-100 tamanio-fuente-miga"
-                placeholder="Tu API Key de DecisionRules.io" type="password" @blur="guardarConfiguracion" />
-              <small class="mt-1 block">
-                Obtén tu API Key desde <a href="https://app.decisionrules.io" target="_blank">DecisionRules.io</a>
-              </small>
-            </div>
-            <div class="col-12">
-              <label class="tamanio-fuente-miga">URL Base (opcional)</label>
-              <PrimeInputText v-model="urlBase" class="ancho-100 tamanio-fuente-miga"
-                placeholder="https://api.decisionrules.io" @blur="guardarConfiguracion" />
-            </div>
-            <div class="col-12">
-              <PrimeButton label="Guardar Configuración" icon="pi pi-save" @click="guardarConfiguracion" />
-            </div>
-            <div class="col-12">
-              <small class="text-600">
-                💡 <strong>Recomendación:</strong> Para producción, configura <code>VITE_DECISIONRULES_API_KEY</code> en
-                tu archivo <code>.env</code>
-              </small>
-            </div>
-          </template>
         </div>
-      </template>
-    </PrimeCard>
+
+        <!-- Formulario de configuración manual -->
+        <template v-else>
+          <div class="col-12">
+            <label class="tamanio-fuente-miga">API Key</label>
+            <PrimeInputText v-model="apiKey" class="ancho-100 tamanio-fuente-miga"
+              placeholder="Tu API Key de DecisionRules.io" type="password" @blur="guardarConfiguracion" />
+            <small class="mt-1 block">
+              Obtén tu API Key desde <a href="https://app.decisionrules.io" target="_blank">DecisionRules.io</a>
+            </small>
+          </div>
+          <div class="col-12">
+            <label class="tamanio-fuente-miga">URL Base (opcional)</label>
+            <PrimeInputText v-model="urlBase" class="ancho-100 tamanio-fuente-miga"
+              placeholder="https://api.decisionrules.io" @blur="guardarConfiguracion" />
+          </div>
+          <div class="col-12">
+            <PrimeButton label="Guardar Configuración" icon="pi pi-save" @click="guardarConfiguracion" />
+          </div>
+          <div class="col-12">
+            <small class="text-600">
+              💡 <strong>Recomendación:</strong> Para producción, configura <code>VITE_DECISIONRULES_API_KEY</code> en
+              tu archivo <code>.env</code>
+            </small>
+          </div>
+        </template>
+      </div>
+    </PrimePanel>
 
     <!-- Botón para agregar nueva regla -->
     <div class="flex justify-content-end">
