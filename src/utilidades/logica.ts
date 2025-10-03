@@ -19,6 +19,47 @@ export function obtenerServicioDecisionRules(): ServicioDecisionRules | null {
   return servicioDecisionRules
 }
 
+// Variable para almacenar el último resultado de DecisionRules
+let ultimoResultadoDecisionRules: unknown = null
+
+export function obtenerUltimoResultadoDecisionRules(): unknown {
+  return ultimoResultadoDecisionRules
+}
+
+// Caché de resultados de DecisionRules
+interface CacheEntry {
+  resultado: unknown
+  timestamp: number
+}
+
+const cacheDecisionRules = new Map<string, CacheEntry>()
+const CACHE_TTL = 5000 // 5 segundos
+
+// Función para generar clave de caché basada en los valores de entrada
+function generarClaveCacheDecisionRules(
+  regla: ReglaLogica,
+  valoresPorNombre: RegistroDatos
+): string {
+  const valoresEntrada: Record<string, unknown> = {}
+
+  // Solo incluir los campos de entrada configurados
+  for (const campoEntrada of regla.camposEntrada ?? []) {
+    valoresEntrada[campoEntrada.nombreCampo] = valoresPorNombre[campoEntrada.nombreCampo]
+  }
+
+  return `${regla.decisionRulesId}_${regla.decisionRulesVersion}_${JSON.stringify(valoresEntrada)}`
+}
+
+// Función para limpiar caché expirado
+function limpiarCacheExpirado(): void {
+  const ahora = Date.now()
+  for (const [clave, entrada] of cacheDecisionRules.entries()) {
+    if (ahora - entrada.timestamp > CACHE_TTL) {
+      cacheDecisionRules.delete(clave)
+    }
+  }
+}
+
 
 
 // Versión nueva con esquema español (EsquemaCampo)
@@ -91,13 +132,6 @@ export function evaluarReglasCampoSync(
   return { visible, requerido }
 }
 
-// Variable para almacenar el último resultado de DecisionRules
-let ultimoResultadoDecisionRules: any = null
-
-export function obtenerUltimoResultadoDecisionRules(): any {
-  return ultimoResultadoDecisionRules
-}
-
 async function evaluarReglaDecisionRules(
   regla: ReglaLogica,
   valoresPorNombre: RegistroDatos,
@@ -113,6 +147,43 @@ async function evaluarReglaDecisionRules(
   if (!regla.decisionRulesId) {
     console.warn('⚠️ [DecisionRules] Regla sin ID configurado')
     return false
+  }
+
+  // Limpiar caché expirado periódicamente
+  limpiarCacheExpirado()
+
+  // Generar clave de caché
+  const claveCache = generarClaveCacheDecisionRules(regla, valoresPorNombre)
+
+  // Verificar si hay resultado en caché
+  const entradaCache = cacheDecisionRules.get(claveCache)
+  if (entradaCache) {
+    const edad = Date.now() - entradaCache.timestamp
+    console.log(`💾 [DecisionRules] Usando resultado en caché (edad: ${edad}ms)`)
+    ultimoResultadoDecisionRules = entradaCache.resultado
+
+    // Evaluar la condición con el resultado cacheado
+    if (regla.condicionResultado) {
+      try {
+        const fn = new Function('result', `return (${regla.condicionResultado})`) as (result: unknown) => boolean
+        const resultado = !!fn(entradaCache.resultado)
+
+        // Aplicar asignaciones si corresponde
+        if (resultado && regla.accion === 'establecer-valor') {
+          if (regla.camposAsignar && regla.camposAsignar.length > 0) {
+            aplicarAsignacionesValores(regla, entradaCache.resultado, valoresPorNombre)
+          } else if (nombreCampoActual) {
+            const valor = fn(entradaCache.resultado)
+            valoresPorNombre[nombreCampoActual] = valor
+          }
+        }
+
+        return resultado
+      } catch (error) {
+        console.error('❌ [DecisionRules] Error al evaluar condición con caché:', error)
+      }
+    }
+    return true
   }
 
   try {
@@ -172,6 +243,13 @@ async function evaluarReglaDecisionRules(
     // Guardar el resultado para uso posterior (asignación de valores)
     ultimoResultadoDecisionRules = response
 
+    // Guardar en caché
+    cacheDecisionRules.set(claveCache, {
+      resultado: response,
+      timestamp: Date.now()
+    })
+    console.log('💾 [DecisionRules] Resultado guardado en caché')
+
     // Evaluar la condición del resultado
     if (regla.condicionResultado) {
       try {
@@ -218,7 +296,7 @@ async function evaluarReglaDecisionRules(
 // Función para aplicar asignaciones de valores desde el resultado de DecisionRules
 function aplicarAsignacionesValores(
   regla: ReglaLogica,
-  resultado: any,
+  resultado: unknown,
   valoresPorNombre: RegistroDatos
 ): void {
   if (!regla.camposAsignar) return
@@ -232,7 +310,7 @@ function aplicarAsignacionesValores(
       console.log(`   📝 Asignando: ${asignacion.nombreCampo} = ${JSON.stringify(valor)}`)
 
       // Asignar el valor (esto se reflejará en el formulario)
-      valoresPorNombre[asignacion.nombreCampo] = valor
+      valoresPorNombre[asignacion.nombreCampo] = valor as ValorDato
     } catch (error) {
       console.error(`❌ Error al asignar valor a ${asignacion.nombreCampo}:`, error)
     }

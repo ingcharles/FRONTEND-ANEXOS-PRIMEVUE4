@@ -37,6 +37,7 @@ const reglasDecisionRules = computed<ReglaLogica[]>({
 })
 
 // Computed para obtener todos los campos disponibles
+// Campos disponibles para "Campos de Entrada" (excluye el campo actual)
 const camposDisponibles = computed(() => {
   const todosCampos: Array<{ etiqueta: string; valor: string }> = []
 
@@ -54,6 +55,37 @@ const camposDisponibles = computed(() => {
   }
 
   return todosCampos.sort((a, b) => a.etiqueta.localeCompare(b.etiqueta))
+})
+
+// Campos disponibles para "Campos a Asignar" (incluye el campo actual)
+const camposDisponiblesParaAsignar = computed(() => {
+  const todosCampos: Array<{ etiqueta: string; valor: string }> = []
+
+  for (const pagina of almacen.esquemaFormulario.paginas) {
+    const camposAplanados = servicioEsquemas.aplanarCampos(pagina.campos, [])
+
+    for (const campo of camposAplanados) {
+      if (campo.nombre) {
+        // Marcar el campo actual con un indicador
+        const esCampoActual = campo.id === campoSeleccionado.value?.id
+        const etiqueta = esCampoActual
+          ? `⭐ ${campo.etiqueta || campo.nombre} (${campo.nombre}) - Campo actual`
+          : `${campo.etiqueta || campo.nombre} (${campo.nombre})`
+
+        todosCampos.push({
+          etiqueta,
+          valor: campo.nombre
+        })
+      }
+    }
+  }
+
+  return todosCampos.sort((a, b) => {
+    // Poner el campo actual primero
+    if (a.etiqueta.startsWith('⭐')) return -1
+    if (b.etiqueta.startsWith('⭐')) return 1
+    return a.etiqueta.localeCompare(b.etiqueta)
+  })
 })
 
 // Estado para configuración de API Key
@@ -430,7 +462,7 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
                   <label class="tamanio-fuente-miga">Campo del Formulario</label>
                   <PrimeSelect
                     v-model="campoAsignar.nombreCampo"
-                    :options="camposDisponibles"
+                    :options="camposDisponiblesParaAsignar"
                     option-label="etiqueta"
                     option-value="valor"
                     class="ancho-100 tamanio-fuente-miga"
