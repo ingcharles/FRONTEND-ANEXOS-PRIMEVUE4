@@ -114,6 +114,31 @@ async function evaluarReglaDecisionRules(
     return false
   }
 
+  // 🧹 VALIDACIÓN: Verificar si algún campo de entrada está vacío
+  const algunCampoEntradaVacio = (regla.camposEntrada ?? []).some(campoEntrada => {
+    const valor = valoresPorNombre[campoEntrada.nombreCampo]
+    return valor === null || valor === undefined || valor === ''
+  })
+
+  // Si hay campos de entrada vacíos y es acción "establecer-valor", limpiar campos de salida
+  if (algunCampoEntradaVacio && esAccionEstablecerValor) {
+    console.log('🧹 [DecisionRules] Campo(s) de entrada vacío(s) - Limpiando campos de salida')
+
+    // Limpiar campos configurados en "Campos a Asignar"
+    if (regla.camposAsignar && regla.camposAsignar.length > 0) {
+      for (const asignacion of regla.camposAsignar) {
+        console.log(`   🧹 Limpiando: ${asignacion.nombreCampo}`)
+        valoresPorNombre[asignacion.nombreCampo] = undefined
+      }
+    } else if (nombreCampoActual) {
+      // Limpiar campo actual si no hay asignaciones configuradas
+      console.log(`   🧹 Limpiando campo actual: ${nombreCampoActual}`)
+      valoresPorNombre[nombreCampoActual] = undefined
+    }
+
+    return false
+  }
+
   try {
     console.log('📋 [DecisionRules] Valores disponibles:', valoresPorNombre)
     console.log('📋 [DecisionRules] Claves de valores:', Object.keys(valoresPorNombre))
