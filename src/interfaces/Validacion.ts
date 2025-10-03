@@ -21,4 +21,6 @@ export interface ReglaLogica {
   condicionResultado?: string // Expresión para evaluar el resultado
   // Propiedades para acción "establecer-valor"
   camposAsignar?: Array<{ nombreCampo: string; expresionValor: string }> // Mapeo de campos a asignar
+  // Configuración de eventos para DecisionRules
+  eventoEjecucion?: 'change' | 'blur' | 'input' // Evento que dispara la evaluación
 }

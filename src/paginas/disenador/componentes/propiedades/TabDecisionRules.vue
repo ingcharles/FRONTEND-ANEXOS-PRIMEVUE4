@@ -100,6 +100,13 @@ function guardarConfiguracion(): void {
   }
 }
 
+// Opciones de eventos
+const opcionesEventos = [
+  { etiqueta: 'Al cambiar valor (change)', valor: 'change', descripcion: 'Se ejecuta cuando el usuario termina de editar y sale del campo' },
+  { etiqueta: 'Al perder foco (blur)', valor: 'blur', descripcion: 'Se ejecuta cuando el campo pierde el foco' },
+  { etiqueta: 'Mientras escribe (input)', valor: 'input', descripcion: 'Se ejecuta en tiempo real mientras el usuario escribe' }
+]
+
 // Funciones de gestión
 function crearNuevaReglaDecisionRules(): ReglaLogica {
   return {
@@ -113,7 +120,8 @@ function crearNuevaReglaDecisionRules(): ReglaLogica {
     decisionRulesVersion: 1,
     camposEntrada: [],
     condicionResultado: '',
-    camposAsignar: []
+    camposAsignar: [],
+    eventoEjecucion: 'change' // Valor por defecto
   }
 }
 
@@ -341,6 +349,31 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
             />
           </div>
 
+          <!-- Evento de ejecución -->
+          <div class="col-12">
+            <label class="tamanio-fuente-miga">
+              <i class="pi pi-bolt mr-2"></i>¿Cuándo ejecutar la regla?
+            </label>
+            <PrimeSelect
+              v-model="regla.eventoEjecucion"
+              :options="opcionesEventos"
+              option-label="etiqueta"
+              option-value="valor"
+              class="ancho-100 tamanio-fuente-miga"
+              placeholder="Seleccionar evento..."
+            >
+              <template #option="slotProps">
+                <div>
+                  <div class="negrilla">{{ slotProps.option.etiqueta }}</div>
+                  <small class="text-600">{{ slotProps.option.descripcion }}</small>
+                </div>
+              </template>
+            </PrimeSelect>
+            <small class="mt-1 block">
+              Define cuándo se ejecutará la regla en los campos de entrada
+            </small>
+          </div>
+
           <!-- Campos de entrada -->
           <div class="col-12">
             <div class="flex justify-content-between align-items-center mb-2">
@@ -352,7 +385,7 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
                 text
                 @click="agregarCampoEntrada(regla)"
               />
-            </div>
+              </div>
 
             <div v-if="!regla.camposEntrada || regla.camposEntrada.length === 0" class="p-3 border-1 centrar-texto">
               <small>No hay campos de entrada configurados</small>
@@ -503,9 +536,9 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
                     text
                     @click="eliminarCampoAsignar(regla, idx)"
                   />
-                </div>
               </div>
             </div>
+          </div>
           </div>
         </div>
 

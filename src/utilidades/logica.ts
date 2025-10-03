@@ -19,15 +19,93 @@ export function obtenerServicioDecisionRules(): ServicioDecisionRules | null {
   return servicioDecisionRules
 }
 
-// Versión asíncrona con soporte para DecisionRules
-export async function evaluarReglasCampo(
+// Función para obtener reglas DecisionRules de un campo específico
+export function obtenerReglasDecisionRulesPorCampo(
+  campo: EsquemaCampo,
+  nombreCampo: string
+): ReglaLogica[] {
+  if (!campo.logica) return []
+
+  return campo.logica.filter(regla => {
+    if (regla.tipo !== 'decisionrules') return false
+    if (!regla.camposEntrada) return false
+
+    // Verificar si el campo está en los campos de entrada
+    return regla.camposEntrada.some(ce => ce.nombreCampo === nombreCampo)
+  })
+}
+
+// Función para evaluar solo reglas DecisionRules específicas de un campo
+export async function evaluarReglasDecisionRulesCampo(
   campo: EsquemaCampo,
   valoresPorNombre: RegistroDatos,
-  mapaIdNombre: Record<string, string>
+  mapaIdNombre: Record<string, string>,
+  nombreCampoEvento: string,
+  tipoEvento: 'change' | 'blur' | 'input'
 ): Promise<EstadoEfectivoCampo> {
   if (!campo) {
     return { visible: true, requerido: false }
   }
+
+  // Empezar con el estado base del campo
+  let visible = campo.visible !== false
+  let requerido = !!campo.requerido
+
+  // Primero evaluar reglas simples
+  for (const r of campo.logica ?? []) {
+    if (r.tipo === 'decisionrules') continue // Saltar DecisionRules por ahora
+
+    const nombreDependencia = mapaIdNombre[r.campoCondicionId]
+    const valor = (nombreDependencia ? valoresPorNombre[nombreDependencia] : undefined) as ValorDato | undefined
+    const cumple = evaluarCondicion(r, valor)
+
+    if (cumple) {
+      if (r.accion === 'mostrar') visible = true
+      if (r.accion === 'ocultar') visible = false
+      if (r.accion === 'requerir') requerido = true
+      if (r.accion === 'opcional') requerido = false
+    }
+  }
+
+  // Ahora evaluar solo las reglas DecisionRules que coinciden con el evento
+  for (const r of campo.logica ?? []) {
+    if (r.tipo !== 'decisionrules') continue
+    if (!r.camposEntrada) continue
+
+    // Verificar si el campo del evento está en los campos de entrada
+    const tieneElCampo = r.camposEntrada.some(ce => ce.nombreCampo === nombreCampoEvento)
+    if (!tieneElCampo) continue
+
+    // Verificar si el evento coincide
+    const eventoRegla = r.eventoEjecucion || 'change'
+    if (eventoRegla !== tipoEvento) continue
+
+    // Evaluar la regla
+    const cumple = await evaluarReglaDecisionRules(r, valoresPorNombre, campo.nombre)
+
+    if (cumple) {
+      if (r.accion === 'mostrar') visible = true
+      if (r.accion === 'ocultar') visible = false
+      if (r.accion === 'requerir') requerido = true
+      if (r.accion === 'opcional') requerido = false
+    }
+  }
+
+  return { visible, requerido }
+}
+
+// Versión asíncrona con soporte para DecisionRules
+export async function evaluarReglasCampo(
+  campo: EsquemaCampo,
+  valoresPorNombre: RegistroDatos,
+  mapaIdNombre: Record<string, string>,
+  opciones?: { incluirDecisionRules?: boolean }
+): Promise<EstadoEfectivoCampo> {
+  if (!campo) {
+    return { visible: true, requerido: false }
+  }
+
+  const incluirDR = opciones?.incluirDecisionRules ?? true
 
   let visible = campo.visible !== false
   let requerido = !!campo.requerido
@@ -36,6 +114,8 @@ export async function evaluarReglasCampo(
     let cumple = false
 
     if (r.tipo === 'decisionrules') {
+      // Solo evaluar DecisionRules si está habilitado
+      if (!incluirDR) continue
       cumple = await evaluarReglaDecisionRules(r, valoresPorNombre, campo.nombre)
     } else {
       const nombreDependencia = mapaIdNombre[r.campoCondicionId]

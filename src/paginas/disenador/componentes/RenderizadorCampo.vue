@@ -13,7 +13,10 @@ const propiedades = defineProps<{
   erroresCampos?: Record<string, string>
 }>()
 
-const emit = defineEmits<(e: 'valor-cambiado', nombre: string, valor: unknown) => void>()
+const emit = defineEmits<{
+  (e: 'valor-cambiado', nombre: string, valor: unknown): void
+  (e: 'evento-campo', nombre: string, evento: 'change' | 'blur' | 'input'): void
+}>()
 
 // Alias seguro para usar en el template
 const campo = computed(() => propiedades.campo)
@@ -262,6 +265,21 @@ function obtenerToggleablePanel(campo: EsquemaCampo): boolean {
   const metadatos = campo.metadatos as Record<string, unknown> | undefined
   return metadatos?.toggleable === true || metadatos?.toggleable === undefined // Por defecto es true
 }
+
+// Funciones para manejar eventos de campos
+function manejarCambioValor(nombreCampo: string, valor: unknown): void {
+  emit('valor-cambiado', nombreCampo, valor)
+  emit('evento-campo', nombreCampo, 'change')
+}
+
+function manejarBlur(nombreCampo: string): void {
+  emit('evento-campo', nombreCampo, 'blur')
+}
+
+function manejarInput(nombreCampo: string, valor: unknown): void {
+  emit('valor-cambiado', nombreCampo, valor)
+  emit('evento-campo', nombreCampo, 'input')
+}
 </script>
 
 <template>
@@ -291,13 +309,28 @@ function obtenerToggleablePanel(campo: EsquemaCampo): boolean {
       <!-- Campo de texto -->
       <PrimeInputText
         v-if="campo.tipo === TipoCampoValor.Texto || campo.tipo === TipoCampoValor.Correo || campo.tipo === TipoCampoValor.Contrasena"
-        v-model="(valoresCampos as any)[campo.nombre || '']" :placeholder="campo.marcadorPosicion"
-        class="ancho-100 tamanio-fuente-miga" :disabled="campo.deshabilitado" :readonly="campo.soloLectura" />
+        :model-value="(valoresCampos as any)[campo.nombre || '']"
+        :placeholder="campo.marcadorPosicion"
+        class="ancho-100 tamanio-fuente-miga"
+        :disabled="campo.deshabilitado"
+        :readonly="campo.soloLectura"
+        @update:model-value="(v: string) => manejarInput(campo.nombre || '', v)"
+        @change="manejarCambioValor(campo.nombre || '', (valoresCampos as any)[campo.nombre || ''])"
+        @blur="manejarBlur(campo.nombre || '')"
+      />
 
       <!-- Área de texto -->
-      <PrimeTextarea v-else-if="campo.tipo === TipoCampoValor.AreaTexto"
-        v-model="(valoresCampos as any)[campo.nombre || '']" :placeholder="campo.marcadorPosicion"
-        class="ancho-100 tamanio-fuente-miga" :disabled="campo.deshabilitado" :readonly="campo.soloLectura" />
+      <PrimeTextarea
+        v-else-if="campo.tipo === TipoCampoValor.AreaTexto"
+        :model-value="(valoresCampos as any)[campo.nombre || '']"
+        :placeholder="campo.marcadorPosicion"
+        class="ancho-100 tamanio-fuente-miga"
+        :disabled="campo.deshabilitado"
+        :readonly="campo.soloLectura"
+        @update:model-value="(v: string) => manejarInput(campo.nombre || '', v)"
+        @change="manejarCambioValor(campo.nombre || '', (valoresCampos as any)[campo.nombre || ''])"
+        @blur="manejarBlur(campo.nombre || '')"
+      />
 
       <!-- Selector de tiempo -->
       <PrimeDatePicker v-else-if="campo.tipo === TipoCampoValor.Hora"
@@ -310,17 +343,31 @@ function obtenerToggleablePanel(campo: EsquemaCampo): boolean {
         :disabled="campo.deshabilitado" />
 
       <!-- Select/Dropdown -->
-      <PrimeSelect v-else-if="campo.tipo === TipoCampoValor.Seleccion"
-        v-model="(valoresCampos as any)[campo.nombre || '']" :options="opcionesCampo" option-label="etiqueta"
-        option-value="valor" class="ancho-100 tamanio-fuente-miga"
-        :disabled="campo.deshabilitado || estaDeshabilitadoPorDependencia(campo, valoresCampos as any)" />
+      <PrimeSelect
+        v-else-if="campo.tipo === TipoCampoValor.Seleccion"
+        :model-value="(valoresCampos as any)[campo.nombre || '']"
+        :options="opcionesCampo"
+        option-label="etiqueta"
+        option-value="valor"
+        class="ancho-100 tamanio-fuente-miga"
+        :disabled="campo.deshabilitado || estaDeshabilitadoPorDependencia(campo, valoresCampos as any)"
+        @update:model-value="(v: unknown) => manejarCambioValor(campo.nombre || '', v)"
+      />
 
       <!-- Campo numérico -->
-      <PrimeInputNumber v-else-if="campo.tipo === TipoCampoValor.Numero"
-        v-model="(valoresCampos as any)[campo.nombre || '']" class="ancho-100 tamanio-fuente-miga"
-        :placeholder="campo.marcadorPosicion" :min="(campo.metadatos as any)?.minimo"
-        :max="(campo.metadatos as any)?.maximo" :step="(campo.metadatos as any)?.paso ?? 1"
-        :disabled="campo.deshabilitado" :readonly="campo.soloLectura" />
+      <PrimeInputNumber
+        v-else-if="campo.tipo === TipoCampoValor.Numero"
+        :model-value="(valoresCampos as any)[campo.nombre || '']"
+        class="ancho-100 tamanio-fuente-miga"
+        :placeholder="campo.marcadorPosicion"
+        :min="(campo.metadatos as any)?.minimo"
+        :max="(campo.metadatos as any)?.maximo"
+        :step="(campo.metadatos as any)?.paso ?? 1"
+        :disabled="campo.deshabilitado"
+        :readonly="campo.soloLectura"
+        @update:model-value="(v: number | null) => manejarInput(campo.nombre || '', v)"
+        @blur="manejarBlur(campo.nombre || '')"
+      />
 
       <!-- Checkbox -->
       <div v-else-if="campo.tipo === TipoCampoValor.Casilla">

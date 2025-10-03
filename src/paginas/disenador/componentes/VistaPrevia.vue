@@ -3,7 +3,7 @@ import { computed, ref, watch, watchEffect, onMounted } from 'vue'
 import type { EsquemaCampo, MetadatosCampo } from '@/interfaces/Campos'
 import type { ConfiguracionDependencia } from '@/interfaces/Comunes'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
-import { evaluarReglasCampo } from '@/utilidades/Logica'
+import { evaluarReglasCampo, evaluarReglasDecisionRulesCampo } from '@/utilidades/Logica'
 import { ServicioDependenciasFormulario } from '@/servicios/disenador/ServicioDependencias'
 import { ServicioEsquemasFormulario } from '@/servicios/disenador/ServicioEsquemas'
 import RenderizadorCampo from './RenderizadorCampo.vue'
@@ -46,20 +46,18 @@ const mapaIdNombre = computed(() => servicioEsquemas.construirMapaIdNombre(campo
 // Estado reactivo para campos con lógica aplicada
 const camposConLogica = ref<EsquemaCampo[]>([])
 
-// Función para evaluar reglas de forma asíncrona
-async function evaluarYActualizarCampos() {
+// Función para evaluar reglas de forma asíncrona (solo reglas simples, sin DecisionRules)
+async function evaluarYActualizarCamposSinDecisionRules() {
   const camposOriginales = campos.value as EsquemaCampo[]
   const valoresActuales = valores.value as RegistroDatos
   const mapa = mapaIdNombre.value as Record<string, string>
 
-  console.log('🔍 [VistaPrevia] Evaluando campos...')
-  console.log('   Campos:', camposOriginales.map(c => ({ id: c.id, nombre: c.nombre, etiqueta: c.etiqueta })))
-  console.log('   Valores actuales:', valoresActuales)
-  console.log('   Mapa ID→Nombre:', mapa)
+  console.log('🔍 [VistaPrevia] Evaluando campos (solo reglas simples)...')
 
   const camposEvaluados = await Promise.all(
     camposOriginales.map(async (campo) => {
-      const estado = await evaluarReglasCampo(campo, valoresActuales, mapa)
+      // Evaluar solo reglas simples, NO DecisionRules
+      const estado = await evaluarReglasCampo(campo, valoresActuales, mapa, { incluirDecisionRules: false })
       return {
         ...campo,
         visible: estado.visible,
@@ -71,12 +69,12 @@ async function evaluarYActualizarCampos() {
   camposConLogica.value = camposEvaluados
 }
 
-// Watch para re-evaluar cuando cambien los valores o campos
+// Watch para re-evaluar cuando cambien los valores o campos (solo reglas simples)
 watchEffect(() => {
   // Trigger cuando cambien campos o valores
   const _ = campos.value
   const __ = valores.value
-  evaluarYActualizarCampos()
+  evaluarYActualizarCamposSinDecisionRules()
 })
 
 // Gestión de dependencias
@@ -339,6 +337,58 @@ function irPaginaSiguiente(): void {
     indicePagina.value++
   }
 }
+
+// Función para manejar eventos de campos y ejecutar reglas DecisionRules
+async function manejarEventoCampo(nombreCampo: string, tipoEvento: 'change' | 'blur' | 'input'): Promise<void> {
+  console.log(`🎯 [VistaPrevia] Evento ${tipoEvento} en campo: ${nombreCampo}`)
+
+  const valoresActuales = valores.value as RegistroDatos
+  const mapa = mapaIdNombre.value as Record<string, string>
+
+  // Buscar todos los campos que tienen reglas DecisionRules que dependen de este campo
+  const todosCampos = servicioEsquemas.aplanarCampos(campos.value, [])
+  let algunaReglaEjecutada = false
+
+  for (const campo of todosCampos) {
+    if (!campo.logica) continue
+
+    // Verificar si hay reglas DecisionRules que coinciden con este evento
+    const tieneReglasParaEsteEvento = campo.logica.some(regla => {
+      if (regla.tipo !== 'decisionrules') return false
+      if (!regla.camposEntrada) return false
+
+      const tieneElCampo = regla.camposEntrada.some(ce => ce.nombreCampo === nombreCampo)
+      if (!tieneElCampo) return false
+
+      const eventoRegla = regla.eventoEjecucion || 'change'
+      return eventoRegla === tipoEvento
+    })
+
+    if (tieneReglasParaEsteEvento) {
+      console.log(`   📋 Evaluando reglas DecisionRules para campo: ${campo.nombre}`)
+      algunaReglaEjecutada = true
+
+      // Evaluar el campo con las reglas DecisionRules específicas
+      const estado = await evaluarReglasDecisionRulesCampo(campo, valoresActuales, mapa, nombreCampo, tipoEvento)
+
+      // Actualizar el campo en camposConLogica
+      const indice = camposConLogica.value.findIndex(c => c.id === campo.id)
+      if (indice !== -1) {
+        camposConLogica.value[indice] = {
+          ...camposConLogica.value[indice],
+          visible: estado.visible,
+          requerido: estado.requerido
+        }
+      }
+    }
+  }
+
+  if (algunaReglaEjecutada) {
+    console.log(`✅ [VistaPrevia] Reglas DecisionRules ejecutadas para evento ${tipoEvento}`)
+  } else {
+    console.log(`⏭️ [VistaPrevia] No hay reglas DecisionRules configuradas para evento ${tipoEvento} en campo ${nombreCampo}`)
+  }
+}
 </script>
 
 <template>
@@ -364,9 +414,14 @@ function irPaginaSiguiente(): void {
     <form class="grid" @submit.prevent="enviar">
       <template v-for="campo in camposConLogica" :key="campo.id">
         <div :class="clasesColumna(campo)">
-          <RenderizadorCampo :campo="campo" :valores-campos="valores" :errores-campos="errores"
+          <RenderizadorCampo
+            :campo="campo"
+            :valores-campos="valores"
+            :errores-campos="errores"
             :mapa-id-nombre="mapaIdNombre"
-            @valor-cambiado="(nombre: string, valor: unknown) => almacen.actualizarValorCampo(paginaActual.id, nombre, valor as ValorDato)" />
+            @valor-cambiado="(nombre: string, valor: unknown) => almacen.actualizarValorCampo(paginaActual.id, nombre, valor as ValorDato)"
+            @evento-campo="manejarEventoCampo"
+          />
         </div>
       </template>
 
