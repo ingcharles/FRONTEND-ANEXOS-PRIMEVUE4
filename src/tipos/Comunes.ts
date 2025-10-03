@@ -24,3 +24,12 @@ export type TipoAlerta = 'error' | 'warning' | 'info' | 'success'
 
 // SeccionComportamiento.vue
 export type TipoDiseno = 'vertical' | 'horizontal'
+
+// Logica
+export type TipoEventoDecisionRules = 'change' | 'blur' | 'input'
+
+export type TipoColumna = 'texto' | 'numero' | 'fecha'
+export type ModoFormato = 'decimal' | 'currency' | 'percent'
+export type EscalaPorcentaje = 'whole' | 'fraction'
+export type FuncionAgregado = 'none' | 'sum' | 'avg' | 'count' | 'min' | 'max'
+export type TamanioPadding = 'sm' | 'md' | 'lg'

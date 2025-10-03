@@ -3,7 +3,6 @@
 import { computed } from 'vue'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import type { EsquemaCampo } from '@/interfaces/Campos'
-import type { TipoCampo } from '@/tipos/Campos'
 import type { ColumnasGrid, OpcionSeleccion } from '@/interfaces/Comunes'
 import PropiedadesBasicas from './PropiedadesBasicas.vue'
 import ConfiguracionOpciones from './ConfiguracionOpciones.vue'
@@ -170,39 +169,3 @@ const mostrarConfiguracionGrid = computed(() => {
     </div>
   </div>
 </template>
-
-<style scoped>
-/* .pestana-atributos {
-  height: 100%;
-  overflow-y: auto;
-}
-
-.sin-campo-seleccionado {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  min-height: 200px;
-}
-
-.contenido-atributos {
-  padding: 1rem;
-}
-
-.color-negro {
-  color: var(--text-color-secondary);
-}
-
-.debug-info {
-  border: 1px dashed var(--surface-border);
-}
-
-.debug-info pre {
-  max-height: 200px;
-  overflow-y: auto;
-  font-family: 'Courier New', monospace;
-  font-size: 10px;
-  line-height: 1.2;
-} */
-</style>

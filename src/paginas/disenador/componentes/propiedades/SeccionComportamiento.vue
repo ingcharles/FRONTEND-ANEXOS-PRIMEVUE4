@@ -3,44 +3,41 @@
 
   <!-- Visibilidad -->
   <div>
-    <label class="flex align-items-center gap-2">
-      <Checkbox binary :model-value="!!campo?.visible"
+    <label for="visibleComportamiento" class="flex align-items-center gap-2">
+      <Checkbox id="visibleComportamiento" binary :model-value="!!campo?.visible"
         @update:model-value="(v: boolean) => actualizarPropiedad('visible', v)" />
       Visible
-      <i class="pi pi-info-circle texto-ayuda p-2"
-        v-tooltip.top="'Controla si el campo se muestra o se oculta en el formulario'"></i>
+      <IconoAyuda mensaje="Controla si el campo se muestra o se oculta en el formulario" />
     </label>
   </div>
 
 
   <!-- Deshabilitado -->
   <div v-if="ServicioCampos.esDeshabilitable(campo?.tipo)">
-    <label class="flex align-items-center gap-2">
-      <Checkbox binary :model-value="!!campo?.deshabilitado"
+    <label for="deshabilitadoComportamiento" class="flex align-items-center gap-2">
+      <Checkbox id="deshabilitadoComportamiento" binary :model-value="!!campo?.deshabilitado"
         @update:model-value="(v: boolean) => actualizarPropiedad('deshabilitado', v)" />
       Deshabilitado
-      <i class="pi pi-info-circle texto-ayuda p-2"
-        v-tooltip.top="'El campo se muestra pero no permite interacción del usuario'"></i>
+      <IconoAyuda mensaje="Controla si el campo permite interacción del usuario" />
     </label>
   </div>
 
   <!-- Solo lectura -->
   <div v-if="ServicioCampos.esSoloLectura(campo?.tipo)">
-    <label class="flex align-items-center gap-2">
-      <Checkbox binary :model-value="!!campo?.soloLectura"
+    <label for="soloLecturaComportamiento" class="flex align-items-center gap-2">
+      <Checkbox id="soloLecturaComportamiento" binary :model-value="!!campo?.soloLectura"
         @update:model-value="(v: boolean) => actualizarPropiedad('soloLectura', v)" />
       Solo lectura
-      <i class="pi pi-info-circle texto-ayuda p-2"
-        v-tooltip.top="'El campo muestra información pero no permite modificación'"></i>
+      <IconoAyuda mensaje="Controla si el campo muestra información pero no permite modificación" />
     </label>
   </div>
 
   <!-- Layout para grupos de opciones -->
   <div v-if="ServicioCampos.soportaOpcionesHorizontalVertical(props?.campo?.tipo)">
     <div class="flex align-items-center gap-2 mb-1">
-      <label class="block">Distribución de opciones</label>
-      <i class="pi pi-info-circle texto-ayuda p-2"
-        v-tooltip.top="'Controla si las opciones se muestran en columna (vertical) o en fila (horizontal)'"></i>
+      <label for="distribucionOpcionesHorizontalVertical" class="block">Distribución de opciones</label>
+      <IconoAyuda mensaje="Controla si las opciones se muestran en columna (vertical) o en fila (horizontal)" />
+
     </div>
     <SelectButton :model-value="obtenerLayoutGrupo()" :options="opcionesLayout" option-label="label"
       option-value="value" @update:model-value="(v: TipoDiseno) => actualizarLayoutGrupo(v)" />
@@ -48,31 +45,27 @@
   </div>
 
   <!-- Plegable para paneles -->
-  <div v-if="campo?.tipo === 'panel'">
-    <label class="flex align-items-center gap-2">
+  <div v-if="campo?.tipo === TipoCampo.Panel">
+    <label for="colapsarExpanderPanel" class="flex align-items-center gap-2">
       <Checkbox binary :model-value="obtenerToggleable()"
         @update:model-value="(v: boolean) => actualizarToggleable(v)" />
       Plegable
-      <i class="pi pi-info-circle texto-ayuda p-2"
-        v-tooltip.top="'Permite al usuario colapsar/expandir el panel'"></i>
+      <i class="pi pi-info-circle texto-ayuda p-2" v-tooltip.top="'Permite al usuario colapsar/expandir el panel'"></i>
     </label>
   </div>
-
 
   <PrimeDivider class="my-3" />
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import Checkbox from 'primevue/checkbox'
-import SelectButton from 'primevue/selectbutton'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 import type { OpcionLayout } from '@/interfaces/TabAtributos'
 import type { TipoDiseno } from '@/tipos/Comunes'
-
-
+import IconoAyuda from '@/componentes/IconoAyuda.vue'
+import { TipoCampo } from '@/enumeraciones/Campos'
 const props = defineProps<{
   campo: EsquemaCampo
 }>()
@@ -92,14 +85,11 @@ const metadatos = computed(() => {
 })
 
 
-
 // Actualizar propiedades del campo
 function actualizarPropiedad(propiedad: keyof EsquemaCampo, valor: unknown): void {
   if (!props.campo) return
   almacen.actualizarCampo(props.campo.id, { [propiedad]: valor })
 }
-
-
 
 // Layout de grupo
 function obtenerLayoutGrupo(): TipoDiseno {
@@ -127,7 +117,3 @@ function actualizarToggleable(toggleable: boolean): void {
   almacen.actualizarCampo(props.campo.id, { metadatos: meta })
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -1,3 +1,25 @@
+export enum TipoDato {
+  Numero = 'number',
+}
+
+export enum TipoCampo {
+  Texto = 'text',
+  // AreaTexto = 'area-texto',
+  // Correo = 'correo',
+  // Contrasena = 'contrasena',
+  Numero = 'number',
+  // Hora = 'hora',
+  // Fecha = 'fecha',
+  // Seleccion = 'seleccion',
+  // Radio = 'radio',
+  // Casilla = 'casilla',
+  // Etiqueta = 'etiqueta',
+  // Boton = 'boton',
+  // Divisor = 'divisor',
+  Panel = 'panel',
+  // Tabla = 'tabla'
+}
+
 export enum TipoCampoValor {
   Texto = 'texto',
   AreaTexto = 'area-texto',

@@ -219,5 +219,3 @@ function manejarTeclasNombreFormulario(event: KeyboardEvent): void {
     message="¿Estás seguro de que deseas eliminar esta página? Esta acción no se puede deshacer."
     @confirm="almacen.ejecutarEliminarPagina" @cancel="almacen.cancelarEliminarPagina" />
 </template>
-
-<style scoped></style>

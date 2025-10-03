@@ -1,19 +1,19 @@
-import type { OpcionSelector } from "@/interfaces/TabAtributos"
+import { OpcionSeleccion } from "@/interfaces/Comunes"
 import { MetodoHttp, ModoOpciones } from "@/tipos/TabAtributos"
 
 // Opciones para los selectores
-export const opcionesFuente: OpcionSelector[] = [
-  { label: 'Manual', value: ModoOpciones.MANUAL },
-  { label: 'API', value: ModoOpciones.API }
+export const opcionesFuente: OpcionSeleccion[] = [
+  { etiqueta: 'Manual', valor: ModoOpciones.MANUAL },
+  { etiqueta: 'API', valor: ModoOpciones.API }
 ]
 
-export const opcionesMetodo: OpcionSelector[] = [
-  { label: 'GET', value: MetodoHttp.GET },
-  { label: 'POST', value: MetodoHttp.POST }
+export const opcionesMetodo: OpcionSeleccion[] = [
+  { etiqueta: 'GET', valor: MetodoHttp.GET },
+  { etiqueta: 'POST', valor: MetodoHttp.POST }
 ]
 
-export const opcionesContentType: OpcionSelector[] = [
-  { label: 'application/json', value: 'application/json' },
-  { label: 'text/plain', value: 'text/plain' },
-  { label: 'application/x-www-form-urlencoded', value: 'application/x-www-form-urlencoded' }
+export const opcionesContentType: OpcionSeleccion[] = [
+  { etiqueta: 'application/json', valor: 'application/json' },
+  { etiqueta: 'text/plain', valor: 'text/plain' },
+  { etiqueta: 'application/x-www-form-urlencoded', valor: 'application/x-www-form-urlencoded' }
 ]

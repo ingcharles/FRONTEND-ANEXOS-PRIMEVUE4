@@ -17,7 +17,3 @@ export interface ConfigApi {
   headersJson?: string
 }
 
-export interface OpcionSelector {
-  label: string
-  value: string
-}

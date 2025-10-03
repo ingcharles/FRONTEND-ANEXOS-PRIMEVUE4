@@ -106,3 +106,32 @@ export function obtenerValorDefectoNormalizado(campo: EsquemaCampo): ValorDato |
 export function esVacio(valor: ValorDato | undefined): boolean {
   return valor === undefined || valor === null || (typeof valor === 'string' && valor.trim() === '')
 }
+
+
+// Función auxiliar para convertir valores a texto de forma segura
+export function convertirATexto(valor: unknown): string {
+  if (valor === null || valor === undefined) {
+    return ''
+  }
+  if (typeof valor === 'string') {
+    return valor
+  }
+  if (typeof valor === 'number' || typeof valor === 'boolean') {
+    return String(valor)
+  }
+  if (typeof valor === 'symbol') {
+    return valor.toString()
+  }
+  if (typeof valor === 'function') {
+    return '[function]'
+  }
+  if (typeof valor === 'object') {
+    try {
+      return JSON.stringify(valor)
+    } catch {
+      return '[object Object]'
+    }
+  }
+  // Para bigint y otros tipos futuros
+  return '[unknown type]'
+}

@@ -404,8 +404,8 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
     <div class="grid">
       <div class="col-12">
         <label class="tamanio-fuente-miga">Fuente de opciones</label>
-        <PrimeSelect :model-value="obtenerModoOpciones()" :options="opcionesFuente" option-label="label"
-          option-value="value" class="ancho-100 tamanio-fuente-miga"
+        <PrimeSelect :model-value="obtenerModoOpciones()" :options="opcionesFuente" option-label="etiqueta"
+          option-value="valor" class="ancho-100 tamanio-fuente-miga"
           @update:model-value="(v: ModoOpciones) => actualizarModoOpciones(v)" />
       </div>
     </div>
@@ -445,58 +445,63 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
       <div class="grid">
         <!-- URL -->
         <div class="col-12">
-          <label class="mb-2">URL</label>
-          <PrimeInputText :model-value="configApi.url" placeholder="https://api.midominio.com/opciones"
+          <label for="urlApiOpcion" class="mb-2">URL</label>
+          <PrimeInputText id="urlApiOpcion" :model-value="configApi.url"
+            placeholder="https://api.midominio.com/opciones"
             @update:model-value="(v: string | undefined) => actualizarConfigApi({ url: v || '' })"
             class="ancho-100 tamanio-fuente-miga" />
         </div>
 
         <!-- Método y Content-Type -->
         <div class="col-12">
-          <label class="tamanio-fuente-miga">Método</label>
-          <PrimeSelect :model-value="configApi.method || MetodoHttp.GET" :options="opcionesMetodo" option-label="label"
-            option-value="value" class="ancho-100 tamanio-fuente-miga"
+          <label for="metodoApiOpcion" class="tamanio-fuente-miga">Método</label>
+          <PrimeSelect id="metodoApiOpcion" :model-value="configApi.method || MetodoHttp.GET" :options="opcionesMetodo"
+            option-label="etiqueta" option-value="valor" class="ancho-100 tamanio-fuente-miga"
             @update:model-value="(v: MetodoHttp) => actualizarConfigApi({ method: v })" />
         </div>
 
         <div class="col-12">
-          <label class="tamanio-fuente-miga">Content-Type</label>
-          <PrimeSelect :model-value="configApi.contentType || 'application/json'" :options="opcionesContentType"
-            option-label="label" option-value="value" class="ancho-100 tamanio-fuente-miga"
+          <label for="contentTypeApiOpcion" class="tamanio-fuente-miga">Content-Type</label>
+          <PrimeSelect id="contentTypeApiOpcion" :model-value="configApi.contentType || 'application/json'"
+            :options="opcionesContentType" option-label="etiqueta" option-value="valor"
+            class="ancho-100 tamanio-fuente-miga"
             @update:model-value="(v: string) => actualizarConfigApi({ contentType: v })" />
         </div>
 
         <!-- Configuración de claves -->
         <div class="col-12">
-          <label class="tamanio-fuente-miga">Ruta datos (opcional)</label>
-          <PrimeInputText :model-value="configApi.dataPath" class="ancho-100" placeholder="por ej.: data.items"
+          <label for="rutaDatoApiOpcion" class="tamanio-fuente-miga">Ruta datos (opcional)</label>
+          <PrimeInputText id="rutaDatoApiOpcion" :model-value="configApi.dataPath" class="ancho-100"
+            placeholder="por ej.: data.items"
             @update:model-value="(v: string | undefined) => actualizarConfigApi({ dataPath: v || '' })" />
         </div>
 
         <div class="col-12">
-          <label class="tamanio-fuente-miga">Clave Valor</label>
-          <PrimeInputText :model-value="configApi.claveValor" class="ancho-100" placeholder="valor"
+          <label for="claveValorApiOpcion" class="tamanio-fuente-miga">Clave Valor</label>
+          <PrimeInputText id="claveValorApiOpcion" :model-value="configApi.claveValor" class="ancho-100"
+            placeholder="valor"
             @update:model-value="(v: string | undefined) => actualizarConfigApi({ claveValor: v || '' })" />
         </div>
 
         <div class="col-12">
-          <label class="tamanio-fuente-miga">Clave Etiqueta</label>
-          <PrimeInputText :model-value="configApi.claveEtiqueta" class="ancho-100" placeholder="etiqueta"
+          <label for="claveEtiquetaApiOpcion" class="tamanio-fuente-miga">Clave Etiqueta</label>
+          <PrimeInputText id="claveEtiquetaApiOpcion" :model-value="configApi.claveEtiqueta" class="ancho-100"
+            placeholder="etiqueta"
             @update:model-value="(v: string | undefined) => actualizarConfigApi({ claveEtiqueta: v || '' })" />
         </div>
 
         <!-- Body para POST -->
         <div class="col-12" v-if="(configApi.method || MetodoHttp.GET) === MetodoHttp.POST">
-          <label class="tamanio-fuente-miga">Body (JSON o texto)</label>
-          <PrimeTextarea :model-value="configApi.body" rows="4" placeholder='{"page":1}'
+          <label for="bodyApiOpcion" class="tamanio-fuente-miga">Body (JSON o texto)</label>
+          <PrimeTextarea id="bodyApiOpcion" :model-value="configApi.body" rows="4" placeholder='{"page":1}'
             @update:model-value="(v: string | undefined) => actualizarConfigApi({ body: v || '' })" />
         </div>
 
         <!-- Headers -->
         <div class="col-12">
-          <label class="tamanio-fuente-miga">Headers (JSON opcional)</label>
-          <PrimeTextarea :model-value="configApi.headersJson" rows="3" class="area-texto-seccion ancho-100"
-            placeholder='{"Authorization":"Bearer ..."}'
+          <label for="headersApiOpcion" class="tamanio-fuente-miga">Headers (JSON opcional)</label>
+          <PrimeTextarea id="headersApiOpcion" :model-value="configApi.headersJson" rows="3"
+            class="area-texto-seccion ancho-100" placeholder='{"Authorization":"Bearer ..."}'
             @update:model-value="(v: string | undefined) => actualizarConfigApi({ headersJson: v || '' })" />
         </div>
 

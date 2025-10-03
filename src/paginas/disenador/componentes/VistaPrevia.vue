@@ -414,14 +414,10 @@ async function manejarEventoCampo(nombreCampo: string, tipoEvento: 'change' | 'b
     <form class="grid" @submit.prevent="enviar">
       <template v-for="campo in camposConLogica" :key="campo.id">
         <div :class="clasesColumna(campo)">
-          <RenderizadorCampo
-            :campo="campo"
-            :valores-campos="valores"
-            :errores-campos="errores"
+          <RenderizadorCampo :campo="campo" :valores-campos="valores" :errores-campos="errores"
             :mapa-id-nombre="mapaIdNombre"
             @valor-cambiado="(nombre: string, valor: unknown) => almacen.actualizarValorCampo(paginaActual.id, nombre, valor as ValorDato)"
-            @evento-campo="manejarEventoCampo"
-          />
+            @evento-campo="manejarEventoCampo" />
         </div>
       </template>
 

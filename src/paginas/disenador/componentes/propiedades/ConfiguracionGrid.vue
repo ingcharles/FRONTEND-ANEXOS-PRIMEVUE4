@@ -69,7 +69,7 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
       <!-- Móvil (sm) -->
       <div class="breakpoint-config mb-3">
         <div class="flex align-items-center justify-content-between mb-2">
-          <label class="tamanio-fuente-miga ">
+          <label for="configuracionResponsivoMovil" class="tamanio-fuente-miga ">
             <i class="pi pi-mobile mr-1"></i>
             Móvil (sm)
           </label>
@@ -83,9 +83,9 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
       <!-- Tablet (md) -->
       <div class="breakpoint-config mb-3">
         <div class="flex align-items-center justify-content-between mb-2">
-          <label class="tamanio-fuente-miga ">
+          <label for="configuracionResponsivoTableta" class="tamanio-fuente-miga ">
             <i class="pi pi-tablet mr-1"></i>
-            Tablet (md)
+            Tableta (md)
           </label>
           <span class="text-xs color-negro">768px - 1024px</span>
         </div>
@@ -97,9 +97,9 @@ function aplicarPreset(preset: 'completo' | 'mitad' | 'tercio' | 'cuarto'): void
       <!-- Desktop (lg) -->
       <div class="breakpoint-config mb-3">
         <div class="flex align-items-center justify-content-between mb-2">
-          <label class="tamanio-fuente-miga ">
+          <label for="configuracionResponsivoEscritorio" class="tamanio-fuente-miga ">
             <i class="pi pi-desktop mr-1"></i>
-            Desktop (lg)
+            Escritorio (lg)
           </label>
           <span class="text-xs color-negro">&gt; 1024px</span>
         </div>

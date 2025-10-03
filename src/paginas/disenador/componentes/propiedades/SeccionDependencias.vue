@@ -5,18 +5,19 @@
     <div class="grid">
       <!-- Modo de envío -->
       <div class="col-12">
-        <label class="tamanio-fuente-miga">Modo de envío</label>
-        <PrimeSelect :model-value="configDependencia.modoEnvio || 'query'" :options="modoEnvioOpciones"
-          option-label="label" option-value="value" class="ancho-100 tamanio-fuente-miga" @focus="asegurarDependencia"
-          @update:model-value="(v: ModoEnvio) => actualizarDependencia('modoEnvio', v)" />
+        <label for="modoEnvioDependencia" class="tamanio-fuente-miga">Modo de envío</label>
+        <PrimeSelect id="modoEnvioDependencia" :model-value="configDependencia.modoEnvio || 'query'"
+          :options="modoEnvioOpciones" option-label="label" option-value="value" class="ancho-100 tamanio-fuente-miga"
+          @focus="asegurarDependencia" @update:model-value="(v: ModoEnvio) => actualizarDependencia('modoEnvio', v)" />
       </div>
 
       <!-- Campo padre -->
       <div class="col-12">
-        <label class="tamanio-fuente-miga">Campo padre (depende de)</label>
-        <PrimeMultiSelect :model-value="obtenerCamposPadre()" :options="camposPaginaActual" option-label="label"
-          option-value="value" placeholder="Seleccionar campo(s)" class="ancho-100 tamanio-fuente-miga"
-          @focus="asegurarDependencia" @update:model-value="actualizarCamposPadre" />
+        <label for="campoPadreDependencia" class="tamanio-fuente-miga">Campo padre (depende de)</label>
+        <PrimeMultiSelect id="campoPadreDependencia" :model-value="obtenerCamposPadre()" :options="camposPaginaActual"
+          option-label="label" option-value="value" placeholder="Seleccionar campo(s)"
+          class="ancho-100 tamanio-fuente-miga" @focus="asegurarDependencia"
+          @update:model-value="actualizarCamposPadre" />
         <small class="text-color-secondary text-xs mt-1">
           Puedes elegir múltiples padres; se guardan separados por comas y se respetará el orden.
         </small>
@@ -24,8 +25,9 @@
 
       <!-- Nombre de parámetro -->
       <div class="col-12" v-if="debeMostrarclaveParametro()">
-        <label class="tamanio-fuente-miga">Nombre de parámetro (claveParametro)</label>
-        <PrimeInputText :model-value="(configDependencia.claveParametro as string) || ''"
+        <label for="nombreParametroDependencia" class="tamanio-fuente-miga">Nombre de parámetro (claveParametro)</label>
+        <PrimeInputText id="nombreParametroDependencia"
+          :model-value="(configDependencia.claveParametro as string) || ''"
           :placeholder="obtenerPlaceholderclaveParametro()" class="ancho-100 tamanio-fuente-miga"
           @focus="asegurarDependencia"
           @update:model-value="(v: string | undefined) => actualizarDependencia('claveParametro', v || '')" />
@@ -33,15 +35,18 @@
 
       <!-- Opciones de comportamiento -->
       <div class="col-12 flex align-items-center gap-2">
-        <PrimeCheckbox binary :model-value="configDependencia.limpiarAlCambiar !== false"
+        <PrimeCheckbox id="limpiarComportamientoDependencia" binary
+          :model-value="configDependencia.limpiarAlCambiar !== false"
           @update:model-value="(v: boolean) => actualizarDependencia('limpiarAlCambiar', v)" />
-        <label class="tamanio-fuente-miga">Limpiar al cambiar</label>
+        <label for="limpiarComportamientoDependencia" class="tamanio-fuente-miga">Limpiar al cambiar</label>
       </div>
 
       <div class="col-12 flex align-items-center gap-2">
-        <PrimeCheckbox binary :model-value="configDependencia.deshabilitarHastaValor !== false"
+        <PrimeCheckbox id="deshabilitarHastaValorDependencia" binary
+          :model-value="configDependencia.deshabilitarHastaValor !== false"
           @update:model-value="(v: boolean) => actualizarDependencia('deshabilitarHastaValor', v)" />
-        <label class="tamanio-fuente-miga">Deshabilitar hasta que padre tenga valor</label>
+        <label for="deshabilitarHastaValorDependencia" class="tamanio-fuente-miga">Deshabilitar hasta que padre tenga
+          valor</label>
       </div>
 
       <!-- Botón de limpiar -->

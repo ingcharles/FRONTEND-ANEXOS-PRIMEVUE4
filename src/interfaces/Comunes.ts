@@ -19,6 +19,11 @@ export interface OpcionSeleccion {
   deshabilitado?: boolean
 }
 
+// export interface OpcionSelector {
+//   label: string
+//   value: string
+// }
+
 export interface ColumnaTabla {
   id: string
   nombre: string
