@@ -96,15 +96,28 @@ async function evaluarReglaDecisionRules(
     return false
   }
 
-  if (!regla.decisionRulesId) {
-    console.warn('⚠️ [DecisionRules] Regla sin ID configurado')
+  // ⚠️ VALIDACIÓN: No evaluar si la regla no está completamente configurada
+  if (!regla.decisionRulesId || !regla.decisionRulesId.trim()) {
+    console.log('⏭️ [DecisionRules] Saltando regla - ID no configurado')
+    return false
+  }
+
+  if (!regla.decisionRulesVersion || regla.decisionRulesVersion < 1) {
+    console.log('⏭️ [DecisionRules] Saltando regla - Versión no configurada')
+    return false
+  }
+
+  // ⚠️ VALIDACIÓN: Para acciones que no sean "establecer-valor", la condición es obligatoria
+  const esAccionEstablecerValor = regla.accion === 'establecer-valor'
+  if (!esAccionEstablecerValor && (!regla.condicionResultado || regla.condicionResultado.trim() === '')) {
+    console.log('⏭️ [DecisionRules] Saltando regla - Sin condición de resultado (requerida para acciones mostrar/ocultar/requerir/opcional)')
     return false
   }
 
   try {
     console.log('📋 [DecisionRules] Valores disponibles:', valoresPorNombre)
     console.log('📋 [DecisionRules] Claves de valores:', Object.keys(valoresPorNombre))
-    console.log('� [DecisnionRules] Campos de entrada configurados:', regla.camposEntrada)
+    console.log('📋 [DecisionRules] Campos de entrada configurados:', regla.camposEntrada)
 
     const requestBody: Record<string, unknown> = {}
     for (const campoEntrada of regla.camposEntrada ?? []) {
@@ -126,7 +139,7 @@ async function evaluarReglaDecisionRules(
     }
 
     console.log('📤 [DecisionRules] Request Body final:', requestBody)
-    console.log('� [DeccisionRules] Rule ID:', regla.decisionRulesId)
+    console.log('📋 [DecisionRules] Rule ID:', regla.decisionRulesId)
     console.log('📋 [DecisionRules] Version:', regla.decisionRulesVersion ?? 1)
 
     // Llamar a DecisionRules
@@ -153,31 +166,40 @@ async function evaluarReglaDecisionRules(
       return false
     }
 
-    // Evaluar la condición del resultado
+    // Si la acción es "establecer-valor", aplicar valores directamente
+    if (esAccionEstablecerValor) {
+      if (regla.camposAsignar && regla.camposAsignar.length > 0) {
+        console.log('📝 [DecisionRules] Aplicando asignaciones configuradas...')
+        aplicarAsignacionesValores(regla, response, valoresPorNombre)
+      } else if (nombreCampoActual) {
+        console.log('📝 [DecisionRules] Asignación automática al campo actual:', nombreCampoActual)
+        try {
+          // Si hay condición, usarla; si no, usar el response directamente
+          if (regla.condicionResultado && regla.condicionResultado.trim()) {
+            const fn = new Function('result', `return (${regla.condicionResultado})`) as (result: unknown) => unknown
+            const valor = fn(response)
+            console.log(`   📝 Asignando (con condición): ${nombreCampoActual} = ${JSON.stringify(valor)}`)
+            valoresPorNombre[nombreCampoActual] = valor as ValorDato
+          } else {
+            // Sin condición, asignar el response completo
+            console.log(`   📝 Asignando (sin condición): ${nombreCampoActual} = ${JSON.stringify(response)}`)
+            valoresPorNombre[nombreCampoActual] = response as ValorDato
+          }
+        } catch (error) {
+          console.error('❌ Error al asignar valor automático:', error)
+        }
+      }
+      // Para "establecer-valor", siempre retornar true (no afecta visible/requerido)
+      return true
+    }
+
+    // Para otras acciones (mostrar/ocultar/requerir/opcional), evaluar la condición
     if (regla.condicionResultado) {
       try {
         console.log('🔍 [DecisionRules] Evaluando condición:', regla.condicionResultado)
         const fn = new Function('result', `return (${regla.condicionResultado})`) as (result: unknown) => boolean
         const resultado = !!fn(response)
         console.log('✅ [DecisionRules] Resultado de condición:', resultado)
-
-        // Si la condición se cumple y la acción es establecer-valor
-        if (resultado && regla.accion === 'establecer-valor') {
-          if (regla.camposAsignar && regla.camposAsignar.length > 0) {
-            console.log('📝 [DecisionRules] Aplicando asignaciones configuradas...')
-            aplicarAsignacionesValores(regla, response, valoresPorNombre)
-          } else if (nombreCampoActual) {
-            console.log('📝 [DecisionRules] Asignación automática al campo actual:', nombreCampoActual)
-            try {
-              const valor = fn(response)
-              console.log(`   📝 Asignando: ${nombreCampoActual} = ${JSON.stringify(valor)}`)
-              valoresPorNombre[nombreCampoActual] = valor as ValorDato
-            } catch (error) {
-              console.error('❌ Error al asignar valor automático:', error)
-            }
-          }
-        }
-
         return resultado
       } catch (error) {
         console.error('❌ [DecisionRules] Error al evaluar condición:', error)
