@@ -30,7 +30,7 @@ const caracteristicasPrincipales = ref([
   <div class="pagina-inicio p-6 max-w-6xl mx-auto">
     <!-- Sección de Bienvenida -->
     <div class="text-center mb-8">
-      <h1 class="text-4xl negrilla text-gray-800 mb-3">
+      <h1 class="text-4xl negrilla color-negro mb-3">
         <i class="pi pi-home color-cyan-fuerte mr-3"></i>
         {{ mensajeBienvenida }}
       </h1>
@@ -41,7 +41,7 @@ const caracteristicasPrincipales = ref([
 
     <!-- Características Principales -->
     <div class="mb-8">
-      <h2 class="text-2xl negrilla text-center mb-6 text-gray-800">
+      <h2 class="text-2xl negrilla text-center mb-6 color-negro">
         Características Destacadas
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -51,7 +51,7 @@ const caracteristicasPrincipales = ref([
             :style="{ backgroundColor: caracteristica.color + '20' }">
             <i :class="caracteristica.icono" class="text-2xl" :style="{ color: caracteristica.color }"></i>
           </div>
-          <h3 class=" negrilla text-gray-800 mb-2">
+          <h3 class=" negrilla color-negro mb-2">
             {{ caracteristica.titulo }}
           </h3>
           <p class="text-gray-600">

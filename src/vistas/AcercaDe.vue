@@ -119,7 +119,7 @@ const estadisticasProyecto = ref([
   <div class="p-6 max-w-7xl mx-auto">
     <!-- Encabezado Principal -->
     <div class="text-center mb-8">
-      <h1 class="text-5xl negrilla text-gray-800 mb-3">
+      <h1 class="text-5xl negrilla color-negro mb-3">
         <i class="pi pi-palette color-cyan-fuerte mr-3"></i>
         Diseñador de Formularios
       </h1>
@@ -134,14 +134,14 @@ const estadisticasProyecto = ref([
       <div v-for="estadistica in estadisticasProyecto" :key="estadistica.etiqueta"
         class="bg-white rounded-lg shadow-md p-6 text-center border-l-4 border-blue-500">
         <i :class="estadistica.icono" class="text-3xl color-cyan-fuerte mb-3"></i>
-        <div class="text-2xl negrilla text-gray-800">{{ estadistica.valor }}</div>
+        <div class="text-2xl negrilla color-negro">{{ estadistica.valor }}</div>
         <div class="text-gray-600">{{ estadistica.etiqueta }}</div>
       </div>
     </div>
 
     <!-- Sección de Tecnologías -->
     <div class="mb-12">
-      <h2 class="text-3xl negrilla text-center mb-8 text-gray-800">
+      <h2 class="text-3xl negrilla text-center mb-8 color-negro">
         <i class="pi pi-cog color-cyan-fuerte mr-2"></i>
         Stack Tecnológico
       </h2>
@@ -152,7 +152,7 @@ const estadisticasProyecto = ref([
           <div class="flex mb-3">
             <i :class="tech.icono" class="text-2xl mr-3" :style="{ color: tech.color }"></i>
             <div>
-              <h3 class=" negrilla text-gray-800">{{ tech.nombre }}</h3>
+              <h3 class=" negrilla color-negro">{{ tech.nombre }}</h3>
               <span class="tamanio-fuente-miga text-gray-500">v{{ tech.version }}</span>
             </div>
           </div>
@@ -167,7 +167,7 @@ const estadisticasProyecto = ref([
 
     <!-- Sección de Características -->
     <div class="mb-12">
-      <h2 class="text-3xl negrilla text-center mb-8 text-gray-800">
+      <h2 class="text-3xl negrilla text-center mb-8 color-negro">
         <i class="pi pi-star text-yellow-500 mr-2"></i>
         Características Principales
       </h2>
@@ -179,7 +179,7 @@ const estadisticasProyecto = ref([
               :style="{ backgroundColor: caracteristica.color + '20' }">
               <i :class="caracteristica.icono" class="text-xl" :style="{ color: caracteristica.color }"></i>
             </div>
-            <h3 class=" negrilla text-gray-800">{{ caracteristica.titulo }}</h3>
+            <h3 class=" negrilla color-negro">{{ caracteristica.titulo }}</h3>
           </div>
           <p class="text-gray-600">{{ caracteristica.descripcion }}</p>
         </div>
@@ -188,7 +188,7 @@ const estadisticasProyecto = ref([
 
     <!-- Sección de Arquitectura -->
     <div class="mb-12">
-      <h2 class="text-3xl negrilla text-center mb-8 text-gray-800">
+      <h2 class="text-3xl negrilla text-center mb-8 color-negro">
         <i class="pi pi-sitemap color-verde-claro mr-2"></i>
         Arquitectura del Proyecto
       </h2>
@@ -196,7 +196,7 @@ const estadisticasProyecto = ref([
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <!-- Principios SOLID -->
           <div>
-            <h3 class="text-xl negrilla mb-4 text-gray-800">
+            <h3 class="text-xl negrilla mb-4 color-negro">
               <i class="pi pi-shield color-cyan-fuerte mr-2"></i>
               Principios SOLID
             </h3>
@@ -230,7 +230,7 @@ const estadisticasProyecto = ref([
 
           <!-- Estructura del Proyecto -->
           <div>
-            <h3 class="text-xl negrilla mb-4 text-gray-800">
+            <h3 class="text-xl negrilla mb-4 color-negro">
               <i class="pi pi-folder text-yellow-500 mr-2"></i>
               Estructura de Carpetas
             </h3>
