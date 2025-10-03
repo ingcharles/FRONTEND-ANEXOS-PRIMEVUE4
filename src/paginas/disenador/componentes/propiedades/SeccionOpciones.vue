@@ -414,7 +414,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
     <template v-if="obtenerModoOpciones() === ModoOpciones.MANUAL">
       <div class="flex justify-content-between align-items-center mb-2">
         <label class="tamanio-fuente-miga">Opciones</label>
-        <PrimeButton label="Agregar" size="small" icon="pi pi-plus" @click="agregarOpcion" />
+        <PrimeButton label="Agregar" icon="pi pi-plus" @click="agregarOpcion" />
       </div>
 
       <div v-for="(opcion, indice) in obtenerOpciones()" :key="indice" class="grid align-items-end mb-2">
@@ -433,7 +433,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
         </div>
 
         <div class="col-12 row-start-2 flex align-items-end">
-          <PrimeButton icon="pi pi-trash" severity="danger" text @click="eliminarOpcion(indice)" />
+          <PrimeButton icon="pi pi-trash" severity="danger" @click="eliminarOpcion(indice)" />
         </div>
       </div>
     </template>
@@ -518,11 +518,11 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
 
       <!-- Botones de carga -->
       <div class="flex align-items-center gap-2 flex-wrap mt-3">
-        <PrimeButton :disabled="cargandoApi" size="small" icon="pi pi-refresh"
+        <PrimeButton :disabled="cargandoApi" icon="pi pi-refresh"
           :label="cargandoApi ? 'Cargando…' : 'Reemplazar con API'"
           @click="cargarOpcionesDesdeApi(ModoCarga.REEMPLAZAR)" />
-        <PrimeButton :disabled="cargandoApi" size="small" icon="pi pi-plus" severity="success"
-          label="Añadir desde API" @click="cargarOpcionesDesdeApi(ModoCarga.AGREGAR)" />
+        <PrimeButton :disabled="cargandoApi" icon="pi pi-plus" severity="success" label="Añadir desde API"
+          @click="cargarOpcionesDesdeApi(ModoCarga.AGREGAR)" />
         <small v-if="errorApi" class="color-rojo">{{ errorApi }}</small>
       </div>
 

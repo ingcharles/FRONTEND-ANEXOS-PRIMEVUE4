@@ -5,22 +5,26 @@
 ### Setup Inicial (5 minutos)
 
 1. **Clonar el repositorio**
+
    ```bash
    git clone <url-del-repo>
    cd <nombre-del-proyecto>
    ```
 
 2. **Instalar dependencias**
+
    ```bash
    npm install
    ```
 
 3. **Crear archivo de configuración**
+
    ```bash
    cp .env.example .env
    ```
 
 4. **Obtener tu API Key**
+
    - Ve a [app.decisionrules.io](https://app.decisionrules.io)
    - Inicia sesión (o crea una cuenta)
    - Settings → API Keys
@@ -28,12 +32,14 @@
 
 5. **Configurar .env**
    Abre `.env` y pega tu API Key:
+
    ```bash
    VITE_DECISIONRULES_API_KEY=tu-api-key-aqui
    VITE_DECISIONRULES_URL=https://api.decisionrules.io
    ```
 
 6. **Iniciar el servidor**
+
    ```bash
    npm run dev
    ```
@@ -63,18 +69,21 @@
 ## 🌍 Entornos
 
 ### Desarrollo Local
+
 ```bash
 # .env
 VITE_DECISIONRULES_API_KEY=dev-api-key-123
 ```
 
 ### Staging
+
 ```bash
 # .env.staging
 VITE_DECISIONRULES_API_KEY=staging-api-key-456
 ```
 
 ### Producción
+
 ```bash
 # Configurado en el hosting (Vercel/Netlify/etc)
 VITE_DECISIONRULES_API_KEY=prod-api-key-789
@@ -108,6 +117,7 @@ VITE_DECISIONRULES_API_KEY=prod-api-key-789
 **Causa**: No se encontró la API Key
 
 **Solución**:
+
 1. Verifica que `.env` existe en la raíz del proyecto
 2. Verifica que la variable se llama `VITE_DECISIONRULES_API_KEY`
 3. Reinicia el servidor (`Ctrl+C` y luego `npm run dev`)
@@ -117,6 +127,7 @@ VITE_DECISIONRULES_API_KEY=prod-api-key-789
 **Causa**: Vite solo lee `.env` al iniciar
 
 **Solución**:
+
 1. Detén el servidor (`Ctrl+C`)
 2. Reinicia (`npm run dev`)
 
@@ -125,6 +136,7 @@ VITE_DECISIONRULES_API_KEY=prod-api-key-789
 **Causa**: Variables no configuradas en el hosting
 
 **Solución**:
+
 1. Configura las variables en tu hosting (ver sección Despliegue)
 2. Redeploy la aplicación
 
@@ -137,7 +149,7 @@ VITE_DECISIONRULES_API_KEY=prod-api-key-789
 - [ ] Configurar `.env` con tu API Key
 - [ ] Iniciar servidor (`npm run dev`)
 - [ ] Verificar configuración en la UI
-- [ ] Probar crear una regla DecisionRules
+- [ ] Probar crear una regla decisión
 - [ ] Leer documentación del proyecto
 
 ## 📚 Documentación

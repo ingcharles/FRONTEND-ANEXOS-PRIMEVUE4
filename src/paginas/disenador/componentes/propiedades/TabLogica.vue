@@ -27,9 +27,9 @@ const reglasLogica = computed<ReglaLogica[]>({
   get: () => (campoSeleccionado.value?.logica ?? []).filter(r => r.tipo !== 'decisionrules'),
   set: (nuevasReglas) => {
     if (campoSeleccionado.value) {
-      const reglasDecisionRules = (campoSeleccionado.value.logica ?? []).filter(r => r.tipo === 'decisionrules')
+      const reglasDecision = (campoSeleccionado.value.logica ?? []).filter(r => r.tipo === 'decisionrules')
       almacen.actualizarCampo(campoSeleccionado.value.id, {
-        logica: [...nuevasReglas, ...reglasDecisionRules]
+        logica: [...nuevasReglas, ...reglasDecision]
       })
     }
   },
@@ -133,18 +133,17 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
   <div class="flex flex-column gap-3">
     <!-- Selector de tipo de regla -->
     <div class="flex gap-2 mb-3">
-      <PrimeButton label="Reglas Simples" :severity="tipoRegla === 'simple' ? 'primary' : 'secondary'" size="small"
+      <PrimeButton label="Reglas Simples" :severity="tipoRegla === 'simple' ? 'primary' : 'secondary'"
         @click="tipoRegla = 'simple'" />
       <PrimeButton label="DecisionRules" :severity="tipoRegla === 'decisionrules' ? 'primary' : 'secondary'"
-        size="small" @click="tipoRegla = 'decisionrules'" />
+        @click="tipoRegla = 'decisionrules'" />
     </div>
 
     <!-- Contenido según tipo de regla -->
     <template v-if="tipoRegla === 'simple'">
       <!-- Botón para agregar nueva regla -->
       <div class="flex justify-content-end">
-        <PrimeButton label="Añadir regla" icon="pi pi-plus" size="small" @click="agregarReglaLogica"
-          severity="success" />
+        <PrimeButton label="Añadir regla" icon="pi pi-plus" @click="agregarReglaLogica" severity="success" />
       </div>
 
       <!-- Estado vacío -->
@@ -154,8 +153,7 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
         <small class="mt-2 block">
           Las reglas de lógica permiten mostrar/ocultar campos y hacerlos requeridos según los valores de otros campos
         </small>
-        <PrimeButton label="Crear Primera Regla" icon="pi pi-plus" size="small" class="mt-3"
-          @click="agregarReglaLogica" />
+        <PrimeButton label="Crear Primera Regla" icon="pi pi-plus" class="mt-3" @click="agregarReglaLogica" />
       </div>
 
       <!-- Lista de reglas existentes -->

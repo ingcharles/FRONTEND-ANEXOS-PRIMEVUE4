@@ -227,7 +227,7 @@ function obtenerMensajePorDefecto(tipo: ReglaValidacion['tipo'], valor?: unknown
 
 
     </div>
-    <PrimeButton v-if="tiposDisponibles.length > 0" label="Añadir Validación" icon="pi pi-plus" size="small"
+    <PrimeButton v-if="tiposDisponibles.length > 0" label="Añadir Validación" icon="pi pi-plus"
       @click="mostrarMenuAgregar = true" severity="success" />
     <!-- Estado vacío mejorado -->
     <PrimeCard v-if="reglasValidacion.length === 0" class="text-center">

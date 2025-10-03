@@ -81,7 +81,7 @@ export async function evaluarReglasDecisionRulesCampo(
     if (eventoRegla !== tipoEvento) continue
 
     // Evaluar la regla
-    const cumple = await evaluarReglaDecisionRules(r, valoresPorNombre, campo.nombre)
+    const cumple = await evaluarReglaDecision(r, valoresPorNombre, campo.nombre)
 
     if (cumple) {
       if (r.accion === 'mostrar') visible = true
@@ -116,7 +116,7 @@ export async function evaluarReglasCampo(
     if (r.tipo === 'decisionrules') {
       // Solo evaluar DecisionRules si está habilitado
       if (!incluirDR) continue
-      cumple = await evaluarReglaDecisionRules(r, valoresPorNombre, campo.nombre)
+      cumple = await evaluarReglaDecision(r, valoresPorNombre, campo.nombre)
     } else {
       const nombreDependencia = mapaIdNombre[r.campoCondicionId]
       const valor = (nombreDependencia ? valoresPorNombre[nombreDependencia] : undefined) as ValorDato | undefined
@@ -164,7 +164,7 @@ export function evaluarReglasCampoSync(
   return { visible, requerido }
 }
 
-async function evaluarReglaDecisionRules(
+async function evaluarReglaDecision(
   regla: ReglaLogica,
   valoresPorNombre: RegistroDatos,
   nombreCampoActual?: string

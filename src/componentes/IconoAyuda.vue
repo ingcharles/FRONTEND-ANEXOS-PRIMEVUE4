@@ -1,5 +1,5 @@
 <template>
-  <i class="pi pi-info-circle texto-ayuda p-2" v-tooltip.top="mensaje"></i>
+  <i class="pi pi-info-circle texto-ayuda color-azul p-2 " v-tooltip.top="mensaje"></i>
 </template>
 
 <script setup lang="ts">

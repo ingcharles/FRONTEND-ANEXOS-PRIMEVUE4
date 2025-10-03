@@ -155,8 +155,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div ref="elementoRaiz" class="p-2 border-1 relative"
-    :class="{ 'border-primary border-2': seleccionado }" role="button" tabindex="0" @click="seleccionar">
+  <div ref="elementoRaiz" class="p-2 border-1 relative" :class="{ 'border-primary border-2': seleccionado }"
+    role="button" tabindex="0" @click="seleccionar">
     <!-- Badge informativo (superior derecha) con dos columnas: texto izquierda, acciones derecha -->
     <div v-if="seleccionado" class="informacion-redimension">
       <PrimeTag class="text-xs px-1 py-1 pointer-events-auto informacion-redimension-tag" severity="primary">
@@ -165,15 +165,15 @@ onUnmounted(() => {
           <div class="col-8 flex flex-column">
             <span class="titulo">{{ `${punto}: ${columnaActual} Columnas` }}</span>
             <span class="color-rojo tamanio-fuente-miga" v-if="campo.tipo === 'panel'">Elementos: {{ conteoHijos
-              }}</span>
+            }}</span>
             <span class="color-rojo tamanio-fuente-miga" v-if="ServicioCampos.soportaOpciones(campo.tipo)">Opciones: {{
               conteoOpciones }}</span>
           </div>
           <!-- Columna derecha (4/12): acciones -->
           <div class="col-4 flex justify-content-end gap-1 pb-0">
-            <PrimeButton icon="pi pi-copy" rounded size="small" class="boton-pequenio" severity="info" title="Duplicar"
+            <PrimeButton icon="pi pi-copy" rounded class="boton-pequenio" severity="info" title="Duplicar"
               @click.stop="almacen.duplicarCampo(campo.id)" />
-            <PrimeButton icon="pi pi-trash" rounded size="small" class="boton-pequenio" severity="info" title="Eliminar"
+            <PrimeButton icon="pi pi-trash" rounded class="boton-pequenio" severity="info" title="Eliminar"
               @click.stop="almacen.confirmarEliminarCampo(campo.id)" />
           </div>
         </div>
@@ -297,7 +297,7 @@ onUnmounted(() => {
             </table>
           </div>
           <div class="mt-2" v-if="(campo.metadatos as any)?.agregarFilas">
-            <PrimeButton label="Añadir fila" size="small" icon="pi pi-plus" disabled />
+            <PrimeButton label="Añadir fila" icon="pi pi-plus" disabled />
           </div>
           <div class="text-xs color-negro mt-2">
             Filas: {{ Number((campo.metadatos as any)?.filas || 1) }} |

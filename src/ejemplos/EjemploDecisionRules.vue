@@ -77,7 +77,7 @@ async function probarRegla() {
 
 <template>
   <div class="p-4">
-    <PrimeCard>
+    <PrimeCard class="p-3">
       <template #title>
         <div class="flex align-items-center gap-2">
           <i class="pi pi-cloud"></i>
@@ -94,31 +94,17 @@ async function probarRegla() {
 
           <div class="col-12">
             <label class="block mb-2">API Key</label>
-            <PrimeInputText
-              v-model="apiKey"
-              class="w-full"
-              placeholder="Tu API Key"
-              type="password"
-            />
+            <PrimeInputText v-model="apiKey" class="w-full" placeholder="Tu API Key" type="password" />
           </div>
 
           <div class="col-12 md:col-6">
             <label class="block mb-2">Rule ID</label>
-            <PrimeInputText
-              v-model="ruleId"
-              class="w-full"
-              placeholder="c67df234-c939-6b6b-16fc-dcb9543c8c1b"
-            />
+            <PrimeInputText v-model="ruleId" class="w-full" placeholder="c67df234-c939-6b6b-16fc-dcb9543c8c1b" />
           </div>
 
           <div class="col-12 md:col-6">
             <label class="block mb-2">Versión</label>
-            <PrimeInputNumber
-              v-model="version"
-              class="w-full"
-              :min="1"
-              :use-grouping="false"
-            />
+            <PrimeInputNumber v-model="version" class="w-full" :min="1" :use-grouping="false" />
           </div>
 
           <!-- Valores de entrada -->
@@ -128,29 +114,18 @@ async function probarRegla() {
 
           <div class="col-12 md:col-6">
             <label class="block mb-2">Value 1</label>
-            <PrimeInputNumber
-              v-model="value1"
-              class="w-full"
-            />
+            <PrimeInputNumber v-model="value1" class="w-full" />
           </div>
 
           <div class="col-12 md:col-6">
             <label class="block mb-2">Value 2</label>
-            <PrimeInputNumber
-              v-model="value2"
-              class="w-full"
-            />
+            <PrimeInputNumber v-model="value2" class="w-full" />
           </div>
 
           <!-- Botón de prueba -->
           <div class="col-12">
-            <PrimeButton
-              label="Probar Regla"
-              icon="pi pi-play"
-              @click="probarRegla"
-              :loading="cargando"
-              :disabled="!apiKey || !ruleId"
-            />
+            <PrimeButton label="Probar Regla" icon="pi pi-play" @click="probarRegla" :loading="cargando"
+              :disabled="!apiKey || !ruleId" />
           </div>
 
           <!-- Resultado -->

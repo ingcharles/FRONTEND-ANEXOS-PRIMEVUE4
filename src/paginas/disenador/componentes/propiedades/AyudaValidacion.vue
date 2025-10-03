@@ -1,7 +1,7 @@
 <!-- filepath: d:\proyectosVue\frontend-anexos-primevue4\src\paginas\disenador\componentes\propiedades\AyudaValidacion.vue -->
 <template>
   <div>
-    <PrimeButton icon="pi pi-question-circle" severity="help" text rounded size="small" @click="mostrarAyuda = true"
+    <PrimeButton icon="pi pi-question-circle" severity="help" text rounded @click="mostrarAyuda = true"
       v-tooltip.top="'Ver ejemplos y ayuda'" />
 
     <DialogoAyuda v-model:visible="mostrarAyuda" titulo="Guía de Validaciones" ancho="700px">
@@ -69,8 +69,8 @@
                 Expresiones regulares para validar formatos específicos. Haz clic en "Copiar" para usar el patrón.
               </PrimeMessage>
               <PrimeAccordion v-model="panelActivo">
-                <PrimeAccordionPanel v-for="(patron, index) in patronesComunes" :key="patron.nombre" :value="String(index)"
-                  class="p-3">
+                <PrimeAccordionPanel v-for="(patron, index) in patronesComunes" :key="patron.nombre"
+                  :value="String(index)" class="p-3">
                   <PrimeAccordionHeader>
                     {{ patron.nombre }}
                   </PrimeAccordionHeader>
@@ -79,8 +79,7 @@
                       <div class="flex align-items-center justify-content-between mb-2">
                         <PrimeInputText :model-value="patron.regex" readonly
                           class="w-100 font-mono tamanio-fuente-miga mr-2" />
-                        <PrimeButton label="Copiar" icon="pi pi-copy" size="small"
-                          @click="copiarPatron(patron.regex)" />
+                        <PrimeButton label="Copiar" icon="pi pi-copy" @click="copiarPatron(patron.regex)" />
                       </div>
                       <p class="contenido m-0">{{ patron.descripcion }}</p>
                       <div>
@@ -109,8 +108,8 @@
                 válido.
               </PrimeMessage>
               <PrimeAccordion v-model="panelActivo">
-                <PrimeAccordionPanel v-for="(ejemplo, index) in ejemplosPersonalizados" :key="ejemplo.nombre" class="p-3"
-                  :value="String(index)">
+                <PrimeAccordionPanel v-for="(ejemplo, index) in ejemplosPersonalizados" :key="ejemplo.nombre"
+                  class="p-3" :value="String(index)">
                   <PrimeAccordionHeader>
                     <span>{{ ejemplo.nombre }}</span>
 
@@ -120,8 +119,7 @@
                     <div class="mb-2">
                       <div class="flex align-items-center justify-content-between mb-2">
                         <p class="texto-izquierda color-negro mb-3">{{ ejemplo.descripcion }}</p>
-                        <PrimeButton label="Copiar Código" icon="pi pi-copy"
-                          @click="copiarCodigo(ejemplo.codigo)" />
+                        <PrimeButton label="Copiar Código" icon="pi pi-copy" @click="copiarCodigo(ejemplo.codigo)" />
                       </div>
                       <div>
                         <strong class="tamanio-fuente-miga">Ejemplos válidos:</strong>

@@ -131,7 +131,7 @@ function generarOpcionesPorDefecto(): void {
             @keydown.enter="agregarOpcion" />
         </div>
         <div class="col-2">
-          <PrimeButton icon="pi pi-plus" label="Agregar" size="small" class="ancho-100 tamanio-fuente-miga"
+          <PrimeButton icon="pi pi-plus" label="Agregar" class="ancho-100 tamanio-fuente-miga"
             :disabled="!nuevaOpcion.etiqueta.trim() || !nuevaOpcion.valor.toString().trim()" @click="agregarOpcion" />
         </div>
       </div>

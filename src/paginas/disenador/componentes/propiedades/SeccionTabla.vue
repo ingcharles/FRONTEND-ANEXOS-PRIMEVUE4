@@ -200,7 +200,7 @@ watch(() => obtenerColumnas().length, () => {
           class="ancho-100" @update:model-value="(v: number) => seleccionarColumna(v)" />
       </div>
       <div class="col-12 md:col-12 lg:col-4 flex justify-content-end gap-1 pb-0">
-        <PrimeButton rounded size="small" class="boton-pequenio" icon="pi pi-plus" @click="agregarColumna" />
+        <PrimeButton rounded class="boton-pequenio" icon="pi pi-plus" @click="agregarColumna" />
 
 
         <PrimeButton class="boton-pequenio" icon="pi pi-trash" severity="danger"

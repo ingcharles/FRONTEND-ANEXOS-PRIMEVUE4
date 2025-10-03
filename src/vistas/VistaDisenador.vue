@@ -104,28 +104,22 @@ function manejarTeclasNombreFormulario(event: KeyboardEvent): void {
 </script>
 
 <template>
-  <div class="p-3 grid ancho-100 tamanio-fuente-miga" >
+  <div class="p-3 grid ancho-100 tamanio-fuente-miga">
     <!-- Nombre del formulario editable -->
     <div class="col-12 lg:col-12">
       <div class="flex gap-2">
         <span class="negrilla">Formulario:</span>
         <div v-if="!editandoNombreFormulario" class="flex gap-2">
-          <div class="negrilla cursor-pointer px-2 py-1 rounded"
-            @click="iniciarEdicionNombreFormulario">
+          <div class="negrilla cursor-pointer px-2 py-1 rounded" @click="iniciarEdicionNombreFormulario">
             {{ almacen.esquemaFormulario.nombre || 'Nuevo formulario' }}
             <i class="pi pi-pencil ml-2 tamanio-fuente-miga text-gray-400"></i>
           </div>
         </div>
         <div v-else class="flex gap-2">
-          <PrimeInputText
-            v-model="nombreFormularioTemporal"
-            class="ancho-100"
-            @keydown="manejarTeclasNombreFormulario"
-            @blur="guardarNombreFormulario"
-            placeholder="Nombre del formulario"
-          />
-          <PrimeButton icon="pi pi-check" severity="success" size="small" @click="guardarNombreFormulario" />
-          <PrimeButton icon="pi pi-times" severity="success" size="small" @click="cancelarEdicionNombreFormulario" />
+          <PrimeInputText v-model="nombreFormularioTemporal" class="ancho-100" @keydown="manejarTeclasNombreFormulario"
+            @blur="guardarNombreFormulario" placeholder="Nombre del formulario" />
+          <PrimeButton icon="pi pi-check" severity="success" @click="guardarNombreFormulario" />
+          <PrimeButton icon="pi pi-times" severity="success" @click="cancelarEdicionNombreFormulario" />
         </div>
       </div>
     </div>
@@ -169,8 +163,7 @@ function manejarTeclasNombreFormulario(event: KeyboardEvent): void {
 
                 <!-- Título editable -->
                 <div v-if="!editandoTitulo" class="flex gap-2">
-                  <div class="negrilla cursor-pointer px-2 py-1"
-                    @click="iniciarEdicionTitulo">
+                  <div class="negrilla cursor-pointer px-2 py-1" @click="iniciarEdicionTitulo">
                     {{ paginaActual.titulo || ('Página ' + (almacen.indicePaginaActiva + 1)) }}
                     <i class="pi pi-pencil ml-2 tamanio-fuente-miga"></i>
                   </div>
@@ -178,8 +171,8 @@ function manejarTeclasNombreFormulario(event: KeyboardEvent): void {
                 <div v-else class="flex gap-2">
                   <PrimeInputText v-model="tituloTemporal" class="titulo-input w-48" @keydown="manejarTeclasTitulo"
                     @blur="guardarTitulo" placeholder="Título de la página" />
-                  <PrimeButton icon="pi pi-check" severity="success" size="small" @click="guardarTitulo" />
-                  <PrimeButton icon="pi pi-times" severity="success" size="small" @click="cancelarEdicionTitulo" />
+                  <PrimeButton icon="pi pi-check" severity="success" @click="guardarTitulo" />
+                  <PrimeButton icon="pi pi-times" severity="success" @click="cancelarEdicionTitulo" />
                 </div>
 
                 <PrimeButton label="Siguiente" icon-pos="right" icon="pi pi-angle-right"
@@ -190,8 +183,7 @@ function manejarTeclasNombreFormulario(event: KeyboardEvent): void {
               <!-- Título editable para página única -->
               <div v-else class="flex gap-2">
                 <div v-if="!editandoTitulo" class="flex gap-2">
-                  <div class="negrilla cursor-pointer px-2 py-1"
-                    @click="iniciarEdicionTitulo">
+                  <div class="negrilla cursor-pointer px-2 py-1" @click="iniciarEdicionTitulo">
                     {{ paginaActual.titulo || ('Página ' + (almacen.indicePaginaActiva + 1)) }}
                     <i class="pi pi-pencil ml-2 tamanio-fuente-miga"></i>
                   </div>
@@ -199,12 +191,13 @@ function manejarTeclasNombreFormulario(event: KeyboardEvent): void {
                 <div v-else class="flex gap-2">
                   <PrimeInputText v-model="tituloTemporal" class="titulo-input w-48" @keydown="manejarTeclasTitulo"
                     @blur="guardarTitulo" placeholder="Título de la página" />
-                  <PrimeButton icon="pi pi-check" severity="success" size="small" @click="guardarTitulo" />
-                  <PrimeButton icon="pi pi-times" severity="success" size="small" @click="cancelarEdicionTitulo" />
+                  <PrimeButton icon="pi pi-check" severity="success" @click="guardarTitulo" />
+                  <PrimeButton icon="pi pi-times" severity="success" @click="cancelarEdicionTitulo" />
                 </div>
               </div>
             </div>
-            <ContenedorPagina :key="almacen.indicePaginaActiva + ':' + (paginaActual.id || '')" :pagina="paginaActual" />
+            <ContenedorPagina :key="almacen.indicePaginaActiva + ':' + (paginaActual.id || '')"
+              :pagina="paginaActual" />
           </PrimeTabPanel>
           <PrimeTabPanel value="preview">
             <VistaPrevia />

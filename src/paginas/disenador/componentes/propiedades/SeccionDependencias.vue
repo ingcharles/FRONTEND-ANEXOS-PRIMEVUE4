@@ -46,8 +46,7 @@
 
       <!-- Botón de limpiar -->
       <div class="col-12">
-        <PrimeButton size="small" severity="success" icon="pi pi-trash" label="Limpiar dependencia"
-          @click="limpiarDependencia" />
+        <PrimeButton severity="success" icon="pi pi-trash" label="Limpiar dependencia" @click="limpiarDependencia" />
       </div>
     </div>
   </div>

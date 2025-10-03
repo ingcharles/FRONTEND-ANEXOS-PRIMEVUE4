@@ -9,7 +9,7 @@ const emit = defineEmits<{ (e: 'confirm'): void; (e: 'cancel'): void }>()
     :style="{ width: '350px' }" :breakpoints="{ '960px': '75vw', '641px': '90vw' }">
     <p class="m-0">{{ props.message }}</p>
     <template #footer>
-      <PrimeButton label="Cancelar" severity="success" text @click="emit('cancel')" />
+      <PrimeButton label="Cancelar" severity="success" @click="emit('cancel')" />
       <PrimeButton label="Aceptar" @click="emit('confirm')" />
     </template>
   </PrimeDialog>

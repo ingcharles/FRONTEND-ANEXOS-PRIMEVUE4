@@ -16,6 +16,14 @@ const almacen = useAlmacenDisenador()
 // Composable de DecisionRules
 const decisionRules = usarDecisionRules()
 
+const accionesReglaDecision = [
+  { etiqueta: 'Mostrar', valor: 'mostrar' },
+  { etiqueta: 'Ocultar', valor: 'ocultar' },
+  { etiqueta: 'Requerir', valor: 'requerir' },
+  { etiqueta: 'Opcional', valor: 'opcional' },
+  { etiqueta: 'Establecer Valor', valor: 'establecer-valor' }
+]
+
 onMounted(() => {
   decisionRules.cargarConfiguracion()
   apiKey.value = decisionRules.apiKey.value
@@ -25,7 +33,7 @@ onMounted(() => {
 // Estado computado
 const campoSeleccionado = computed(() => almacen.campoSeleccionado)
 
-const reglasDecisionRules = computed<ReglaLogica[]>({
+const reglasDecision = computed<ReglaLogica[]>({
   get: () => (campoSeleccionado.value?.logica ?? []).filter(r => r.tipo === 'decisionrules'),
   set: (nuevasReglas) => {
     if (campoSeleccionado.value) {
@@ -123,7 +131,7 @@ const opcionesEventos = [
 ]
 
 // Funciones de gestión
-function crearNuevaReglaDecisionRules(): ReglaLogica {
+function crearNuevaReglaDecision(): ReglaLogica {
   return {
     id: generarId('dr-logic'),
     tipo: 'decisionrules',
@@ -148,13 +156,13 @@ function onAccionChange(regla: ReglaLogica): void {
   }
 }
 
-function agregarReglaDecisionRules(): void {
-  const nuevaRegla = crearNuevaReglaDecisionRules()
-  reglasDecisionRules.value = [...reglasDecisionRules.value, nuevaRegla]
+function agregarReglaDecision(): void {
+  const nuevaRegla = crearNuevaReglaDecision()
+  reglasDecision.value = [...reglasDecision.value, nuevaRegla]
 }
 
-function eliminarReglaDecisionRules(idRegla: string): void {
-  reglasDecisionRules.value = reglasDecisionRules.value.filter(regla => regla.id !== idRegla)
+function eliminarReglaDecision(idRegla: string): void {
+  reglasDecision.value = reglasDecision.value.filter(regla => regla.id !== idRegla)
 }
 
 function agregarCampoEntrada(regla: ReglaLogica): void {
@@ -212,11 +220,11 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
 <template>
   <div class="flex flex-column gap-3">
     <!-- Configuración de API -->
-    <PrimeCard>
+    <PrimeCard class="p-3">
       <template #title>
         <div class="flex align-items-center justify-content-between">
-          <span class="tamanio-fuente-miga">Configuración DecisionRules</span>
-          <PrimeButton :icon="mostrarConfiguracion ? 'pi pi-chevron-up' : 'pi pi-chevron-down'" text size="small"
+          <span class="tamanio-fuente-miga">Configuración</span>
+          <PrimeButton :icon="mostrarConfiguracion ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
             @click="mostrarConfiguracion = !mostrarConfiguracion" />
         </div>
       </template>
@@ -225,8 +233,8 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
           <!-- Estado de configuración -->
           <div class="col-12">
             <div class="flex align-items-center gap-2 mb-2">
-              <i class="pi pi-check-circle" v-if="decisionRules.estaConfigurado.value" style="color: green"></i>
-              <i class="pi pi-times-circle" v-else style="color: red"></i>
+              <i class="pi pi-check-circle color-verde" v-if="decisionRules.estaConfigurado.value"></i>
+              <i class="pi pi-times-circle color-rojo" v-else></i>
               <span class="tamanio-fuente-miga">
                 {{ decisionRules.estaConfigurado.value ? 'Configurado' : 'No configurado' }}
               </span>
@@ -240,13 +248,14 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
           <div class="col-12" v-if="decisionRules.origenConfiguracion.value === 'env'">
             <div class="p-3 border-1 border-round" style="background-color: #e3f2fd; border-color: #2196f3;">
               <div class="flex align-items-start gap-2">
-                <i class="pi pi-info-circle" style="color: #2196f3; margin-top: 2px;"></i>
+                <IconoAyuda
+                  mensaje="La API Key está configurada en el archivo .env del proyecto. Esta es la forma recomendada para producción." />
                 <div>
-                  <p class="m-0 mb-2 negrilla" style="color: #1976d2;">Configuración desde Variables de Entorno</p>
-                  <small class="text-600">
+                  <p class="m-0 mb-2 negrilla color-azul">Configuración desde Variables de Entorno</p>
+                  <!-- <small class="text-600">
                     La API Key está configurada en el archivo <code>.env</code> del proyecto.
                     Esta es la forma recomendada para producción.
-                  </small>
+                  </small> -->
                 </div>
               </div>
             </div>
@@ -268,7 +277,7 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
                 placeholder="https://api.decisionrules.io" @blur="guardarConfiguracion" />
             </div>
             <div class="col-12">
-              <PrimeButton label="Guardar Configuración" icon="pi pi-save" size="small" @click="guardarConfiguracion" />
+              <PrimeButton label="Guardar Configuración" icon="pi pi-save" @click="guardarConfiguracion" />
             </div>
             <div class="col-12">
               <small class="text-600">
@@ -283,23 +292,21 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
 
     <!-- Botón para agregar nueva regla -->
     <div class="flex justify-content-end">
-      <PrimeButton label="Añadir regla DecisionRules" icon="pi pi-plus" size="small" @click="agregarReglaDecisionRules"
-        severity="success" />
+      <PrimeButton label="Añadir regla" icon="pi pi-plus" @click="agregarReglaDecision" severity="success" />
     </div>
 
     <!-- Estado vacío -->
-    <div v-if="reglasDecisionRules.length === 0" class="centrar-texto p-3-lg border-1">
+    <div v-if="reglasDecision.length === 0" class="centrar-texto p-3-lg border-1">
       <i class="pi pi-cloud tamanio-fuente-24 mb-3"></i>
       <p class="contenido m-0 negrilla">No hay reglas de DecisionRules configuradas</p>
       <small class="mt-2 block">
         Las reglas de DecisionRules permiten ejecutar lógica compleja de negocio desde la nube
       </small>
-      <PrimeButton label="Crear Primera Regla" icon="pi pi-plus" size="small" class="mt-3"
-        @click="agregarReglaDecisionRules" />
+      <PrimeButton label="Crear primera regla" icon="pi pi-plus" class="mt-3" @click="agregarReglaDecision" />
     </div>
 
     <!-- Lista de reglas existentes -->
-    <PrimeCard v-for="(regla, indice) in reglasDecisionRules" :key="regla.id" class="mb-3">
+    <PrimeCard v-for="(regla, indice) in reglasDecision" :key="regla.id" class="mb-3">
       <!-- Header -->
       <template #title>
         <div class="flex align-items-center justify-content-between">
@@ -308,7 +315,7 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
             <span class="negrilla">Regla DecisionRules {{ indice + 1 }}</span>
           </div>
           <PrimeButton icon="pi pi-trash" severity="primary" class='boton-pequenio' rounded
-            @click="eliminarReglaDecisionRules(regla.id)" v-tooltip.top="'Eliminar regla'" />
+            @click="eliminarReglaDecision(regla.id)" v-tooltip.top="'Eliminar regla'" />
         </div>
       </template>
 
@@ -339,13 +346,8 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
           <!-- Acción -->
           <div class="col-12">
             <label for="accionReglaDecision" class="tamanio-fuente-miga">Acción</label>
-            <PrimeSelect id="accionReglaDecision" v-model="regla.accion" :options="[
-              { etiqueta: 'Mostrar', valor: 'mostrar' },
-              { etiqueta: 'Ocultar', valor: 'ocultar' },
-              { etiqueta: 'Requerir', valor: 'requerir' },
-              { etiqueta: 'Opcional', valor: 'opcional' },
-              { etiqueta: 'Establecer Valor', valor: 'establecer-valor' }
-            ]" option-label="etiqueta" option-value="valor" class="ancho-100 tamanio-fuente-miga"
+            <PrimeSelect id="accionReglaDecision" v-model="regla.accion" :options="accionesReglaDecision"
+              option-label="etiqueta" option-value="valor" class="ancho-100 tamanio-fuente-miga"
               placeholder="Seleccionar acción..." @change="onAccionChange(regla)" />
           </div>
 
@@ -482,7 +484,8 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
             <strong>Cuando</strong> la regla
             <span class="text-primary negrilla">{{ regla.decisionRulesId || '[ID no configurado]' }}</span>
             <strong> retorne un resultado que cumpla</strong>
-            <span class="text-primary negrilla">"{{ regla.condicionResultado || '[condición no configurada]' }}"</span>
+            <span class="text-primary negrilla">"{{ regla.condicionResultado || '[condición no configurada]'
+              }}"</span>
             <strong> entonces {{ obtenerTextoAccion(regla.accion) }}</strong> este campo.
           </span>
         </div>
