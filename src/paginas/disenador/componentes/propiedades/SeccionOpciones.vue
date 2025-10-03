@@ -521,7 +521,7 @@ async function cargarOpcionesDesdeApi(modo: ModoCarga.AGREGAR | ModoCarga.REEMPL
         <PrimeButton :disabled="cargandoApi" size="small" icon="pi pi-refresh"
           :label="cargandoApi ? 'Cargando…' : 'Reemplazar con API'"
           @click="cargarOpcionesDesdeApi(ModoCarga.REEMPLAZAR)" />
-        <PrimeButton :disabled="cargandoApi" size="small" icon="pi pi-plus" severity="secondary"
+        <PrimeButton :disabled="cargandoApi" size="small" icon="pi pi-plus" severity="success"
           label="Añadir desde API" @click="cargarOpcionesDesdeApi(ModoCarga.AGREGAR)" />
         <small v-if="errorApi" class="color-rojo">{{ errorApi }}</small>
       </div>

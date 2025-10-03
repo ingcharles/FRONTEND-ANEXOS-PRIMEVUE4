@@ -452,7 +452,7 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
                     :filter="true"
                   />
                 </div>
-                <div class="col-12 md:col-5">
+                <div class="col-12">
                   <label class="tamanio-fuente-miga">Clave en DecisionRules (opcional)</label>
                   <div class="flex gap-2">
                     <PrimeInputText
@@ -464,7 +464,7 @@ function obtenerTextoAccion(accion: ReglaLogica['accion']): string {
                       icon="pi pi-times"
                       size="small"
                       text
-                      severity="secondary"
+                      severity="success"
                       v-tooltip.top="'Limpiar (usará el nombre del campo)'"
                       @click="campoEntrada.claveDecisionRules = ''"
                       v-if="campoEntrada.claveDecisionRules"

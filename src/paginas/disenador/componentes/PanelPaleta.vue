@@ -263,12 +263,12 @@ window.addEventListener('keydown', manejarAtajos)
 
       <!-- Columna de acciones -->
       <div class="col-12 flex justify-content-end align-items-center">
-        <PrimeButton size="small" text severity="secondary" icon="pi pi-plus" @click="expandir"
+        <PrimeButton size="small" text severity="success" icon="pi pi-plus" @click="expandir"
           :disabled="Object.keys(clavesExpandidas).length === modeloPanelMenuFiltrado.length"
           v-tooltip.top="'Expandir todo'" />
-        <PrimeButton size="small" text severity="secondary" icon="pi pi-minus" @click="colapsar"
+        <PrimeButton size="small" text severity="success" icon="pi pi-minus" @click="colapsar"
           :disabled="!Object.keys(clavesExpandidas).length" v-tooltip.top="'Colapsar todo'" />
-        <PrimeButton size="small" text severity="secondary" icon="pi pi-refresh" @click="alternarTodo"
+        <PrimeButton size="small" text severity="success" icon="pi pi-refresh" @click="alternarTodo"
           v-tooltip.top="'Alternar expansión'" />
       </div>
     </div>

@@ -125,7 +125,7 @@ function limpiarFormulario(): void {
             label="Cambiar Formulario"
             icon="pi pi-refresh"
             @click="abrirDialogoImportar"
-            severity="secondary"
+            severity="success"
           />
           <PrimeButton
             v-if="formularioCargado"
@@ -232,7 +232,7 @@ function limpiarFormulario(): void {
       </div>
 
       <template #footer>
-        <PrimeButton label="Cancelar" icon="pi pi-times" @click="cerrarDialogoImportar" severity="secondary" />
+        <PrimeButton label="Cancelar" icon="pi pi-times" @click="cerrarDialogoImportar" severity="success" />
         <PrimeButton label="Importar" icon="pi pi-check" @click="importarJSON" severity="primary" />
       </template>
     </PrimeDialog>

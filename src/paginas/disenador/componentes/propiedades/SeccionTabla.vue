@@ -233,7 +233,7 @@ watch(() => obtenerColumnas().length, () => {
               </span>
             </div>
             <div class="flex align-items-center gap-2">
-              <Tag v-if="element.tipo" :value="String(element.tipo)" severity="secondary" />
+              <Tag v-if="element.tipo" :value="String(element.tipo)" severity="success" />
             </div>
           </div>
         </template>

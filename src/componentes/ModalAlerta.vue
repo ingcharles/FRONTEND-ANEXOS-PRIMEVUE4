@@ -13,7 +13,7 @@
 
     <template #footer>
       <div class="flex justify-end gap-2">
-        <PrimeButton v-if="mostrarBotonCancelar" :label="textoBotonCancelar" severity="secondary"
+        <PrimeButton v-if="mostrarBotonCancelar" :label="textoBotonCancelar" severity="success"
           @click="emitirCancelar" />
         <PrimeButton :label="textoBotonConfirmar" :icon="iconoBotonConfirmar" :severity="severidadBotonConfirmar"
           @click="emitirConfirmar" autofocus />

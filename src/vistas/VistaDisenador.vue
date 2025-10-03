@@ -125,7 +125,7 @@ function manejarTeclasNombreFormulario(event: KeyboardEvent): void {
             placeholder="Nombre del formulario"
           />
           <PrimeButton icon="pi pi-check" severity="success" size="small" @click="guardarNombreFormulario" />
-          <PrimeButton icon="pi pi-times" severity="secondary" size="small" @click="cancelarEdicionNombreFormulario" />
+          <PrimeButton icon="pi pi-times" severity="success" size="small" @click="cancelarEdicionNombreFormulario" />
         </div>
       </div>
     </div>
@@ -179,7 +179,7 @@ function manejarTeclasNombreFormulario(event: KeyboardEvent): void {
                   <PrimeInputText v-model="tituloTemporal" class="titulo-input w-48" @keydown="manejarTeclasTitulo"
                     @blur="guardarTitulo" placeholder="Título de la página" />
                   <PrimeButton icon="pi pi-check" severity="success" size="small" @click="guardarTitulo" />
-                  <PrimeButton icon="pi pi-times" severity="secondary" size="small" @click="cancelarEdicionTitulo" />
+                  <PrimeButton icon="pi pi-times" severity="success" size="small" @click="cancelarEdicionTitulo" />
                 </div>
 
                 <PrimeButton label="Siguiente" icon-pos="right" icon="pi pi-angle-right"
@@ -200,7 +200,7 @@ function manejarTeclasNombreFormulario(event: KeyboardEvent): void {
                   <PrimeInputText v-model="tituloTemporal" class="titulo-input w-48" @keydown="manejarTeclasTitulo"
                     @blur="guardarTitulo" placeholder="Título de la página" />
                   <PrimeButton icon="pi pi-check" severity="success" size="small" @click="guardarTitulo" />
-                  <PrimeButton icon="pi pi-times" severity="secondary" size="small" @click="cancelarEdicionTitulo" />
+                  <PrimeButton icon="pi pi-times" severity="success" size="small" @click="cancelarEdicionTitulo" />
                 </div>
               </div>
             </div>
