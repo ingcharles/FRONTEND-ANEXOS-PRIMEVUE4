@@ -7,12 +7,12 @@ import Tag from 'primevue/tag'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { ColumnaTabla } from '@/interfaces/Comunes'
-import { EscalaPorcentaje, FuncionAgregado, ModoFormato, TamanioPadding, TipoColumna } from '@/tipos/Comunes'
-import { EstiloTabla } from '@/interfaces/SeccionTabla'
+import type { EscalaPorcentaje, FuncionAgregado, ModoFormato, TamanioPadding, TipoColumna } from '@/tipos/Comunes'
+import type { EstiloTabla } from '@/interfaces/SeccionTabla'
 import { opcionesEscalaPorcentaje } from '@/constantes/SeccionTabla'
 
 
-const props = defineProps<{
+const propiedades = defineProps<{
   campo: EsquemaCampo | null
 }>()
 
@@ -30,8 +30,8 @@ const opcionesPadding: TamanioPadding[] = ['sm', 'md', 'lg']
 
 // Metadatos de la tabla
 const metadatos = computed(() => {
-  if (!props.campo) return {}
-  return props.campo.metadatos || {}
+  if (!propiedades.campo) return {}
+  return propiedades.campo.metadatos || {}
 })
 
 // Estilo de tabla
@@ -69,10 +69,10 @@ const columnaActual = computed((): ColumnaTabla | null => {
 
 // Actualizar columnas
 function actualizarColumnas(columnas: ColumnaTabla[]): void {
-  if (!props.campo) return
+  if (!propiedades.campo) return
   const meta = { ...metadatos.value } as Record<string, unknown>
   meta.columnas = columnas
-  almacen.actualizarCampo(props.campo.id, { metadatos: meta })
+  almacen.actualizarCampo(propiedades.campo.id, { metadatos: meta })
 }
 
 // Agregar nueva columna
@@ -148,20 +148,20 @@ function esNombreColumnaDuplicado(): boolean {
 
 // Actualizar metadato de tabla
 function actualizarMetadato(propiedad: string, valor: unknown): void {
-  if (!props.campo) return
+  if (!propiedades.campo) return
   const meta = { ...metadatos.value } as Record<string, unknown>
   meta[propiedad] = valor
-  almacen.actualizarCampo(props.campo.id, { metadatos: meta })
+  almacen.actualizarCampo(propiedades.campo.id, { metadatos: meta })
 }
 
 // Actualizar estilo de tabla
 function actualizarEstiloTabla(propiedad: keyof EstiloTabla, valor: unknown): void {
-  if (!props.campo) return
+  if (!propiedades.campo) return
   const meta = { ...metadatos.value } as Record<string, unknown>
   const estiloActual = (meta.estiloTabla as EstiloTabla) || {}
 
   meta.estiloTabla = { ...estiloActual, [propiedad]: valor }
-  almacen.actualizarCampo(props.campo.id, { metadatos: meta })
+  almacen.actualizarCampo(propiedades.campo.id, { metadatos: meta })
 }
 
 // Watchers
