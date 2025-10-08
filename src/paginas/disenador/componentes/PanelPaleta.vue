@@ -109,7 +109,10 @@ const categoriasPaleta = ref([
         propiedadesPorDefecto: {
           metadatos: {
             filas: 1,
-            columnas: 2
+            columnas: [
+              { nombre: 'columna1', etiqueta: 'Columna 1', tipo: 'texto' },
+              { nombre: 'columna2', etiqueta: 'Columna 2', tipo: 'texto' }
+            ]
           },
         }
       },
@@ -121,7 +124,10 @@ const categoriasPaleta = ref([
         propiedadesPorDefecto: {
           metadatos: {
             filas: 1,
-            columnas: 2
+            columnas: [
+              { nombre: 'precio', etiqueta: 'Precio', tipo: 'numero' },
+              { nombre: 'tasa', etiqueta: 'Tasa (%)', tipo: 'numero' }
+            ]
           },
         }
       },
