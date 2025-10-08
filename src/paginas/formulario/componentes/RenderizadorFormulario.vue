@@ -3,7 +3,7 @@ import { computed, ref, watch, watchEffect, onMounted } from 'vue'
 import type { EsquemaFormulario } from '@/interfaces/Formulario'
 import type { EsquemaCampo, MetadatosCampo } from '@/interfaces/Campos'
 import type { ConfiguracionDependencia } from '@/interfaces/Comunes'
-import { evaluarReglasCampo, evaluarReglasCampoSync,evaluarReglasDecisionRulesCampo } from '@/utilidades/Logica'
+import { evaluarReglasCampo, evaluarReglasCampoSync, evaluarReglasDecisionRulesCampo } from '@/utilidades/Logica'
 import { ServicioDependenciasFormulario } from '@/servicios/disenador/ServicioDependencias'
 import { ServicioEsquemasFormulario } from '@/servicios/disenador/ServicioEsquemas'
 import RenderizadorCampo from '@/paginas/disenador/componentes/RenderizadorCampo.vue'
@@ -395,20 +395,23 @@ function irPaginaSiguiente(): void {
     </div>
 
     <!-- Formulario principal -->
-    <form class="grid" @submit.prevent="enviar">
-      <template v-for="campo in camposConLogica" :key="campo.id">
-        <div :class="clasesColumna(campo)">
-          <RenderizadorCampo :campo="campo" :valores-campos="valoresPaginaActual" :errores-campos="errores"
-            :mapa-id-nombre="mapaIdNombre"
-            @valor-cambiado="(nombre: string, valor: unknown) => actualizarValorCampo(nombre, valor as ValorDato)"
-            @evento-campo="manejarEventoCampo" />
+    <form @submit.prevent="enviar">
+      <div class="grid">
+        <div class="col-12">
+          <template v-for="campo in camposConLogica" :key="campo.id">
+            <div :class="clasesColumna(campo)">
+              <RenderizadorCampo :campo="campo" :valores-campos="valoresPaginaActual" :errores-campos="errores"
+                :mapa-id-nombre="mapaIdNombre"
+                @valor-cambiado="(nombre: string, valor: unknown) => actualizarValorCampo(nombre, valor as ValorDato)"
+                @evento-campo="manejarEventoCampo" />
+            </div>
+          </template>
         </div>
-      </template>
-
-      <!-- Botón Enviar -->
-      <div class="col-12 sm:col-12 md:col-4"
-        v-if="(totalPaginas === 1 || indicePagina >= esquema.paginas.length - 1) && !paginaActual?.campos?.some(f => f.tipo === 'boton')">
-        <PrimeButton type="submit" label="Enviar" icon="pi pi-check" class="ancho-100 tamanio-fuente-miga" />
+        <!-- Botón Enviar -->
+        <div class="col-2"
+          v-if="(totalPaginas === 1 || indicePagina >= esquema.paginas.length - 1) && !paginaActual?.campos?.some(f => f.tipo === 'boton')">
+          <PrimeButton type="submit" label="Enviar" icon="pi pi-check" class="ancho-100 tamanio-fuente-miga" />
+        </div>
       </div>
     </form>
   </div>
