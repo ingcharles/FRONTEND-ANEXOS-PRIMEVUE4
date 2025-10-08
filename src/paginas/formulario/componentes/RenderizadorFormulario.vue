@@ -373,18 +373,6 @@ function irPaginaSiguiente(): void {
   }
 }
 
-// Helper para evaluación síncrona (para validación)
-// function evaluarReglasCampoSync(
-//   campo: EsquemaCampo,
-//   valores: RegistroDatos,
-//   mapa: Record<string, string>
-// ): { visible: boolean; requerido: boolean } {
-//   // Versión simplificada síncrona para validación
-//   return {
-//     visible: campo.visible !== false,
-//     requerido: !!campo.requerido
-//   }
-// }
 </script>
 
 <template>

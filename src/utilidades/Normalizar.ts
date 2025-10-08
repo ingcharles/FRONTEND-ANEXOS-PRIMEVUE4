@@ -70,7 +70,10 @@ export function normalizarCasilla(campo: EsquemaCampo, valor: ValorDato | undefi
  * Normaliza el valor de una tabla.
  */
 export function normalizarTabla(campo: EsquemaCampo, valor: ValorDato | undefined): ValorDato {
-  if (Array.isArray(valor)) return valor
+  // Si ya hay un array con datos, devolverlo
+  if (Array.isArray(valor) && valor.length > 0) return valor
+
+  // Si no hay valor o es array vacío, crear filas iniciales según configuración
   const servicioEsquemas = new ServicioEsquemasFormulario()
   const columnas = servicioEsquemas.obtenerColumnasTabla(campo)
   const filas = servicioEsquemas.obtenerFilasTabla(campo)

@@ -142,6 +142,22 @@ function aplicarValorSiCorresponde(
     if (valorDefecto === undefined || !estado.visible) return;
 
     const valorActual = valores.value[campo.nombre!];
+
+    // Para tablas, verificar si necesita actualizar las filas iniciales
+    if (campo.tipo === TipoCampoValor.Tabla && Array.isArray(valorDefecto)) {
+      const metadatos = campo.metadatos as Record<string, unknown> | undefined
+      const filasConfiguradas = Number(metadatos?.filas ?? 1)
+
+      // Si es un array vacío o tiene menos filas que las configuradas, actualizar
+      if (!Array.isArray(valorActual) || valorActual.length === 0 ||
+          (valorActual.length < filasConfiguradas && valorActual.every(fila =>
+            Object.values(fila || {}).every(val => val === null || val === undefined || val === '')
+          ))) {
+        almacen.actualizarValorCampo(paginaActual.value.id, campo.nombre!, valorDefecto);
+        return;
+      }
+    }
+
     const debeSobrescribir = sobrescribirSiVacio ? esVacio(valorActual) : valorActual === undefined;
 
     if (debeSobrescribir) {
@@ -215,7 +231,16 @@ function recolectarFirmasDefaults(lista: EsquemaCampo[], salida: Array<string> =
   for (const campo of lista) {
     if (!campo) continue
     const valorDefecto = (campo.metadatos as MetadatosCampo | undefined)?.valorPorDefecto as ValorDato | undefined
-    if (campo.nombre) salida.push(`${campo.nombre}::${JSON.stringify(valorDefecto)}`)
+    if (campo.nombre) {
+      salida.push(`${campo.nombre}::${JSON.stringify(valorDefecto)}`)
+
+      // Para tablas, incluir también la configuración de filas iniciales
+      if (campo.tipo === TipoCampoValor.Tabla) {
+        const metadatos = campo.metadatos as Record<string, unknown> | undefined
+        const filasIniciales = Number(metadatos?.filas ?? 1)
+        salida.push(`${campo.nombre}::filas::${filasIniciales}`)
+      }
+    }
     if (campo.hijos?.length) recolectarFirmasDefaults(campo.hijos, salida)
   }
   return salida
