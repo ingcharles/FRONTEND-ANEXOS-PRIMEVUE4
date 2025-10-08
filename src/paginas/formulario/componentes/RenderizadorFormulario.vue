@@ -3,7 +3,7 @@ import { computed, ref, watch, watchEffect, onMounted } from 'vue'
 import type { EsquemaFormulario } from '@/interfaces/Formulario'
 import type { EsquemaCampo, MetadatosCampo } from '@/interfaces/Campos'
 import type { ConfiguracionDependencia } from '@/interfaces/Comunes'
-import { evaluarReglasCampo, evaluarReglasDecisionRulesCampo } from '@/utilidades/Logica'
+import { evaluarReglasCampo, evaluarReglasCampoSync,evaluarReglasDecisionRulesCampo } from '@/utilidades/Logica'
 import { ServicioDependenciasFormulario } from '@/servicios/disenador/ServicioDependencias'
 import { ServicioEsquemasFormulario } from '@/servicios/disenador/ServicioEsquemas'
 import RenderizadorCampo from '@/paginas/disenador/componentes/RenderizadorCampo.vue'
@@ -374,17 +374,17 @@ function irPaginaSiguiente(): void {
 }
 
 // Helper para evaluación síncrona (para validación)
-function evaluarReglasCampoSync(
-  campo: EsquemaCampo,
-  valores: RegistroDatos,
-  mapa: Record<string, string>
-): { visible: boolean; requerido: boolean } {
-  // Versión simplificada síncrona para validación
-  return {
-    visible: campo.visible !== false,
-    requerido: !!campo.requerido
-  }
-}
+// function evaluarReglasCampoSync(
+//   campo: EsquemaCampo,
+//   valores: RegistroDatos,
+//   mapa: Record<string, string>
+// ): { visible: boolean; requerido: boolean } {
+//   // Versión simplificada síncrona para validación
+//   return {
+//     visible: campo.visible !== false,
+//     requerido: !!campo.requerido
+//   }
+// }
 </script>
 
 <template>
