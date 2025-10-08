@@ -220,7 +220,7 @@ function obtenerClaseRellenoDisenador(relleno: string): string {
           <div class="col-8 flex flex-column">
             <span class="titulo">{{ `${punto}: ${columnaActual} Columnas` }}</span>
             <span class="color-rojo tamanio-fuente-miga" v-if="campo.tipo === 'panel'">Elementos: {{ conteoHijos
-            }}</span>
+              }}</span>
             <span class="color-rojo tamanio-fuente-miga" v-if="ServicioCampos.soportaOpciones(campo.tipo)">Opciones: {{
               conteoOpciones }}</span>
           </div>
@@ -329,12 +329,13 @@ function obtenerClaseRellenoDisenador(relleno: string): string {
             <table :class="obtenerClasesTablaCompleta(campo)">
               <thead>
                 <tr>
-                  <th v-for="col in ((campo.metadatos as any)?.columnas || [])" :key="col.name"
+                  <th v-for="col in ((campo.metadatos as any)?.columnas || [])" :key="col.nombre || col.name"
                     :class="obtenerClasesCeldaDisenador(campo, true)">
-                    {{ col.label || col.name }}
+                    {{ col.etiqueta || col.label || col.nombre || col.name }}
                   </th>
                   <!-- Columna de acciones si se permite eliminar filas -->
-                  <th v-if="(campo.metadatos as any)?.eliminarFilas" :class="obtenerClasesCeldaDisenador(campo, true)" style="width: 60px;">
+                  <th v-if="(campo.metadatos as any)?.eliminarFilas" :class="obtenerClasesCeldaDisenador(campo, true)"
+                    style="width: 60px;">
                     Acciones
                   </th>
                 </tr>
@@ -342,7 +343,8 @@ function obtenerClaseRellenoDisenador(relleno: string): string {
               <tbody>
                 <tr v-for="(fila, indice) in Array.from({ length: Number((campo.metadatos as any)?.filas || 1) })"
                   :key="indice" :class="obtenerClasesFilaCompleta(campo, indice)">
-                  <td v-for="col in ((campo.metadatos as any)?.columnas || [])" :key="col.name" :class="obtenerClasesCeldaDisenador(campo, false)">
+                  <td v-for="col in ((campo.metadatos as any)?.columnas || [])" :key="col.nombre || col.name"
+                    :class="obtenerClasesCeldaDisenador(campo, false)">
                     <PrimeInputText v-if="col.tipo === TipoCampoValor.Texto" class="ancho-100 tamanio-fuente-miga"
                       disabled placeholder="Texto" />
                     <PrimeInputNumber v-else-if="col.tipo === TipoCampoValor.Numero"
@@ -352,22 +354,17 @@ function obtenerClaseRellenoDisenador(relleno: string): string {
                     <span v-else class="color-negro">—</span>
                   </td>
                   <!-- Columna de acciones para eliminar fila -->
-                  <td v-if="(campo.metadatos as any)?.eliminarFilas" :class="[obtenerClasesCeldaDisenador(campo, false), 'text-center']">
-                    <PrimeButton
-                      icon="pi pi-trash"
-                      severity="danger"
-                      size="small"
-                      text
-                      rounded
-                      disabled
-                    />
+                  <td v-if="(campo.metadatos as any)?.eliminarFilas"
+                    :class="[obtenerClasesCeldaDisenador(campo, false), 'text-center']">
+                    <PrimeButton icon="pi pi-trash" severity="danger" size="small" text rounded disabled />
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div class="mt-2 flex gap-2">
-            <PrimeButton v-if="(campo.metadatos as any)?.agregarFilas" label="Añadir fila" icon="pi pi-plus" size="small" disabled />
+            <PrimeButton v-if="(campo.metadatos as any)?.agregarFilas" label="Añadir fila" icon="pi pi-plus"
+              size="small" disabled />
           </div>
           <div class="text-xs color-negro mt-2">
             Filas: {{ Number((campo.metadatos as any)?.filas || 1) }} |
@@ -380,7 +377,8 @@ function obtenerClaseRellenoDisenador(relleno: string): string {
               <span v-if="obtenerEstiloTablaDisenador(campo).conBordes">🔲 Bordes</span>
               <span v-if="obtenerEstiloTablaDisenador(campo).conRayas"> 🦓 Zebra</span>
               <span v-if="obtenerEstiloTablaDisenador(campo).conHover"> 👆 Hover</span>
-              <span v-if="obtenerEstiloTablaDisenador(campo).relleno"> | Padding: {{ obtenerEstiloTablaDisenador(campo).relleno.toUpperCase() }}</span>
+              <span v-if="obtenerEstiloTablaDisenador(campo).relleno"> | Padding: {{
+                obtenerEstiloTablaDisenador(campo).relleno.toUpperCase() }}</span>
             </span>
           </div>
 

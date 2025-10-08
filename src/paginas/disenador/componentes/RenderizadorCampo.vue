@@ -50,9 +50,18 @@ function clasesColumnaCampo(campo: EsquemaCampo): string[] {
 function obtenerColumnasTabla(campo: EsquemaCampo): ColumnaTablaExtendida[] {
   const metadatos = campo.metadatos as Record<string, unknown> | undefined
   const columnasRaw = metadatos?.columnas as unknown
-  return Array.isArray(columnasRaw)
-    ? (columnasRaw as ColumnaTablaExtendida[]).filter(c => c && typeof c.name === 'string')
-    : []
+  if (!Array.isArray(columnasRaw)) return []
+
+  // Normalizar columnas: soportar tanto 'name' como 'nombre', 'label' como 'etiqueta'
+  return (columnasRaw as Array<Record<string, unknown>>)
+    .filter(c => c && (typeof c.name === 'string' || typeof c.nombre === 'string'))
+    .map(c => ({
+      ...c,
+      name: (c.name || c.nombre) as string,
+      label: (c.label || c.etiqueta) as string,
+      tipo: c.tipo as string,
+      type: c.type as string
+    } as ColumnaTablaExtendida))
 }
 
 function obtenerEstiloTabla(campo: EsquemaCampo) {
