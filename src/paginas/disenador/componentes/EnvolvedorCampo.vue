@@ -166,11 +166,12 @@ function obtenerEstiloTablaDisenador(campo: EsquemaCampo) {
   }
 }
 
-function obtenerClasesTablaDisenador(campo: EsquemaCampo): string[] {
+function obtenerClasesTablaCompleta(campo: EsquemaCampo): string[] {
   const estilo = obtenerEstiloTablaDisenador(campo)
   return [
+    'tabla-disenador',
     'ancho-100 tamanio-fuente-miga',
-    estilo.conBordes ? 'border-1' : ''
+    estilo.conBordes ? 'con-bordes' : ''
   ].filter(Boolean)
 }
 
@@ -179,18 +180,23 @@ function obtenerClasesCeldaDisenador(campo: EsquemaCampo, esHeader: boolean): st
   const clasesRelleno = obtenerClaseRellenoDisenador(estilo.relleno)
 
   return [
-    clasesRelleno,
-    esHeader ? 'texto-izquierda negrilla' : '',
-    estilo.conBordes ? 'border-inferior-1' : ''
+    clasesRelleno
   ].filter(Boolean)
 }
 
-function obtenerClasesFilaDisenador(campo: EsquemaCampo): string[] {
+function obtenerClasesFilaCompleta(campo: EsquemaCampo, indice: number): string[] {
   const estilo = obtenerEstiloTablaDisenador(campo)
-  return [
-    estilo.conRayas ? 'odd:bg-surface-100' : '',
-    estilo.conHover ? 'hover:bg-surface-100' : ''
-  ].filter(Boolean)
+  const clases = []
+
+  if (estilo.conRayas) {
+    clases.push('con-rayas')
+  }
+
+  if (estilo.conHover) {
+    clases.push('con-hover')
+  }
+
+  return clases
 }
 
 function obtenerClaseRellenoDisenador(relleno: string): string {
@@ -320,7 +326,7 @@ function obtenerClaseRellenoDisenador(relleno: string): string {
         <div class="m-2">
           <div class="negrilla mb-2">Tabla</div>
           <div class="overflow-auto">
-            <table :class="obtenerClasesTablaDisenador(campo)">
+            <table :class="obtenerClasesTablaCompleta(campo)">
               <thead>
                 <tr>
                   <th v-for="col in ((campo.metadatos as any)?.columnas || [])" :key="col.name"
@@ -335,7 +341,7 @@ function obtenerClaseRellenoDisenador(relleno: string): string {
               </thead>
               <tbody>
                 <tr v-for="(fila, indice) in Array.from({ length: Number((campo.metadatos as any)?.filas || 1) })"
-                  :key="indice" :class="obtenerClasesFilaDisenador(campo)">
+                  :key="indice" :class="obtenerClasesFilaCompleta(campo, indice)">
                   <td v-for="col in ((campo.metadatos as any)?.columnas || [])" :key="col.name" :class="obtenerClasesCeldaDisenador(campo, false)">
                     <PrimeInputText v-if="col.tipo === TipoCampoValor.Texto" class="ancho-100 tamanio-fuente-miga"
                       disabled placeholder="Texto" />
@@ -368,6 +374,14 @@ function obtenerClaseRellenoDisenador(relleno: string): string {
             Columnas: {{ ((campo.metadatos as any)?.columnas || []).length }}
             <span v-if="(campo.metadatos as any)?.agregarFilas"> | ✅ Añadir</span>
             <span v-if="(campo.metadatos as any)?.eliminarFilas"> | 🗑️ Eliminar</span>
+            <br>
+            <span class="text-xs">
+              Estilos:
+              <span v-if="obtenerEstiloTablaDisenador(campo).conBordes">🔲 Bordes</span>
+              <span v-if="obtenerEstiloTablaDisenador(campo).conRayas"> 🦓 Zebra</span>
+              <span v-if="obtenerEstiloTablaDisenador(campo).conHover"> 👆 Hover</span>
+              <span v-if="obtenerEstiloTablaDisenador(campo).relleno"> | Padding: {{ obtenerEstiloTablaDisenador(campo).relleno.toUpperCase() }}</span>
+            </span>
           </div>
 
         </div>
@@ -389,4 +403,37 @@ function obtenerClaseRellenoDisenador(relleno: string): string {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* Estilos para tabla en el diseñador */
+.tabla-disenador {
+  border-collapse: collapse;
+}
+
+.tabla-disenador.con-bordes {
+  border: 1px solid var(--surface-300);
+}
+
+.tabla-disenador th,
+.tabla-disenador td {
+  border: none;
+}
+
+.tabla-disenador.con-bordes th,
+.tabla-disenador.con-bordes td {
+  border-bottom: 1px solid var(--surface-300);
+}
+
+.tabla-disenador tr.con-rayas:nth-child(even) {
+  background-color: var(--surface-50);
+}
+
+.tabla-disenador tr.con-hover:hover {
+  background-color: var(--surface-100);
+}
+
+.tabla-disenador th {
+  background-color: var(--surface-50);
+  font-weight: bold;
+  text-align: left;
+}
+</style>

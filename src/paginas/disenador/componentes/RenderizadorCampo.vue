@@ -122,14 +122,10 @@ function agregarNuevaFilaCampo(campo: EsquemaCampo): void {
 
   const columnasTabla = obtenerColumnasTabla(campo)
   const filaNueva = crearFilaVaciaCampo(columnasTabla)
-  const valorActual = propiedades.valoresCampos[nombreCampo]
+  const filasActuales = obtenerFilasTabla(campo)
 
-  let nuevasFilas: Array<Record<string, ValorDato>>
-  if (Array.isArray(valorActual)) {
-    nuevasFilas = [...(valorActual as Array<Record<string, ValorDato>>), filaNueva]
-  } else {
-    nuevasFilas = [filaNueva]
-  }
+  // Agregar la nueva fila a las existentes
+  const nuevasFilas = [...filasActuales, filaNueva]
 
   // Emitir el cambio al componente padre
   emit('valor-cambiado', nombreCampo, nuevasFilas)
@@ -169,16 +165,16 @@ function obtenerFilasTabla(campo: EsquemaCampo): Record<string, unknown>[] {
   if (!nombreCampo) return []
 
   const valorActual = propiedades.valoresCampos[nombreCampo]
-
-  if (Array.isArray(valorActual)) {
-    return valorActual as Record<string, unknown>[]
-  }
-
-  // Si no hay valor, crear filas iniciales
   const metadatos = campo.metadatos as Record<string, unknown> | undefined
   const filasIniciales = Number(metadatos?.filas ?? 1)
   const columnas = obtenerColumnasTabla(campo)
 
+  // Si hay un array con datos, devolverlo
+  if (Array.isArray(valorActual) && valorActual.length > 0) {
+    return valorActual as Record<string, unknown>[]
+  }
+
+  // Si no hay valor o es un array vacío, crear filas iniciales según configuración
   return Array.from({ length: filasIniciales }, () => crearFilaVaciaCampo(columnas))
 }
 
@@ -190,6 +186,15 @@ function permitirAgregarFilas(campo: EsquemaCampo): boolean {
 function permitirEliminarFilas(campo: EsquemaCampo): boolean {
   const metadatos = campo.metadatos as Record<string, unknown> | undefined
   return Boolean(metadatos?.eliminarFilas)
+}
+
+function puedeEliminarFila(campo: EsquemaCampo): boolean {
+  const filasActuales = obtenerFilasTabla(campo)
+  const metadatos = campo.metadatos as Record<string, unknown> | undefined
+  const filasMinimas = Math.max(1, Number(metadatos?.filas ?? 1))
+
+  // Permitir eliminar si hay más filas que el mínimo configurado
+  return filasActuales.length > filasMinimas
 }
 
 function tieneColumnasConAgregado(campo: EsquemaCampo): boolean {
