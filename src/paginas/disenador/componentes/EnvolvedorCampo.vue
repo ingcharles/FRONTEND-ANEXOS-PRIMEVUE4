@@ -152,6 +152,55 @@ onUnmounted(() => {
 
 // Carga perezosa segura del contenedor de panel
 //const ContenedorPanelAsincrono = defineAsyncComponent(ContenedorPanel)
+
+// Funciones helper para estilos de tabla en el diseñador
+function obtenerEstiloTablaDisenador(campo: EsquemaCampo) {
+  const metadatos = campo.metadatos as Record<string, unknown> | undefined
+  const estiloTabla = (metadatos?.estiloTabla as Record<string, unknown>) || {}
+
+  return {
+    conBordes: !!estiloTabla.bordered,
+    conRayas: !!estiloTabla.striped,
+    conHover: !!estiloTabla.hover,
+    relleno: (estiloTabla.padding as string) || 'md'
+  }
+}
+
+function obtenerClasesTablaDisenador(campo: EsquemaCampo): string[] {
+  const estilo = obtenerEstiloTablaDisenador(campo)
+  return [
+    'ancho-100 tamanio-fuente-miga',
+    estilo.conBordes ? 'border-1' : ''
+  ].filter(Boolean)
+}
+
+function obtenerClasesCeldaDisenador(campo: EsquemaCampo, esHeader: boolean): string[] {
+  const estilo = obtenerEstiloTablaDisenador(campo)
+  const clasesRelleno = obtenerClaseRellenoDisenador(estilo.relleno)
+
+  return [
+    clasesRelleno,
+    esHeader ? 'texto-izquierda negrilla' : '',
+    estilo.conBordes ? 'border-inferior-1' : ''
+  ].filter(Boolean)
+}
+
+function obtenerClasesFilaDisenador(campo: EsquemaCampo): string[] {
+  const estilo = obtenerEstiloTablaDisenador(campo)
+  return [
+    estilo.conRayas ? 'odd:bg-surface-100' : '',
+    estilo.conHover ? 'hover:bg-surface-100' : ''
+  ].filter(Boolean)
+}
+
+function obtenerClaseRellenoDisenador(relleno: string): string {
+  switch (relleno) {
+    case 'sm': return 'p-1'
+    case 'lg': return 'p-3'
+    case 'md':
+    default: return 'p-2'
+  }
+}
 </script>
 
 <template>
@@ -271,19 +320,23 @@ onUnmounted(() => {
         <div class="m-2">
           <div class="negrilla mb-2">Tabla</div>
           <div class="overflow-auto">
-            <table class="ancho-100 tamanio-fuente-miga">
+            <table :class="obtenerClasesTablaDisenador(campo)">
               <thead>
                 <tr>
                   <th v-for="col in ((campo.metadatos as any)?.columnas || [])" :key="col.name"
-                    class="texto-izquierda p-2 border-inferior-1">
+                    :class="obtenerClasesCeldaDisenador(campo, true)">
                     {{ col.label || col.name }}
+                  </th>
+                  <!-- Columna de acciones si se permite eliminar filas -->
+                  <th v-if="(campo.metadatos as any)?.eliminarFilas" :class="obtenerClasesCeldaDisenador(campo, true)" style="width: 60px;">
+                    Acciones
                   </th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(fila, indice) in Array.from({ length: Number((campo.metadatos as any)?.filas || 1) })"
-                  :key="indice">
-                  <td v-for="col in ((campo.metadatos as any)?.columnas || [])" :key="col.name" class="p-2">
+                  :key="indice" :class="obtenerClasesFilaDisenador(campo)">
+                  <td v-for="col in ((campo.metadatos as any)?.columnas || [])" :key="col.name" :class="obtenerClasesCeldaDisenador(campo, false)">
                     <PrimeInputText v-if="col.tipo === TipoCampoValor.Texto" class="ancho-100 tamanio-fuente-miga"
                       disabled placeholder="Texto" />
                     <PrimeInputNumber v-else-if="col.tipo === TipoCampoValor.Numero"
@@ -292,16 +345,29 @@ onUnmounted(() => {
                       disabled />
                     <span v-else class="color-negro">—</span>
                   </td>
+                  <!-- Columna de acciones para eliminar fila -->
+                  <td v-if="(campo.metadatos as any)?.eliminarFilas" :class="[obtenerClasesCeldaDisenador(campo, false), 'text-center']">
+                    <PrimeButton
+                      icon="pi pi-trash"
+                      severity="danger"
+                      size="small"
+                      text
+                      rounded
+                      disabled
+                    />
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <div class="mt-2" v-if="(campo.metadatos as any)?.agregarFilas">
-            <PrimeButton label="Añadir fila" icon="pi pi-plus" disabled />
+          <div class="mt-2 flex gap-2">
+            <PrimeButton v-if="(campo.metadatos as any)?.agregarFilas" label="Añadir fila" icon="pi pi-plus" size="small" disabled />
           </div>
           <div class="text-xs color-negro mt-2">
             Filas: {{ Number((campo.metadatos as any)?.filas || 1) }} |
             Columnas: {{ ((campo.metadatos as any)?.columnas || []).length }}
+            <span v-if="(campo.metadatos as any)?.agregarFilas"> | ✅ Añadir</span>
+            <span v-if="(campo.metadatos as any)?.eliminarFilas"> | 🗑️ Eliminar</span>
           </div>
 
         </div>
