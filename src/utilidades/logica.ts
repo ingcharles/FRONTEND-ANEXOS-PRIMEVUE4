@@ -2,7 +2,7 @@ import type { EsquemaCampo } from '@/interfaces/Campos'
 import type { ReglaLogica } from '@/interfaces/Validacion'
 import type { RegistroDatos, TipoEventoDecisionRules, ValorDato } from '@/tipos/Comunes'
 import { ServicioDecisionRules } from '@/servicios/ServicioDecisionRules'
-import { EstadoEfectivoCampo } from '@/interfaces/TabLogica'
+import type { EstadoEfectivoCampo } from '@/interfaces/TabLogica'
 import { convertirATexto } from '@/utilidades/Normalizar'
 
 

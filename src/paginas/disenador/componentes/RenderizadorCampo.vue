@@ -446,7 +446,7 @@ function manejarInput(nombreCampo: string, valor: unknown): void {
                 <td v-for="(columnaTabla, indiceColumna) in obtenerColumnasTabla(campo)" :key="columnaTabla.name"
                   :class="[claseRellenoCelda(campo), 'negrilla']">
                   <span v-if="indiceColumna === 0">
-                    {{ (campo.metadatos as any)?.summaryLabel ?? 'Total' }}
+                    {{ (campo.metadatos as any)?.summaryLabel }}
                   </span>
                   <span class="ml-2" v-if="columnaTabla.agregar && columnaTabla.agregar !== 'none'">
                     {{ formatearValorAgregado(

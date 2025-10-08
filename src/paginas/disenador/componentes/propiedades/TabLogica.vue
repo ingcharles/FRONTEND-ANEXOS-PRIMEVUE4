@@ -4,7 +4,6 @@ import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
 import type { ReglaLogica } from '@/interfaces/Validacion'
 import { generarId } from '@/utilidades/GeneraId'
 import type { OpcionAccion, OpcionOperador, PropiedadesTabLogica } from '@/interfaces/Propiedades'
-import type { EsquemaCampo } from '@/interfaces/Campos'
 import { ServicioEsquemasFormulario } from '@/servicios/disenador/ServicioEsquemas'
 import TabDecisionRules from './TabDecisionRules.vue'
 

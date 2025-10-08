@@ -1,4 +1,4 @@
-import { OpcionSeleccion } from "@/interfaces/Comunes"
+import type { OpcionSeleccion } from "@/interfaces/Comunes"
 import { MetodoHttp, ModoOpciones } from "@/tipos/TabAtributos"
 
 // Opciones para los selectores
