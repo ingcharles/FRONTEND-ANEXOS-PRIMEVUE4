@@ -135,6 +135,19 @@ function agregarNuevaFilaCampo(campo: EsquemaCampo): void {
   emit('valor-cambiado', nombreCampo, nuevasFilas)
 }
 
+function eliminarFilaCampo(campo: EsquemaCampo, indiceFila: number): void {
+  const nombreCampo = campo.nombre || ''
+  if (!nombreCampo) return
+
+  const filasActuales = obtenerFilasTabla(campo)
+
+   // Crear nueva lista sin la fila eliminada
+  const nuevasFilas = filasActuales.filter((_, indice) => indice !== indiceFila)
+
+  // Emitir el cambio al componente padre
+  emit('valor-cambiado', nombreCampo, nuevasFilas)
+}
+
 function estaDeshabilitadoPorDependencia(campo: EsquemaCampo, valores: RegistroDatos): boolean {
   const meta = campo.metadatos as Record<string, unknown> | undefined
   const dep = meta?.dependencia as Record<string, unknown> | undefined
@@ -172,6 +185,11 @@ function obtenerFilasTabla(campo: EsquemaCampo): Record<string, unknown>[] {
 function permitirAgregarFilas(campo: EsquemaCampo): boolean {
   const metadatos = campo.metadatos as Record<string, unknown> | undefined
   return Boolean(metadatos?.agregarFilas)
+}
+
+function permitirEliminarFilas(campo: EsquemaCampo): boolean {
+  const metadatos = campo.metadatos as Record<string, unknown> | undefined
+  return Boolean(metadatos?.eliminarFilas)
 }
 
 function tieneColumnasConAgregado(campo: EsquemaCampo): boolean {
@@ -405,6 +423,14 @@ function manejarInput(nombreCampo: string, valor: unknown): void {
                 ]">
                   {{ columnaTabla.label }}
                 </th>
+                <!-- Columna de acciones si se permite eliminar filas -->
+                <th v-if="permitirEliminarFilas(campo)" :class="[
+                  'text-center',
+                  claseRellenoCelda(campo),
+                  obtenerEstiloTabla(campo).conBordes ? 'border-inferior-1' : ''
+                ]" style="width: 60px;">
+                  Acciones
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -437,6 +463,13 @@ function manejarInput(nombreCampo: string, valor: unknown): void {
                   <!-- Campo no soportado -->
                   <span v-else class="color-negro">—</span>
                 </td>
+
+                <!-- Columna de acciones para eliminar fila -->
+                <td v-if="permitirEliminarFilas(campo)" :class="[clasesCeldaTabla(campo), 'text-center']">
+                  <PrimeButton icon="pi pi-trash" severity="danger" size="small" text rounded
+                    :disabled="campo.deshabilitado"
+                    @click="eliminarFilaCampo(campo, indiceFila)" v-tooltip.top="'Eliminar fila'" />
+                </td>
               </tr>
             </tbody>
 
@@ -458,6 +491,8 @@ function manejarInput(nombreCampo: string, valor: unknown): void {
                     ) }}
                   </span>
                 </td>
+                <!-- Celda vacía para la columna de acciones -->
+                <td v-if="permitirEliminarFilas(campo)" :class="[claseRellenoCelda(campo)]"></td>
               </tr>
             </tfoot>
           </table>

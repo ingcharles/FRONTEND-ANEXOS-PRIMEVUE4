@@ -391,6 +391,15 @@ watch(() => obtenerColumnas().length, () => {
         </label>
       </div>
 
+      <!-- Permitir eliminar filas -->
+      <div class="field">
+        <label class="inline-flex align-items-center gap-2">
+          <Checkbox binary :model-value="Boolean(metadatos.eliminarFilas)"
+            @update:model-value="(v: boolean) => actualizarMetadato('eliminarFilas', v)" />
+          Permitir eliminar filas
+        </label>
+      </div>
+
       <!-- Número de filas iniciales -->
       <div class="grid align-items-end">
         <div class="col-12">
@@ -411,7 +420,7 @@ watch(() => obtenerColumnas().length, () => {
     <div class="mb-3">
       <div class="negrilla mb-2">Estilo de Tabla</div>
       <div class="grid">
-        <div class="col-12 sm:col-3">
+        <div class="col-12">
           <label for="" class="inline-flex align-items-center gap-2">
             <Checkbox binary :model-value="Boolean(estiloTabla.bordered)"
               @update:model-value="(v: boolean) => actualizarEstiloTabla('bordered', v)" />
@@ -419,7 +428,7 @@ watch(() => obtenerColumnas().length, () => {
           </label>
         </div>
 
-        <div class="col-12 sm:col-3">
+        <div class="col-12">
           <label class="inline-flex align-items-center gap-2">
             <Checkbox binary :model-value="Boolean(estiloTabla.striped)"
               @update:model-value="(v: boolean) => actualizarEstiloTabla('striped', v)" />
@@ -427,7 +436,7 @@ watch(() => obtenerColumnas().length, () => {
           </label>
         </div>
 
-        <div class="col-12 sm:col-3">
+        <div class="col-12">
           <label class="inline-flex align-items-center gap-2">
             <Checkbox binary :model-value="Boolean(estiloTabla.hover)"
               @update:model-value="(v: boolean) => actualizarEstiloTabla('hover', v)" />
@@ -435,7 +444,7 @@ watch(() => obtenerColumnas().length, () => {
           </label>
         </div>
 
-        <div class="col-12 sm:col-3">
+        <div class="col-12">
           <label class="tamanio-fuente-miga">Padding</label>
           <PrimeSelect :model-value="estiloTabla.padding || 'md'" :options="opcionesPadding"
             @update:model-value="(v: TamanioPadding) => actualizarEstiloTabla('padding', v)" />
