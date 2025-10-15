@@ -239,29 +239,29 @@ function obtenerClaseRellenoDisenador(relleno: string): string {
     <div>
       <template
         v-if="campo.tipo === TipoCampoValor.Texto || campo.tipo === TipoCampoValor.Correo || campo.tipo === TipoCampoValor.Contrasena">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
+        <label class="block mb-1"><span v-if="esCampoRequerido" class="color-rojo">* </span>{{ campo.etiqueta }}</label>
         <PrimeInputText :model-value="valorActualTexto" :placeholder="campo.marcadorPosicion"
           class="ancho-100 tamanio-fuente-miga" :disabled="campo.deshabilitado" :readonly="campo.soloLectura" />
       </template>
       <template v-else-if="campo.tipo === TipoCampoValor.Fecha">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
+        <label class="block mb-1"><span v-if="esCampoRequerido" class="color-rojo">* </span>{{ campo.etiqueta }}</label>
         <PrimeInputText class="ancho-100 tamanio-fuente-miga"
           :model-value="(valorActual instanceof Date) ? valorActual : (typeof valorActual === 'string' && valorActual ? new Date(valorActual) : undefined)"
           :disabled="campo.deshabilitado" />
       </template>
       <template v-else-if="campo.tipo === TipoCampoValor.Hora">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
+        <label class="block mb-1"><span v-if="esCampoRequerido" class="color-rojo">* </span>{{ campo.etiqueta }}</label>
         <PrimeDatePicker time-only hour-format="24" class="ancho-100 tamanio-fuente-miga"
           :model-value="(typeof valorActual === 'string' && /^([01]?\d|2[0-3]):([0-5]\d)$/.test(valorActual as any)) ? (() => { const [hh, mm] = String(valorActual).split(':'); const d = new Date(); d.setHours(Number(hh), Number(mm), 0, 0); return d; })() : undefined"
           :disabled="campo.deshabilitado" />
       </template>
       <template v-else-if="campo.tipo === TipoCampoValor.AreaTexto">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
+        <label class="block mb-1"><span v-if="esCampoRequerido" class="color-rojo">* </span>{{ campo.etiqueta }}</label>
         <PrimeTextarea :model-value="valorActualTexto" :placeholder="campo.marcadorPosicion"
           class="ancho-100 tamanio-fuente-miga" :disabled="campo.deshabilitado" :readonly="campo.soloLectura" />
       </template>
       <template v-else-if="campo.tipo === TipoCampoValor.Seleccion">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
+        <label class="block mb-1"><span v-if="esCampoRequerido" class="color-rojo">* </span>{{ campo.etiqueta }}</label>
         <PrimeSelect class="ancho-100 tamanio-fuente-miga"
           :options="(campo.metadatos?.opciones as Array<{ etiqueta: string; valor: unknown }>) || []"
           option-label="etiqueta" option-value="valor" :model-value="valorActual" :disabled="campo.deshabilitado || (Boolean((campo.metadatos as any)?.dependencia?.deshabilitarHastaValor) && !String((campo.metadatos as any)?.dependencia?.campoPadre || '').split(',').map((s: string) => s.trim()).filter(Boolean).every((padre: string) => {
@@ -270,7 +270,7 @@ function obtenerClaseRellenoDisenador(relleno: string): string {
           }))" />
       </template>
       <template v-else-if="campo.tipo === TipoCampoValor.Numero">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
+        <label class="block mb-1"><span v-if="esCampoRequerido" class="color-rojo">* </span>{{ campo.etiqueta }}</label>
         <PrimeInputNumber class="ancho-100 tamanio-fuente-miga"
           :model-value="(valorActualTexto != null && valorActualTexto !== '' && !Number.isNaN(Number(valorActualTexto))) ? Number(valorActualTexto) : undefined"
           :placeholder="campo.marcadorPosicion" :disabled="campo.deshabilitado" :readonly="campo.soloLectura" />
@@ -278,8 +278,8 @@ function obtenerClaseRellenoDisenador(relleno: string): string {
       <template v-else-if="campo.tipo === TipoCampoValor.Casilla">
         <template
           v-if="Array.isArray((campo.metadatos as any)?.opciones) && ((campo.metadatos as any)?.opciones?.length || 0) > 0">
-          <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo">
-              *</span></label>
+          <label class="block mb-1"><span v-if="esCampoRequerido" class="color-rojo">
+          * </span>{{ campo.etiqueta }}</label>
           <div :class="[
             'flex',
             ((campo.metadatos as any)?.layout === 'horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')
@@ -294,12 +294,12 @@ function obtenerClaseRellenoDisenador(relleno: string): string {
         <template v-else>
           <div class="flex align-items-center gap-2">
             <PrimeCheckbox :binary="true" :model-value="Boolean(valorActual)" :disabled="campo.deshabilitado" />
-            <label class="mb-0">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
+            <label class="mb-0"><span v-if="esCampoRequerido" class="color-rojo">* </span>{{ campo.etiqueta }}</label>
           </div>
         </template>
       </template>
       <template v-else-if="campo.tipo === TipoCampoValor.Radio">
-        <label class="block mb-1">{{ campo.etiqueta }}<span v-if="esCampoRequerido" class="color-rojo"> *</span></label>
+        <label class="block mb-1"><span v-if="esCampoRequerido" class="color-rojo">* </span>{{ campo.etiqueta }}</label>
         <div :class="[
           'flex',
           ((campo.metadatos as any)?.layout === 'horizontal' ? 'flex-row flex-wrap gap-3' : 'flex-column gap-2')

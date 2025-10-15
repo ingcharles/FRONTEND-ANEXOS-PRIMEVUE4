@@ -656,6 +656,17 @@ textarea::placeholder,
   margin-block: auto;
   border-color: $color-azul-fuerte;
 }
+table tbody tr td .p-inputtext:enabled:hover {
+  font-style: normal;
+
+}
+
+table tbody tr td .p-inputtext:active, 
+table tbody tr td .p-inputtext:focus, 
+table tbody tr td .p-inputtext:enabled:focus, 
+table tbody tr td .p-inputtext:hover{
+  border: solid 0.5px #aab2bd;
+}
 
 input.p-inputtext.p-component .p-disabled:hover {
   border-bottom: none;

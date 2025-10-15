@@ -110,8 +110,8 @@ const categoriasPaleta = ref([
           metadatos: {
             filas: 1,
             columnas: [
-              { nombre: 'columna1', etiqueta: 'Columna 1', tipo: 'texto' },
-              { nombre: 'columna2', etiqueta: 'Columna 2', tipo: 'texto' }
+              { nombre: 'columna1', etiqueta: 'Columna 1', tipo: 'texto', requerido: true },
+              { nombre: 'columna2', etiqueta: 'Columna 2', tipo: 'texto', requerido: true }
             ]
           },
         }
@@ -125,8 +125,8 @@ const categoriasPaleta = ref([
           metadatos: {
             filas: 1,
             columnas: [
-              { nombre: 'precio', etiqueta: 'Precio', tipo: 'numero' },
-              { nombre: 'tasa', etiqueta: 'Tasa (%)', tipo: 'numero' }
+              { nombre: 'precio', etiqueta: 'Precio', tipo: 'numero', requerido: true },
+              { nombre: 'tasa', etiqueta: 'Tasa (%)', tipo: 'numero', requerido: true }
             ]
           },
         }
@@ -178,7 +178,8 @@ function clonarDesdePaleta(elemento: { tipo: TipoCampoValor; label: string; prop
     nombre: `${elemento.tipo}_${id.slice(-4)}`,
     grid: configuracionGrid,
     visible: true,
-    requerido: false,
+    requerido: true, // Por defecto, todos los campos son requeridos
+    validaciones: [{ tipo: 'requerido' }], // Validación de campo requerido por defecto
     ...(elemento.propiedadesPorDefecto || {}),
     // Solo el tipo panel lleva hijos; para otros, forzamos hijos undefined
     ...(elemento.tipo === TipoCampoValor.Panel ? {} : { hijos: undefined }),

@@ -3,7 +3,7 @@ import { computed, ref, watch, watchEffect, onMounted } from 'vue'
 import type { EsquemaCampo, MetadatosCampo } from '@/interfaces/Campos'
 import type { ConfiguracionDependencia } from '@/interfaces/Comunes'
 import { useAlmacenDisenador } from '@/almacenes/UsarAlmacenDisenador'
-import { evaluarReglasCampo, evaluarReglasCampoSync, evaluarReglasDecisionRulesCampo } from '@/utilidades/Logica'
+import { evaluarReglasCampo, evaluarReglasCampoSync, evaluarReglasDecisionRulesCampo } from '@/utilidades/logica'
 
 import { ServicioDependenciasFormulario } from '@/servicios/disenador/ServicioDependencias'
 import { ServicioEsquemasFormulario } from '@/servicios/disenador/ServicioEsquemas'
@@ -45,18 +45,18 @@ const valores = computed(() => almacen.obtenerValoresPagina(paginaActual.value?.
 const mapaIdNombre = computed(() => servicioEsquemas.construirMapaIdNombre(campos.value as EsquemaCampo[]))
 
 // Estado reactivo para campos con lógica aplicada
-const camposConLogica = ref<EsquemaCampo[]>([])
+const camposConLogica = ref<Array<EsquemaCampo>>([])
 
 // Función para evaluar reglas de forma asíncrona (solo reglas simples, sin DecisionRules)
-async function evaluarYActualizarCamposSinDecisionRules() {
+async function evaluarYActualizarCamposSinDecisionRules(): Promise<void> {
   const camposOriginales = campos.value as EsquemaCampo[]
   const valoresActuales = valores.value as RegistroDatos
   const mapa = mapaIdNombre.value as Record<string, string>
 
   console.log('🔍 [VistaPrevia] Evaluando campos (solo reglas simples)...')
 
-  const camposEvaluados = await Promise.all(
-    camposOriginales.map(async (campo) => {
+  const camposEvaluados: EsquemaCampo[] = await Promise.all(
+    camposOriginales.map(async (campo): Promise<EsquemaCampo> => {
       // Evaluar solo reglas simples, NO DecisionRules
       const estado = await evaluarReglasCampo(campo, valoresActuales, mapa, { incluirDecisionRules: false })
       return {
@@ -83,13 +83,13 @@ const registroDependencias = new Map<string, () => void>()
 
 // Funciones para manejo de campos
 function clasesColumna(campo: EsquemaCampo): string[] {
-  const sm = campo.grid?.sm ?? 12
-  const md = campo.grid?.md ?? 12
-  const lg = campo.grid?.lg ?? 12
+  const pequeno = campo.grid?.sm ?? 12
+  const mediano = campo.grid?.md ?? 12
+  const grande = campo.grid?.lg ?? 12
   return [
-    `col-${Math.min(12, Math.max(1, sm))}`,
-    `md:col-${Math.min(12, Math.max(1, md))}`,
-    `lg:col-${Math.min(12, Math.max(1, lg))}`,
+    `col-${Math.min(12, Math.max(1, pequeno))}`,
+    `md:col-${Math.min(12, Math.max(1, mediano))}`,
+    `lg:col-${Math.min(12, Math.max(1, grande))}`,
     'p-2',
   ]
 }
@@ -307,6 +307,55 @@ function aplicarLogicaACamposSeguro(
     } as EsquemaCampo
   })
 }
+// Función para validar un campo específico en tiempo real
+function validarCampoEnTiempoReal(nombreCampo: string): void {
+  // Buscar el campo en la lista de campos con lógica aplicada
+  const todosCampos: EsquemaCampo[] = servicioEsquemas.aplanarCampos(camposConLogica.value as EsquemaCampo[], [])
+  const campo: EsquemaCampo | undefined = todosCampos.find(c => c.nombre === nombreCampo)
+  
+  if (!campo) {
+    // Si no se encuentra el campo, limpiar su error
+    delete errores.value[nombreCampo]
+    return
+  }
+
+  // Si el campo no es visible, no validar
+  if (campo.visible === false) {
+    delete errores.value[nombreCampo]
+    return
+  }
+
+  // Crear un esquema de validación solo para este campo
+  const esquemaCampo = servicioEsquemas.crearEsquemaValidacion([campo])
+  const valorCampo = valores.value[nombreCampo]
+
+  // Validar solo este campo
+  const resultado = esquemaCampo.safeParse({ [nombreCampo]: valorCampo })
+
+  if (!resultado.success) {
+    // Si hay errores, actualizar el error de este campo
+    for (const problema of resultado.error.issues) {
+      const ruta = String(problema.path[0] || '')
+      if (ruta === nombreCampo) {
+        errores.value = { ...errores.value, [nombreCampo]: problema.message }
+        return
+      }
+    }
+  } else {
+    // Si no hay errores, limpiar el error de este campo
+    const nuevosErrores = { ...errores.value }
+    delete nuevosErrores[nombreCampo]
+    errores.value = nuevosErrores
+  }
+}
+
+// Función para manejar cambio de valor con validación en tiempo real
+function manejarCambioValor(nombre: string, valor: unknown): void {
+  almacen.actualizarValorCampo(paginaActual.value.id, nombre, valor as ValorDato)
+  // Validar el campo inmediatamente después de cambiar su valor
+  validarCampoEnTiempoReal(nombre)
+}
+
 // Función principal de envío
 function enviar(): void {
   errores.value = {}
@@ -439,22 +488,20 @@ async function manejarEventoCampo(nombreCampo: string, tipoEvento: 'change' | 'b
     <!-- Formulario principal -->
     <form @submit.prevent="enviar">
       <div class="grid">
-        <div class="col-12">
-      <template v-for="campo in camposConLogica" :key="campo.id">
-        <div :class="clasesColumna(campo)">
-          <RenderizadorCampo :campo="campo" :valores-campos="valores" :errores-campos="errores"
-            :mapa-id-nombre="mapaIdNombre"
-            @valor-cambiado="(nombre: string, valor: unknown) => almacen.actualizarValorCampo(paginaActual.id, nombre, valor as ValorDato)"
-            @evento-campo="manejarEventoCampo" />
-        </div>
-      </template>
-      </div>
-      </div>
+        <template v-for="campo in (camposConLogica as any)" :key="campo.id">
+          <div :class="clasesColumna(campo)">
+            <RenderizadorCampo :campo="campo" :valores-campos="valores" :errores-campos="errores"
+              :mapa-id-nombre="mapaIdNombre"
+              @valor-cambiado="manejarCambioValor"
+              @evento-campo="manejarEventoCampo" />
+          </div>
+        </template>
 
-      <!-- Botón Enviar de respaldo: si no hay botón en la página y es la última o única -->
-      <div class="col-2"
-        v-if="(totalPaginas === 1 || indicePagina >= almacen.esquemaFormulario.paginas.length - 1) && !paginaActual?.campos?.some(f => f.tipo === 'boton')">
-        <PrimeButton type="submit" label="Enviar" icon="pi pi-check" class="ancho-100 tamanio-fuente-miga" />
+        <!-- Botón Enviar de respaldo: si no hay botón en la página y es la última o única -->
+        <div class="col-2"
+          v-if="(totalPaginas === 1 || indicePagina >= almacen.esquemaFormulario.paginas.length - 1) && !paginaActual?.campos?.some(f => f.tipo === 'boton')">
+          <PrimeButton type="submit" label="Enviar" icon="pi pi-check" class="ancho-100 tamanio-fuente-miga" />
+        </div>
       </div>
     </form>
   </div>

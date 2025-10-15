@@ -237,17 +237,43 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
 
       switch (columna.tipo || 'text') {
         case 'number':
+        case 'numero':
           esquemaColumna = this.crearEsquemaNumeroColumna(columna)
           break
         case 'date':
+        case 'fecha':
           esquemaColumna = this.crearEsquemaFechaColumna()
           break
         default:
-          esquemaColumna = z.string()
+          // Para campos de texto en tablas, usar preprocess para manejar null
+          esquemaColumna = z.preprocess(
+            (valor) => valor === undefined || valor === null ? '' : String(valor),
+            z.string()
+          )
       }
 
       // Usar el nombre técnico de la columna como clave del objeto de fila
-      formaFila[columna.nombre] = esRequerido ? esquemaColumna : esquemaColumna.optional()
+      if (esRequerido) {
+        // Si es requerido, validar que no esté vacío
+        if (columna.tipo === 'number' || columna.tipo === 'numero') {
+          formaFila[columna.nombre] = esquemaColumna.refine(
+            (valor: unknown) => valor !== null && valor !== undefined,
+            { message: 'Este campo es obligatorio' }
+          )
+        } else if (columna.tipo === 'date' || columna.tipo === 'fecha') {
+          formaFila[columna.nombre] = esquemaColumna.refine(
+            (valor: unknown) => valor instanceof Date,
+            { message: 'Este campo es obligatorio' }
+          )
+        } else {
+          formaFila[columna.nombre] = esquemaColumna.refine(
+            (valor: unknown) => typeof valor === 'string' && valor.trim().length > 0,
+            { message: 'Este campo es obligatorio' }
+          )
+        }
+      } else {
+        formaFila[columna.nombre] = esquemaColumna.optional()
+      }
     }
 
     return z.array(z.object(formaFila)).optional()
@@ -273,8 +299,17 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
     if (typeof max === 'number') reglaNumero = reglaNumero.max(max, mensajeMax)
 
     return z.preprocess(
-      (valor) => typeof valor === 'string' ? (valor.trim() === '' ? undefined : Number(valor)) : valor,
-      reglaNumero
+      (valor) => {
+        if (valor === null || valor === undefined) return undefined
+        if (typeof valor === 'string') {
+          const trimmed = valor.trim()
+          if (trimmed === '') return undefined
+          const numero = Number(trimmed)
+          return isNaN(numero) ? undefined : numero
+        }
+        return typeof valor === 'number' ? valor : undefined
+      },
+      reglaNumero.optional()
     )
   }
 
@@ -292,7 +327,7 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
         return isNaN(fecha.getTime()) ? undefined : fecha
       }
       return valor
-    }, reglaFecha)
+    }, reglaFecha.optional())
   }
 
   private aplicarValidacionRequerido(campo: EsquemaCampo, esquemaBase: z.ZodTypeAny): z.ZodTypeAny {
@@ -311,6 +346,25 @@ export class ServicioEsquemasFormulario implements ServicioEsquemas {
       } else {
         return z.literal(true)
       }
+    }
+
+    if (campo.tipo === TipoCampoValor.Tabla) {
+      // Para tablas requeridas, validar que tenga al menos una fila con datos
+      return esquemaBase.refine(
+        (valor: unknown) => {
+          if (!Array.isArray(valor) || valor.length === 0) return false
+          
+          // Verificar que al menos una fila tenga algún valor no vacío
+          return valor.some((fila: any) => {
+            if (!fila || typeof fila !== 'object') return false
+            return Object.values(fila).some(val => 
+              val !== null && val !== undefined && 
+              (typeof val !== 'string' || val.trim() !== '')
+            )
+          })
+        },
+        mensajeRequerido || 'Debe completar al menos una fila de la tabla'
+      )
     }
 
     if (campo.tipo === 'fecha') {

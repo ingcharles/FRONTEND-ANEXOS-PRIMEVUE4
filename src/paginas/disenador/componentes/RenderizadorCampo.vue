@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ColumnaTablaBasica, ColumnaTablaExtendida, EsquemaCampo } from '@/interfaces/Campos'
-import { evaluarReglasCampoSync } from '@/utilidades/Logica'
+import { evaluarReglasCampoSync } from '@/utilidades/logica'
 import type { RegistroDatos, TamanoDiseno, ValorDato } from '@/tipos/Comunes'
 import type { OpcionSeleccion } from '@/interfaces/Comunes'
 import { TipoCampoValor } from '@/enumeraciones/Campos'
@@ -332,8 +332,9 @@ function manejarInput(nombreCampo: string, valor: unknown): void {
     <!-- Campos simples y complejos (no panel) -->
     <template v-else>
       <label v-if="campo.etiqueta" class="block mb-1">
+        <span v-if="esCampoRequerido" class="color-rojo">* </span>
         {{ campo.etiqueta }}
-        <span v-if="esCampoRequerido" class="color-rojo"> *</span>
+        
       </label>
 
       <!-- Campo de texto -->
@@ -436,6 +437,7 @@ function manejarInput(nombreCampo: string, valor: unknown): void {
                   obtenerEstiloTabla(campo).conBordes ? 'border-inferior-1' : ''
                 ]">
                   {{ columnaTabla.label }}
+                  <span v-if="columnaTabla.requerido" class="color-rojo"> *</span>
                 </th>
                 <!-- Columna de acciones si se permite eliminar filas -->
                 <th v-if="permitirEliminarFilas(campo)" :class="[
