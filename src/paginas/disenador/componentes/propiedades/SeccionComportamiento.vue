@@ -4,7 +4,7 @@
   <!-- Visibilidad -->
   <div>
     <label for="visibleComportamiento" class="flex align-items-center gap-2">
-      <Checkbox id="visibleComportamiento" binary :model-value="!!campo?.visible"
+      <PrimeCheckbox id="visibleComportamiento" binary :model-value="!!campo?.visible"
         @update:model-value="(v: boolean) => actualizarPropiedad('visible', v)" />
       Visible
       <IconoAyuda mensaje="Controla si el campo se muestra o se oculta en el formulario" />
@@ -15,7 +15,7 @@
   <!-- Deshabilitado -->
   <div v-if="ServicioCampos.esDeshabilitable(campo?.tipo)">
     <label for="deshabilitadoComportamiento" class="flex align-items-center gap-2">
-      <Checkbox id="deshabilitadoComportamiento" binary :model-value="!!campo?.deshabilitado"
+      <PrimeCheckbox id="deshabilitadoComportamiento" binary :model-value="!!campo?.deshabilitado"
         @update:model-value="(v: boolean) => actualizarPropiedad('deshabilitado', v)" />
       Deshabilitado
       <IconoAyuda mensaje="Controla si el campo permite interacción del usuario" />
@@ -25,7 +25,7 @@
   <!-- Solo lectura -->
   <div v-if="ServicioCampos.esSoloLectura(campo?.tipo)">
     <label for="soloLecturaComportamiento" class="flex align-items-center gap-2">
-      <Checkbox id="soloLecturaComportamiento" binary :model-value="!!campo?.soloLectura"
+      <PrimeCheckbox id="soloLecturaComportamiento" binary :model-value="!!campo?.soloLectura"
         @update:model-value="(v: boolean) => actualizarPropiedad('soloLectura', v)" />
       Solo lectura
       <IconoAyuda mensaje="Controla si el campo muestra información pero no permite modificación" />
@@ -39,15 +39,15 @@
       <IconoAyuda mensaje="Controla si las opciones se muestran en columna (vertical) o en fila (horizontal)" />
 
     </div>
-    <SelectButton :model-value="obtenerLayoutGrupo()" :options="opcionesLayout" option-label="label"
+    <PrimeSelectButton :model-value="obtenerLayoutGrupo()" :options="opcionesLayout" option-label="label"
       option-value="value" @update:model-value="(v: TipoDiseno) => actualizarLayoutGrupo(v)" />
     <small class="color-negro">Controla si las opciones se muestran en columna o en fila.</small>
   </div>
 
   <!-- Plegable para paneles -->
-  <div v-if="campo?.tipo === TipoCampo.Panel">
+  <div v-if="campo?.tipo === TipoCampoValor.Panel">
     <label for="colapsarExpanderPanel" class="flex align-items-center gap-2">
-      <Checkbox binary :model-value="obtenerToggleable()"
+      <PrimeCheckbox binary :model-value="obtenerToggleable()"
         @update:model-value="(v: boolean) => actualizarToggleable(v)" />
       Plegable
       <i class="pi pi-info-circle texto-ayuda p-2" v-tooltip.top="'Permite al usuario colapsar/expandir el panel'"></i>
@@ -65,7 +65,7 @@ import { ServicioCampos } from '@/servicios/disenador/ServiciosCampos'
 import type { OpcionLayout } from '@/interfaces/TabAtributos'
 import type { TipoDiseno } from '@/tipos/Comunes'
 import IconoAyuda from '@/componentes/IconoAyuda.vue'
-import { TipoCampo } from '@/enumeraciones/Campos'
+import { TipoCampoValor } from '@/enumeraciones/Campos'
 const props = defineProps<{
   campo: EsquemaCampo
 }>()
