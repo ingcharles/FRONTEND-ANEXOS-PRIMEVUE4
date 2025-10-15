@@ -652,7 +652,7 @@ input::placeholder,
 textarea::placeholder,
 .p-inputtext::placeholder,
 .p-inputtext:enabled:hover {
-  font-style: italic;
+  /*font-style: italic;*/
   margin-block: auto;
   border-color: $color-azul-fuerte;
 }
