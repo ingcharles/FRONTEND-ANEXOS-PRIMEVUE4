@@ -35,7 +35,8 @@ export enum TipoCampoValor {
   Boton = 'boton',
   Divisor = 'divisor',
   Panel = 'panel',
-  Tabla = 'tabla'
+  Tabla = 'tabla',
+  TablaResumen = 'tabla-resumen'
 }
 
 export enum TipoCampoEtiqueta {
@@ -53,5 +54,6 @@ export enum TipoCampoEtiqueta {
   Boton = 'Botón',
   Divisor = 'Divisor',
   Panel = 'Panel',
-  Tabla = 'Tabla'
+  Tabla = 'Tabla',
+  TablaResumen = 'Tabla Resumen'
 }

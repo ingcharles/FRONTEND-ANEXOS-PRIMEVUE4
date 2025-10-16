@@ -81,3 +81,35 @@ export interface ColumnaTablaExtendida extends ColumnaTablaBasica {
   mensajeMaximo?: string;
   tipo?: string;
 }
+
+// Interfaces para Tabla Resumen
+export interface ColumnaTablaResumen {
+  nombre: string
+  etiqueta: string
+  tipo: 'texto' | 'numero' | 'calculado'
+  ancho?: number
+  valorFijo?: string
+  formula?: string
+  formatoNumero?: {
+    decimales?: number
+    prefijo?: string
+    sufijo?: string
+  }
+}
+
+export interface FilaTablaResumen {
+  id: string
+  valores: Record<string, string | number>
+}
+
+export interface MetadatosTablaResumen {
+  columnas: ColumnaTablaResumen[]
+  filas: FilaTablaResumen[]
+  actualizacionAutomatica?: boolean
+  estiloTabla?: {
+    bordered?: boolean
+    striped?: boolean
+    hover?: boolean
+    padding?: 'sm' | 'md' | 'lg'
+  }
+}

@@ -1,0 +1,250 @@
+{
+  "id": "formulario_cotizacion_001",
+  "nombre": "Cotización con Tabla Resumen",
+  "paginas": [
+    {
+      "id": "pag_ejemplo_001",
+      "titulo": "Cotización",
+      "campos": [
+        {
+          "id": "campo_001",
+          "tipo": "texto",
+          "etiqueta": "Nombre del Cliente",
+          "nombre": "nombre_cliente",
+          "grid": { "sm": 12, "md": 6, "lg": 6 },
+          "visible": true,
+          "requerido": true,
+          "validaciones": [{ "tipo": "requerido" }],
+          "metadatos": {
+            "valorPorDefecto": ""
+          }
+        },
+        {
+          "id": "campo_002",
+          "tipo": "fecha",
+          "etiqueta": "Fecha de Cotización",
+          "nombre": "fecha_cotizacion",
+          "grid": { "sm": 12, "md": 6, "lg": 6 },
+          "visible": true,
+          "requerido": true,
+          "validaciones": [{ "tipo": "requerido" }],
+          "metadatos": {
+            "valorPorDefecto": ""
+          }
+        },
+        {
+          "id": "campo_003",
+          "tipo": "divisor",
+          "etiqueta": "",
+          "nombre": "divisor_001",
+          "grid": { "sm": 12, "md": 12, "lg": 12 },
+          "visible": true,
+          "requerido": false,
+          "validaciones": []
+        },
+        {
+          "id": "campo_004",
+          "tipo": "etiqueta",
+          "etiqueta": "Productos",
+          "nombre": "etiqueta_productos",
+          "grid": { "sm": 12, "md": 12, "lg": 12 },
+          "visible": true,
+          "requerido": false,
+          "validaciones": [],
+          "metadatos": {
+            "valorPorDefecto": "Productos"
+          }
+        },
+        {
+          "id": "campo_005",
+          "tipo": "tabla",
+          "etiqueta": "Lista de Productos",
+          "nombre": "tabla_productos",
+          "grid": { "sm": 12, "md": 12, "lg": 12 },
+          "visible": true,
+          "requerido": true,
+          "validaciones": [{ "tipo": "requerido" }],
+          "metadatos": {
+            "filas": 1,
+            "agregarFilas": true,
+            "eliminarFilas": true,
+            "columnas": [
+              {
+                "nombre": "producto",
+                "etiqueta": "Producto",
+                "tipo": "texto",
+                "requerido": true
+              },
+              {
+                "nombre": "cantidad",
+                "etiqueta": "Cantidad",
+                "tipo": "numero",
+                "requerido": true
+              },
+              {
+                "nombre": "precio_unitario",
+                "etiqueta": "Precio Unitario",
+                "tipo": "numero",
+                "requerido": true
+              },
+              {
+                "nombre": "total",
+                "etiqueta": "Total",
+                "tipo": "numero",
+                "requerido": false
+              }
+            ]
+          }
+        },
+        {
+          "id": "campo_006",
+          "tipo": "divisor",
+          "etiqueta": "",
+          "nombre": "divisor_002",
+          "grid": { "sm": 12, "md": 12, "lg": 12 },
+          "visible": true,
+          "requerido": false,
+          "validaciones": []
+        },
+        {
+          "id": "campo_007",
+          "tipo": "etiqueta",
+          "etiqueta": "Servicios",
+          "nombre": "etiqueta_servicios",
+          "grid": { "sm": 12, "md": 12, "lg": 12 },
+          "visible": true,
+          "requerido": false,
+          "validaciones": [],
+          "metadatos": {
+            "valorPorDefecto": "Servicios"
+          }
+        },
+        {
+          "id": "campo_008",
+          "tipo": "tabla",
+          "etiqueta": "Lista de Servicios",
+          "nombre": "tabla_servicios",
+          "grid": { "sm": 12, "md": 12, "lg": 12 },
+          "visible": true,
+          "requerido": false,
+          "validaciones": [],
+          "metadatos": {
+            "filas": 1,
+            "agregarFilas": true,
+            "eliminarFilas": true,
+            "columnas": [
+              {
+                "nombre": "servicio",
+                "etiqueta": "Servicio",
+                "tipo": "texto",
+                "requerido": true
+              },
+              {
+                "nombre": "horas",
+                "etiqueta": "Horas",
+                "tipo": "numero",
+                "requerido": true
+              },
+              {
+                "nombre": "tarifa_hora",
+                "etiqueta": "Tarifa por Hora",
+                "tipo": "numero",
+                "requerido": true
+              },
+              {
+                "nombre": "total",
+                "etiqueta": "Total",
+                "tipo": "numero",
+                "requerido": false
+              }
+            ]
+          }
+        },
+        {
+          "id": "campo_009",
+          "tipo": "divisor",
+          "etiqueta": "",
+          "nombre": "divisor_003",
+          "grid": { "sm": 12, "md": 12, "lg": 12 },
+          "visible": true,
+          "requerido": false,
+          "validaciones": []
+        },
+        {
+          "id": "campo_010",
+          "tipo": "tabla-resumen",
+          "etiqueta": "Resumen de Cotización",
+          "nombre": "resumen_cotizacion",
+          "grid": { "sm": 12, "md": 12, "lg": 12 },
+          "visible": true,
+          "requerido": false,
+          "validaciones": [],
+          "metadatos": {
+            "columnas": [
+              {
+                "nombre": "concepto",
+                "etiqueta": "Concepto",
+                "tipo": "texto"
+              },
+              {
+                "nombre": "valor",
+                "etiqueta": "Valor",
+                "tipo": "calculado",
+                "formatoNumero": {
+                  "decimales": 2,
+                  "prefijo": "$ ",
+                  "sufijo": ""
+                }
+              }
+            ],
+            "filas": [
+              {
+                "id": "fila_subtotal_productos",
+                "valores": {
+                  "concepto": "Subtotal Productos",
+                  "valor": "{tabla_productos.total.sum}"
+                }
+              },
+              {
+                "id": "fila_subtotal_servicios",
+                "valores": {
+                  "concepto": "Subtotal Servicios",
+                  "valor": "{tabla_servicios.total.sum}"
+                }
+              },
+              {
+                "id": "fila_subtotal",
+                "valores": {
+                  "concepto": "Subtotal Total",
+                  "valor": "{tabla_productos.total.sum} + {tabla_servicios.total.sum}"
+                }
+              },
+              {
+                "id": "fila_iva",
+                "valores": {
+                  "concepto": "IVA (19%)",
+                  "valor": "({tabla_productos.total.sum} + {tabla_servicios.total.sum}) * 0.19"
+                }
+              },
+              {
+                "id": "fila_total",
+                "valores": {
+                  "concepto": "Total a Pagar",
+                  "valor": "({tabla_productos.total.sum} + {tabla_servicios.total.sum}) * 1.19"
+                }
+              }
+            ],
+            "actualizacionAutomatica": true,
+            "estiloTabla": {
+              "bordered": true,
+              "striped": false,
+              "hover": false,
+              "padding": "md"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+

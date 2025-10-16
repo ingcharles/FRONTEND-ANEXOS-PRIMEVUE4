@@ -384,6 +384,53 @@ function obtenerClaseRellenoDisenador(relleno: string): string {
 
         </div>
       </template>
+      <template v-else-if="campo.tipo === TipoCampoValor.TablaResumen">
+        <div class="m-2">
+          <div class="negrilla mb-2">📊 Tabla Resumen</div>
+          <div class="overflow-auto">
+            <table :class="['ancho-100 tamanio-fuente-miga', obtenerEstiloTablaDisenador(campo).conBordes ? 'border-1' : '']">
+              <thead>
+                <tr>
+                  <th v-for="col in ((campo.metadatos as any)?.columnas || [])" :key="col.nombre"
+                    :class="['text-left negrilla', obtenerClaseRellenoDisenador(obtenerEstiloTablaDisenador(campo).relleno), obtenerEstiloTablaDisenador(campo).conBordes ? 'border-inferior-1' : '']">
+                    {{ col.etiqueta }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(fila, indice) in ((campo.metadatos as any)?.filas || [])" :key="fila.id || indice"
+                  :class="[obtenerEstiloTablaDisenador(campo).conRayas && indice % 2 === 1 ? 'bg-surface-100' : '']">
+                  <td v-for="col in ((campo.metadatos as any)?.columnas || [])" :key="col.nombre"
+                    :class="[
+                      obtenerClaseRellenoDisenador(obtenerEstiloTablaDisenador(campo).relleno),
+                      obtenerEstiloTablaDisenador(campo).conBordes ? 'border-inferior-1' : '',
+                      col.tipo === 'numero' || col.tipo === 'calculado' ? 'text-right' : 'text-left'
+                    ]">
+                    <template v-if="col.tipo === 'calculado'">
+                      <code class="tamanio-fuente-miga">{{ fila.valores[col.nombre] || '—' }}</code>
+                    </template>
+                    <template v-else>
+                      {{ fila.valores[col.nombre] || '—' }}
+                    </template>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="text-xs color-negro mt-2">
+            📋 Filas: {{ ((campo.metadatos as any)?.filas || []).length }} |
+            🔢 Columnas: {{ ((campo.metadatos as any)?.columnas || []).length }}
+            <span v-if="(campo.metadatos as any)?.actualizacionAutomatica"> | 🔄 Auto-actualización</span>
+            <br>
+            <span class="text-xs">
+              Estilos:
+              <span v-if="obtenerEstiloTablaDisenador(campo).conBordes">🔲 Bordes</span>
+              <span v-if="obtenerEstiloTablaDisenador(campo).conRayas"> 🦓 Zebra</span>
+              <span v-if="obtenerEstiloTablaDisenador(campo).conHover"> 👆 Hover</span>
+            </span>
+          </div>
+        </div>
+      </template>
       <template v-else-if="campo.tipo === 'panel'">
         <ContenedorPanel :campo="campo" />
       </template>

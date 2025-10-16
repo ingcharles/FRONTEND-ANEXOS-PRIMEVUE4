@@ -46,6 +46,21 @@ function obtenerMetaPorDefecto(tipo: TipoCampoValor): Partial<MetadatosCampo> | 
       mostrarResumen: true
     }
   }
+  if (tipo === 'tabla-resumen') {
+    return {
+      columnas: [
+        { nombre: 'concepto', etiqueta: 'Concepto', tipo: 'texto' },
+        { nombre: 'valor', etiqueta: 'Valor', tipo: 'calculado', formatoNumero: { decimales: 2, prefijo: '$' } }
+      ],
+      filas: [
+        { id: 'fila1', valores: { concepto: 'Subtotal', valor: '0' } },
+        { id: 'fila2', valores: { concepto: 'IVA', valor: '0' } },
+        { id: 'fila3', valores: { concepto: 'Total', valor: '0' } }
+      ],
+      actualizacionAutomatica: true,
+      estiloTabla: { bordered: true, striped: false, hover: false, padding: 'md' }
+    } as any
+  }
   return undefined
 }
 

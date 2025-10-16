@@ -6,6 +6,7 @@ import SeccionDiseno from './SeccionDiseno.vue'
 import SeccionComportamiento from './SeccionComportamiento.vue'
 import SeccionOpciones from './SeccionOpciones.vue'
 import SeccionTabla from './SeccionTabla.vue'
+import SeccionTablaResumen from './SeccionTablaResumen.vue'
 import { TipoCampoValor } from '@/enumeraciones/Campos'
 
 defineProps<{ idCampo: string }>()
@@ -34,5 +35,8 @@ const campo = computed(() => almacen.campoSeleccionado)
 
     <!-- Configuración de tabla -->
     <SeccionTabla v-if="campo.tipo === TipoCampoValor.Tabla" :campo="campo" />
+
+    <!-- Configuración de tabla resumen -->
+    <SeccionTablaResumen v-if="campo.tipo === TipoCampoValor.TablaResumen" :id-campo="campo.id" />
   </div>
 </template>

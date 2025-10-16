@@ -63,6 +63,7 @@ export const TIPOS_OPCIONES_ESPANOL: readonly { valor: TipoCampoValor, etiqueta:
   { etiqueta: TipoCampoEtiqueta.Divisor, valor: TipoCampoValor.Divisor },
   { etiqueta: TipoCampoEtiqueta.Panel, valor: TipoCampoValor.Panel },
   { etiqueta: TipoCampoEtiqueta.Tabla, valor: TipoCampoValor.Tabla },
+  { etiqueta: TipoCampoEtiqueta.TablaResumen, valor: TipoCampoValor.TablaResumen },
 ]
 
 /**
@@ -84,6 +85,7 @@ export const TIPOS_OPCIONES: readonly { etiqueta: TipoCampoEtiqueta; valor: Tipo
   { etiqueta: TipoCampoEtiqueta.Divisor, valor: TipoCampoValor.Divisor },
   { etiqueta: TipoCampoEtiqueta.Panel, valor: TipoCampoValor.Panel },
   { etiqueta: TipoCampoEtiqueta.Tabla, valor: TipoCampoValor.Tabla },
+  { etiqueta: TipoCampoEtiqueta.TablaResumen, valor: TipoCampoValor.TablaResumen },
 ]
 
 

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { ColumnaTablaBasica, ColumnaTablaExtendida, EsquemaCampo } from '@/interfaces/Campos'
+import type { ColumnaTablaBasica, ColumnaTablaExtendida, EsquemaCampo, MetadatosTablaResumen } from '@/interfaces/Campos'
 import { evaluarReglasCampoSync } from '@/utilidades/logica'
 import type { RegistroDatos, TamanoDiseno, ValorDato } from '@/tipos/Comunes'
 import type { OpcionSeleccion } from '@/interfaces/Comunes'
 import { TipoCampoValor } from '@/enumeraciones/Campos'
+import { evaluarFormula, formatearNumero } from '@/utilidades/EvaluadorFormulas'
 
 const propiedades = defineProps<{
   campo: EsquemaCampo
@@ -312,6 +313,68 @@ function manejarInput(nombreCampo: string, valor: unknown): void {
   emit('valor-cambiado', nombreCampo, valor)
   emit('evento-campo', nombreCampo, 'input')
 }
+
+// Funciones para Tabla Resumen
+function obtenerMetadatosTablaResumen(campo: EsquemaCampo): MetadatosTablaResumen | null {
+  const metadatos = campo.metadatos as Record<string, unknown> | undefined
+  if (!metadatos) return null
+  
+  return {
+    columnas: (metadatos.columnas || []) as MetadatosTablaResumen['columnas'],
+    filas: (metadatos.filas || []) as MetadatosTablaResumen['filas'],
+    actualizacionAutomatica: metadatos.actualizacionAutomatica as boolean | undefined,
+    estiloTabla: metadatos.estiloTabla as MetadatosTablaResumen['estiloTabla']
+  }
+}
+
+function calcularValorCelda(formula: string | number, valores: RegistroDatos): string {
+  if (typeof formula === 'number') {
+    return String(formula)
+  }
+  
+  if (typeof formula === 'string') {
+    // Si no contiene referencias {}, es un valor fijo
+    if (!formula.includes('{')) {
+      return formula
+    }
+    
+    // Evaluar la fórmula
+    const resultado = evaluarFormula(formula, valores)
+    return String(resultado)
+  }
+  
+  return ''
+}
+
+function formatearValorTablaResumen(
+  valor: string,
+  columna: MetadatosTablaResumen['columnas'][0]
+): string {
+  if (columna.tipo === 'numero' || columna.tipo === 'calculado') {
+    const numero = Number(valor)
+    if (!isNaN(numero)) {
+      return formatearNumero(numero, columna.formatoNumero)
+    }
+  }
+  return valor
+}
+
+function obtenerEstiloTablaResumen(campo: EsquemaCampo) {
+  const metadatos = obtenerMetadatosTablaResumen(campo)
+  const estiloTabla = metadatos?.estiloTabla || {}
+  
+  return {
+    conBordes: estiloTabla.bordered ?? true,
+    conRayas: estiloTabla.striped ?? false,
+    conHover: estiloTabla.hover ?? false,
+    relleno: estiloTabla.padding ?? 'md'
+  }
+}
+
+function claseRellenoCeldaResumen(campo: EsquemaCampo): string {
+  const tipoRelleno = obtenerEstiloTablaResumen(campo).relleno
+  return tipoRelleno === 'sm' ? 'p-1' : tipoRelleno === 'lg' ? 'p-3' : 'p-2'
+}
 </script>
 
 <template>
@@ -517,6 +580,45 @@ function manejarInput(nombreCampo: string, valor: unknown): void {
         <!-- Botón para agregar filas -->
         <div class="mt-2" v-if="permitirAgregarFilas(campo)">
           <PrimeButton icon="pi pi-plus" label="Añadir fila" @click.prevent="agregarNuevaFilaCampo(campo)" />
+        </div>
+      </div>
+
+      <!-- Tabla Resumen -->
+      <div v-else-if="campo.tipo === TipoCampoValor.TablaResumen">
+        <div class="overflow-auto">
+          <table :class="[
+            'ancho-100 tamanio-fuente-miga',
+            obtenerEstiloTablaResumen(campo).conBordes ? 'border-1' : ''
+          ]">
+            <thead>
+              <tr>
+                <th v-for="columna in obtenerMetadatosTablaResumen(campo)?.columnas" :key="columna.nombre" :class="[
+                  'text-left negrilla',
+                  claseRellenoCeldaResumen(campo),
+                  obtenerEstiloTablaResumen(campo).conBordes ? 'border-inferior-1' : ''
+                ]">
+                  {{ columna.etiqueta }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="fila in obtenerMetadatosTablaResumen(campo)?.filas" :key="fila.id" :class="[
+                obtenerEstiloTablaResumen(campo).conRayas ? 'odd:bg-surface-100' : '',
+                obtenerEstiloTablaResumen(campo).conHover ? 'hover:bg-surface-100' : ''
+              ]">
+                <td v-for="columna in obtenerMetadatosTablaResumen(campo)?.columnas" :key="columna.nombre" :class="[
+                  claseRellenoCeldaResumen(campo),
+                  obtenerEstiloTablaResumen(campo).conBordes ? 'border-inferior-1' : '',
+                  columna.tipo === 'numero' || columna.tipo === 'calculado' ? 'text-right' : 'text-left'
+                ]">
+                  {{ formatearValorTablaResumen(
+                    calcularValorCelda(fila.valores[columna.nombre], valoresCampos),
+                    columna
+                  ) }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 

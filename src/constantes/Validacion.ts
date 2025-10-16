@@ -5,7 +5,7 @@ import type { EsquemaPagina } from '@/interfaces/Pagina'
 import { z } from 'zod'
 
 export const zReglaValidacion = z.object({
-  tipo: z.enum(['requerido', 'longitud-minima', 'longitud-maxima', 'patron', 'personalizada']),
+  tipo: z.enum(['requerido', 'longitud-minima', 'longitud-maxima', 'valor-minimo', 'valor-maximo', 'patron', 'personalizada']),
   valor: z.union([z.string(), z.number(), z.boolean(), z.date()]).optional(),
   mensaje: z.string().optional(),
 })
@@ -21,7 +21,7 @@ export const zReglaLogica = z.object({
 
 
 export const zMetadatosCampo = z.object({
-  valorPorDefecto: z.union([z.string(), z.number(), z.boolean(), z.date()]).optional(),
+  valorPorDefecto: z.union([z.string(), z.number(), z.boolean(), z.date(), z.array(z.unknown())]).optional(),
   opciones: z.array(z.object({
     etiqueta: z.string(),
     valor: z.union([z.string(), z.number()]),
@@ -35,11 +35,18 @@ export const zMetadatosCampo = z.object({
   min: z.number().optional(),
   max: z.number().optional(),
   paso: z.number().optional(),
-  filas: z.number().optional(),
-  columnas: z.number().optional(),
+  // filas y columnas pueden ser números (para tabla normal) o arrays (para tabla-resumen y columnas de tabla)
+  filas: z.union([z.number(), z.array(z.unknown())]).optional(),
+  columnas: z.union([z.number(), z.array(z.unknown())]).optional(),
+  agregarFilas: z.boolean().optional(),
+  eliminarFilas: z.boolean().optional(),
+  mostrarResumen: z.boolean().optional(),
+  actualizacionAutomatica: z.boolean().optional(),
+  estiloTabla: z.record(z.string(), z.unknown()).optional(),
 }).catchall(z.unknown())
 
-export const zEsquemaCampo: z.ZodType<EsquemaCampo> = z.lazy(() =>
+// Declaración forward para el esquema recursivo
+const zEsquemaCampoInterno: z.ZodType<any> = z.lazy(() =>
   z.object({
     id: z.string(),
     tipo: z.enum([
@@ -56,6 +63,7 @@ export const zEsquemaCampo: z.ZodType<EsquemaCampo> = z.lazy(() =>
       'etiqueta',
       'panel',
       'tabla',
+      'tabla-resumen',
       'boton',
       'divisor',
     ]),
@@ -76,10 +84,13 @@ export const zEsquemaCampo: z.ZodType<EsquemaCampo> = z.lazy(() =>
     soloLectura: z.boolean().optional(),
     validaciones: z.array(zReglaValidacion).optional(),
     logica: z.array(zReglaLogica).optional(),
-    hijos: z.array(z.lazy(() => zEsquemaCampo)).optional(),
+    hijos: z.array(zEsquemaCampoInterno).optional(),
     metadatos: zMetadatosCampo.optional(),
   })
 )
+
+// Exportar con el tipo correcto
+export const zEsquemaCampo: z.ZodType<EsquemaCampo> = zEsquemaCampoInterno
 
 export const zEsquemaPagina: z.ZodType<EsquemaPagina> = z.object({
   id: z.string(),

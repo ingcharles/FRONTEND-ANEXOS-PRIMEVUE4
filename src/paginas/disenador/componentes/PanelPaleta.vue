@@ -131,6 +131,27 @@ const categoriasPaleta = ref([
           },
         }
       },
+      {
+        key: '3_2',
+        label: TipoCampoEtiqueta.TablaResumen,
+        icon: 'pi pi-calculator',
+        tipo: TipoCampoValor.TablaResumen,
+        propiedadesPorDefecto: {
+          metadatos: {
+            columnas: [
+              { nombre: 'concepto', etiqueta: 'Concepto', tipo: 'texto' },
+              { nombre: 'valor', etiqueta: 'Valor', tipo: 'calculado', formatoNumero: { decimales: 2, prefijo: '$' } }
+            ],
+            filas: [
+              { id: 'subtotal', valores: { concepto: 'Subtotal', valor: '0' } },
+              { id: 'iva', valores: { concepto: 'IVA (19%)', valor: '0' } },
+              { id: 'total', valores: { concepto: 'Total', valor: '0' } }
+            ],
+            actualizacionAutomatica: true,
+            estiloTabla: { bordered: true, striped: false, hover: false, padding: 'md' }
+          },
+        }
+      },
     ]
   },
   {
